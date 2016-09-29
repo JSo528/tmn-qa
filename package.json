@@ -1,0 +1,8 @@
+{
+  "name": "tmn-qa-tests",
+  "version": "1.0.0",
+  "description": "QA tests for TruMedia's FERP and scouting websites",
+  "scripts": {
+    "test": "mocha specs"
+  }
+}
