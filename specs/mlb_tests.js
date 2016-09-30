@@ -33,7 +33,7 @@ test.describe('MLB Site', function() {
     })
 
     test.it('able to login', function() {
-      loginPage.submitCredentials(constants.testUser.email, constants.testUser.password);
+      loginPage.login(constants.testUser.email, constants.testUser.password);
       driver.getCurrentUrl().then(function(url) {
         assert.notMatch(url, /auth\/loginPage/, 'Correct URL')
       })
@@ -50,21 +50,34 @@ test.describe('MLB Site', function() {
       driver.getTitle().then(function(title) {
         assert.equal( title, "Standings", 'Correct Title' );
       });
-    })
+    });
 
     test.it('navbar is displayed', function() {
       standingsPage.navbarDisplayed().then(function(displayed) {
         assert.equal( displayed, true, 'Navbar Displayed');
       });
     });
+
+    test.it('changing year shows correct data', function() {
+      standingsPage.changeYear(2014).then(function() {
+        console.log('done')
+      })
+    });
+
+    test.it('changing season level shows correct data', function() {
+      standingsPage.changeSeasonLevel("AAA");
+    });  
+
+    test.it('clicking into team goes to the right page', function() {
+    });       
   }); 
   
   test.afterEach(function() {
-      driver.manage().deleteAllCookies();
+    // driver.manage().deleteAllCookies();
   });
    
   test.after(function() {
-      driver.quit();
+    driver.quit();
   });  
 });
  

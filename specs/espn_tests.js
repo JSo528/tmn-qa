@@ -9,7 +9,7 @@ var driver, url, loginPage;
   
 test.describe('ESPN Football Site', function() {
   this.timeout(constants.timeOuts.mocha);
-  
+
   test.before(function() {
     driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).build();
     url = constants.urls.espn.football;
@@ -24,7 +24,7 @@ test.describe('ESPN Football Site', function() {
   });
 
   test.it('able to login', function() {
-    loginPage.submitCredentials(constants.testUser.email, constants.testUser.password);
+    loginPage.login(constants.testUser.email, constants.testUser.password);
     driver.getTitle().then(function(title) {
       assert.equal( title, "Standings", 'Correct Title');
     });

@@ -24,7 +24,7 @@ test.describe('NFL Site', function() {
   })
 
   test.it('able to login', function() {
-    loginPage.submitCredentials(constants.testUser.email, constants.testUser.password);
+    loginPage.login(constants.testUser.email, constants.testUser.password);
     driver.getTitle().then(function(title) {
       assert.equal( title, "Standings", 'Correct Title');
     });

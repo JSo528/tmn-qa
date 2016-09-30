@@ -1,7 +1,7 @@
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
-LoginPage = function LoginPage(driver, url) {
+function LoginPage(driver, url) {
   this.driver = driver;
   this.url = url;
   this.usernameField = By.id('username');
@@ -15,7 +15,7 @@ LoginPage.prototype.visit = function() {
     return webdriver.promise.fulfilled(true);
 };
 
-LoginPage.prototype.submitCredentials = function(email, password) {
+LoginPage.prototype.login = function(email, password) {
   this.driver.findElement(this.usernameField).sendKeys(email);
   this.driver.findElement(this.passwordField).sendKeys(password);
   this.driver.findElement(this.loginButton).click();
