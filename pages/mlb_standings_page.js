@@ -1,3 +1,9 @@
+var DIVISION_IDS = {
+  AL_EAST : 'tableBaseballStandingsAL EastContainer',
+  PCL_AS: 'tableBaseballStandingsPCL \(AS\)Container'
+}
+
+
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
@@ -12,9 +18,8 @@ function MlbStandingsPage(driver) {
   
   this.seasonLevelPageControl = By.id('s2id_pageControlBaseballSeasonLevelSingle');
   this.seasonLevelInput = By.id('s2id_autogen2_search');
-
-  this.firstTeam = By.css("div[id='tableBaseballStandingsAL EastContainer']>table>tbody>tr:nth-child(2)>td:nth-child(1)>a")
 };
+
 
 // Methods
 MlbStandingsPage.prototype.navbarDisplayed = function() {
@@ -44,12 +49,28 @@ MlbStandingsPage.prototype.changeSeasonLevel = function(seasonLevel) {
   return input.sendKeys(webdriver.Key.ENTER);
 };
 
-MlbStandingsPage.prototype.getFirstTeamName = function() {
+MlbStandingsPage.prototype.getTeamName = function(division, teamRank) {
   var d = webdriver.promise.defer();
-  this.driver.findElement(this.firstTeam).getText().then(function(text) {
+  var divisionID = DIVISION_IDS[division]
+  var rowNumber = teamRank + 1
+  var team = By.css(`div[id='${divisionID}']>table>tbody>tr:nth-child(${rowNumber})>td:nth-child(1)>a`)
+
+  this.driver.findElement(team).getText().then(function(text) {
     d.fulfill(text);
   })
   return d.promise;
 };
+
+MlbStandingsPage.prototype.getPythWins = function(division, teamRank) {
+  var d = webdriver.promise.defer();
+  var divisionID = DIVISION_IDS[division]
+  var rowNumber = teamRank + 1
+  var team = By.css(`div[id='${divisionID}']>table>tbody>tr:nth-child(${rowNumber})>td:nth-child(8)`)
+
+  this.driver.findElement(team).getText().then(function(text) {
+    d.fulfill(text);
+  })
+  return d.promise;
+}
 
 module.exports = MlbStandingsPage;

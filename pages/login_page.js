@@ -11,9 +11,7 @@ function LoginPage(driver, url) {
 };
 
 LoginPage.prototype.visit = function() {
-    this.driver.get(this.url);
-
-    return webdriver.promise.fulfilled(true);
+  return this.driver.get(this.url);
 };
 
 LoginPage.prototype.login = function(email, password) {
