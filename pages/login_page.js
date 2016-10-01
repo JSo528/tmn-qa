@@ -12,6 +12,7 @@ function LoginPage(driver, url) {
 
 LoginPage.prototype.visit = function() {
     this.driver.get(this.url);
+
     return webdriver.promise.fulfilled(true);
 };
 

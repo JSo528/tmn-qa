@@ -24,9 +24,9 @@ test.describe('MLB Site', function() {
 
     test.it('starts at login page', function() {
       loginPage.visit();
-      driver.getTitle().then(function(title) {
-        assert.equal( title, "FERP", 'Correct Title' );
-      });
+      // driver.getTitle().then(function(title) {
+      //   assert.equal( title, "FERP", 'Correct Title' );
+      // });
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /auth\/loginPage/, 'Correct URL')
       });
@@ -59,8 +59,9 @@ test.describe('MLB Site', function() {
     });
 
     test.it('changing year shows correct data', function() {
-      standingsPage.changeYear(2014).then(function() {
-        console.log('done')
+      standingsPage.changeYear(2014);
+      standingsPage.getFirstTeamName().then(function(teamName) {
+        assert.equal( teamName, 'Orioles', 'Correct Team in 1st')
       })
     });
 
