@@ -66,22 +66,22 @@ test.describe('MLB Site', function() {
       standingsPage.changeYear(2014);
       
       standingsPage.getTeamName(constants.divisions.al_east, 1).then(function(teamName) {
-        assert.equal( teamName, 'Orioles', 'Correct Team in 1st')
-      })
+        assert.equal( teamName, 'Orioles', 'Correct Team in 1st');
+      });
       standingsPage.getPythWins(constants.divisions.al_east, 1).then(function(pythWins) {
-        assert.equal( pythWins, 93.7, 'Correct Pyth Wins')
-      })
+        assert.equal( pythWins, 93.7, 'Correct Pyth Wins');
+      });
     });
 
     test.it('changing season level shows correct data', function() {
       standingsPage.changeSeasonLevel("AAA");
       
       standingsPage.getTeamName(constants.divisions.pcl_as, 1).then(function(teamName) {
-        assert.equal( teamName, 'Redbirds (STL)', 'Correct Team in 1st')
-      })
+        assert.equal( teamName, 'Redbirds (STL)', 'Correct Team in 1st');
+      });
       standingsPage.getPythWins(constants.divisions.pcl_as, 1).then(function(pythWins) {
-        assert.equal( pythWins, 83.4, 'Correct Pyth Wins')
-      })
+        assert.equal( pythWins, 83.4, 'Correct Pyth Wins');
+      });
     });  
 
     test.it('clicking into team goes to the right page', function() {
@@ -90,9 +90,9 @@ test.describe('MLB Site', function() {
         
         // TODO - change this to team page object
         driver.findElement(webdriver.By.css('h1.name')).getText().then(function(text) {
-          assert.equal( text, 'Baltimore Orioles', 'goes to the correct team page')
-        })
-      })
+          assert.equal( text, 'Baltimore Orioles', 'goes to the correct team page');
+        });
+      });
     });       
   }); 
 
@@ -107,8 +107,64 @@ test.describe('MLB Site', function() {
 
       driver.getTitle().then(function(title) {
         assert.equal( title, 'Scores', 'Correct title');
+      });
+    });
+
+    test.it('shows the proper data in the box score summary', function() {
+      scoresPage.getBoxScoreDatetime(1).then(function(datetimeText) {
+        assert.equal( datetimeText, '10/2/2016, 3:05 PM ET', 'Correct datetime');
+      });
+
+      scoresPage.getBoxScoreRunsForInning(1, "home", 4).then(function(runs) {
+        assert.equal( runs, 2, 'Correct runs');
+      });
+
+      scoresPage.getBoxScoreTotalRuns(1, "away", 2).then(function(runs) {
+        assert.equal( runs, 2, 'Correct total runs');
+      });      
+
+      scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
+        assert.equal( pitcher, 'Kevin Gausman')
       })
-    })
+    });
+
+    test.it('shows the winner highlighted in the box score summary', function() {
+      scoresPage.getBoxScoreRowColor(1, "home").then(function(color) {
+        assert.equal( color, 'rgba(179, 255, 186, 1)', 'Correct background-color for winner');
+      })
+    }); 
+
+    test.it('changing the date shows correct data', function() {
+      scoresPage.changeDate('2016-05-02').then()
+
+      scoresPage.getBoxScoreDatetime(1).then(function(datetimeText) {
+        assert.equal( datetimeText, '5/2/2016, 7:05 PM ET', 'Correct datetime');
+      });
+    });
+
+    test.it('changing the season level shows correct data', function() {
+      scoresPage.changeSeasonLevel("A+");
+      
+      scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
+        assert.equal( pitcher, 'Jordan Milbrath');
+      });
+    });    
+
+    test.it('clicking into team goes to the correct page', function() {
+      
+    });
+
+    test.it('clicking into player goes to the correct page', function() {
+      
+    });        
+
+    test.it('clicking into box score footer links go to the correct pages', function() {
+      
+    });    
+
+    test.it('clicking box score goes to the correct page', function() {
+      
+    });    
   })
 
 
