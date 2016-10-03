@@ -5,14 +5,18 @@ var assert = chai.assert;
 var constants = require('../lib/constants.js');
 
 var LoginPage = require('../pages/login_page.js');
+var MlbNavbar = require('../pages/mlb_navbar.js');
 var MlbStandingsPage = require('../pages/mlb_standings_page.js');
-var driver, url, loginPage, standingsPage;
+var MlbScoresPage = require('../pages/mlb_scores_page.js');
+
+var driver, url, loginPage, standingsPage, navbar;
 
 test.describe('MLB Site', function() {
   this.timeout(constants.timeOuts.mocha);  
 
   test.before(function() {
     driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).build();
+    navbar = new MlbNavbar(driver);
   });
 
   // Login Page
@@ -91,10 +95,31 @@ test.describe('MLB Site', function() {
       })
     });       
   }); 
+
+  // Scores Page
+  test.describe('#Scores Page', function() {
+    test.before(function() {
+      scoresPage = new MlbScoresPage(driver);
+    });
+
+    test.it('clicking the scores link goes to the correct page', function() {
+      navbar.goToScoresPage();
+
+      driver.getTitle().then(function(title) {
+        assert.equal( title, 'Scores', 'Correct title');
+      })
+    })
+  })
+
+
+
+
+
+
   
-  test.afterEach(function() {
+  // test.afterEach(function() {
     // driver.manage().deleteAllCookies();
-  });
+  // });
    
   test.after(function() {
     driver.quit();
