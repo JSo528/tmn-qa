@@ -1,3 +1,4 @@
+// TODO - make sure doing enums correctly
 var DIVISION_IDS = {
   AL_EAST : 'tableBaseballStandingsAL EastContainer',
   PCL_AS: 'tableBaseballStandingsPCL \(AS\)Container'
@@ -71,6 +72,14 @@ MlbStandingsPage.prototype.getPythWins = function(division, teamRank) {
     d.fulfill(text);
   })
   return d.promise;
+}
+
+MlbStandingsPage.prototype.goToTeamPage = function(division, teamRank) {
+  var divisionID = DIVISION_IDS[division]
+  var rowNumber = teamRank + 1
+  var team = By.css(`div[id='${divisionID}']>table>tbody>tr:nth-child(${rowNumber})>td:nth-child(1)>a`)
+
+  return this.driver.findElement(team).click();
 }
 
 module.exports = MlbStandingsPage;
