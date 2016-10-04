@@ -4,8 +4,12 @@ var By = webdriver.By;
 function MlbNavbar(driver) {
   this.driver = driver;
 
-  this.standingsLink = By.css('div.navbar-item-border-left>a');
-  this.scoresLink = By.css('header.navbar-tmn>div:nth-child(1)>div:nth-child(4)>a');
+  this.standingsLink = By.xpath(`.//div[@class='navbar-item-fancy-pants navbar-item-border-right'][0]/a`);
+  this.scoresLink = By.xpath(`.//div[@class='navbar-item-fancy-pants navbar-item-border-right'][1]/a`);
+  this.teamsLink = By.xpath(`.//div[@class='navbar-item-fancy-pants navbar-item-border-right'][2]/a`);
+  this.playersLink = By.xpath(`.//div[@class='navbar-item-fancy-pants navbar-item-border-right'][3]/a`);
+  this.umpiresLink = By.xpath(`.//div[@class='navbar-item-fancy-pants navbar-item-border-right'][4]/a`);
+  this.groupsLink = By.xpath(`.//div[@class='navbar-item-fancy-pants navbar-item-border-right'][5]/a`);
 };
 
 MlbNavbar.prototype.goToStandingsPage = function() {

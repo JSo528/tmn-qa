@@ -21,7 +21,7 @@ test.describe('MLB Site', function() {
   });
 
   // Login Page
-  test.describe('#Login Page', function() {
+  test.describe.only('#Login Page', function() {
     test.before(function() {
       loginPage = new LoginPage(driver, url);
     });
@@ -205,6 +205,42 @@ test.describe('MLB Site', function() {
       });    
     })
   })
+
+  // Detailed Score Page
+  test.describe.only('#DetailedScore Page', function() {
+    test.before(function() {
+      driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/NYY-BAL/2016-10-02/449283?f=%7B%7D&is=true');
+      var MlbDetailedScorePage = require('../pages/mlb_detailed_score_page.js');
+      detailedScorePage = new MlbDetailedScorePage(driver);
+    });
+
+    test.it('team box score displays correct data', function() {
+      detailedScorePage.getBoxScoreTotalHits("away").then(function(hits) {
+        assert.equal(hits, 10);
+      });      
+    });
+
+    test.it('team batting stats displays correct data', function() {
+      detailedScorePage.getTeamBattingStat("home", 6).then(function(battingAverage) {
+        assert.equal(battingAverage, 0.226);
+      });      
+    });
+
+    test.it('player batting stats displays correct data', function() {
+      detailedScorePage.getPlayerBattingStat("away", 3, 10).then(function(sluggingPercentage) {
+        assert.equal(sluggingPercentage, 0.250);
+      });      
+    });
+    /*
+      MAIN PAGE
+      - header details show
+      - box score shows
+      - report box score shows
+      - player row shows correct stat
+
+    */
+
+  })  
 
 
 
