@@ -32,7 +32,7 @@ MlbScoresPage.prototype.getBoxScoreDatetime = function(boxScoreNum) {
 // homeOrAway takes in "home" or "away" string. Anything other than "home" input will result in "away"
 MlbScoresPage.prototype.getBoxScoreRunsForInning = function(boxScoreNum, homeOrAway, inning) {
   var d = webdriver.promise.defer();
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   inning += 1
 
   var element = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]/div[@class='row'][1]/table/tbody/tr[${team}]/td[${inning}]`)
@@ -44,7 +44,7 @@ MlbScoresPage.prototype.getBoxScoreRunsForInning = function(boxScoreNum, homeOrA
 
 MlbScoresPage.prototype.getBoxScoreTotalRuns = function(boxScoreNum, homeOrAway) {
   var d = webdriver.promise.defer();
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   
   var element = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]/div[@class='row'][1]/table/tbody/tr[${team}]/td[12]`)
   this.driver.findElement(element).getText().then(function(runs) {
@@ -55,7 +55,7 @@ MlbScoresPage.prototype.getBoxScoreTotalRuns = function(boxScoreNum, homeOrAway)
 
 MlbScoresPage.prototype.getBoxScoreRowColor = function(boxScoreNum, homeOrAway) {
   var d = webdriver.promise.defer();
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   
   var element = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]/div[@class='row'][1]/table/tbody/tr[${team}]`)
   this.driver.findElement(element).getCssValue('background-color').then(function(color) {
@@ -104,7 +104,7 @@ MlbScoresPage.prototype.getCalendarDate = function() {
 
 MlbScoresPage.prototype.teamLogoDisplayed = function(boxScoreNum, homeOrAway) {
   var d = webdriver.promise.defer();
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   var element = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]/div[@class='row'][1]/table/tbody/tr[${team}]/td[1]/img`)
   this.driver.findElement(element).isDisplayed().then(function(displayed) {
     d.fulfill(displayed);
@@ -133,7 +133,7 @@ MlbScoresPage.prototype.changeSeasonLevel = function(seasonLevel) {
 }
 
 MlbScoresPage.prototype.clickTeam = function(boxScoreNum, homeOrAway) {
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   var teamLink = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]/div[@class='row'][1]/table/tbody/tr[${team}]/td[1]/a`)
   var element = this.driver.findElement(teamLink)
   return element.click();

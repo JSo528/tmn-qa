@@ -9,11 +9,13 @@ function MlbDetailedScorePage(driver) {
   this.awayTable = By.id('tableBaseballGamePlayerBattingStatsAwayTables');
   this.homeTable = By.id('tableBaseballGamePlayerBattingStatsHomeTables');
   this.updateButton = By.className('update');
+  this.reportSelect = By.id('s2id_reportNavBaseballTeamStatBatting');
+  this.reportInput = By.xpath(".//div[@id='select2-drop']/div/input");
 };
 
 MlbDetailedScorePage.prototype.getBoxScoreTotalHits = function(homeOrAway) {
   var d = webdriver.promise.defer();
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   
   var element = By.xpath(`.//table[@class='table table-box-scores']/tbody/tr[${team}]/td[13]`)
   this.driver.findElement(element).getText().then(function(hits) {
@@ -24,7 +26,7 @@ MlbDetailedScorePage.prototype.getBoxScoreTotalHits = function(homeOrAway) {
 
 MlbDetailedScorePage.prototype.getTeamBattingStat = function(homeOrAway, col) {
   var d = webdriver.promise.defer();
-  var team = homeOrAway == "home" ? 1 : 2
+  var team = homeOrAway == "home" ? 2 : 1
   var element = By.xpath(`.//div[@id='tableBaseballGameTeamBattingStatsContainer']/table/tbody/tr[${team}]/td[${col}]`);
 
   this.driver.wait(webdriver.until.elementLocated(element));
@@ -60,7 +62,7 @@ MlbDetailedScorePage.prototype.addDropdownFilter = function(filter) {
   return this.waitForTablesToFinishLoading();
 };
 
-MlbDetailedScorePage.prototype.addSidebarFilter = function(filterName, selection) {
+MlbDetailedScorePage.prototype.toggleSidebarFilter = function(filterName, selection) {
   var selector = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
   this.driver.wait(webdriver.until.elementLocated(selector));
   var element = this.driver.findElement(selector);
@@ -86,5 +88,18 @@ MlbDetailedScorePage.prototype.closeDropdownFilter = function(filterNum) {
   updateElement.click();
   return this.waitForTablesToFinishLoading();
 };
+
+MlbDetailedScorePage.prototype.changeReport = function(report) {
+  this.driver.wait(webdriver.until.elementLocated(this.reportSelect));
+  var selectElement = this.driver.findElement(this.reportSelect);
+  selectElement.click();
+
+  this.driver.wait(webdriver.until.elementLocated(this.reportInput));
+  var inputElement = this.driver.findElement(this.reportInput);
+  inputElement.sendKeys(report);
+
+  return inputElement.sendKeys(webdriver.Key.ENTER);  
+  // return this.waitForTablesToFinishLoading();
+}
 
 module.exports = MlbDetailedScorePage;

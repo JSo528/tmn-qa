@@ -21,7 +21,7 @@ test.describe('MLB Site', function() {
   });
 
   // Login Page
-  test.describe.only('#Login Page', function() {
+  test.describe('#Login Page', function() {
     test.before(function() {
       loginPage = new LoginPage(driver, url);
     });
@@ -100,6 +100,7 @@ test.describe('MLB Site', function() {
   test.describe('#Scores Page', function() {
     test.before(function() {
       scoresPage = new MlbScoresPage(driver);
+      // TODO - will need to go to specific date
     });
 
     test.it('clicking the scores link goes to the correct page', function() {
@@ -116,11 +117,11 @@ test.describe('MLB Site', function() {
       });
 
       scoresPage.getBoxScoreRunsForInning(1, "home", 4).then(function(runs) {
-        assert.equal( runs, 2, 'Correct runs');
+        assert.equal( runs, 1, 'Correct runs');
       });
 
       scoresPage.getBoxScoreTotalRuns(1, "away", 2).then(function(runs) {
-        assert.equal( runs, 2, 'Correct total runs');
+        assert.equal( runs, 5, 'Correct total runs');
       });      
 
       scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
@@ -133,7 +134,7 @@ test.describe('MLB Site', function() {
     });
 
     test.it('shows the winner highlighted in the box score summary', function() {
-      scoresPage.getBoxScoreRowColor(1, "home").then(function(color) {
+      scoresPage.getBoxScoreRowColor(1, "away").then(function(color) {
         assert.equal( color, 'rgba(179, 255, 186, 1)', 'Correct background-color for winner');
       })
     }); 
@@ -207,16 +208,16 @@ test.describe('MLB Site', function() {
   })
 
   // Detailed Score Page
-  test.describe.only('#DetailedScore Page', function() {
+  test.describe('#DetailedScore Page', function() {
     test.before(function() {
       driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/NYY-BAL/2016-10-02/449283?f=%7B%7D&is=true');
       var MlbDetailedScorePage = require('../pages/mlb_detailed_score_page.js');
       detailedScorePage = new MlbDetailedScorePage(driver);
     });
 
-    test.describe.only('#Section: Batting', function() {
+    test.describe('#Section: Batting', function() {
       // TODO - add tests for select all, changing filters on the created dropdowns
-      test.describe.only('#Filters', function() {
+      test.describe('#Filters', function() {
         test.it('adding filter: (pitcher hand-left) from dropdown displays correct data', function() {
           detailedScorePage.addDropdownFilter('Pitcher Hand: Righty');
 
@@ -227,7 +228,7 @@ test.describe('MLB Site', function() {
         })
 
         test.it('adding filter: (2 outs) from sidebar displays correct data', function() {
-          detailedScorePage.addSidebarFilter('Outs:', 3);
+          detailedScorePage.toggleSidebarFilter('Outs:', 3);
 
           // Michael Bourn faced 12 pitches against a righty pitcher w/ 2 outs this game
           detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
@@ -243,71 +244,141 @@ test.describe('MLB Site', function() {
         }) 
 
         test.it('removing filter: (pitcher hand-left) from sidebar displays correct data', function() {
-          detailedScorePage.closeDropdownFilter(1);
+          detailedScorePage.toggleSidebarFilter("Pitcher Hand:", 2);
           detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
             assert.equal(pitches, 20);
           })
         })         
       })
 
-      test.describe('#Report: Rate (Home)', function() {
-        test.it('team box score displays correct data', function() {
-          detailedScorePage.getBoxScoreTotalHits("away").then(function(hits) {
-            assert.equal(hits, 10);
-          });      
+      test.describe('#Reports', function() {
+        test.describe('#Report: Rate (Home)', function() {
+          test.it('team box score displays correct data', function() {
+            detailedScorePage.getBoxScoreTotalHits("away").then(function(hits) {
+              assert.equal(hits, 7);
+            });      
+          });
+
+          test.it('team batting stats displays correct data', function() {
+            detailedScorePage.getTeamBattingStat("home", 6).then(function(battingAverage) {
+              assert.equal(battingAverage, 0.278);
+            });      
+          });
+
+          test.it('player batting stats displays correct data', function() {
+            detailedScorePage.getPlayerBattingStat("away", 3, 10).then(function(sluggingPercentage) {
+              assert.equal(sluggingPercentage, 0.250);
+            });      
+          });
+        })
+
+        // var reports is an array that holds data used to dynamically create tests
+        // for each report we're testing the stat for: 
+        // teamBatting - away team's 7th column
+        // playerBatting - home team's leadoff hitter's 9th column
+        // both these stats should be the same stat type
+        var reports = [
+          {
+            reportName: 'Counting', 
+            expectedUrlContains: /BattingCounting/, 
+            statType: "Pitches", 
+            teamBattingStat: 127, 
+            playerBattingStat: 20
+          },
+          {
+            reportName: 'Pitch Rates', 
+            expectedUrlContains: /PitchRates/, 
+            statType: "Contact%", 
+            teamBattingStat: "70.5%", 
+            playerBattingStat: "66.7%"
+          },     
+          {
+            reportName: 'Pitch Counts', 
+            expectedUrlContains: /PitchCounts/, 
+            statType: "Strike#", 
+            teamBattingStat: 85, 
+            playerBattingStat: 13
+          },  
+          {
+            reportName: 'Pitch Types', 
+            expectedUrlContains: /PitchTypes/, 
+            statType: "Curve%", 
+            teamBattingStat: "5.5%", 
+            playerBattingStat: "0.0%"
+          }, 
+          {
+            reportName: 'Pitch Type Counts', 
+            expectedUrlContains: /PitchTypeCounts/, 
+            statType: "Curve#", 
+            teamBattingStat: 7, 
+            playerBattingStat: 0
+          }, 
+          {
+            reportName: 'Pitch Locations', 
+            expectedUrlContains: /PitchLocations/, 
+            statType: "VMid%", 
+            teamBattingStat: "27.6%", 
+            playerBattingStat: "25.0%",
+          },   
+          {
+            reportName: 'Pitch Calls', 
+            expectedUrlContains: /PitchCalls/, 
+            statType: "FrmRAA", 
+            teamBattingStat: -0.13, 
+            playerBattingStat: 0.02
+          },   
+          {
+            reportName: 'Hit Types', 
+            expectedUrlContains: /HitTypes/, 
+            statType: "Line%", 
+            teamBattingStat: "33.3%", 
+            playerBattingStat: "33.3%"
+          },             
+          {
+            reportName: 'Hit Locations', 
+            expectedUrlContains: /HitLocations/, 
+            statType: "HPull%", 
+            teamBattingStat: "66.7%", 
+            playerBattingStat: "0.0%"
+          },
+          {
+            reportName: 'Home Runs', 
+            expectedUrlContains: /HomeRuns/, 
+            statType: "HR/FB", 
+            teamBattingStat: "18.2%", 
+            playerBattingStat: "0.0%"
+          },
+                    {
+            reportName: 'Exit Data', 
+            expectedUrlContains: /ExitData/, 
+            statType: "SLG", 
+            teamBattingStat: ".452", 
+            playerBattingStat: ".400"
+          },
+        ];
+
+        reports.forEach(function(report) {
+          test.describe('#Report: ' + report.reportName, function() {
+            test.it('selecting report: ' + report.reportName + ' goes to the correct url', function() {
+              detailedScorePage.changeReport(report.reportName);
+              driver.getCurrentUrl().then(function(url) {
+                assert.match(url, report.expectedUrlContains);
+              });
+            });
+
+            test.it('team batting stats displays correct ' + report.statType, function() {
+              detailedScorePage.getTeamBattingStat("away", 7).then(function(stat) {
+                assert.equal(stat, report.teamBattingStat);
+              });      
+            });
+
+            test.it('player batting stats displays correct ' + report.statType, function() {
+              detailedScorePage.getPlayerBattingStat("home", 1, 9).then(function(stat) {
+                assert.equal(stat, report.playerBattingStat);
+              });      
+            });        
+          });
         });
-
-        test.it('team batting stats displays correct data', function() {
-          detailedScorePage.getTeamBattingStat("home", 6).then(function(battingAverage) {
-            assert.equal(battingAverage, 0.226);
-          });      
-        });
-
-        test.it('player batting stats displays correct data', function() {
-          detailedScorePage.getPlayerBattingStat("away", 3, 10).then(function(sluggingPercentage) {
-            assert.equal(sluggingPercentage, 0.250);
-          });      
-        });
-      })
-
-      test.describe.only('#Report: Counting', function() {
-
-      });
-
-      test.describe.only('#Report: Pitch Rates', function() {
-
-      });
-
-      test.describe.only('#Report: Pitch Types', function() {
-
-      });
-
-      test.describe.only('#Report: Pitch Type Counts', function() {
-
-      });
-
-      test.describe.only('#Report: Pitch Locations', function() {
-
-      });
-
-      test.describe.only('#Report: Pitch Calls', function() {
-
-      });
-
-      test.describe.only('#Report: Hit Types', function() {
-
-      });
-
-      test.describe.only('#Report: Hit Locations', function() {
-
-      });
-
-      test.describe.only('#Report: Home Runs', function() {
-
-      });
-
-      test.describe.only('#Report: Exit Data', function() {
-
       });
     });
 
