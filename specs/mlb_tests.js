@@ -9,7 +9,8 @@ var MlbNavbar = require('../pages/mlb_navbar.js');
 var MlbStandingsPage = require('../pages/mlb_standings_page.js');
 var MlbScoresPage = require('../pages/mlb_scores_page.js');
 
-var driver, url, loginPage, standingsPage, navbar;
+var url = constants.urls.mlb.dodgers;
+var driver, loginPage, standingsPage, navbar;
 
 test.describe('MLB Site', function() {
   this.timeout(constants.timeOuts.mocha);  
@@ -22,7 +23,6 @@ test.describe('MLB Site', function() {
   // Login Page
   test.describe('#Login Page', function() {
     test.before(function() {
-      url = constants.urls.mlb.dodgers;
       loginPage = new LoginPage(driver, url);
     });
 
@@ -126,6 +126,10 @@ test.describe('MLB Site', function() {
       scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
         assert.equal( pitcher, 'Kevin Gausman')
       })
+
+      scoresPage.teamLogoDisplayed(1, "home").then(function(displayed) {
+      assert.equal( displayed, true)
+      })
     });
 
     test.it('shows the winner highlighted in the box score summary', function() {
@@ -150,21 +154,56 @@ test.describe('MLB Site', function() {
       });
     });    
 
-    test.it('clicking into team goes to the correct page', function() {
-      
-    });
+    test.describe('#Checking Links', function() {
+      test.beforeEach(function() {
+        scoresPage.visit(url);
+      });
 
-    test.it('clicking into player goes to the correct page', function() {
-      
-    });        
+      test.it('clicking into team goes to the correct page', function() {
+        scoresPage.clickTeam(1, "home");
+        
+        // TODO - make sure right team
+        driver.getTitle().then(function(title) {
+          assert.equal( title, 'Team Batting');
+        });
+      });
 
-    test.it('clicking into box score footer links go to the correct pages', function() {
-      
-    });    
+      test.it('clicking into player goes to the correct page', function() {
+        scoresPage.clickPitcher(1, "loss");
+        
+        // TODO - make sure right player
+        driver.getTitle().then(function(title) {
+          assert.equal( title, 'Player Pitching');
+        });
+      });           
 
-    test.it('clicking box score goes to the correct page', function() {
-      
-    });    
+      var footerLinks = [
+        {linkNum: 1, linkName: 'Batting', expectedTitle: 'Game - Box Score - Batting'},
+        {linkNum: 2, linkName: 'Pitching', expectedTitle: 'Game - Box Score - Pitching'},
+        {linkNum: 3, linkName: 'Pitch By Pitch', expectedTitle: 'Game - Box Score - Pitch By Pitch'},
+        {linkNum: 4, linkName: 'Pitching Splits', expectedTitle: 'Game - Box Score - Pitching Splits'}
+      ]
+
+      footerLinks.forEach(function(link) {
+        test.it('clicking into footer: ' + link.linkName + ' goes to the correct page', function() {
+          scoresPage.clickBoxScoreFooter(1, link.linkName);
+          
+          // TODO - more data validation
+          driver.getTitle().then(function(title) {
+            assert.equal( title, link.expectedTitle);
+          });      
+        });    
+      })
+
+      test.it('clicking box score goes to the correct page', function() {
+        scoresPage.clickBoxScore(1);
+
+        // TODO - more data validation
+        driver.getTitle().then(function(title) {
+          assert.equal( title, 'Game - Box Score - Batting');
+        });              
+      });    
+    })
   })
 
 

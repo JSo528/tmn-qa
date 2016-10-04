@@ -15,9 +15,10 @@ LoginPage.prototype.visit = function() {
 };
 
 LoginPage.prototype.login = function(email, password) {
-  // TODO - make sure this wait serves its purpose
   this.driver.wait(webdriver.until.elementLocated(this.usernameField));
-  
+  this.driver.wait(webdriver.until.elementLocated(this.passwordField));
+  this.driver.wait(webdriver.until.elementLocated(this.loginButton));
+
   this.driver.findElement(this.usernameField).sendKeys(email);
   this.driver.findElement(this.passwordField).sendKeys(password);
   this.driver.findElement(this.loginButton).click();
