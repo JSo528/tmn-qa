@@ -214,33 +214,115 @@ test.describe('MLB Site', function() {
       detailedScorePage = new MlbDetailedScorePage(driver);
     });
 
-    test.it('team box score displays correct data', function() {
-      detailedScorePage.getBoxScoreTotalHits("away").then(function(hits) {
-        assert.equal(hits, 10);
-      });      
+    test.describe.only('#Section: Batting', function() {
+      // TODO - add tests for select all, changing filters on the created dropdowns
+      test.describe.only('#Filters', function() {
+        test.it('adding filter: (pitcher hand-left) from dropdown displays correct data', function() {
+          detailedScorePage.addDropdownFilter('Pitcher Hand: Righty');
+
+          // Brett Gardner faced 16 pitches against a righty pitcher this game
+          detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
+            assert.equal(pitches, 16);
+          })
+        })
+
+        test.it('adding filter: (2 outs) from sidebar displays correct data', function() {
+          detailedScorePage.addSidebarFilter('Outs:', 3);
+
+          // Michael Bourn faced 12 pitches against a righty pitcher w/ 2 outs this game
+          detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
+            assert.equal(pitches, 12);
+          })
+        })
+
+        test.it('removing filter: (2 outs) from top section displays correct data', function() {
+          detailedScorePage.closeDropdownFilter(2);
+          detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
+            assert.equal(pitches, 16);
+          })
+        }) 
+
+        test.it('removing filter: (pitcher hand-left) from sidebar displays correct data', function() {
+          detailedScorePage.closeDropdownFilter(1);
+          detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
+            assert.equal(pitches, 20);
+          })
+        })         
+      })
+
+      test.describe('#Report: Rate (Home)', function() {
+        test.it('team box score displays correct data', function() {
+          detailedScorePage.getBoxScoreTotalHits("away").then(function(hits) {
+            assert.equal(hits, 10);
+          });      
+        });
+
+        test.it('team batting stats displays correct data', function() {
+          detailedScorePage.getTeamBattingStat("home", 6).then(function(battingAverage) {
+            assert.equal(battingAverage, 0.226);
+          });      
+        });
+
+        test.it('player batting stats displays correct data', function() {
+          detailedScorePage.getPlayerBattingStat("away", 3, 10).then(function(sluggingPercentage) {
+            assert.equal(sluggingPercentage, 0.250);
+          });      
+        });
+      })
+
+      test.describe.only('#Report: Counting', function() {
+
+      });
+
+      test.describe.only('#Report: Pitch Rates', function() {
+
+      });
+
+      test.describe.only('#Report: Pitch Types', function() {
+
+      });
+
+      test.describe.only('#Report: Pitch Type Counts', function() {
+
+      });
+
+      test.describe.only('#Report: Pitch Locations', function() {
+
+      });
+
+      test.describe.only('#Report: Pitch Calls', function() {
+
+      });
+
+      test.describe.only('#Report: Hit Types', function() {
+
+      });
+
+      test.describe.only('#Report: Hit Locations', function() {
+
+      });
+
+      test.describe.only('#Report: Home Runs', function() {
+
+      });
+
+      test.describe.only('#Report: Exit Data', function() {
+
+      });
     });
 
-    test.it('team batting stats displays correct data', function() {
-      detailedScorePage.getTeamBattingStat("home", 6).then(function(battingAverage) {
-        assert.equal(battingAverage, 0.226);
-      });      
+    test.describe('#Section: Pitching', function() {
+
     });
 
-    test.it('player batting stats displays correct data', function() {
-      detailedScorePage.getPlayerBattingStat("away", 3, 10).then(function(sluggingPercentage) {
-        assert.equal(sluggingPercentage, 0.250);
-      });      
-    });
-    /*
-      MAIN PAGE
-      - header details show
-      - box score shows
-      - report box score shows
-      - player row shows correct stat
+    test.describe('#Section: Pitch By Pitch', function() {
 
-    */
+    });   
 
-  })  
+    test.describe('#Section: Pitching Splits', function() {
+
+    });    
+  }); 
 
 
 
