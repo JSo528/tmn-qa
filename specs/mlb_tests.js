@@ -21,7 +21,7 @@ test.describe('MLB Site', function() {
   });
 
   // Login Page
-  test.describe('#Login Page', function() {
+  test.describe.only('#Login Page', function() {
     test.before(function() {
       loginPage = new LoginPage(driver, url);
     });
@@ -208,8 +208,9 @@ test.describe('MLB Site', function() {
   })
 
   // Detailed Score Page
-  test.describe('#DetailedScore Page', function() {
+  test.describe.only('#DetailedScore Page', function() {
     test.before(function() {
+      // TODO - put direct URL into page object
       driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/NYY-BAL/2016-10-02/449283?f=%7B%7D&is=true');
       var MlbDetailedScorePage = require('../pages/mlb_detailed_score_page.js');
       detailedScorePage = new MlbDetailedScorePage(driver);
@@ -366,13 +367,13 @@ test.describe('MLB Site', function() {
               });
             });
 
-            test.it('team batting stats displays correct ' + report.statType, function() {
+            test.it('team batting stats display correct ' + report.statType, function() {
               detailedScorePage.getTeamBattingStat("away", 7).then(function(stat) {
                 assert.equal(stat, report.teamBattingStat);
               });      
             });
 
-            test.it('player batting stats displays correct ' + report.statType, function() {
+            test.it('player batting stats display correct ' + report.statType, function() {
               detailedScorePage.getPlayerBattingStat("home", 1, 9).then(function(stat) {
                 assert.equal(stat, report.playerBattingStat);
               });      
@@ -382,8 +383,206 @@ test.describe('MLB Site', function() {
       });
     });
 
-    test.describe('#Section: Pitching', function() {
+    test.describe.only('#Section: Pitching', function() {
+      test.it("clicking pitching tab goes to the correct URL", function() {
+        detailedScorePage.goToSection("Pitching");
+        driver.getCurrentUrl().then(function(url) {
+          assert.match(url, /game\-pitching/);
+        });
+      })
 
+      // TODO - add tests for select all, changing filters on the created dropdowns
+      test.describe.skip('#Filters', function() {
+        test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
+          detailedScorePage.addDropdownFilter("Pitch Type: Fastball");
+
+          // Kevin Gausman threw 31 fastballs
+          detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
+            assert.equal(pitches, 60);
+          });
+        });
+
+        test.it('adding filter: (pitch result = strike) from sidebar displays correct data', function() {
+          detailedScorePage.toggleSidebarFilter("Pitch Result:", 1)
+
+          // Michael Bourn faced 12 pitches against a righty pitcher w/ 2 outs this game
+          detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
+            assert.equal(pitches, 31);
+          });
+        });
+
+        test.it('removing filter: (pitch result = strike) from top section displays correct data', function() {
+          detailedScorePage.closeDropdownFilter(2);
+          detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
+            assert.equal(pitches, 60);
+          });
+        }); 
+
+        test.it('removing filter: (pitch type - fastball) from sidebar displays correct data', function() {
+          detailedScorePage.toggleSidebarFilter("Pitch Type:", 8);
+          detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
+            assert.equal(pitches, 106);
+          });
+        });         
+      }); 
+
+      test.describe('#Reports', function() {
+        test.describe('#Report: Traditional', function() {
+          test.it('team pitching stats display correct Hits', function() {
+            detailedScorePage.getTeamPitchingStat("away", 11).then(function(stat) {
+              assert.equal(stat, 10);
+            });      
+          });
+
+          test.it('player pitching stats display correct Hits', function() {
+            detailedScorePage.getPlayerPitchingStat("home", 1, 12).then(function(stat) {
+              assert.equal(stat, 5);
+            });      
+          });        
+        });      
+
+        // var reports is an array that holds data used to dynamically create tests
+        // for each report we're testing the stat for: 
+        // teamPitching - away team's 11th column
+        // playerPitching - home team's 1st pitcher's 12th column
+        // if colOffset is set then we shift those columns by adding the default # by the colOffset value
+        // both these stats should be the same stat type
+        var reports = [
+          {
+            reportName: 'Rate', 
+            expectedUrlContains: /PitchingRate/, 
+            statType: "K%", 
+            teamStat: "16.2%", 
+            playerStat: "27.3%"
+          },        
+          {
+            reportName: 'Counting', 
+            expectedUrlContains: /PitchingCounting/, 
+            statType: "HBP", 
+            teamStat: 0, 
+            playerStat: 0
+          },
+          {
+            reportName: 'Pitch Rates', 
+            expectedUrlContains: /PitchingPitchRates/, 
+            statType: "InZone%", 
+            teamStat: "52.4%", 
+            playerStat: "53.2%"
+          },
+          {
+            reportName: 'Pitch Counts', 
+            expectedUrlContains: /PitchingPitchCounts/, 
+            statType: "Chase#", 
+            teamStat: 24, 
+            playerStat: 13
+          },
+          {
+            reportName: 'Pitch Types', 
+            expectedUrlContains: /PitchingPitchTypes/, 
+            statType: "Split%", 
+            teamStat: "7.9%", 
+            playerStat: "1.3%"
+          },
+          {
+            reportName: 'Pitch Type Count', 
+            expectedUrlContains: /PitchingPitchTypeCounts/, 
+            statType: "Split#", 
+            teamStat: 10, 
+            playerStat: 1
+          },
+          {
+            reportName: 'Pitch Locations', 
+            expectedUrlContains: /PitchingPitchLocations/, 
+            statType: "Inside%", 
+            teamStat: "26.2%", 
+            playerStat: "14.3%"
+          },
+                              {
+            reportName: 'Pitch Calls', 
+            expectedUrlContains: /PitchingPitchCalls/, 
+            statType: "BallFrmd", 
+            teamStat: 0, 
+            playerStat: 1
+          },
+          {
+            reportName: 'Hit Types', 
+            expectedUrlContains: /PitchingHitTypes/, 
+            statType: "Fly#", 
+            teamStat: 6, 
+            playerStat: 2
+          },
+          {
+            reportName: 'Hit Locations', 
+            expectedUrlContains: /PitchingHitLocations/, 
+            statType: "HDeadCtr%", 
+            teamStat: "26.7%", 
+            playerStat: "12.5%"
+          }, 
+          {
+            reportName: 'Movement', 
+            expectedUrlContains: /PitchingMovement/, 
+            statType: "SpinDir", 
+            teamStat: 201.8, 
+            playerStat: 203.2
+          },
+          {
+            reportName: 'Home Runs', 
+            expectedUrlContains: /PitchingHomeRuns/, 
+            statType: "HRDst", 
+            teamStat: 370.8,
+            playerStat: 429.9,
+            colOffset: -4
+          },
+          {
+            reportName: 'Bids', 
+            expectedUrlContains: /PitchingBids/, 
+            statType: "HRDst", 
+            teamStat: 0.1,
+            playerStat: 2.0,
+            colOffset: 2
+          },
+          {
+            reportName: 'Baserunning', 
+            expectedUrlContains: /PitchingBaserunning/, 
+            statType: "BF", 
+            teamStat: 37,
+            playerStat: 22,
+            colOffset: -8
+          },
+          {
+            reportName: 'Exit Data', 
+            expectedUrlContains: /PitchingExitData/, 
+            statType: "ExISO", 
+            teamStat: .061,
+            playerStat: .218
+          }          
+        ];
+
+        reports.forEach(function(report) {
+          test.describe('#Report: ' + report.reportName, function() {
+            test.it('selecting report: ' + report.reportName + ' goes to the correct url', function() {
+              detailedScorePage.changeReport(report.reportName);
+              driver.getCurrentUrl().then(function(url) {
+                assert.match(url, report.expectedUrlContains);
+              });
+            });
+
+            test.it('team pitching stats display correct ' + report.statType, function() {
+              var colNum = (report.colOffset == undefined) ? 11 : 11 + report.colOffset;
+              detailedScorePage.getTeamPitchingStat("away", colNum).then(function(stat) {
+                assert.equal(stat, report.teamStat);
+              });      
+            });
+
+            test.it('player pitching stats display correct ' + report.statType, function() {
+              var colNum = (report.colOffset == undefined) ? 12 : 12 + report.colOffset;
+              detailedScorePage.getPlayerPitchingStat("home", 1, colNum).then(function(stat) {
+                assert.equal(stat, report.playerStat);
+              });      
+            });        
+          });
+        });        
+      });     
     });
 
     test.describe('#Section: Pitch By Pitch', function() {
