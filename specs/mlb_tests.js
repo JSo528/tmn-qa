@@ -644,12 +644,45 @@ test.describe('MLB Site', function() {
           });
         });        
       });
-      /*
-        - decisive event
-        - filters
-        - video playlist
-        -
-      */
+      
+      test.describe.only('#video playlist', function() {
+        test.it('clicking video icon opens video playlist', function() {
+          scorePitchByPitchPage.clickPitchVideoIcon(1);
+          scorePitchByPitchPage.isVideoModalDisplayed().then(function(videoDisplayed) {
+            assert.equal(videoDisplayed, true);
+          })
+        });
+
+        test.it('video playlist shows correct video', function() {
+          scorePitchByPitchPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Top 1, 0 Out");
+          });
+          
+          scorePitchByPitchPage.getVideoPlaylistText(1,2).then(function(text) {
+            assert.equal(text, "LHB M. Bourn Vs RHP L. Cessa (NYY)");
+          });          
+
+         
+        });        
+
+        test.it('clicking close on video playlist closes modal', function() {
+          scorePitchByPitchPage.closeVideoPlaylistModal();
+          scorePitchByPitchPage.isVideoModalDisplayed().then(function(videoDisplayed) {
+            assert.equal(videoDisplayed, false);
+          })
+        });                
+
+        /* TODO
+          - test auto playback
+          - test clicking other videos
+
+         */
+      });
+
+      test.describe('#pitch by pitch visuals', function() {
+        
+      });
+
     });   
 
     test.describe('#Section: Pitching Splits', function() {

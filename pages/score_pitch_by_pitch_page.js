@@ -11,6 +11,9 @@ function ScorePitchByPitch(driver) {
   this.filterInput = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
 
   this.updateButton = By.className('update');
+
+  this.videoPlaylistModal = By.xpath(".//div[@id='videoModal']/div[@class='modal-dialog modal-lg']/div[@class='modal-content']");
+  this.videoPlaylistCloseBtn = By.xpath(".//div[@id='videoModal']/div/div/div/button")
 };
 
 // Filters
@@ -113,6 +116,48 @@ ScorePitchByPitch.prototype.getPitchText = function(pitchNum, col) {
   element.getText().then(function(text) {
     d.fulfill(text);
   });
+
+  return d.promise;  
+}
+
+ScorePitchByPitch.prototype.clickPitchVideoIcon = function(pitchNum) {
+  var selector = By.xpath(`.//div[@id='tableBaseballGamePitchByPitchContainer']/table/tbody/tr[contains(@data-tmn-row-type,'row')][${pitchNum}]/td[1]/i[@class='fa fa-film pull-left film-icon']`);
+  this.driver.wait(webdriver.until.elementLocated(selector));
+  var el = this.driver.findElement(selector)
+  el.click();
+
+  var element = this.driver.findElement(this.videoPlaylistModal);
+  return this.driver.wait(webdriver.until.elementIsVisible(element));
+}
+
+ScorePitchByPitch.prototype.closeVideoPlaylistModal = function(pitchNum) {
+  var element = this.driver.findElement(this.videoPlaylistCloseBtn)
+  element.click();
+  return this.driver.wait(webdriver.until.elementLocated(By.xpath(".//body[not(@class='modal-open')]")), 10000);
+}
+
+ScorePitchByPitch.prototype.getVideoPlaylistText = function(videoNum, lineNum) {
+  var d = webdriver.promise.defer();
+ 
+  var selector = By.xpath(`.//div[@class='col-md-3 playlistContainer']/div/div/a[${videoNum}]/div[${lineNum}]`)
+  this.driver.wait(webdriver.until.elementLocated(selector));
+  var element = this.driver.findElement(selector)
+  element.getText().then(function(text) {
+    d.fulfill(text);
+  });
+
+  return d.promise;  
+}
+
+ScorePitchByPitch.prototype.isVideoModalDisplayed = function() {
+  var d = webdriver.promise.defer();
+  this.driver.findElement(this.videoPlaylistModal).then(function(element) {
+    element.isDisplayed().then(function(displayed) {
+      d.fulfill(displayed);
+    })
+  }, function(err) {
+    d.fulfill(false)
+  })
 
   return d.promise;  
 }
