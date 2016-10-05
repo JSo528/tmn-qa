@@ -15,16 +15,15 @@ LoginPage.prototype.visit = function() {
 };
 
 LoginPage.prototype.login = function(email, password) {
-  this.driver.wait(webdriver.until.elementLocated(this.usernameField));
-  this.driver.wait(webdriver.until.elementLocated(this.passwordField));
-  this.driver.wait(webdriver.until.elementLocated(this.loginButton));
+  var thiz = this;
+  this.driver.wait(webdriver.until.elementLocated(this.usernameField)).then(function() {
+    thiz.driver.findElement(thiz.usernameField).sendKeys(email);
+    thiz.driver.findElement(thiz.passwordField).sendKeys(password);
+    thiz.driver.findElement(thiz.loginButton).click();  
+    thiz.driver.wait(webdriver.until.stalenessOf(thiz.driver.findElement(thiz.bodyTag)), 60000);
 
-  this.driver.findElement(this.usernameField).sendKeys(email);
-  this.driver.findElement(this.passwordField).sendKeys(password);
-  this.driver.findElement(this.loginButton).click();
-  this.driver.wait(webdriver.until.stalenessOf(this.driver.findElement(this.bodyTag)), 60000);
-
-  return webdriver.promise.fulfilled(true);
+    return webdriver.promise.fulfilled(true);
+  });
 };
 
 module.exports = LoginPage;

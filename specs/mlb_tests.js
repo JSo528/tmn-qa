@@ -383,7 +383,7 @@ test.describe('MLB Site', function() {
       });
     });
 
-    test.describe.only('#Section: Pitching', function() {
+    test.describe('#Section: Pitching', function() {
       test.it("clicking pitching tab goes to the correct URL", function() {
         detailedScorePage.goToSection("Pitching");
         driver.getCurrentUrl().then(function(url) {
@@ -586,11 +586,72 @@ test.describe('MLB Site', function() {
     });
 
     test.describe('#Section: Pitch By Pitch', function() {
-
+      /*
+        - decisive event
+        - filters
+        - video playlist
+        -
+      */
     });   
 
-    test.describe('#Section: Pitching Splits', function() {
+    test.describe.only('#Section: Pitching Splits', function() {
+      test.before(function() {
+        detailedScorePage.goToSection("Pitching Splits");
+        var ScorePitchingSplitsPage = require('../pages/score_pitching_splits_page.js');
+        scorePitchingSplitsPage = new ScorePitchingSplitsPage(driver);
+      })
 
+      test.it("'Pitch Type Splits' displays correct stat", function() {
+        scorePitchingSplitsPage.getPitchingSplitStat(1, 1, 1, 4).then(function(stat) {
+          // Kevin Gausman threw 38 pitches to RHB
+          assert.equal(stat, 38);
+        });
+      });
+
+      test.it("'Fastball Velocity Splits' displays correct stat", function() {
+        scorePitchingSplitsPage.getPitchingSplitStat(1, 2, 2, 12).then(function(stat) {
+          // Kevin Gausman threw 12 fastballs between 95-97 MPH in the 3rd inning
+          assert.equal(stat, 12);
+        });
+      });
+
+      test.it("'Pitch Location Splits' displays correct stat", function() {
+        scorePitchingSplitsPage.getPitchingSplitStat(2, 3, 1, 2).then(function(stat) {
+          // Zach Britton threw 12 pitches in zone
+          assert.equal(stat, 12);
+        });
+      });
+
+      test.it("'Pitch Types: Game Vs 3 Year Avg Splits' displays correct stat", function() {
+        scorePitchingSplitsPage.getPitchingSplitStat(3, 4, 2, 2).then(function(stat) {
+          // Luis Cessa's 3yr average for fastballs is 55.2%
+          assert.equal(stat, "55.2%");
+        });
+      }); 
+
+      test.it("'Velocities: Game Vs 3 Year Avg Splits' displays correct stat", function() {
+        scorePitchingSplitsPage.getPitchingSplitStat(3, 5, 2, 3).then(function(stat) {
+          // Luis Cessa's 3yr average for fastballs between 95-97MPH is 28.5%
+          assert.equal(stat, "28.5%");
+        });
+      }); 
+
+      test.it("'Locations: Game Vs 3 Year Avg Splits' displays correct stat", function() {
+        scorePitchingSplitsPage.getPitchingSplitStat(3, 6, 1, 3).then(function(stat) {
+          // Luis Cessa's this game average for inside% is 14.3%
+          assert.equal(stat, "14.3%");
+        });
+      });
+
+      test.describe('#Filters', function() {
+        test.it("pitcher filter returns correct pitcher", function() {
+          scorePitchingSplitsPage.addPitcherFilter("Adam Warren");
+
+          scorePitchingSplitsPage.getPitcherName(1).then(function(name) {
+            assert.include(name, "Adam Warren");
+          });
+        });
+      });       
     });    
   }); 
 
