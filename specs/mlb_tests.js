@@ -21,7 +21,7 @@ test.describe('MLB Site', function() {
   });
 
   // Login Page
-  test.describe.only('#Login Page', function() {
+  test.describe('#Login Page', function() {
     test.before(function() {
       loginPage = new LoginPage(driver, url);
     });
@@ -111,7 +111,9 @@ test.describe('MLB Site', function() {
       });
     });
 
-    test.it('shows the proper data in the box score summary', function() {
+    test.it('changing the date shows correct data in the box score summary', function() {
+      scoresPage.changeDate('2016-10-02').then()
+
       scoresPage.getBoxScoreDatetime(1).then(function(datetimeText) {
         assert.equal( datetimeText, '10/2/2016, 3:05 PM ET', 'Correct datetime');
       });
@@ -139,15 +141,8 @@ test.describe('MLB Site', function() {
       })
     }); 
 
-    test.it('changing the date shows correct data', function() {
-      scoresPage.changeDate('2016-05-02').then()
-
-      scoresPage.getBoxScoreDatetime(1).then(function(datetimeText) {
-        assert.equal( datetimeText, '5/2/2016, 7:05 PM ET', 'Correct datetime');
-      });
-    });
-
     test.it('changing the season level shows correct data', function() {
+      scoresPage.changeDate('2016-5-02').then()
       scoresPage.changeSeasonLevel("A+");
       
       scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
@@ -157,6 +152,7 @@ test.describe('MLB Site', function() {
 
     test.describe('#Checking Links', function() {
       test.beforeEach(function() {
+        var url = "https://dodgers.trumedianetworks.com/baseball/scores?pc=%7B%22bbslvls%22%3A%22MLB%22%2C%22bgd%22%3A%222016-10-02%22%7D&is=true"
         scoresPage.visit(url);
       });
 
@@ -208,7 +204,7 @@ test.describe('MLB Site', function() {
   })
 
   // Detailed Score Page
-  test.describe.only('#DetailedScore Page', function() {
+  test.describe('#DetailedScore Page', function() {
     test.before(function() {
       // TODO - put direct URL into page object
       driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/NYY-BAL/2016-10-02/449283?f=%7B%7D&is=true');
@@ -392,7 +388,7 @@ test.describe('MLB Site', function() {
       })
 
       // TODO - add tests for select all, changing filters on the created dropdowns
-      test.describe.skip('#Filters', function() {
+      test.describe('#Filters', function() {
         test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
           detailedScorePage.addDropdownFilter("Pitch Type: Fastball");
 
@@ -594,7 +590,7 @@ test.describe('MLB Site', function() {
       */
     });   
 
-    test.describe.only('#Section: Pitching Splits', function() {
+    test.describe('#Section: Pitching Splits', function() {
       test.before(function() {
         detailedScorePage.goToSection("Pitching Splits");
         var ScorePitchingSplitsPage = require('../pages/score_pitching_splits_page.js');

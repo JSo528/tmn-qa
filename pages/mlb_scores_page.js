@@ -155,7 +155,7 @@ MlbScoresPage.prototype.clickPitcher = function(boxScoreNum, pitcherType) {
       linkNum = 1;
   }
 
-  var pitcherLink = By.xpath(`.//div[@class='col-md-5 box-score'][${linkNum}]/div[@class='row'][2]/div[@class='col-md-12']/a[1]`)
+  var pitcherLink = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]/div[@class='row'][2]/div[@class='col-md-12']/a[${linkNum}]`)
   var element = this.driver.findElement(pitcherLink)
   return element.click();
 }
