@@ -6,14 +6,12 @@ function MlbDetailedScorePage(driver) {
 
   this.filterSelect = By.id('s2id_addFilter');
   this.filterInput = By.id('s2id_autogen1_search');
-  // this.awayTable = By.id('tableBaseballGamePlayerBattingStatsAwayTables');
-  // this.homeTable = By.id('tableBaseballGamePlayerBattingStatsHomeTables');
 
   this.awayTable = By.xpath(".//div[@id='content']/div/div[2]/div/div[@class='row'][4]");
   this.homeTable = By.xpath(".//div[@id='content']/div/div[2]/div/div[@class='row'][5]");
 
   this.updateButton = By.className('update');
-  // this.reportSelect = By.id('s2id_reportNavBaseballTeamStatBatting');
+
   this.reportSelect = By.className("select2-choice")
   this.reportInput = By.xpath(".//div[@id='select2-drop']/div/input");
 };
@@ -135,8 +133,12 @@ MlbDetailedScorePage.prototype.waitForTablesToFinishLoading = function() {
   this.driver.wait(webdriver.until.elementTextContains(this.driver.findElement(this.homeTable), "Loading"), 15000).catch(function(err) {
     console.log(err)
   })
-  this.driver.wait(webdriver.until.elementTextContains(this.driver.findElement(this.awayTable), "Player"), 15000)
-  this.driver.wait(webdriver.until.elementTextContains(this.driver.findElement(this.homeTable), "Player"), 15000)
+  this.driver.wait(webdriver.until.elementTextContains(this.driver.findElement(this.awayTable), "Player"), 15000).catch(function(err) {
+    console.log(err)
+  })
+  this.driver.wait(webdriver.until.elementTextContains(this.driver.findElement(this.homeTable), "Player"), 15000).catch(function(err) {
+    console.log(err)
+  })
   
   return webdriver.promise.fulfilled(true);
 };

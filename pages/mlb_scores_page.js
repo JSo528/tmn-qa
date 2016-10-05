@@ -184,6 +184,8 @@ MlbScoresPage.prototype.clickBoxScoreFooter = function(boxScoreNum, type) {
   return element.click();
 }
 
+
+// TODO - fix this function, it needs to wait for the page to comletely load
 MlbScoresPage.prototype.clickBoxScore = function(boxScoreNum) {
   // TODO - find a better way to determine when the page fully loads
   // can't click element until page fully loads
