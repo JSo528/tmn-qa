@@ -196,7 +196,7 @@ ScorePitchByPitch.prototype.isPitchVisualsModalDisplayed = function() {
   });
 
   return d.promise;  
-}  ;
+};
 
 ScorePitchByPitch.prototype.getPitchVisualsBgImageHref = function() {
   var d = webdriver.promise.defer();

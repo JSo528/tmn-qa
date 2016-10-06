@@ -17,15 +17,18 @@ LoginPage.prototype.visit = function() {
 // TODO - fix bugginess
 // seems like it needs to wait a bit before values are inputted
 LoginPage.prototype.login = function(email, password) {
-  var thiz = this;
-  this.driver.wait(webdriver.until.elementLocated(this.usernameField)).then(function() {
-    thiz.driver.findElement(thiz.usernameField).sendKeys(email);
-    thiz.driver.findElement(thiz.passwordField).sendKeys(password);
-    thiz.driver.findElement(thiz.loginButton).click();  
-    thiz.driver.wait(webdriver.until.stalenessOf(thiz.driver.findElement(thiz.bodyTag)), 10000);
+  this.driver.wait(webdriver.until.elementLocated(this.usernameField));
 
-    return webdriver.promise.fulfilled(true);
-  });
+  var emailInput = this.driver.findElement(this.usernameField)
+  var passwordInput = this.driver.findElement(this.passwordField)
+  var loginButton = this.driver.findElement(this.loginButton)
+
+  emailInput.sendKeys(email),
+  passwordInput.sendKeys(password)
+  loginButton.click();      
+    
+  return this.driver.wait(webdriver.until.stalenessOf(this.driver.findElement(this.bodyTag)), 10000);
+  // return webdriver.promise.fulfilled(true);
 };
 
 module.exports = LoginPage;

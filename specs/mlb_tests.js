@@ -857,19 +857,25 @@ test.describe('MLB Site', function() {
       // Pinning
       test.describe("#pinning", function() {
         test.it('clicking the pin icon for the Red Sox should add them to the pinned table', function() {
+          var teamName;
+          teamsPage.getTeamTableStat(1,3).then(function(team) {
+            teamName = team;
+          });
 
+          teamsPage.clickTeamTablePin(1);
+
+          teamsPage.getIsoTableStat(1,3).then(function(team) {
+            assert.equal(team, teamName);
+          })
         });
       });
 
       // Isolation Mode
+      // TODO - look into this, its populating the main table and hiding the iso table
       test.describe("#isolation mode", function() {
-        test.it('turning on isolation mode should show an empty table', function() {
-
-        });
-
-        test.it('flash message with directions should show', function() {
-
-        });         
+        test.it('turning on isolation mode should hide teams table', function() {
+          teamsPage.clickIsoBtn("on");
+        });      
 
         // BUG - trying to add minor league team doesn't work
         test.it('adding Giants should add team to table', function() {
@@ -889,7 +895,7 @@ test.describe('MLB Site', function() {
         });                                         
 
         test.it('turning off isolation mode should show full table', function() {
-
+          teamsPage.clickIsoBtn("off");
         });                                                   
       });
 
@@ -897,17 +903,37 @@ test.describe('MLB Site', function() {
       test.describe("#chart/edit columns", function() {
         // histograms
         test.it('clicking show histogram link should open histogram modal', function() {
+          teamsPage.clickChartColumnsBtn();
+          teamsPage.clickTeamTableColumnHeader(14);
+          teamsPage.clickHistogramLink();
 
-        });          
+          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, true);
+          }); 
+        });  
 
-        test.it('clicking show histogram link should open histogram modal', function() {
-
-        });          
+        test.it('clicking close histogram button should close histogram modal', function() {
+          teamsPage.closeModal();
+          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, false);
+          }); 
+        })                 
 
         // scatter plots          
-        test.it('clicking add scatter plot link for 2 different categories should open up scatterplot modal', function() {
+        test.it('clicking add scatter plot link for 2 different categories should open up scatter chart modal', function() {
+          teamsPage.openScatterChart(10,11);
 
-        });                    
+          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, true);
+          }); 
+        });
+
+        test.it('clicking close button should close scatter chart modal', function() {
+          teamsPage.closeModal();
+          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, false);
+          }); 
+        })   
       });
 
       // Group By
