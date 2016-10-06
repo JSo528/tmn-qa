@@ -21,7 +21,7 @@ test.describe('MLB Site', function() {
   });
 
   // Login Page
-  test.describe('#Login Page', function() {
+  test.describe.only('#Login Page', function() {
     test.before(function() {
       loginPage = new LoginPage(driver, url);
     });
@@ -205,7 +205,7 @@ test.describe('MLB Site', function() {
   })
 
   // Detailed Score Page
-  test.describe.only('#DetailedScore Page', function() {
+  test.describe('#DetailedScore Page', function() {
     test.before(function() {
       // TODO - put direct URL into page object
       driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/NYY-BAL/2016-10-02/449283?f=%7B%7D&is=true');
@@ -585,7 +585,7 @@ test.describe('MLB Site', function() {
       });     
     });
 
-    test.describe.only('#Section: Pitch By Pitch', function() {
+    test.describe('#Section: Pitch By Pitch', function() {
       test.before(function() {
         detailedScorePage.goToSection("Pitch By Pitch");
         var ScorePitchByPitchPage = require('../pages/score_pitch_by_pitch_page.js');
@@ -645,11 +645,11 @@ test.describe('MLB Site', function() {
         });        
       });
       
-      test.describe.only('#video playlist', function() {
+      test.describe('#video playlist', function() {
         test.it('clicking video icon opens video playlist', function() {
           scorePitchByPitchPage.clickPitchVideoIcon(1);
-          scorePitchByPitchPage.isVideoModalDisplayed().then(function(videoDisplayed) {
-            assert.equal(videoDisplayed, true);
+          scorePitchByPitchPage.isVideoModalDisplayed().then(function(modalDisplayed) {
+            assert.equal(modalDisplayed, true);
           })
         });
 
@@ -667,22 +667,46 @@ test.describe('MLB Site', function() {
 
         test.it('clicking close on video playlist closes modal', function() {
           scorePitchByPitchPage.closeVideoPlaylistModal();
-          scorePitchByPitchPage.isVideoModalDisplayed().then(function(videoDisplayed) {
-            assert.equal(videoDisplayed, false);
+          scorePitchByPitchPage.isVideoModalDisplayed().then(function(modalDisplayed) {
+            assert.equal(modalDisplayed, false);
           })
         });                
-
-        /* TODO
-          - test auto playback
-          - test clicking other videos
-
-         */
       });
 
       test.describe('#pitch by pitch visuals', function() {
-        
-      });
+        test.it('clicking visuals icon opens pitch by pitch visuals modal', function() {
+          scorePitchByPitchPage.clickPitchVisualsIcon(1);
+          scorePitchByPitchPage.isPitchVisualsModalDisplayed().then(function(modalDisplayed) {
+            assert.equal(modalDisplayed, true);
+          })
+        });
 
+        // Should show lefty image for lefty hitter
+        test.it('visuals modal should show correct background image', function() {
+          scorePitchByPitchPage.getPitchVisualsBgImageHref().then(function(href) {
+            assert.equal(href, "/img/pitcher-view-lefty.png");
+          })
+        });          
+
+        test.it('visuals modal should show correct # of pitches', function() {
+          scorePitchByPitchPage.getPitchVisualsPitchCount().then(function(pitchCount) {
+            assert.equal(pitchCount, 3);
+          });
+        });                    
+
+        // TODO - test position of the circles on the chart?
+
+        test.it('visuals modal should show correct result on baseball diamond', function() {
+          // TODO
+        });     
+
+        test.it('clicking close on pitch visuals closes modal', function() {
+          scorePitchByPitchPage.closePitchVisualsIcon();
+          scorePitchByPitchPage.isPitchVisualsModalDisplayed().then(function(modalDisplayed) {
+            assert.equal(modalDisplayed, false);
+          })
+        });   
+      });
     });   
 
     test.describe('#Section: Pitching Splits', function() {
@@ -747,7 +771,166 @@ test.describe('MLB Site', function() {
   }); 
 
 
+  // Teams Page
+  test.describe.only('#Teams Page', function() {
+    test.before(function() {    
+      var MlbTeamsPage = require('../pages/mlb_teams_page.js');
+      teamsPage = new MlbTeamsPage(driver);
+    });
 
+    test.it('clicking the teams link goes to the correct page', function() {
+      navbar.goToTeamsPage();
+
+      driver.getTitle().then(function(title) {
+        assert.equal( title, 'Teams Batting', 'Correct title');
+      });
+    });    
+
+    test.describe('#Section: Batting', function() {
+      // Sorting
+      test.describe("#sorting", function() {
+        test.before(function() {
+          battingAverageCol = 11;
+          winsCol = 5;
+        });
+
+        test.it('should be sorted initially by BA descending', function() {
+          var teamOneBA, teamTwoBA, teamTenBA;
+
+          Promise.all([
+            teamsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
+              teamOneBA = stat;
+            }),
+            teamsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
+              teamTwoBA = stat;
+            }),
+            teamsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
+              teamTenBA = stat;
+            })            
+          ]).then(function() {
+            assert.isAtLeast(teamOneBA, teamTwoBA, "team one's BA is >= team two's BA");
+            assert.isAtLeast(teamTwoBA, teamTenBA, "team two's BA is >= team ten's BA");
+          });
+        });
+
+        test.it('clicking on the BA column header should reverse the sort', function() {
+          var teamOneBA, teamTwoBA, teamTenBA;
+          teamsPage.clickTeamTableColumnHeader(battingAverageCol);
+
+          Promise.all([
+            teamsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
+              teamOneBA = stat;
+            }),
+            teamsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
+              teamTwoBA = stat;
+            }),
+            teamsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
+              teamTenBA = stat;
+            })            
+          ]).then(function() {
+            assert.isAtMost(teamOneBA, teamTwoBA, "team one's BA is <= team two's BA");
+            assert.isAtMost(teamTwoBA, teamTenBA, "team two's BA is <= team ten's BA");
+          });          
+        });
+
+        test.it('clicking on the W column header should sort the table by Wins', function() {
+          var teamOneBA, teamTwoBA, teamTenBA;
+          teamsPage.clickTeamTableColumnHeader(winsCol);
+
+          Promise.all([
+            teamsPage.getTeamTableStat(1,winsCol).then(function(stat) {
+              teamOneWs = stat;
+            }),
+            teamsPage.getTeamTableStat(2,winsCol).then(function(stat) {
+              teamTwoWs = stat;
+            }),
+            teamsPage.getTeamTableStat(10,winsCol).then(function(stat) {
+              teamTenWs = stat;
+            })            
+          ]).then(function() {
+            assert.isAtMost(teamOneWs, teamTwoWs, "team one's Wins is >= team two's Wins");
+            assert.isAtMost(teamTwoWs, teamTenWs, "team two's Wins is >= team ten's Wins");
+          });          
+        });  
+      }); 
+
+      // Pinning
+      test.describe("#pinning", function() {
+        test.it('clicking the pin icon for the Red Sox should add them to the pinned table', function() {
+
+        });
+      });
+
+      // Isolation Mode
+      test.describe("#isolation mode", function() {
+        test.it('turning on isolation mode should show an empty table', function() {
+
+        });
+
+        test.it('flash message with directions should show', function() {
+
+        });         
+
+        // BUG - trying to add minor league team doesn't work
+        test.it('adding Giants should add team to table', function() {
+
+        });         
+
+        test.it('adding Cubs should add team to table', function() {
+
+        });                   
+
+        test.it('pinned total should show the correct sum', function() {
+
+        });
+        
+        test.it('removing the Giants should update the table', function() {
+
+        });                                         
+
+        test.it('turning off isolation mode should show full table', function() {
+
+        });                                                   
+      });
+
+      // Chart/Edit Columns
+      test.describe("#chart/edit columns", function() {
+        // histograms
+        test.it('clicking show histogram link should open histogram modal', function() {
+
+        });          
+
+        test.it('clicking show histogram link should open histogram modal', function() {
+
+        });          
+
+        // scatter plots          
+        test.it('clicking add scatter plot link for 2 different categories should open up scatterplot modal', function() {
+
+        });                    
+      });
+
+      // Group By
+      test.describe("#group by", function() {
+
+      });
+
+      // Stats View
+      test.describe("#stats view", function() {
+
+      });        
+
+      // Filters
+      test.describe("#filters", function() {
+
+      });                
+
+      // Filters
+      test.describe("#filters", function() {
+
+      });
+    });
+  });
 
 
 

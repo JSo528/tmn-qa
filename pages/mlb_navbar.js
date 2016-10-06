@@ -22,4 +22,9 @@ MlbNavbar.prototype.goToScoresPage = function() {
   return this.driver.findElement(this.scoresLink).click();
 };
 
+MlbNavbar.prototype.goToTeamsPage = function() {
+  this.driver.wait(webdriver.until.elementLocated(this.teamsLink));
+  return this.driver.findElement(this.teamsLink).click();
+};
+
 module.exports = MlbNavbar;

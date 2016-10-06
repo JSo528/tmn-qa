@@ -13,7 +13,12 @@ function ScorePitchByPitch(driver) {
   this.updateButton = By.className('update');
 
   this.videoPlaylistModal = By.xpath(".//div[@id='videoModal']/div[@class='modal-dialog modal-lg']/div[@class='modal-content']");
-  this.videoPlaylistCloseBtn = By.xpath(".//div[@id='videoModal']/div/div/div/button")
+  this.videoPlaylistCloseBtn = By.xpath(".//div[@id='videoModal']/div/div/div/button");
+
+  this.pitchVisualsModal = By.xpath(".//div[@id='tableBaseballGamePitchByPitchModal']/div/div[@class='modal-content']");
+  this.pitchVisualsCloseBtn = By.xpath(".//div[@id='tableBaseballGamePitchByPitchModal']/div/div/div/button[@class='btn btn-primary']");
+  this.pitchVisualsBgImage = By.id("heatmapBg");
+  this.pitchVisualsPitchCircle = By.css('circle.heat-map-ball');
 };
 
 // Filters
@@ -120,6 +125,7 @@ ScorePitchByPitch.prototype.getPitchText = function(pitchNum, col) {
   return d.promise;  
 }
 
+// Video Playlist
 ScorePitchByPitch.prototype.clickPitchVideoIcon = function(pitchNum) {
   var selector = By.xpath(`.//div[@id='tableBaseballGamePitchByPitchContainer']/table/tbody/tr[contains(@data-tmn-row-type,'row')][${pitchNum}]/td[1]/i[@class='fa fa-film pull-left film-icon']`);
   this.driver.wait(webdriver.until.elementLocated(selector));
@@ -130,7 +136,7 @@ ScorePitchByPitch.prototype.clickPitchVideoIcon = function(pitchNum) {
   return this.driver.wait(webdriver.until.elementIsVisible(element));
 }
 
-ScorePitchByPitch.prototype.closeVideoPlaylistModal = function(pitchNum) {
+ScorePitchByPitch.prototype.closeVideoPlaylistModal = function() {
   var element = this.driver.findElement(this.videoPlaylistCloseBtn)
   element.click();
   return this.driver.wait(webdriver.until.elementLocated(By.xpath(".//body[not(@class='modal-open')]")), 10000);
@@ -156,10 +162,61 @@ ScorePitchByPitch.prototype.isVideoModalDisplayed = function() {
       d.fulfill(displayed);
     })
   }, function(err) {
-    d.fulfill(false)
-  })
+    d.fulfill(false);
+  });
 
   return d.promise;  
+};
+
+// Pitch Visuals Modal
+ScorePitchByPitch.prototype.clickPitchVisualsIcon = function(atBatNum) {
+  var selector = By.xpath(`.//div[@id='tableBaseballGamePitchByPitchContainer']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td/span[@class='table-action-visual fa fa-lg fa-external-link-square']`);
+  this.driver.wait(webdriver.until.elementLocated(selector));
+  var el = this.driver.findElement(selector);
+  el.click();
+
+  var element = this.driver.findElement(this.pitchVisualsModal);
+  return this.driver.wait(webdriver.until.elementIsVisible(element));  
+};
+
+ScorePitchByPitch.prototype.closePitchVisualsIcon = function(atBatNum) {
+  var element = this.driver.findElement(this.pitchVisualsCloseBtn);
+  element.click();
+  return this.driver.wait(webdriver.until.elementLocated(By.xpath(".//body[not(@class='modal-open')]")), 10000);
+};
+
+ScorePitchByPitch.prototype.isPitchVisualsModalDisplayed = function() {
+  var d = webdriver.promise.defer();
+  this.driver.findElement(this.pitchVisualsModal).then(function(element) {
+    element.isDisplayed().then(function(displayed) {
+      d.fulfill(displayed);
+    })
+  }, function(err) {
+    d.fulfill(false);
+  });
+
+  return d.promise;  
+}  ;
+
+ScorePitchByPitch.prototype.getPitchVisualsBgImageHref = function() {
+  var d = webdriver.promise.defer();
+  var element = this.driver.findElement(this.pitchVisualsBgImage);
+
+  element.getAttribute("href").then(function(href) {
+    d.fulfill(href);
+  });
+
+  return d.promise; 
+}
+
+ScorePitchByPitch.prototype.getPitchVisualsPitchCount = function() {
+  var d = webdriver.promise.defer();
+
+  this.driver.findElements(this.pitchVisualsPitchCircle).then(function(pitchCount) {
+      d.fulfill(pitchCount.length);
+  })
+
+  return d.promise; 
 }
 
 // Helper
