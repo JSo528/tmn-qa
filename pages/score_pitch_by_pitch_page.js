@@ -32,7 +32,6 @@ ScorePitchByPitch.prototype.addDropdownFilter = function(filter) {
   inputElement.sendKeys(filter);
   inputElement.sendKeys(webdriver.Key.ENTER);  
   return this.waitForDataToFinishLoading();
-
 };
 
 ScorePitchByPitch.prototype.toggleSidebarFilter = function(filterName, selection) {

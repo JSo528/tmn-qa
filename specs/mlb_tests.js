@@ -938,12 +938,65 @@ test.describe('MLB Site', function() {
 
       // Group By
       test.describe("#group by", function() {
+        test.it('selecting "By Season" shows the correct headers', function() {
+          teamsPage.changeGroupBy("By Season");
+          teamsPage.getTeamTableHeader(4).then(function(header) {
+            assert(header, "Season");
+          });
+        });
 
+        test.it('selecting "By Game" shows the correct headers', function() {
+          teamsPage.changeGroupBy("By Game");
+          teamsPage.getTeamTableHeader(4).then(function(header) {
+            assert(header, "Opponent");
+          });          
+        });        
+
+        test.it('selecting "By Year" shows the correct headers', function() {
+          teamsPage.changeGroupBy("By Org");
+          teamsPage.getTeamTableHeader(4).then(function(header) {
+            assert(header, "G");
+          });                    
+        });        
       });
 
       // Stats View
       test.describe("#stats view", function() {
+        test.before(function() {
+          // TODO - use filters instead, but go directly to 2015 stats
+          driver.get("https://dodgers.trumedianetworks.com/baseball/teams-batting/stats?pc=%7B%22bgb%22%3A%22totals%22%2C%22bsvt%22%3A%22stats%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222015%22%5D%7D");
+        })
 
+        // Comparing top BA in 2015 for all the different stat views
+        var topColor = "rgba(108, 223, 118, 1)"
+        var statViews = [
+          { type: 'Stat', topStat: .270 },  
+          { type: 'Rank', topStat: 1, color: true },            
+          { type: 'Percentile', topStat: "100.0%", color: true },
+          { type: 'Z-Score', topStat: 1.941 },
+          { type: 'Stat Grade', topStat: 80 },
+          { type: 'Stat (Rank)', topStat: ".270 (1)", color: true },
+          { type: 'Stat (Percentile)', topStat: ".270 (100%)", color: true },
+          { type: 'Stat (Z-Score)', topStat: ".270 (1.94)"},
+          { type: 'Stat (Stat Grade)', topStat: ".270 (80)"},
+          { type: 'Pct of Team', topStat: ".270"},
+        ]
+        statViews.forEach(function(statView) {
+          test.it("selecting " + statView.type + " shows the correct stat value", function() {
+            teamsPage.changeStatsView(statView.type);  
+            teamsPage.getTeamTableStat(1,11).then(function(stat) {
+              assert(stat, statView.topStat);
+            });
+          });
+
+          if (statView.color) {
+            test.it("selecting " + statView.type + " shows the top value the right color", function() {
+              teamsPage.getTeamTableBgColor(1,11).then(function(color) {
+                assert(color, topColor);
+              });
+            });
+          }
+        });
       });        
 
       // Filters
@@ -951,9 +1004,36 @@ test.describe('MLB Site', function() {
 
       });                
 
-      // Filters
-      test.describe("#filters", function() {
+      // Reports
+      test.describe.only("#reports", function() {
+        test.before(function() {
+          // TODO - use filters instead, but go directly to 2015 stats
+          driver.get("https://dodgers.trumedianetworks.com/baseball/teams-batting/stats?pc=%7B%22bgb%22%3A%22totals%22%2C%22bsvt%22%3A%22stats%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222015%22%5D%7D");
+        })
 
+        var reports = [
+          { type: 'Counting', topStat: 1598, statType: "H", colNum: 12 },  
+          { type: 'Pitch Rates', topStat: "47.8%", statType: "InZone%", colNum: 13 },  
+          { type: 'Pitch Counts', topStat: 11057, statType: "InZone#", colNum: 12 },  
+          { type: 'Pitch Types', topStat: "56.0%", statType: "Fast%", colNum: 7 },  
+          { type: 'Pitch Type Counts', topStat: 13415, statType: "Fast#", colNum: 7 },  
+          { type: 'Pitch Locations', topStat: "47.8%", statType: "InZone%", colNum: 7 },  
+          { type: 'Pitch Calls', topStat: -341.65, statType: "SLAA", colNum: 7 },  
+          { type: 'Hit Types', topStat: 0.71, statType: "GB/FB", colNum: 6 },  
+          { type: 'Hit Locations', topStat: 0.71, statType: "GB/FB", colNum: 6 },  
+          { type: 'Hit Types', topStat: 0.71, statType: "GB/FB", colNum: 6 },  
+          { type: 'Hit Locations', topStat: "46.0%", statType: "HPull%", colNum: 9 },  
+          { type: 'Home Runs', topStat: 253, statType: "HR", colNum: 7 },  
+          { type: 'Exit Data', topStat: .463, statType: "ExSLG%", colNum: 11 }
+        ]
+        reports.forEach(function(report) {
+          test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
+            teamsPage.changeReport(report.type);  
+            teamsPage.getTeamTableStat(1,report.colNum).then(function(stat) {
+              assert(stat, report.topStat);
+            });
+          });
+        });        
       });
     });
   });

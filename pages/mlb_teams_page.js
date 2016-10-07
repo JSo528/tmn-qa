@@ -15,6 +15,15 @@ function MlbTeamsPage(driver) {
   this.modal = By.xpath(".//div[@class='modal modal-chart in']/div/div[@class='modal-content']");
   this.modalCloseBtn = By.xpath(".//div[@class='modal modal-chart in']/div/div/div/button[@class='close']");
   this.teamTable = By.xpath(".//div[@id='tableBaseballTeamsStatsContainer']/table");
+
+  this.groupBySelect = By.id("s2id_pageControlBaseballGroupBy");
+  this.groupByInput = By.id("s2id_autogen1_search");
+
+  this.statsViewSelect = By.id("s2id_pageControlBaseballStatsViewTeams");
+  this.statsViewInput = By.id("s2id_autogen2_search");
+
+  this.reportSelect = By.id("s2id_reportNavBaseballTeamsStatBatting");
+  this.reportInput = By.id("s2id_autogen60_search");  
 };
 
 
@@ -27,6 +36,30 @@ MlbTeamsPage.prototype.getTeamTableStat = function(teamNum, col) {
   this.driver.wait(webdriver.until.elementLocated(element));
   this.driver.findElement(element).getText().then(function(stat) {
     d.fulfill(stat);
+  })
+  return d.promise;  
+}
+
+MlbTeamsPage.prototype.getTeamTableBgColor = function(teamNum, col) {
+  var d = webdriver.promise.defer();
+  // First 4 rows are for the headers
+  var row = 4 + teamNum;
+  var element = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/tbody/tr[${row}]/td[${col}]`);
+
+  this.driver.wait(webdriver.until.elementLocated(element));
+  this.driver.findElement(element).getCssValue("background-color").then(function(color) {
+    d.fulfill(color);
+  })
+  return d.promise;  
+}
+
+MlbTeamsPage.prototype.getTeamTableHeader = function(col) {
+  var d = webdriver.promise.defer();  
+  var element = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/thead/tr/th[${col}]`);
+
+  this.driver.wait(webdriver.until.elementLocated(element));
+  this.driver.findElement(element).getText().then(function(header) {
+    d.fulfill(header);
   })
   return d.promise;  
 }
@@ -117,7 +150,47 @@ MlbTeamsPage.prototype.closeModal = function() {
   return element.click(); 
 }
 
+MlbTeamsPage.prototype.changeGroupBy = function(filter) {
+  this.driver.wait(webdriver.until.elementLocated(this.groupBySelect));
+  var selectElement = this.driver.findElement(this.groupBySelect);
+  selectElement.click();
 
+  this.driver.wait(webdriver.until.elementLocated(this.groupByInput));
+  var inputElement = this.driver.findElement(this.groupByInput);
+  inputElement.sendKeys(filter);
+  inputElement.sendKeys(webdriver.Key.ENTER);  
+  return this.waitForDataToFinishLoading();
+};
+
+MlbTeamsPage.prototype.changeStatsView = function(filter) {
+  this.driver.wait(webdriver.until.elementLocated(this.statsViewSelect));
+  var selectElement = this.driver.findElement(this.statsViewSelect);
+  selectElement.click();
+
+  this.driver.wait(webdriver.until.elementLocated(this.statsViewInput));
+  var inputElement = this.driver.findElement(this.statsViewInput);
+  inputElement.sendKeys(filter);
+  inputElement.sendKeys(webdriver.Key.ENTER);  
+  return this.waitForDataToFinishLoading();
+};
+
+
+MlbTeamsPage.prototype.changeReport = function(filter) {
+  this.driver.wait(webdriver.until.elementLocated(this.reportSelect));
+  var selectElement = this.driver.findElement(this.reportSelect);
+  selectElement.click();
+
+  this.driver.wait(webdriver.until.elementLocated(this.reportInput));
+  var inputElement = this.driver.findElement(this.reportInput);
+  inputElement.sendKeys(filter);
+  inputElement.sendKeys(webdriver.Key.ENTER);  
+  return this.waitForDataToFinishLoading();
+};
+
+// Helper
+MlbTeamsPage.prototype.waitForDataToFinishLoading = function() {
+  return this.driver.wait(webdriver.until.elementsLocated(this.teamTable), 20000);
+};
 
 
 module.exports = MlbTeamsPage;
