@@ -852,7 +852,45 @@ test.describe('MLB Site', function() {
             assert.isAtMost(teamTwoWs, teamTenWs, "team two's Wins is >= team ten's Wins");
           });          
         });  
-      }); 
+
+        test.after(function() {
+          teamsPage.clickTeamTableColumnHeader(battingAverageCol);
+        });        
+      });
+
+      // Filters
+      test.describe("#filters", function() {
+        // TODO - make sure to use a previous year
+        test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
+          teamsPage.addDropdownFilter('Pitch Type: Fastball');
+
+          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+            assert.equal(battingAverage, 0.306);
+          });
+        });
+
+        test.it('adding filter: (2 outs) from sidebar displays correct data', function() {
+          teamsPage.toggleSidebarFilter('Outs:', 3);
+
+          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+            assert.equal(battingAverage, 0.296);
+          });
+        });
+
+        test.it('removing filter: (2 outs) from top section displays correct data', function() {
+          teamsPage.closeDropdownFilter(5);
+          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+            assert.equal(battingAverage, 0.306);
+          });
+        }); 
+
+        test.it('removing filter: (pitch type-fastball) from sidebar displays correct data', function() {
+          teamsPage.toggleSidebarFilter("Pitch Type:", 8);
+          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+            assert.equal(battingAverage, 0.282);
+          });
+        });         
+      });  
 
       // Pinning
       test.describe("#pinning", function() {
@@ -937,7 +975,7 @@ test.describe('MLB Site', function() {
       });
 
       // Group By
-      test.describe("#group by", function() {
+      test.describe.skip("#group by", function() {
         test.it('selecting "By Season" shows the correct headers', function() {
           teamsPage.changeGroupBy("By Season");
           teamsPage.getTeamTableHeader(4).then(function(header) {
@@ -961,7 +999,7 @@ test.describe('MLB Site', function() {
       });
 
       // Stats View
-      test.describe("#stats view", function() {
+      test.describe.skip("#stats view", function() {
         test.before(function() {
           // TODO - use filters instead, but go directly to 2015 stats
           driver.get("https://dodgers.trumedianetworks.com/baseball/teams-batting/stats?pc=%7B%22bgb%22%3A%22totals%22%2C%22bsvt%22%3A%22stats%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222015%22%5D%7D");
@@ -997,15 +1035,10 @@ test.describe('MLB Site', function() {
             });
           }
         });
-      });        
-
-      // Filters
-      test.describe("#filters", function() {
-
-      });                
+      });                      
 
       // Reports
-      test.describe.only("#reports", function() {
+      test.describe.skip("#reports", function() {
         test.before(function() {
           // TODO - use filters instead, but go directly to 2015 stats
           driver.get("https://dodgers.trumedianetworks.com/baseball/teams-batting/stats?pc=%7B%22bgb%22%3A%22totals%22%2C%22bsvt%22%3A%22stats%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222015%22%5D%7D");

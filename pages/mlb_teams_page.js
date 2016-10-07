@@ -24,6 +24,10 @@ function MlbTeamsPage(driver) {
 
   this.reportSelect = By.id("s2id_reportNavBaseballTeamsStatBatting");
   this.reportInput = By.id("s2id_autogen60_search");  
+
+  this.filterSelect = By.id('s2id_addFilter');
+  this.filterInput = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
+  this.updateButton = By.className('update');  
 };
 
 
@@ -187,9 +191,41 @@ MlbTeamsPage.prototype.changeReport = function(filter) {
   return this.waitForDataToFinishLoading();
 };
 
+// Filters
+MlbTeamsPage.prototype.addDropdownFilter = function(filter) {
+  this.driver.wait(webdriver.until.elementLocated(this.filterSelect));
+  var selectElement = this.driver.findElement(this.filterSelect);
+  selectElement.click();
+
+  this.driver.wait(webdriver.until.elementLocated(this.filterInput));
+  var inputElement = this.driver.findElement(this.filterInput);
+  inputElement.sendKeys(filter);
+  inputElement.sendKeys(webdriver.Key.ENTER);  
+  return this.waitForDataToFinishLoading();
+};
+
+MlbTeamsPage.prototype.toggleSidebarFilter = function(filterName, selection) {
+  var selector = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
+  this.driver.wait(webdriver.until.elementLocated(selector));
+  var element = this.driver.findElement(selector);
+  element.click();
+  return this.waitForDataToFinishLoading();
+};
+
+MlbTeamsPage.prototype.closeDropdownFilter = function(filterNum) {
+  var dropdownFilter = By.xpath(`.//div[@class='col-md-8 activated']/div[${filterNum}]/div[@class='filter-header text-left']/span[@class='closer fa fa-2x fa-times-circle pull-right']`);
+  var element = this.driver.findElement(dropdownFilter);
+  element.click();
+  var updateElement = this.driver.findElement(this.updateButton);
+  updateElement.click();
+  return this.waitForDataToFinishLoading();
+};
+
+
 // Helper
 MlbTeamsPage.prototype.waitForDataToFinishLoading = function() {
-  return this.driver.wait(webdriver.until.elementsLocated(this.teamTable), 20000);
+  var loadingElement = this.driver.findElement(By.id('loadingContainer'));
+  return this.driver.wait(webdriver.until.stalenessOf(loadingElement), 20000)
 };
 
 
