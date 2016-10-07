@@ -23,14 +23,12 @@ test.describe('MLB Site', function() {
   // Login Page
   test.describe.only('#Login Page', function() {
     test.before(function() {
-      loginPage = new LoginPage(driver, url);
+      loginPage = new LoginPage(driver);
     });
 
     test.it('starts at login page', function() {
-      loginPage.visit();
-      // driver.getTitle().then(function(title) {
-      //   assert.equal( title, "FERP", 'Correct Title' );
-      // });
+      loginPage.visit(url);
+      
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /auth\/loginPage/, 'Correct URL')
       });

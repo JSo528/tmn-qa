@@ -1,5 +1,7 @@
-var webdriver = require('selenium-webdriver');
-var By = webdriver.By;
+'use strict';
+
+var By = require('selenium-webdriver').By;
+var Until = require('selenium-webdriver').until;
 
 function MlbNavbar(driver) {
   this.driver = driver;
@@ -13,17 +15,17 @@ function MlbNavbar(driver) {
 };
 
 MlbNavbar.prototype.goToStandingsPage = function() {
-  this.driver.wait(webdriver.until.elementLocated(this.standingsLink));
+  this.driver.wait(Until.elementLocated(this.standingsLink));
   return this.driver.findElement(this.standingsLink).click();
 };
 
 MlbNavbar.prototype.goToScoresPage = function() {
-  this.driver.wait(webdriver.until.elementLocated(this.scoresLink));
+  this.driver.wait(Until.elementLocated(this.scoresLink));
   return this.driver.findElement(this.scoresLink).click();
 };
 
 MlbNavbar.prototype.goToTeamsPage = function() {
-  this.driver.wait(webdriver.until.elementLocated(this.teamsLink));
+  this.driver.wait(Until.elementLocated(this.teamsLink));
   return this.driver.findElement(this.teamsLink).click();
 };
 
