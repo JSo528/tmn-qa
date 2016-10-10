@@ -24,7 +24,7 @@ function LoginPage(driver) {
   BasePage.call(this, driver);
 };
 
-// TODO - understand what the following 2 statements do
+// sets the prototype for LoginPage & sets the constructor method
 LoginPage.prototype = Object.create(BasePage.prototype);
 LoginPage.prototype.constructor = LoginPage;
 

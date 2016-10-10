@@ -2,12 +2,13 @@
 
 var Promise = require('selenium-webdriver').promise;
 var Until = require('selenium-webdriver').until;
+var Key = require('selenium-webdriver').Key;
 
 var WAIT_TIME_PRESENT = 10000;
 var WAIT_TIME_BEFORE_RETRY = 500;
 
 // Internal debug
-var debug = true;
+var debug = false;
 
 /**
  * Base constructor for a pageobject
@@ -233,6 +234,18 @@ BasePage.prototype.click = function(locator, timeout) {
   return this.driver.findElement(locator).click();
 };
 
+BasePage.prototype.clickAndWait = function(locator, loadingLocator, timeout) {
+  this.waitForEnabled(locator, timeout);
+  this.driver.findElement(locator).click();
+  var loadingElement = this.driver.findElement(loadingLocator);
+  return this.driver.wait(Until.stalenessOf(loadingElement), 20000)  
+};
+
+BasePage.prototype.clear = function(locator, timeout) {
+  this.waitForEnabled(locator, timeout);
+  return this.driver.findElement(locator).clear();
+};
+
 /**
  * Combines waiting for the element to be enabled and inputting values into an input
  * @returns Promise
@@ -240,6 +253,45 @@ BasePage.prototype.click = function(locator, timeout) {
 BasePage.prototype.sendKeys = function(locator, keys, timeout) {
   this.waitForEnabled(locator, timeout);
   return this.driver.findElement(locator).sendKeys(keys);
+};
+
+BasePage.prototype.changeDropdown = function(selectLocator, inputLocator, value) {
+  this.click(selectLocator, 30000);
+  this.sendKeys(inputLocator, value, 30000);
+  var inputElement = this.driver.findElement(inputLocator);
+  return inputElement.sendKeys(Key.ENTER);
+};
+
+BasePage.prototype.removeFilter = function(locator, updateButtonLocator) {
+  this.click(locator);
+  return this.click(updateButtonLocator);
+};
+
+BasePage.prototype.getText = function(locator, timeout) {
+  var d = Promise.defer();
+  this.waitForEnabled(locator, timeout);
+  this.driver.findElement(locator).getText().then(function(text) {
+    d.fulfill(text);
+  })
+  return d.promise;
+};
+
+BasePage.prototype.getCssValue = function(locator, cssValue) {
+  var d = Promise.defer();
+  this.waitForEnabled(locator);
+  this.driver.findElement(locator).getCssValue(cssValue).then(function(value) {
+    d.fulfill(value);
+  })
+  return d.promise;
+};
+
+BasePage.prototype.getAttribute = function(locator, attribute) {
+  var d = Promise.defer();
+  this.waitForEnabled(locator);
+  this.driver.findElement(locator).getAttribute(attribute).then(function(value) {
+    d.fulfill(value);
+  })
+  return d.promise;
 };
 
 module.exports = BasePage;
