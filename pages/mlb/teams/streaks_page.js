@@ -56,6 +56,7 @@ StreaksPage.prototype.changeMainConstraint = function(streakType, constraintComp
   this.click(UPDATE_CONSTRAINTS_BUTTON);
 };
 
+// TODO - figure out how to get the xpaths for these
 StreaksPage.prototype.addConstraint = function(constraintCompare, constraintValue, constraintStat) {
 
 };

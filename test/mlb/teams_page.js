@@ -297,7 +297,7 @@ test.describe('#Teams Page', function() {
       });
     });
 
-    test.describe('#SubSection: Occurences & Streaks', function() {
+    test.describe.skip('#SubSection: Occurences & Streaks', function() {
       test.before(function() {
         var StreaksPage = require('../../pages/mlb/teams/streaks_page');
         streaksPage = new StreaksPage(driver);
@@ -375,6 +375,88 @@ test.describe('#Teams Page', function() {
 
       test.it('removing a constraint should update the table', function() {
       });      
+    });
+
+    test.describe('#SubSection: Scatter Plot', function() {
+      test.before(function() {
+        var ScatterPlotPage = require('../../pages/mlb/teams/scatter_plot_page');
+        scatterPlotPage = new ScatterPlotPage(driver);
+      });
+
+      test.it('clicking the scatter_plot link goes to the correct URL', function() {
+        teamsPage.goToSubSection('Scatter Plot');
+        driver.getCurrentUrl().then(function(url) {
+          assert.match(url, /teams\-scatter\-plot\-batting/);
+        });
+      });
+
+      test.it('table should be populated on load', function() {
+        scatterPlotPage.getTableStat(1,2).then(function(stat) {
+          assert.isNotNull(stat);
+        });
+      });  
+
+      test.it('scatter plot should show 30 teams on load', function() {
+        scatterPlotPage.getPlotLogoIconCount().then(function(count) {
+          assert.equal(count, 30);
+        });
+      });  
+
+      test.it('changing the x-axis stat should update the table', function() {
+        scatterPlotPage.changeXStat('AVG');
+        scatterPlotPage.getTableHeader(3).then(function(header) {
+          assert.equal(header, 'AVG');
+        });
+      });  
+
+      test.it('changing the y-axis stat should update the table', function() {
+        scatterPlotPage.changeYStat('R/G');
+        scatterPlotPage.getTableHeader(4).then(function(header) {
+          assert.equal(header, 'R/G');
+        });      
+      });        
+
+      test.it('adding a global filter should update the table', function() {
+        var originalAdjRuns;
+        scatterPlotPage.getTableStat(1,4).then(function(runs) {
+          originalAdjRuns = runs;
+        });
+        
+        scatterPlotPage.addGlobalFilter('Pitch Type: Fastball');
+        scatterPlotPage.getTableStat(1,4).then(function(newAdjRuns) {
+          assert.notEqual(newAdjRuns, originalAdjRuns);
+        });            
+      });        
+
+      test.it('adding a x-axis filter should update the table', function() {
+        scatterPlotPage.openXAxisFilterContainer();
+        var originalOBP;
+        scatterPlotPage.getTableStat(1,3).then(function(obp) {
+          originalOBP = obp;
+        });
+        
+        scatterPlotPage.addXFilter('count: 3-0');
+        scatterPlotPage.getTableStat(1,3).then(function(newOBP) {
+          assert.notEqual(newOBP, originalOBP);
+        });           
+      });              
+
+      test.it('adding a y-axis filter should update the table', function() {
+        scatterPlotPage.openYAxisFilterContainer();
+        var originalAdjRuns;
+        scatterPlotPage.getTableStat(1,4).then(function(runs) {
+          originalAdjRuns = runs;
+        });
+        
+        scatterPlotPage.addYFilter('Venue: Home');
+        scatterPlotPage.getTableStat(1,4).then(function(newAdjRuns) {
+          assert.notEqual(newAdjRuns, originalAdjRuns);
+        });       
+      }); 
+
+      test.it('clicking add a trend line should display a trendline on the chart', function() {
+        // TODO - looks like its broken right now?
+      }); 
     });
   });
 });

@@ -294,4 +294,13 @@ BasePage.prototype.getAttribute = function(locator, attribute) {
   return d.promise;
 };
 
+BasePage.prototype.getElementCount = function(locator) {
+  var d = Promise.defer();
+  this.driver.findElements(locator).then(function(elements) {
+      d.fulfill(elements.length);
+  })
+
+  return d.promise; 
+};
+
 module.exports = BasePage;

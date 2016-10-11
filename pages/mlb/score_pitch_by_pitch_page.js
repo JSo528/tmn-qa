@@ -125,16 +125,10 @@ ScorePitchByPitch.prototype.isPitchVisualsModalDisplayed = function() {
 
 ScorePitchByPitch.prototype.getPitchVisualsBgImageHref = function() {
   return this.getAttribute(PITCH_VISUALS_BG_IMAGE, 'href');
-}
+};
 
 ScorePitchByPitch.prototype.getPitchVisualsPitchCount = function() {
-  var d = Promise.defer();
-
-  this.driver.findElements(PITCH_VISUALS_PITCH_CIRCLE).then(function(pitchCount) {
-      d.fulfill(pitchCount.length);
-  })
-
-  return d.promise; 
-}
+ return this.getElementCount(PITCH_VISUALS_PITCH_CIRCLE);
+};
 
 module.exports = ScorePitchByPitch;
