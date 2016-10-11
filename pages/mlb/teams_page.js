@@ -35,6 +35,28 @@ function MlbTeamsPage(driver) {
 MlbTeamsPage.prototype = Object.create(BasePage.prototype);
 MlbTeamsPage.prototype.constructor = MlbTeamsPage;
 
+
+MlbTeamsPage.prototype.goToSubSection = function(section) {
+  var linkNum; 
+  switch (section) {
+    case "Stats":
+      linkNum = 1;
+      break;
+    case "Occurences & Streaks":
+      linkNum = 2;
+      break;
+    case "Scatter Plot":
+      linkNum = 3;
+      break
+    default: 
+      linkNum = 1;
+  }
+
+  var section = By.xpath(`.//nav[@class='navbar navbar-default navbar-static-top report-nav navbar-gray']/div/div/ul/li[${linkNum}]/a`);
+  return this.click(section);
+}
+
+
 MlbTeamsPage.prototype.getTeamTableStat = function(teamNum, col) {
   // First 4 rows are for the headers
   var row = 4 + teamNum;

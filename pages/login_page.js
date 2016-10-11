@@ -4,6 +4,7 @@
 var BasePage = require('../pages/base/base_page.js')
 
 // Webdriver helpers
+var Promise = require('selenium-webdriver').promise;
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 
@@ -36,11 +37,24 @@ LoginPage.prototype.constructor = LoginPage;
  * @returns {Promise}
  */
 LoginPage.prototype.login = function(email, password) {
+  var defer = Promise.defer();
+  var thiz = this;
+
   this.sendKeys(EMAIL_INPUT, email)
   this.sendKeys(PASSWORD_INPUT, password)
   this.click(LOGIN_BUTTON)
     
-  return this.driver.wait(Until.stalenessOf(this.driver.findElement(BODY_TAG)), 10000);
+  this.driver.wait(Until.stalenessOf(this.driver.findElement(BODY_TAG)), 10000).then(function() {
+    console.log('Login submitted');
+    return defer.fulfill(true);
+  }, function(){
+    console.log('Login failed to submit');
+    thiz.sendKeys(EMAIL_INPUT, email);
+    thiz.sendKeys(PASSWORD_INPUT, password);
+    thiz.click(LOGIN_BUTTON);
+    return thiz.driver.wait(Until.stalenessOf(thiz.driver.findElement(BODY_TAG)), 10000);
+  })
+  return defer.promise;
 };
 
 module.exports = LoginPage;
