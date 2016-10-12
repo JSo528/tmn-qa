@@ -4,5 +4,5 @@ node_modules
 # put any other files you want ignored here
 .DS_Store
 .idea
-tmn-qa-tests.iml
+tmn-qa.iml
 specs/test_script.js

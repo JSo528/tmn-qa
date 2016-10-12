@@ -1,5 +1,5 @@
 {
-  "name": "tmn-qa-tests",
+  "name": "tmn-qa",
   "version": "1.0.0",
   "description": "QA tests for TruMedia's FERP and scouting websites",
   "scripts": {
