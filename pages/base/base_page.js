@@ -8,7 +8,7 @@ var WAIT_TIME_PRESENT = 10000;
 var WAIT_TIME_BEFORE_RETRY = 500;
 
 // Internal debug
-var debug = false;
+var debug = true;
 
 /**
  * Base constructor for a pageobject

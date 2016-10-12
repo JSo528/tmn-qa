@@ -2,6 +2,9 @@ test.describe('#Teams Page', function() {
   test.before(function() {    
     var MlbTeamsPage = require('../../pages/mlb/teams_page.js');
     teamsPage = new MlbTeamsPage(driver);
+
+    var StatsPage = require('../../pages/mlb/teams/stats_page.js');
+    statsPage = new StatsPage(driver);
   });
 
   test.it('clicking the teams link goes to the correct page', function() {
@@ -13,25 +16,25 @@ test.describe('#Teams Page', function() {
   });    
 
   test.describe('#Section: Batting', function() {
-    test.describe.skip('#SubSection: Stats', function() {
+    test.describe('#SubSection: Stats', function() {
+      test.before(function() {
+        battingAverageCol = 11;
+        winsCol = 5;
+      });
+
       // Sorting
       test.describe("#sorting", function() {
-        test.before(function() {
-          battingAverageCol = 11;
-          winsCol = 5;
-        });
-
         test.it('should be sorted initially by BA descending', function() {
           var teamOneBA, teamTwoBA, teamTenBA;
 
           Promise.all([
-            teamsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
+            statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
               teamOneBA = stat;
             }),
-            teamsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
+            statsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
               teamTwoBA = stat;
             }),
-            teamsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
+            statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
               teamTenBA = stat;
             })            
           ]).then(function() {
@@ -42,16 +45,16 @@ test.describe('#Teams Page', function() {
 
         test.it('clicking on the BA column header should reverse the sort', function() {
           var teamOneBA, teamTwoBA, teamTenBA;
-          teamsPage.clickTeamTableColumnHeader(battingAverageCol);
+          statsPage.clickTeamTableColumnHeader(battingAverageCol);
 
           Promise.all([
-            teamsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
+            statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
               teamOneBA = stat;
             }),
-            teamsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
+            statsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
               teamTwoBA = stat;
             }),
-            teamsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
+            statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
               teamTenBA = stat;
             })            
           ]).then(function() {
@@ -62,16 +65,16 @@ test.describe('#Teams Page', function() {
 
         test.it('clicking on the W column header should sort the table by Wins', function() {
           var teamOneBA, teamTwoBA, teamTenBA;
-          teamsPage.clickTeamTableColumnHeader(winsCol);
+          statsPage.clickTeamTableColumnHeader(winsCol);
 
           Promise.all([
-            teamsPage.getTeamTableStat(1,winsCol).then(function(stat) {
+            statsPage.getTeamTableStat(1,winsCol).then(function(stat) {
               teamOneWs = stat;
             }),
-            teamsPage.getTeamTableStat(2,winsCol).then(function(stat) {
+            statsPage.getTeamTableStat(2,winsCol).then(function(stat) {
               teamTwoWs = stat;
             }),
-            teamsPage.getTeamTableStat(10,winsCol).then(function(stat) {
+            statsPage.getTeamTableStat(10,winsCol).then(function(stat) {
               teamTenWs = stat;
             })            
           ]).then(function() {
@@ -81,7 +84,7 @@ test.describe('#Teams Page', function() {
         });  
 
         test.after(function() {
-          teamsPage.clickTeamTableColumnHeader(battingAverageCol);
+          statsPage.clickTeamTableColumnHeader(battingAverageCol);
         });        
       });
 
@@ -89,31 +92,31 @@ test.describe('#Teams Page', function() {
       test.describe("#filters", function() {
         // TODO - make sure to use a previous year
         test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
-          teamsPage.addDropdownFilter('Pitch Type: Fastball');
+          statsPage.addDropdownFilter('Pitch Type: Fastball');
 
-          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+          statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.306);
           });
         });
 
         test.it('adding filter: (2 outs) from sidebar displays correct data', function() {
-          teamsPage.toggleSidebarFilter('Outs:', 3);
+          statsPage.toggleSidebarFilter('Outs:', 3);
 
-          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+          statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.296);
           });
         });
 
         test.it('removing filter: (2 outs) from top section displays correct data', function() {
-          teamsPage.closeDropdownFilter(5);
-          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+          statsPage.closeDropdownFilter(5);
+          statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.306);
           });
         }); 
 
         test.it('removing filter: (pitch type-fastball) from sidebar displays correct data', function() {
-          teamsPage.toggleSidebarFilter("Pitch Type:", 8);
-          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
+          statsPage.toggleSidebarFilter("Pitch Type:", 8);
+          statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.282);
           });
         });         
@@ -123,13 +126,13 @@ test.describe('#Teams Page', function() {
       test.describe("#pinning", function() {
         test.it('clicking the pin icon for the Red Sox should add them to the pinned table', function() {
           var teamName;
-          teamsPage.getTeamTableStat(1,3).then(function(team) {
+          statsPage.getTeamTableStat(1,3).then(function(team) {
             teamName = team;
           });
 
-          teamsPage.clickTeamTablePin(1);
+          statsPage.clickTeamTablePin(1);
 
-          teamsPage.getIsoTableStat(1,3).then(function(team) {
+          statsPage.getIsoTableStat(1,3).then(function(team) {
             assert.equal(team, teamName);
           })
         });
@@ -139,7 +142,7 @@ test.describe('#Teams Page', function() {
       // TODO - look into this, its populating the main table and hiding the iso table
       test.describe("#isolation mode", function() {
         test.it('turning on isolation mode should hide teams table', function() {
-          teamsPage.clickIsoBtn("on");
+          statsPage.clickIsoBtn("on");
         });      
 
         // BUG - trying to add minor league team doesn't work
@@ -160,7 +163,7 @@ test.describe('#Teams Page', function() {
         });                                         
 
         test.it('turning off isolation mode should show full table', function() {
-          teamsPage.clickIsoBtn("off");
+          statsPage.clickIsoBtn("off");
         });                                                   
       });
 
@@ -168,34 +171,34 @@ test.describe('#Teams Page', function() {
       test.describe("#chart/edit columns", function() {
         // histograms
         test.it('clicking show histogram link should open histogram modal', function() {
-          teamsPage.clickChartColumnsBtn();
-          teamsPage.clickTeamTableColumnHeader(14);
-          teamsPage.clickHistogramLink();
+          statsPage.clickChartColumnsBtn();
+          statsPage.clickTeamTableColumnHeader(14);
+          statsPage.clickHistogramLink();
 
-          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
             assert.equal(isDisplayed, true);
           }); 
         });  
 
         test.it('clicking close histogram button should close histogram modal', function() {
-          teamsPage.closeModal();
-          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+          statsPage.closeModal();
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
             assert.equal(isDisplayed, false);
           }); 
         })                 
 
         // scatter plots          
         test.it('clicking add scatter plot link for 2 different categories should open up scatter chart modal', function() {
-          teamsPage.openScatterChart(10,11);
+          statsPage.openScatterChart(10,11);
 
-          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
             assert.equal(isDisplayed, true);
           }); 
         });
 
         test.it('clicking close button should close scatter chart modal', function() {
-          teamsPage.closeModal();
-          teamsPage.isModalDisplayed().then(function(isDisplayed) {
+          statsPage.closeModal();
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
             assert.equal(isDisplayed, false);
           }); 
         })   
@@ -204,22 +207,22 @@ test.describe('#Teams Page', function() {
       // Group By
       test.describe("#group by", function() {
         test.it('selecting "By Season" shows the correct headers', function() {
-          teamsPage.changeGroupBy("By Season");
-          teamsPage.getTeamTableHeader(4).then(function(header) {
+          statsPage.changeGroupBy("By Season");
+          statsPage.getTeamTableHeader(4).then(function(header) {
             assert(header, "Season");
           });
         });
 
         test.it('selecting "By Game" shows the correct headers', function() {
-          teamsPage.changeGroupBy("By Game");
-          teamsPage.getTeamTableHeader(4).then(function(header) {
+          statsPage.changeGroupBy("By Game");
+          statsPage.getTeamTableHeader(4).then(function(header) {
             assert(header, "Opponent");
           });          
         });        
 
         test.it('selecting "By Year" shows the correct headers', function() {
-          teamsPage.changeGroupBy("By Org");
-          teamsPage.getTeamTableHeader(4).then(function(header) {
+          statsPage.changeGroupBy("By Org");
+          statsPage.getTeamTableHeader(4).then(function(header) {
             assert(header, "G");
           });                    
         });        
@@ -228,9 +231,9 @@ test.describe('#Teams Page', function() {
       // Stats View
       test.describe("#stats view", function() {
         test.before(function() {
-          // TODO - use filters instead, but go directly to 2015 stats
-          driver.get("https://dodgers.trumedianetworks.com/baseball/teams-batting/stats?pc=%7B%22bgb%22%3A%22totals%22%2C%22bsvt%22%3A%22stats%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222015%22%5D%7D");
-        })
+          statsPage.toggleSidebarFilter("Seasons:", 7);
+          statsPage.toggleSidebarFilter("Seasons:", 8);
+        });
 
         // Comparing top BA in 2015 for all the different stat views
         var topColor = "rgba(108, 223, 118, 1)"
@@ -248,15 +251,15 @@ test.describe('#Teams Page', function() {
         ]
         statViews.forEach(function(statView) {
           test.it("selecting " + statView.type + " shows the correct stat value", function() {
-            teamsPage.changeStatsView(statView.type);  
-            teamsPage.getTeamTableStat(1,11).then(function(stat) {
+            statsPage.changeStatsView(statView.type);  
+            statsPage.getTeamTableStat(1,11).then(function(stat) {
               assert(stat, statView.topStat);
             });
           });
 
           if (statView.color) {
             test.it("selecting " + statView.type + " shows the top value the right color", function() {
-              teamsPage.getTeamTableBgColor(1,11).then(function(color) {
+              statsPage.getTeamTableBgColor(1,11).then(function(color) {
                 assert(color, topColor);
               });
             });
@@ -264,11 +267,11 @@ test.describe('#Teams Page', function() {
         });
       });                      
 
-      // Reports
+      // Batting Reports
       test.describe("#reports", function() {
         test.before(function() {
-          // TODO - use filters instead, but go directly to 2015 stats
-          driver.get("https://dodgers.trumedianetworks.com/baseball/teams-batting/stats?pc=%7B%22bgb%22%3A%22totals%22%2C%22bsvt%22%3A%22stats%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222015%22%5D%7D");
+          statsPage.toggleSidebarFilter("Seasons:", 7);
+          statsPage.toggleSidebarFilter("Seasons:", 8);
         })
 
         var reports = [
@@ -286,8 +289,8 @@ test.describe('#Teams Page', function() {
         ]
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
-            teamsPage.changeReport(report.type);  
-            teamsPage.getTeamTableStat(1,report.colNum).then(function(stat) {
+            statsPage.changeBattingReport(report.type);  
+            statsPage.getTeamTableStat(1,report.colNum).then(function(stat) {
               assert(stat, report.topStat);
             });
           });
@@ -295,7 +298,7 @@ test.describe('#Teams Page', function() {
       });
     });
 
-    test.describe.skip('#SubSection: Occurences & Streaks', function() {
+    test.describe('#SubSection: Occurences & Streaks', function() {
       test.before(function() {
         var StreaksPage = require('../../pages/mlb/teams/streaks_page');
         streaksPage = new StreaksPage(driver);
@@ -455,6 +458,272 @@ test.describe('#Teams Page', function() {
       test.it('clicking add a trend line should display a trendline on the chart', function() {
         // TODO - looks like its broken right now?
       }); 
+    });
+  });
+
+  test.describe('#Section: Pitching', function() {
+    test.before(function() {    
+      teamsPage.goToSection("Pitching");
+      
+      eraCol = 21;
+      ksCol = 19;
+    });
+
+    test.describe('#SubSection: Stats', function() {
+      // Sorting
+      test.describe("#sorting", function() {
+        test.it('should be sorted initially by ERA descending', function() {
+          var teamOneERA, teamTwoERA, teamTenERA;
+
+          Promise.all([
+            statsPage.getTeamTableStat(1,eraCol).then(function(stat) {
+              teamOneERA = stat;
+            }),
+            statsPage.getTeamTableStat(2,eraCol).then(function(stat) {
+              teamTwoERA = stat;
+            }),
+            statsPage.getTeamTableStat(10,eraCol).then(function(stat) {
+              teamTenERA = stat;
+            })            
+          ]).then(function() {
+            assert.isAtLeast(teamOneERA, teamTwoERA, "team one's ERA is <= team two's ERA");
+            assert.isAtLeast(teamTwoERA, teamTenERA, "team two's ERA is <= team ten's ERA");
+          });
+        });
+
+        test.it('clicking on the ERA column header should reverse the sort', function() {
+          var teamOneERA, teamTwoERA, teamTenERA;
+          statsPage.clickTeamTableColumnHeader(eraCol);
+
+          Promise.all([
+            statsPage.getTeamTableStat(1,eraCol).then(function(stat) {
+              teamOneERA = stat;
+            }),
+            statsPage.getTeamTableStat(2,eraCol).then(function(stat) {
+              teamTwoERA = stat;
+            }),
+            statsPage.getTeamTableStat(10,eraCol).then(function(stat) {
+              teamTenERA = stat;
+            })            
+          ]).then(function() {
+            assert.isAtMost(teamOneERA, teamTwoERA, "team one's ERA is >= team two's ERA");
+            assert.isAtMost(teamTwoERA, teamTenERA, "team two's ERA is >= team ten's ERA");
+          });          
+        });
+
+        test.it('clicking on the W column header should sort the table by Wins', function() {
+          var teamOneKs, teamTwoKs, teamTenKs;
+          statsPage.clickTeamTableColumnHeader(ksCol);
+
+          Promise.all([
+            statsPage.getTeamTableStat(1,ksCol).then(function(stat) {
+              teamOneKs = stat;
+            }),
+            statsPage.getTeamTableStat(2,ksCol).then(function(stat) {
+              teamTwoKs = stat;
+            }),
+            statsPage.getTeamTableStat(10,ksCol).then(function(stat) {
+              teamTenKs = stat;
+            })            
+          ]).then(function() {
+            assert.isAtMost(teamOneKs, teamTwoKs, "team one's Ks is >= team two's Ks");
+            assert.isAtMost(teamTwoKs, teamTenKs, "team two's Ks is >= team ten's Ks");
+          });          
+        });  
+
+        test.after(function() {
+          statsPage.clickTeamTableColumnHeader(eraCol);
+        });        
+      });
+
+      // Filters
+      test.describe("#filters", function() {
+        test.before(function() {
+          statsPage.clickTeamTableColumnHeader(ksCol);
+        });
+
+        // TODO - make sure to use a previous year
+        test.it('adding filter: (venue - home) from dropdown displays correct data', function() {
+          statsPage.addDropdownFilter('Venue: Home');
+
+          statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
+            assert.equal(ks, 786);
+          });
+        });
+
+        test.it('adding filter: (Pitch Type: Changeup) from sidebar displays correct data', function() {
+          statsPage.toggleSidebarFilter('Pitch Type:', 3);
+
+          statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
+            assert.equal(ks, 118);
+          });
+        });
+
+        test.it('removing filter: (Pitch Type: Changeup) from top section displays correct data', function() {
+          statsPage.closeDropdownFilter(5);
+          statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
+            assert.equal(ks, 786);
+          });
+        }); 
+
+        test.it('removing filter: (venue - home) from sidebar displays correct data', function() {
+          statsPage.toggleSidebarFilter("Venue:", 1);
+          statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
+            assert.equal(ks, 1510);
+          });
+        });         
+      });  
+
+      // Reports
+      test.describe("#reports", function() {
+        test.before(function() {
+          // Changes the season to 2015
+          // TODO - more robust solution since thise will break in future years
+          statsPage.toggleSidebarFilter("Seasons:", 7);
+          statsPage.toggleSidebarFilter("Seasons:", 8);
+        })
+
+        var reports = [
+          { type: 'Rate', topStat: .233, statType: "BA", colNum: 9 },  
+          { type: 'Counting', topStat: 1274, statType: "H", colNum: 9 },  
+          { type: 'Pitch Rates', topStat: "52.5%", statType: "InZone%", colNum: 13 },  
+          { type: 'Pitch Counts', topStat: 12393, statType: "InZone#", colNum: 12 },  
+          { type: 'Pitch Types', topStat: "60.0%", statType: "Fast%", colNum: 7 },  
+          { type: 'Pitch Type Counts', topStat: 13657, statType: "Fast#", colNum: 7 },  
+          { type: 'Pitch Locations', topStat: "52.5%", statType: "InZone%", colNum: 7 },  
+          { type: 'Pitch Calls', topStat: 336.90, statType: "SLAA", colNum: 7 },  
+          { type: 'Hit Types', topStat: 1.10, statType: "GB/FB", colNum: 6 },  
+          { type: 'Hit Locations', topStat: "43.4%", statType: "HPull%", colNum: 10 },  
+          { type: 'Home Runs', topStat: 110, statType: "HR", colNum: 7 },  
+          { type: 'Movement', topStat: 90.3, statType: "Vel", colNum: 7 },  
+          { type: 'Bids', topStat: 2, statType: "NH", colNum: 8 },  
+          { type: 'Baserunning', topStat: "60.4%", statType: "SB%", colNum: 8 },  
+          { type: 'Exit Data', topStat: .367, statType: "ExSLG%", colNum: 11 }
+        ]
+        reports.forEach(function(report) {
+          test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
+            statsPage.changePitchingReport(report.type);  
+            statsPage.getTeamTableStat(1,report.colNum).then(function(stat) {
+              assert(stat, report.topStat);
+            });
+          });
+        });        
+      });
+    });
+  });
+
+
+
+  test.describe('#Section: Catching', function() {
+    test.before(function() {    
+      teamsPage.goToSection("Catching");
+      slaaCol = 7;
+    });
+
+    test.describe('#SubSection: Stats', function() {
+      // Sorting
+      test.describe("#sorting", function() {
+        test.it('should be sorted initially by SLAA descending', function() {
+          var teamOneSLAA, teamTwoSLAA, teamTenSLAA;
+
+          Promise.all([
+            statsPage.getTeamTableStat(1,slaaCol).then(function(stat) {
+              teamOneSLAA = stat;
+            }),
+            statsPage.getTeamTableStat(2,slaaCol).then(function(stat) {
+              teamTwoSLAA = stat;
+            }),
+            statsPage.getTeamTableStat(10,slaaCol).then(function(stat) {
+              teamTenSLAA = stat;
+            })            
+          ]).then(function() {
+            assert.isAtLeast(teamOneSLAA, teamTwoSLAA, "team one's SLAA is >= team two's SLAA");
+            assert.isAtLeast(teamTwoSLAA, teamTenSLAA, "team two's SLAA is >= team ten's SLAA");
+          });
+        });
+      });
+
+      // Reports
+      test.describe("#reports", function() {
+        test.before(function() {
+          // Changes the season to 2015
+          // TODO - more robust solution since thise will break in future years
+          statsPage.toggleSidebarFilter("Seasons:", 7);
+          statsPage.toggleSidebarFilter("Seasons:", 8);
+        })
+
+        var reports = [
+          { type: 'Pitch Types', topStat: "60.0%", statType: "Fast%", colNum: 7 },  
+          { type: 'Pitch Type Counts', topStat: 13657, statType: "Fast#", colNum: 7 },  
+          { type: 'Catcher Defense', topStat: 10.27, statType: "FldRAA", colNum: 10 },  
+          // { type: 'Catcher Opposing Batters', topStat: 1274, statType: "H", colNum: 9 },  // No Data
+          { type: 'Catcher Pitch Rates', topStat: "49.2%", statType: "InZoneMdl%", colNum: 8 },  
+          { type: 'Catcher Pitch Counts', topStat: 351, statType: "StrkFrmd", colNum: 12 }
+        ]
+        reports.forEach(function(report) {
+          test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
+            statsPage.changeCatchingReport(report.type);  
+            statsPage.getTeamTableStat(1,report.colNum).then(function(stat) {
+              assert(stat, report.topStat);
+            });
+          });
+        });        
+      });
+    });
+  });
+
+  test.describe('#Section: Statcast Fielding', function() {
+    test.before(function() {    
+      teamsPage.goToSection("Statcast Fielding");
+      statCol = 10;
+    });    
+
+    test.describe('#SubSection: Stats', function() {
+      // Sorting
+      test.describe("#sorting", function() {
+        test.it('should be sorted initially by OFWAirOut% descending', function() {
+          var teamOne, teamTwo, teamTen;
+
+          Promise.all([
+            statsPage.getTeamTableStat(1,statCol).then(function(stat) {
+              teamOne = stat;
+            }),
+            statsPage.getTeamTableStat(2,statCol).then(function(stat) {
+              teamTwo = stat;
+            }),
+            statsPage.getTeamTableStat(10,statCol).then(function(stat) {
+              teamTen = stat;
+            })            
+          ]).then(function() {
+            assert.isAtLeast(teamOne, teamTwo, "team one's OFWAirOut% is >= team two's OFWAirOut%");
+            assert.isAtLeast(teamTwo, teamTen, "team two's OFWAirOut% is >= team ten's OFWAirOut%");
+          });
+        });
+      });
+
+      // Reports
+      test.describe("#reports", function() {
+        test.before(function() {
+          // Changes the season to 2015
+          // TODO - more robust solution since thise will break in future years
+          statsPage.toggleSidebarFilter("Seasons:", 7);
+          statsPage.toggleSidebarFilter("Seasons:", 8);
+        })
+
+        var reports = [
+          { type: 'Outfielder Air Defense Positioning', topStat: 104.2, statType: "OFWPosAirOut%", colNum: 7 },  
+          { type: 'Outfielder Air Defense Skills', topStat: "65.1%", statType: "OFAirOut%", colNum: 7 },  
+          { type: 'Outfield Batter Positioning', topStat: ">99.9%", statType: "OFWPosAirOut%", colNum: 7 } 
+        ]
+        reports.forEach(function(report) {
+          test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
+            statsPage.changeStatcastFieldingReport(report.type);  
+            statsPage.getTeamTableStat(1,report.colNum).then(function(stat) {
+              assert(stat, report.topStat);
+            });
+          });
+        });        
+      });
     });
   });
 });
