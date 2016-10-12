@@ -280,8 +280,6 @@ test.describe('#Teams Page', function() {
           { type: 'Pitch Locations', topStat: "47.8%", statType: "InZone%", colNum: 7 },  
           { type: 'Pitch Calls', topStat: -341.65, statType: "SLAA", colNum: 7 },  
           { type: 'Hit Types', topStat: 0.71, statType: "GB/FB", colNum: 6 },  
-          { type: 'Hit Locations', topStat: 0.71, statType: "GB/FB", colNum: 6 },  
-          { type: 'Hit Types', topStat: 0.71, statType: "GB/FB", colNum: 6 },  
           { type: 'Hit Locations', topStat: "46.0%", statType: "HPull%", colNum: 9 },  
           { type: 'Home Runs', topStat: 253, statType: "HR", colNum: 7 },  
           { type: 'Exit Data', topStat: .463, statType: "ExSLG%", colNum: 11 }

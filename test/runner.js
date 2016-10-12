@@ -27,7 +27,10 @@ test.describe('MLB Site', function() {
   // importTest("StandingsPage", './mlb/standings_page');
   // importTest("ScoresPage", './mlb/scores_page');
   // importTest("DetailedScorePage", './mlb/detailed_score_page');
-  importTest("TeamsPage", './mlb/teams_page');
+  // importTest("TeamsPage", './mlb/teams_page');
+  // importTest("TeamsPitchingPage", './mlb/teams_pitching_page');
+  importTest("TeamsCatchingPage", './mlb/teams_catching_page');
+  importTest("TeamsStatcastFieldingPage", './mlb/teams_statcast_fielding_page');
 
   test.after(function() {
     // driver.quit();

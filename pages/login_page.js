@@ -48,6 +48,8 @@ LoginPage.prototype.login = function(email, password) {
     console.log('Login submitted');
     return defer.fulfill(true);
   }, function(){
+    // essentially a retry on the login
+    // this method occasionally tries to enter text too early which the login page doesn't accept
     console.log('Login failed to submit');
     thiz.sendKeys(EMAIL_INPUT, email);
     thiz.sendKeys(PASSWORD_INPUT, password);
