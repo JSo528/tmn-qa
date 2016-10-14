@@ -3,6 +3,18 @@
   "version": "1.0.0",
   "description": "QA tests for TruMedia's FERP and scouting websites",
   "scripts": {
+    "start": "node app.js",
     "test": "mocha test/runner"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "express": "^4.14.0",
+    "forever": "^0.15.2",
+    "jsonfile": "^2.4.0",
+    "mocha": "^3.1.2",
+    "pug": "^2.0.0-beta6",
+    "selenium-webdriver": "^3.0.0-beta-3"
   }
 }

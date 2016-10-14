@@ -1,0 +1,22 @@
+- var titleText = data.ongoing ? "Test Results - Ongoing" : "Test Results - Finished"
+if errorMessage
+  p= errorMessage
+else 
+  h2= titleText
+  h4= data.passed + " Tests Passed"
+  h4= data.failed + " Tests Failed"
+  table.table
+    tr
+      th Test
+      th FullTitle
+      th ErrorType
+      th ErrorMessage
+      th Stack
+    each error in data.errors
+      tr
+        td= error.title
+        td= error.fullTitle
+        td= error.errorType
+        td= error.errorMessage
+        td= error.stack
+        

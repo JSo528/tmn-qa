@@ -1,0 +1,13 @@
+doctype
+html
+  head
+    title TruMedia QA Tests
+    script(src='//code.jquery.com/jquery-2.0.2.min.js')
+    link(rel='stylesheet' href='/vendor/css/bootstrap.min.css')
+    link(rel='stylesheet' href='/vendor/css/bootstrap-theme.min.css')
+  body
+
+h1 Run Tests
+form(class='form-horizontal' role='form' action='/run-tests' method='post')
+  input(type='hidden' name='_csrf' value=csrf)
+  button.btn.btn-default(type='submit') Submit
