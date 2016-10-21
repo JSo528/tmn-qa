@@ -1,0 +1,27 @@
+doctype
+html
+  head
+    title QA App
+    script(src='//code.jquery.com/jquery-2.0.2.min.js')
+    link(rel='stylesheet' href='/vendor/css/bootstrap.min.css')
+    link(rel='stylesheet' href='/vendor/css/bootstrap-theme.min.css')
+    link(rel='stylesheet' href='/css/custom.css')
+  body
+    .navbar.navbar-inverse
+      .container-fluid
+        .navbar-header
+          .collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li
+                a(href='/') New Test
+              li
+                a(href='/test-results') Test Results
+
+    .container
+      if flash
+        .alert.alert-dismissible
+          button.close(type='button' data-dismiss='alert' aria-hidden='true') &times;
+          strong= flash.intro
+          flash.message
+      #content
+        block content

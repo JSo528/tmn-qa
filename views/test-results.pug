@@ -1,22 +1,87 @@
-- var titleText = data.ongoing ? "Test Results - Ongoing" : "Test Results - Finished"
-if errorMessage
-  p= errorMessage
-else 
-  h2= titleText
-  h4= data.passed + " Tests Passed"
-  h4= data.failed + " Tests Failed"
-  table.table
-    tr
-      th Test
-      th FullTitle
-      th ErrorType
-      th ErrorMessage
-      th Stack
-    each error in data.errors
-      tr
-        td= error.title
-        td= error.fullTitle
-        td= error.errorType
-        td= error.errorMessage
-        td= error.stack
-        
+extend layouts/main
+block content
+  #testResultsPanel.div.div-default
+    .div-body
+      if errorMessage
+        .alert.alert-danger= errorMessage
+      else
+        - var endedAt = testRun.endedAt ? new Date(testRun.endedAt).toLocaleString() : ""
+        if testRun.status == "ongoing"
+          .alert.alert-warning
+            strong Status: 
+            span#testStatus= testRun.status
+        else 
+          .alert.alert-success
+            strong Status: 
+            = testRun.status
+        .panel.panel-primary
+          .panel-heading Test Summary
+          .panel-body
+            table.table
+              tr
+                th Test
+                td= testRun.testName
+              tr
+                th Port
+                td= testRun.portNumber
+              tr
+                th Passed
+                td= testRun.passedCount
+              tr
+                th Failed
+                td= testRun.failedCount
+              tr
+                th Start
+                td= new Date(testRun.startedAt).toLocaleString()
+              tr
+                th Finish
+                td= endedAtText
+
+        - var errorCount = 1
+        each error in testRun.errorObjects
+          .panel.panel-default.error-panel
+            .panel-heading
+              .main= errorCount + ") " + error.title
+              .actions
+                a.expander [MIN]
+            .panel-body
+              .row
+                .col-sm-2.bold Path:
+                .col-sm-10= error.fullTitle
+              .row
+                .col-sm-2.bold Type:
+                .col-sm-10= error.errorType
+              .row
+                .col-sm-2.bold Message:
+                .col-sm-10= error.errorMessage                      
+              .row
+                .col-sm-2.bold Stack
+                .col-sm-10= error.stack
+              .row
+                .col-sm-12
+                  img.error-img(src="/data/"+testRun.id+"/"+error.imgFile)
+          - errorCount += 1
+
+  script.
+    $('.expander').on('click', function() {
+      toggleExpander($(this));
+    });
+
+    function toggleExpander(el) {
+      if (el.hasClass('minimized')) {
+        el.removeClass('minimized');
+        el.text("[MIN]");
+        el.closest('.error-panel').children('.panel-body').show();
+      } else {
+        el.addClass('minimized')
+        el.text("[MAX]");
+        el.closest('.error-panel').children('.panel-body').hide();
+      }
+    };
+
+    // convert this into an API call and append
+    setTimeout(function() {
+      if($('#testStatus').text() == "ongoing") {
+        window.location.reload();
+      }
+    }, 15000);

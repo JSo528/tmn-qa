@@ -5,4 +5,8 @@ node_modules
 .DS_Store
 .idea
 tmn-qa.iml
-data/
+public/data/*
+lib/credentials.js
+
+# exception to the rule
+!public/data/.gitkeep 

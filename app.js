@@ -1,99 +1,87 @@
-'use strict'
+'use strict';
 
 var express = require('express');
 var app = express();
-
 app.set('view engine', 'pug');
+var port = process.env.PORT || 3000;
 
-var port = process.env.PORT || 8080;
+// Database
+var dbConnect = require('./models/db_connect.js');
+dbConnect.connect(app.get('env'));
+var TestRun = require('./models/test_run.js');
 
 // Middleware
 app.use(express.static(__dirname + '/public'));
 app.use(require('body-parser').urlencoded({ extended: true }));
 
 // Routes
-app.get('/', function(req, res) {
-  res.render('index', {
-    csrf: 'dummyValue'
+var constants = require('./lib/constants.js')
+
+app.get('/', function(req, res) {  
+  res.render('new-test', {
+    tests: constants.tests
   });    
 });
 
-app.get('/test-results', function(req, res) {
-  var testId = req.query.test
+app.get('/test-results/', function(req, res) {
+  var data = {};
 
-  var jsonfile = require('jsonfile')
-  var file = "data/"+testId+".json"
-  jsonfile.readFile(file, function(err, obj) {
+  TestRun.find()
+    .sort({'startedAt': -1})
+    .limit(20)
+    .exec(function(err, testRuns) {
+      data.testRuns = testRuns.map(function(testRun) {
+        delete testRun.errorObjects;
+        testRun.testName = constants.tests[testRun.testNumber].name
+        return testRun;
+      });
+
+      res.render('test-results-index', {
+        data: data
+      });    
+    });
+});
+
+app.get('/test-results/:id', function(req, res) {
+  TestRun.findById(req.params.id, function(err, testRun) {
     if (err) {
       res.render('test-results', {
-        errorMessage: "No test found",
-        csrf: 'dummyValue'
+        errorMessage: "No test found"
       });    
     } else {
+      testRun.testName = constants.tests[testRun.testNumber].name
       res.render('test-results', {
-        data: obj,
-        csrf: 'dummyValue'
+        testRun: testRun
       });    
     }
   });
 });
 
 app.post('/run-tests', function(req, res) {
-  var Mocha = require('mocha');
-  var mocha = new Mocha();
-
-  mocha.addFile('./test/runner');
-
-  var jsonfile = require('jsonfile')
-  var date = new Date();
-  var timestamp = date.getTime()
-  var file = 'data/'+timestamp+'.json'
-  
-  var fileData = {
-    passed: 0,
-    failed: 0,
-    ongoing: true,
-    errors: [] 
-  }
-
-  jsonfile.writeFile(file, fileData, function (err) {
-    console.error(err)
+  var testRun = new TestRun({
+    testNumber: req.body.testType,
+    portNumber: req.body.portNumber,
+    startedAt: new Date().getTime(),
+    status: 'ongoing'
   });
+  testRun.save();
+  
+  var runner = require('./test/runner');
+  runner(testRun, app.get('env'));
 
-  mocha.run()
-    .on('pass', function(test) {
-      fileData.passed += 1;
-      jsonfile.writeFile(file, fileData, function (err) {
-        console.error(err);
-      });
-    })
-    .on('fail', function(test, err) {    
-      fileData.failed += 1;
-      fileData.errors.push({
-        title: test.title,
-        fullTitle: test["parent"].fullTitle(),
-        errorType: test.err.name,
-        errorMessage: test.err.message,
-        stack: test.err.stack
-      });
-      jsonfile.writeFile(file, fileData, function (err) {
-        console.error(err)
-      });
-    })
-    .on('end', function() {
-      fileData.ongoing = false;
-      jsonfile.writeFile(file, fileData, function (err) {
-        console.error(err)
-      });
-    });  
-
-  res.redirect(303, '/test-results?test='+timestamp);
+  res.redirect(303, '/test-results/'+testRun.id);
 });
 
 app.use(function(req, res) {
   res.type('text/plain');
   res.status(404);
   res.send('404 - Not Found');
+});
+
+app.use(function(req, res) {
+  res.type('text/plain');
+  res.status(500);
+  res.send('500 - Server Error');
 });
 
 app.listen(port);

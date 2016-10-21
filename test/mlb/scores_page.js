@@ -1,3 +1,8 @@
+var webdriver = require('selenium-webdriver');
+var test = require('selenium-webdriver/testing');
+var chai = require('chai');
+var assert = chai.assert;
+var constants = require('../../lib/constants.js');
   
 test.describe('#Scores Page', function() {
     test.before(function() {
@@ -55,8 +60,9 @@ test.describe('#Scores Page', function() {
 
     test.describe('#Checking Links', function() {
       test.beforeEach(function() {
-        var url = "https://dodgers.trumedianetworks.com/baseball/scores?pc=%7B%22bbslvls%22%3A%22MLB%22%2C%22bgd%22%3A%222016-10-02%22%7D&is=true"
-        scoresPage.visit(url);
+        var newUrl = url + "/baseball/scores?pc=%7B%22bbslvls%22%3A%22MLB%22%2C%22bgd%22%3A%222016-10-02%22%7D&is=true"
+        console.log(newUrl);
+        scoresPage.visit(newUrl);
       });
 
       test.it('clicking into team goes to the correct page', function() {

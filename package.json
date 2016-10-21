@@ -11,9 +11,9 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "express": "^4.14.0",
-    "forever": "^0.15.2",
     "jsonfile": "^2.4.0",
     "mocha": "^3.1.2",
+    "mongoose": "^4.6.4",
     "pug": "^2.0.0-beta6",
     "selenium-webdriver": "^3.0.0-beta-3"
   }

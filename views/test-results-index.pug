@@ -1,0 +1,25 @@
+extend layouts/main
+block content
+  table.table.table-striped.table-hover.test-results-table
+    tr.section-header
+      th Test
+      th Port
+      th Status
+      th Passed
+      th Failed
+      th Started
+      th Ended
+    each testRun in data.testRuns
+      - var statusColor = (testRun.status == "ongoing") ? 'yellow' : 'green'
+      - var rowColor = (testRun.failedCount > 0) ? 'danger' : ''
+      tr(class=rowColor)
+        td
+          a(href='/test-results/'+testRun.id)= testRun.testName
+        td= testRun.portNumber
+        td(class=statusColor)= testRun.status
+        td= testRun.passedCount
+        td= testRun.failedCount
+        td= new Date(testRun.startedAt).toLocaleString()
+        td= testRun.endedAt ? new Date(testRun.endedAt).toLocaleString() : ""
+
+  p *Displaying Last 20 Tests

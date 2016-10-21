@@ -11,17 +11,17 @@ test.describe('#Standings Page', function() {
   });
 
   // Home/Standings Page
-  test.describe('#Standings Page', function() {
-    test.it('clicking the standings link goes to the correct page', function() {
+  test.describe('@ standings page', function() {
+    test.it('should have the correct page title', function() {
       navbar.goToStandingsPage();
 
       driver.getTitle().then(function(title) {
-        assert.equal( title, "Standings", 'Correct Title' );
+        assert.equal( title, "Standing");
       });
     });
 
     test.it('changing year shows correct data', function() {
-      standingsPage.changeYear(2014);
+      standingsPage.changeYear(2015);
       
       standingsPage.getTeamName(constants.divisions.al_east, 1).then(function(teamName) {
         assert.equal( teamName, 'Orioles', 'Correct Team in 1st');
@@ -32,7 +32,7 @@ test.describe('#Standings Page', function() {
     });
 
     test.it('changing season level shows correct data', function() {
-      standingsPage.changeSeasonLevel("AAA");
+      standingsPage.changeSeasonLevel("AA");
       
       standingsPage.getTeamName(constants.divisions.pcl_as, 1).then(function(teamName) {
         assert.equal( teamName, 'Redbirds (STL)', 'Correct Team in 1st');
@@ -46,9 +46,8 @@ test.describe('#Standings Page', function() {
       standingsPage.changeSeasonLevel("MLB");
       standingsPage.goToTeamPage(constants.divisions.al_east, 1).then(function() {
         
-        // TODO - change this to team page object
         driver.findElement(webdriver.By.css('h1.name')).getText().then(function(text) {
-          assert.equal( text, 'Baltimore Orioles', 'goes to the correct team page');
+          assert.equal( text, 'Los Angeles Dodgers', 'goes to the correct team page');
         });
       });
     });

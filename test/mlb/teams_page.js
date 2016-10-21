@@ -1,3 +1,9 @@
+var webdriver = require('selenium-webdriver');
+var test = require('selenium-webdriver/testing');
+var chai = require('chai');
+var assert = chai.assert;
+var constants = require('../../lib/constants.js');
+
 test.describe('#Teams Page', function() {
   test.before(function() {    
     var MlbTeamsPage = require('../../pages/mlb/teams_page.js');
@@ -173,11 +179,11 @@ test.describe('#Teams Page', function() {
         test.it('clicking show histogram link should open histogram modal', function() {
           statsPage.clickChartColumnsBtn();
           statsPage.clickTeamTableColumnHeader(14);
-          statsPage.clickHistogramLink();
-
-          statsPage.isModalDisplayed().then(function(isDisplayed) {
-            assert.equal(isDisplayed, true);
-          }); 
+          statsPage.clickHistogramLink().then(function() {
+            statsPage.isModalDisplayed().then(function(isDisplayed) {
+              assert.equal(isDisplayed, true);
+            });   
+          })
         });  
 
         test.it('clicking close histogram button should close histogram modal', function() {

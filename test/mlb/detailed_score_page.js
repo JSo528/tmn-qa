@@ -1,8 +1,14 @@
+var webdriver = require('selenium-webdriver');
+var test = require('selenium-webdriver/testing');
+var chai = require('chai');
+var assert = chai.assert;
+var constants = require('../../lib/constants.js');
+
 test.describe('#DetailedScore Page', function() {
   test.before(function() {
     var MlbDetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
     detailedScorePage = new MlbDetailedScorePage(driver);
-    detailedScorePage.visit('https://dodgers.trumedianetworks.com/baseball/game-batting/NYY-BAL/2016-10-02/449283?f=%7B%7D&is=true');
+    detailedScorePage.visit(url+'baseball/game-batting/NYY-BAL/2016-10-02/449283');
   });
 
   test.describe('#Section: Batting', function() {

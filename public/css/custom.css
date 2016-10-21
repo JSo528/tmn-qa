@@ -1,0 +1,86 @@
+body {
+  background-color: #ccc;
+}
+
+#content {
+  margin-top: 50px;
+}
+
+.center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.green {
+  color: #5CB85C;
+}
+
+.yellow {
+  color: #F0AD4E;
+}
+
+.red {
+  color: #CE4844;
+}
+
+// Test Results Page
+#testResultsPanel {
+  margin: 0 auto;
+}
+
+#testResultsPanel img {
+  width: 100%;
+}
+
+
+.error-div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  white-space: pre;
+}
+
+.error-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.error-body {
+  padding-left: 20px;
+}
+
+.error-panel .row {
+  white-space: pre-line;
+  padding-bottom: 10px;
+}
+
+.error-panel .panel-heading div {
+  display: inline-block;
+}
+.error-panel .panel-heading .actions {
+  float: right;
+}
+
+/* Test Initiator Page */
+#main {
+  width: 400px;
+  margin: 0 auto;
+}
+
+/* Test Results Page */
+.test-results-table {
+  background-color: white;
+}
+
+.test-results-table .section-header {
+  border-bottom-color: rgb(60, 196, 214);
+  border-bottom-style: solid;
+  border-bottom-width: 2;
+}
+
+.test-results-table .section-header th {
+  background-color: rgb(42, 100, 150);
+  color: white;
+}

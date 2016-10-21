@@ -1,0 +1,17 @@
+extend layouts/main
+block content
+  #main.panel.panel-default
+    .panel-heading New Test
+    .panel-body
+      form(class='form-horizontal' role='form' action='/run-tests' method='post')
+        .form-group
+          label(for='testNumbe').col-sm-3.control-label Test
+          .col-sm-9
+            select(id='testNumbe' name='testType').form-control
+              each test in tests
+                option(value=test.id data-test-env=test.environment)= test.name
+        .form-group
+          label(for='portNumber').col-sm-3.control-label Port
+          .col-sm-9
+            input.form-control(type='number' id='portNumber' name='portNumber')
+        button.btn.btn-primary.btn-block(type='submit') Run Tests
