@@ -3,15 +3,53 @@ block content
   #main.panel.panel-default
     .panel-heading New Test
     .panel-body
+      .error-container
+        .alert.alert-danger
+          p#errorMessage
       form(class='form-horizontal' role='form' action='/run-tests' method='post')
         .form-group
-          label(for='testNumbe').col-sm-3.control-label Test
+          label(for='testNumber').col-sm-3.control-label Test
           .col-sm-9
-            select(id='testNumbe' name='testType').form-control
+            select(id='testNumber' name='testNumber').form-control
               each test in tests
                 option(value=test.id data-test-env=test.environment)= test.name
-        .form-group
+        .form-group#portNumberGroup
           label(for='portNumber').col-sm-3.control-label Port
           .col-sm-9
             input.form-control(type='number' id='portNumber' name='portNumber')
         button.btn.btn-primary.btn-block(type='submit') Run Tests
+
+  script.
+    var MIN_PORT = 3001
+    var MAX_PORT = 3007
+
+    $('#testNumber').on('change', function() {
+      if (getEnv() == 'production') {
+        $('#portNumberGroup').hide();
+      } else {
+        $('#portNumberGroup').show();
+      }
+    });
+
+    $('form').submit(function() {
+      var portNumber = Number($('#portNumber').val());
+
+      if(getEnv() == 'staging' && (portNumber < MIN_PORT || portNumber > MAX_PORT)) {
+        console.log("*1")
+        $('#errorMessage').text('Please enter a valid port number: '+ MIN_PORT + ' - ' + MAX_PORT);
+        $('.error-container').show();
+        return false;
+      } else if (getEnv() == 'production') {
+        console.log("*2")
+        $('#portNumber').val("");
+        return true;
+      } else {
+        console.log("*3")
+        return true;
+      };
+    });
+
+    function getEnv() {
+      var testId = $('#testNumber').val();
+      return $('option[value="'+testId+'"]').data('test-env');
+    }

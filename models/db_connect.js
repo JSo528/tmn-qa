@@ -18,6 +18,6 @@ exports.connect = function(env, callback) {
       mongoose.connect(credentials.mongo.production.connectionString, opts);   
       break;
     default:
-      throw new Error(' Unknown execution environment: ' + app.get('env')); 
+      throw new Error(' Unknown execution environment: ' + env); 
   }
 }

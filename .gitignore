@@ -7,6 +7,7 @@ node_modules
 tmn-qa.iml
 public/data/*
 lib/credentials.js
+log
 
 # exception to the rule
 !public/data/.gitkeep 

@@ -8,6 +8,9 @@ var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 
+// Locators
+var TEAM_NAME = By.css('h1.name');
+
 function TeamsPage(driver) {
   BasePage.call(this, driver);
 };
@@ -57,6 +60,10 @@ TeamsPage.prototype.goToSubSection = function(section) {
 
   var section = By.xpath(`.//nav[@class='navbar navbar-default navbar-static-top report-nav navbar-gray']/div/div/ul/li[${linkNum}]/a`);
   return this.click(section);
+}
+
+TeamsPage.prototype.getTeamName = function() {
+  return this.getText(TEAM_NAME);
 }
 
 module.exports = TeamsPage;

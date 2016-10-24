@@ -4,11 +4,18 @@ var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../lib/constants.js');
 
+// Page Objects
+var Navbar = require('../../pages/mlb/navbar.js');
+var DetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
+var navbar, detailedScorePage;
+
+// Page Specific
+var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283'
+
 test.describe('#DetailedScore Page', function() {
   test.before(function() {
-    var MlbDetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
-    detailedScorePage = new MlbDetailedScorePage(driver);
-    detailedScorePage.visit(url+'baseball/game-batting/NYY-BAL/2016-10-02/449283');
+    detailedScorePage = new DetailedScorePage(driver);
+    detailedScorePage.visit(url+gameURL);
   });
 
   test.describe('#Section: Batting', function() {
@@ -461,8 +468,6 @@ test.describe('#DetailedScore Page', function() {
         scorePitchByPitchPage.getVideoPlaylistText(1,2).then(function(text) {
           assert.equal(text, "LHB M. Bourn Vs RHP L. Cessa (NYY)");
         });          
-
-       
       });        
 
       test.it('clicking close on video playlist closes modal', function() {

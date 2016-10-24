@@ -14,6 +14,15 @@ var TestRun = require('./models/test_run.js');
 app.use(express.static(__dirname + '/public'));
 app.use(require('body-parser').urlencoded({ extended: true }));
 
+switch(app.get('env')) {
+  case 'development':
+    app.use(require('morgan')('dev'));
+    break;
+  case 'production':
+    app.use(require('express-logger')({ path: __dirname + '/log/requests.log' }));
+    break;
+}
+
 // Routes
 var constants = require('./lib/constants.js')
 
@@ -59,7 +68,7 @@ app.get('/test-results/:id', function(req, res) {
 
 app.post('/run-tests', function(req, res) {
   var testRun = new TestRun({
-    testNumber: req.body.testType,
+    testNumber: req.body.testNumber,
     portNumber: req.body.portNumber,
     startedAt: new Date().getTime(),
     status: 'ongoing'

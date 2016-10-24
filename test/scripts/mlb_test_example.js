@@ -1,16 +1,11 @@
-var test = require('selenium-webdriver/testing');
+'use strict';
+
 var util = require('../../test/util');
+var startUrl = 'https://dodgers.trumedianetworks.com'
 
-test.describe('Test Run', function() {
-  util.importTestSetup(this);
+var tests = [
+  './mlb/login_page',
+  './mlb/test_page'
+]
 
-  test.before(function() {    
-    var Navbar = require('../../pages/mlb/navbar.js');
-    navbar = new Navbar(driver);
-    url = 'https://dodgers.trumedianetworks.com';
-  });
-
-  util.importTest("LoginPage", './mlb/login_page');
-  util.importTest("TestPage", './mlb/test_page');
-});
- 
+util.generateTests('Test Run', tests, startUrl); 

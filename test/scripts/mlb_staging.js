@@ -1,21 +1,16 @@
-var test = require('selenium-webdriver/testing');
+'use strict';
+
 var util = require('../../test/util');
+var startUrl = 'https://dodgers-staging.trumedianetworks.com:' + process.env.PORT_NUMBER;
 
-test.describe('MLB Staging Site', function() {
-  util.importTestSetup(this);
+var tests = [
+  './mlb/login_page'
+  './mlb/standings_page',
+  './mlb/scores_page',
+  './mlb/detailed_score_page',
+  './mlb/teams_page',
+  './mlb/staging_data'
+]
 
-  test.before(function() {
-    var Navbar = require('../../pages/mlb/navbar.js');
-    navbar = new Navbar(driver);
-    url = 'https://dodgers-staging.trumedianetworks.com:' + testRun.portNumber;
-  });
-
-  util.importTest("LoginPage", './mlb/login_page');
-  util.importTest("StandingsPage", './mlb/standings_page');
-  util.importTest("ScoresPage", './mlb/scores_page');
-  util.importTest("DetailedScorePage", './mlb/detailed_score_page');
-  util.importTest("TeamsPage", './mlb/teams_page');
-  // util.importTest("StagingData", './mlb/staging_data');
-});
- 
+util.generateTests('MLB Staging Site', tests, startUrl); 
 

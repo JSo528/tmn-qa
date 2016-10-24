@@ -1,19 +1,15 @@
-var test = require('selenium-webdriver/testing');
+'use strict';
+
 var util = require('../../test/util');
+var startUrl = 'https://dodgers.trumedianetworks.com'
 
-test.describe('MLB Production Site', function() {
-  util.importTestSetup(this);
+var tests = [
+  './mlb/login_page',
+  './mlb/standings_page',
+  './mlb/scores_page',
+  // './mlb/detailed_score_page',
+  // './mlb/teams_page',
+]
 
-  test.before(function() {    
-    var Navbar = require('../../pages/mlb/navbar.js');
-    navbar = new Navbar(driver);
-    url = 'https://dodgers.trumedianetworks.com';
-  });
+util.generateTests('MLB Production Site', tests, startUrl); 
 
-  util.importTest("LoginPage", './mlb/login_page');
-  util.importTest("StandingsPage", './mlb/standings_page');
-  util.importTest("ScoresPage", './mlb/scores_page');
-  util.importTest("DetailedScorePage", './mlb/detailed_score_page');
-  util.importTest("TeamsPage", './mlb/teams_page');
-});
- 

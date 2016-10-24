@@ -26,6 +26,10 @@ body {
   color: #CE4844;
 }
 
+.error-container {
+  display: none;
+}
+
 // Test Results Page
 #testResultsPanel {
   margin: 0 auto;

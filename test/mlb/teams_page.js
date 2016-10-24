@@ -4,12 +4,17 @@ var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../lib/constants.js');
 
-test.describe('#Teams Page', function() {
-  test.before(function() {    
-    var MlbTeamsPage = require('../../pages/mlb/teams_page.js');
-    teamsPage = new MlbTeamsPage(driver);
+// Page Objects
+var Navbar = require('../../pages/mlb/navbar.js');
+var TeamsPage = require('../../pages/mlb/teams_page.js');
+var StatsPage = require('../../pages/mlb/teams/stats_page.js');
+var ScatterPlotPage = require('../../pages/mlb/teams/scatter_plot_page');
+var navbar, teamsPage, statsPage, scatterPlotPage;
 
-    var StatsPage = require('../../pages/mlb/teams/stats_page.js');
+test.describe('#Teams Page', function() {
+  test.before(function() {  
+    navbar  = new Navbar(driver);  
+    teamsPage = new TeamsPage(driver);
     statsPage = new StatsPage(driver);
   });
 
@@ -32,61 +37,56 @@ test.describe('#Teams Page', function() {
       test.describe("#sorting", function() {
         test.it('should be sorted initially by BA descending', function() {
           var teamOneBA, teamTwoBA, teamTenBA;
+          statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
+            teamOneBA = stat;
+          });
 
-          Promise.all([
-            statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
-              teamOneBA = stat;
-            }),
-            statsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
-              teamTwoBA = stat;
-            }),
-            statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
-              teamTenBA = stat;
-            })            
-          ]).then(function() {
+          statsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
+            teamTwoBA = stat;
+          });
+
+          statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
+            teamTenBA = stat;
+
             assert.isAtLeast(teamOneBA, teamTwoBA, "team one's BA is >= team two's BA");
             assert.isAtLeast(teamTwoBA, teamTenBA, "team two's BA is >= team ten's BA");
-          });
+          });            
         });
 
         test.it('clicking on the BA column header should reverse the sort', function() {
           var teamOneBA, teamTwoBA, teamTenBA;
           statsPage.clickTeamTableColumnHeader(battingAverageCol);
+          statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
+            teamOneBA = stat;
+          });
 
-          Promise.all([
-            statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
-              teamOneBA = stat;
-            }),
-            statsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
-              teamTwoBA = stat;
-            }),
-            statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
-              teamTenBA = stat;
-            })            
-          ]).then(function() {
+          statsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
+            teamTwoBA = stat;
+          });
+
+          statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
+            teamTenBA = stat;
             assert.isAtMost(teamOneBA, teamTwoBA, "team one's BA is <= team two's BA");
             assert.isAtMost(teamTwoBA, teamTenBA, "team two's BA is <= team ten's BA");
-          });          
+          });
         });
 
         test.it('clicking on the W column header should sort the table by Wins', function() {
           var teamOneBA, teamTwoBA, teamTenBA;
           statsPage.clickTeamTableColumnHeader(winsCol);
+          statsPage.getTeamTableStat(1,winsCol).then(function(stat) {
+            teamOneWs = stat;
+          });
 
-          Promise.all([
-            statsPage.getTeamTableStat(1,winsCol).then(function(stat) {
-              teamOneWs = stat;
-            }),
-            statsPage.getTeamTableStat(2,winsCol).then(function(stat) {
-              teamTwoWs = stat;
-            }),
-            statsPage.getTeamTableStat(10,winsCol).then(function(stat) {
-              teamTenWs = stat;
-            })            
-          ]).then(function() {
+          statsPage.getTeamTableStat(2,winsCol).then(function(stat) {
+            teamTwoWs = stat;
+          });
+
+          statsPage.getTeamTableStat(10,winsCol).then(function(stat) {
+            teamTenWs = stat;
             assert.isAtMost(teamOneWs, teamTwoWs, "team one's Wins is >= team two's Wins");
             assert.isAtMost(teamTwoWs, teamTenWs, "team two's Wins is >= team ten's Wins");
-          });          
+          });
         });  
 
         test.after(function() {
@@ -386,7 +386,6 @@ test.describe('#Teams Page', function() {
 
     test.describe('#SubSection: Scatter Plot', function() {
       test.before(function() {
-        var ScatterPlotPage = require('../../pages/mlb/teams/scatter_plot_page');
         scatterPlotPage = new ScatterPlotPage(driver);
       });
 

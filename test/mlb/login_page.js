@@ -4,9 +4,12 @@ var chai = require('chai');
 var assert = chai.assert;
 var credentials = require('../../lib/credentials.js');
 
+// Page Objects
+var LoginPage = require('../../pages/login_page.js');
+var loginPage;
+
 test.describe('#Login Page', function() {
   test.before(function() {
-    var LoginPage = require('../../pages/login_page.js');
     loginPage = new LoginPage(driver);
   });
 
@@ -24,4 +27,4 @@ test.describe('#Login Page', function() {
       assert.notMatch(url, /auth\/loginPage/, 'Correct URL');
     });
   });
-});
+});  

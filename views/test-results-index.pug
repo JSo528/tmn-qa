@@ -10,7 +10,17 @@ block content
       th Started
       th Ended
     each testRun in data.testRuns
-      - var statusColor = (testRun.status == "ongoing") ? 'yellow' : 'green'
+      - var statusColor;
+      case testRun.status
+        when 'ongoing'
+          - statusColor = 'yellow';
+        when 'error'
+          - statusColor = 'red';
+        when 'success'
+          - statusColor = 'green';
+        default
+          - statusColor = 'green';
+      
       - var rowColor = (testRun.failedCount > 0) ? 'danger' : ''
       tr(class=rowColor)
         td

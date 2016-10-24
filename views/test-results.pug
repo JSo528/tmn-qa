@@ -6,14 +6,20 @@ block content
         .alert.alert-danger= errorMessage
       else
         - var endedAt = testRun.endedAt ? new Date(testRun.endedAt).toLocaleString() : ""
-        if testRun.status == "ongoing"
-          .alert.alert-warning
-            strong Status: 
-            span#testStatus= testRun.status
-        else 
-          .alert.alert-success
-            strong Status: 
-            = testRun.status
+        - var alertClass;
+        case testRun.status 
+          when 'ongoing'
+            - alertClass = 'alert-warning'
+          when 'error'
+            - alertClass = 'alert-danger'
+          when 'success'
+            - alertClass = 'alert-success'
+          default
+            - alertClass = 'alert-success'
+        
+        .alert(class=alertClass)
+          strong Status: 
+          span#testStatus= testRun.status
         .panel.panel-primary
           .panel-heading Test Summary
           .panel-body
