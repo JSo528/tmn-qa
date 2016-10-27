@@ -40,11 +40,11 @@ LoginPage.prototype.login = function(email, password) {
   var defer = Promise.defer();
   var thiz = this;
 
-  this.sendKeys(EMAIL_INPUT, email)
-  this.sendKeys(PASSWORD_INPUT, password)
+  this.sendKeys(EMAIL_INPUT, email, 30000)
+  this.sendKeys(PASSWORD_INPUT, password, 30000)
   this.click(LOGIN_BUTTON)
     
-  this.driver.wait(Until.stalenessOf(this.driver.findElement(BODY_TAG)), 10000).then(function() {
+  this.driver.wait(Until.stalenessOf(this.driver.findElement(BODY_TAG)), 30000).then(function() {
     console.log('Login submitted');
     return defer.fulfill(true);
   }, function(){

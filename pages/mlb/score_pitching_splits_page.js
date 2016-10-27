@@ -11,6 +11,7 @@ var Promise = require('selenium-webdriver').promise;
 // Locators
 var FILTER_SELECT = By.id('s2id_filterBaseballPitcherForGame');
 var FILTER_INPUT = By.id('s2id_autogen48_search');
+var TABLES = By.css('table');
 
 function ScorePitchingSplitsPage(driver) {
   BasePage.call(this, driver);
@@ -38,5 +39,7 @@ ScorePitchingSplitsPage.prototype.getPitcherName = function(playerNum) {
 ScorePitchingSplitsPage.prototype.addPitcherFilter = function(pitcher) {
   return this.changeDropdown(FILTER_SELECT, FILTER_INPUT, pitcher);
 }
+
+ScorePitchingSplitsPage.prototype.comparisonLocator = TABLES;
 
 module.exports = ScorePitchingSplitsPage;

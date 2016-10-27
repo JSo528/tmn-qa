@@ -48,8 +48,8 @@ test.describe('#Teams Page', function() {
           statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
             teamTenBA = stat;
 
-            assert.isAtLeast(teamOneBA, teamTwoBA, "team one's BA is >= team two's BA");
-            assert.isAtLeast(teamTwoBA, teamTenBA, "team two's BA is >= team ten's BA");
+            assert.isAtLeast(teamOneBA, teamTwoBA, "team 1's BA is >= team 2's BA");
+            assert.isAtLeast(teamTwoBA, teamTenBA, "team 2's BA is >= team 10's BA");
           });            
         });
 
@@ -66,8 +66,8 @@ test.describe('#Teams Page', function() {
 
           statsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
             teamTenBA = stat;
-            assert.isAtMost(teamOneBA, teamTwoBA, "team one's BA is <= team two's BA");
-            assert.isAtMost(teamTwoBA, teamTenBA, "team two's BA is <= team ten's BA");
+            assert.isAtMost(teamOneBA, teamTwoBA, "team 1's BA is <= team 2's BA");
+            assert.isAtMost(teamTwoBA, teamTenBA, "team 2's BA is <= team 10's BA");
           });
         });
 
@@ -84,8 +84,8 @@ test.describe('#Teams Page', function() {
 
           statsPage.getTeamTableStat(10,winsCol).then(function(stat) {
             teamTenWs = stat;
-            assert.isAtMost(teamOneWs, teamTwoWs, "team one's Wins is >= team two's Wins");
-            assert.isAtMost(teamTwoWs, teamTenWs, "team two's Wins is >= team ten's Wins");
+            assert.isAtLeast(teamOneWs, teamTwoWs, "team 1's Wins is >= team 2's Wins");
+            assert.isAtLeast(teamTwoWs, teamTenWs, "team 2's Wins is >= team 10's Wins");
           });
         });  
 

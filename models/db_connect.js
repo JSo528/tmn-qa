@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'); 
 var opts = { server: { socketOptions: { keepAlive: 1 } } }; 
 var credentials = require('../lib/credentials.js');
+mongoose.Promise = global.Promise;
 
 exports.connect = function(env, callback) {
   console.log(env)

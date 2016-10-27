@@ -18,6 +18,10 @@ var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamStatPitching");
 var REPORT_INPUT = By.xpath(".//div[@id='select2-drop']/div/input");
 var LOADING_CONTAINER = By.id('loadingContainer');
 
+var AWAY_BATTING_TABLE = By.xpath(".//div[@id='tableBaseballGamePlayerBattingStatsAwayContainer']/table");
+var AWAY_PITCHING_TABLE = By.xpath(".//div[@id='tableBaseballGamePlayerPitchingStatsAwayContainer']/table");
+var TABLES = By.css('table');
+
 function DetailedScorePage(driver) {
   BasePage.call(this, driver);
 };
@@ -102,5 +106,43 @@ DetailedScorePage.prototype.getPlayerPitchingStat = function(homeOrAway, row, co
   var element = By.xpath(`.//div[@id='${tableID}']/table/tbody/tr[${row}]/td[${col}]`);
   return this.getText(element, 30000);
 };
+
+DetailedScorePage.prototype.battingReports = [
+    "Counting",
+    "Pitch Rates",
+    "Pitch Counts",
+    "Pitch Types",
+    "Pitch Type Counts",
+    "Pitch Locations",
+    "Pitch Calls",
+    "Hit Types",
+    "Hit Locations",
+    "Home Runs",
+    "Exit Data"
+  ]
+
+DetailedScorePage.prototype.pitchingReports = [
+    "Traditional",
+    "Rate",
+    "Counting",
+    "Pitch Rates",
+    "Pitch Counts",
+    "Pitch Types",
+    "Pitch Type Counts",
+    "Pitch Locations",
+    "Pitch Calls",
+    "Hit Types",
+    "Hit Locations",
+    "Home Runs",
+    "Movement",
+    "Bids",
+    "Baserunning",
+    "Exit Data"
+  ]  
+
+DetailedScorePage.prototype.comparsionLocator = TABLES;
+DetailedScorePage.prototype.battingLastLocator = AWAY_BATTING_TABLE;
+DetailedScorePage.prototype.pitchingLastLocator = AWAY_PITCHING_TABLE;
+
 
 module.exports = DetailedScorePage;

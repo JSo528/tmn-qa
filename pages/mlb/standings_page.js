@@ -20,7 +20,7 @@ var YEAR_SELECT = By.id('s2id_pageControlBaseballYear');
 var YEAR_INPUT = By.id('s2id_autogen1_search');
 var SEASON_LEVEL_SELECT = By.id('s2id_pageControlBaseballSeasonLevelSingle');
 var SEASON_LEVEL_INPUT = By.id('s2id_autogen2_search');
-
+var TABLES = By.css('table');
 
 function StandingsPage(driver) {
   BasePage.call(this, driver)
@@ -56,6 +56,10 @@ StandingsPage.prototype.getPythWins = function(division, teamRank) {
   return this.getText(team);
 }
 
+StandingsPage.prototype.getSeasonLevel = function() {
+  return this.getText(SEASON_LEVEL_SELECT);
+}
+
 StandingsPage.prototype.goToTeamPage = function(division, teamRank) {
   var divisionID = DIVISION_IDS[division]
   var rowNumber = teamRank + 1
@@ -63,5 +67,9 @@ StandingsPage.prototype.goToTeamPage = function(division, teamRank) {
 
   return this.click(team);
 }
+
+// Last Locator gets passed into functions to notify that the page isn't ready until this locator is enabled
+StandingsPage.prototype.comparisonLocator = TABLES;
+StandingsPage.prototype.lastLocator = SEASON_LEVEL_SELECT;
 
 module.exports = StandingsPage;

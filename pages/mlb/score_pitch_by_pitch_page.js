@@ -131,4 +131,7 @@ ScorePitchByPitch.prototype.getPitchVisualsPitchCount = function() {
  return this.getElementCount(PITCH_VISUALS_PITCH_CIRCLE);
 };
 
+ScorePitchByPitch.prototype.comparisonDataContainer = DATA_CONTAINER;
+ScorePitchByPitch.prototype.lastLocator = DATA_CONTAINER;
+
 module.exports = ScorePitchByPitch;

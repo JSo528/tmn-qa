@@ -11,5 +11,5 @@ var tests = [
   // './mlb/teams_page',
 ]
 
-util.generateTests('MLB Production Site', tests, startUrl); 
+util.generateTests('[MLB Production]', tests, startUrl); 
 

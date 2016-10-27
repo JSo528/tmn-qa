@@ -3,6 +3,7 @@
 var Promise = require('selenium-webdriver').promise;
 var Until = require('selenium-webdriver').until;
 var Key = require('selenium-webdriver').Key;
+var By = require('selenium-webdriver').By;
 
 var WAIT_TIME_PRESENT = 10000;
 var WAIT_TIME_BEFORE_RETRY = 500;
@@ -276,6 +277,22 @@ BasePage.prototype.getText = function(locator, timeout) {
   return d.promise;
 };
 
+BasePage.prototype.getTitle = function() {
+  var d = Promise.defer();
+  this.driver.getTitle().then(function(title) {
+    d.fulfill(title);
+  })
+  return d.promise;
+};
+
+BasePage.prototype.getCurrentUrl = function() {
+  var d = Promise.defer();
+  this.driver.getCurrentUrl().then(function(url) {
+    d.fulfill(url);
+  })
+  return d.promise;
+};
+
 BasePage.prototype.getCssValue = function(locator, cssValue) {
   var d = Promise.defer();
   this.waitForEnabled(locator);
@@ -297,7 +314,7 @@ BasePage.prototype.getAttribute = function(locator, attribute) {
 BasePage.prototype.getElementCount = function(locator) {
   var d = Promise.defer();
   this.driver.findElements(locator).then(function(elements) {
-      d.fulfill(elements.length);
+    d.fulfill(elements.length);
   })
 
   return d.promise; 

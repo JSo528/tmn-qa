@@ -41,7 +41,7 @@ app.get('/test-results/', function(req, res) {
     .exec(function(err, testRuns) {
       data.testRuns = testRuns.map(function(testRun) {
         delete testRun.errorObjects;
-        testRun.testName = constants.tests[testRun.testNumber].name
+        testRun.testName = constants.tests[testRun.testNumber].name;
         return testRun;
       });
 
@@ -52,6 +52,7 @@ app.get('/test-results/', function(req, res) {
 });
 
 app.get('/test-results/:id', function(req, res) {
+  var jsdiff = require('diff');
   TestRun.findById(req.params.id, function(err, testRun) {
     if (err) {
       res.render('test-results', {
@@ -59,6 +60,13 @@ app.get('/test-results/:id', function(req, res) {
       });    
     } else {
       testRun.testName = constants.tests[testRun.testNumber].name
+      
+      testRun.errorObjects.map(function(error) {
+        if (error.expectedValue && error.actualValue) {
+          error.diff = jsdiff.diffWordsWithSpace(error.expectedValue, error.actualValue);  
+        }
+      })
+
       res.render('test-results', {
         testRun: testRun
       });    

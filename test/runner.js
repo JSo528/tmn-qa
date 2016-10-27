@@ -10,9 +10,7 @@ module.exports = function(testRun, env) {
   fs.mkdirSync('public/data/'+testRun.id);
 
   // create system commmand
-  // have to set the display on ec2 instance
-  cmd = (env == 'development') ? '' : 'Xvfb :99 -screen 0 1024x768x24 -ac 2>&1 >/dev/null & export DISPLAY=:99;';
-  cmd += 'env TEST_RUN_ID=' + testRun.id;
+  cmd = 'env TEST_RUN_ID=' + testRun.id;
   if (testRun.portNumber) {
     cmd += ' PORT_NUMBER='+ testRun.portNumber;
   }
@@ -22,7 +20,16 @@ module.exports = function(testRun, env) {
   // execute system command to start mocha test
   var exec = require('child_process').exec;
   exec(cmd, function(error, stdout, stderr) {
-    if (error) {
+    console.log('** child_process callback START **');
+    console.log('** child_process error: **');
+    console.log(error);
+    console.log('** child_process stderr: **');
+    console.log(stderr);
+    console.log('** child_process stdout: **');
+    console.log(stdout);
+    console.log('** child_process callback END **');
+    // using stderr instead of error, bc error returns true for any failing test
+    if (stderr) {
       testRun.update({status: 'error'}).exec();
     }
   });  

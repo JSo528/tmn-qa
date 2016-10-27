@@ -60,13 +60,52 @@ block content
               .row
                 .col-sm-2.bold Message:
                 .col-sm-10= error.errorMessage                      
-              .row
-                .col-sm-2.bold Stack
-                .col-sm-10= error.stack
+              if error.expectedValue && error.actualValue
+                .row
+                  .col-sm-2.bold Actual
+                  .col-sm-10
+                    each diff in error.diff
+                      if diff.added
+                        span.green= diff.value
+                      else if diff.removed == undefined
+                        span= diff.value              
+                .row
+                  .col-sm-2.bold Expected
+                  .col-sm-10
+                    each diff in error.diff
+                      if diff.removed
+                        span.red= diff.value
+                      else if diff.added == undefined
+                        span= diff.value
+
+
               .row
                 .col-sm-12
-                  img.error-img(src="/data/"+testRun.id+"/"+error.imgFile)
+                  .dividing-line
+              .row
+                if error.imgFiles.length == 1
+                  - imgFile = error.imgFiles[0]
+                  .col-sm-12
+                    .url-container
+                      a.url(href=imgFile.url)= imgFile.url
+                    img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
+                else
+                  each imgFile in error.imgFiles
+                    .col-sm-6
+                      .url-container
+                        a.url(href=imgFile.url)= imgFile.url
+                      img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
           - errorCount += 1
+
+  .modal.fade#imageModal(tabindex="-1", role="dialog")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true") &times
+          h4.title
+        .modal-body
+          img
 
   script.
     $('.expander').on('click', function() {
@@ -91,3 +130,12 @@ block content
         window.location.reload();
       }
     }, 15000);
+
+
+    $('.error-img').on('click', function() {
+      var src = $(this).attr('src');
+      $('#imageModal img').attr('src', src);
+      var msg = $(this).closest('.panel').find('.main').text();
+      $('#imageModal .title').text(msg);
+      $('#imageModal').focus();
+    })

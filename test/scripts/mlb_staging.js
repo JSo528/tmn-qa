@@ -9,8 +9,8 @@ var tests = [
   './mlb/scores_page',
   './mlb/detailed_score_page',
   './mlb/teams_page',
-  './mlb/staging_data'
+  './mlb/data_comparison'
 ]
 
-util.generateTests('MLB Staging Site', tests, startUrl); 
+util.generateTests('[MLB Staging]', tests, startUrl); 
 

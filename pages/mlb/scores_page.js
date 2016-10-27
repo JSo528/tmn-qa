@@ -14,6 +14,7 @@ var DATE_INPUT = By.id('pageControlBaseballGameDate');
 var SEASON_LEVEL_SELECT = By.id('s2id_pageControlBaseballSeasonLevelSingle');
 var SEASON_LEVEL_INPUT = By.id('s2id_autogen1_search');
 var CALENDAR = By.className('pika-single');
+var BOX_SCORES = By.className('box-score');
 
 function ScoresPage(driver) {
   BasePage.call(this, driver);
@@ -153,5 +154,8 @@ ScoresPage.prototype.clickBoxScore = function(boxScoreNum) {
   var link = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]`)
   return this.click(link);
 };
+
+ScoresPage.prototype.comparisonLocator = BOX_SCORES;
+ScoresPage.prototype.lastLocator = SEASON_LEVEL_SELECT;
 
 module.exports = ScoresPage;

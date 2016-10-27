@@ -8,6 +8,8 @@ var testRunSchema = mongoose.Schema({
   startedAt: Date,
   endedAt: Date,
   status: String,
+  expectedValue: String,
+  actualValue: String,
   errorObjects: {type: Array, default: []}
 });
 

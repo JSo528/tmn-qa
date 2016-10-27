@@ -67,6 +67,12 @@ body {
   float: right;
 }
 
+.dividing-line {
+  border-top: 1px solid #888;
+  padding-left 10px;
+  padding-right 10px;
+}
+
 /* Test Initiator Page */
 #main {
   width: 400px;
@@ -87,4 +93,19 @@ body {
 .test-results-table .section-header th {
   background-color: rgb(42, 100, 150);
   color: white;
+}
+
+.url-container {
+  padding-bottom: 10px;
+}
+.url {
+  word-wrap: break-word;
+}
+
+#imageModal .modal-dialog {
+  width: 90%;
+}
+
+#imageModal img {
+  width: 100%;
 }

@@ -10,6 +10,9 @@ var Promise = require('selenium-webdriver').promise;
 
 // Locators
 var TEAM_NAME = By.css('h1.name');
+var BATTING_REPORT_SELECT = By.id('s2id_reportNavBaseballTeamsStatBatting');
+var STATS_TABLE = By.xpath(".//div[@id='tableBaseballTeamsStatsContainer']/table");
+var STREAKS_TABLE = By.xpath(".//div[2]/div/div/div/div/table");
 
 function TeamsPage(driver) {
   BasePage.call(this, driver);
@@ -65,5 +68,8 @@ TeamsPage.prototype.goToSubSection = function(section) {
 TeamsPage.prototype.getTeamName = function() {
   return this.getText(TEAM_NAME);
 }
+
+TeamsPage.prototype.statsTable = STATS_TABLE;
+TeamsPage.prototype.streaksTable = STREAKS_TABLE;
 
 module.exports = TeamsPage;
