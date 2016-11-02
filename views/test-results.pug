@@ -5,7 +5,6 @@ block content
       if errorMessage
         .alert.alert-danger= errorMessage
       else
-        - var endedAt = testRun.endedAt ? new Date(testRun.endedAt).toLocaleString() : ""
         - var alertClass;
         case testRun.status 
           when 'ongoing'
@@ -38,10 +37,10 @@ block content
                 td= testRun.failedCount
               tr
                 th Start
-                td= new Date(testRun.startedAt).toLocaleString()
+                td#startTime(data-time=testRun.startedAt)
               tr
                 th Finish
-                td= endedAtText
+                td#endTime(data-time=testRun.endedAt)
 
         - var errorCount = 1
         each error in testRun.errorObjects
@@ -60,7 +59,7 @@ block content
               .row
                 .col-sm-2.bold Message:
                 .col-sm-10= error.errorMessage                      
-              if error.expectedValue && error.actualValue
+              if error.diff
                 .row
                   .col-sm-2.bold Actual
                   .col-sm-10
@@ -77,7 +76,9 @@ block content
                         span.red= diff.value
                       else if diff.added == undefined
                         span= diff.value
-
+              .row
+                .col-sm-2.bold Stack:
+                .col-sm-10= error.stack                                              
 
               .row
                 .col-sm-12
@@ -87,14 +88,16 @@ block content
                   - imgFile = error.imgFiles[0]
                   .col-sm-12
                     .url-container
-                      a.url(href=imgFile.url)= imgFile.url
-                    img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
+                      a.url(href=imgFile.url target='_blank')= imgFile.url
+                    if imgFile.name
+                      img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
                 else
                   each imgFile in error.imgFiles
                     .col-sm-6
                       .url-container
-                        a.url(href=imgFile.url)= imgFile.url
-                      img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
+                        a.url(href=imgFile.url target='_blank')= imgFile.url
+                      if imgFile.name
+                        img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
           - errorCount += 1
 
   .modal.fade#imageModal(tabindex="-1", role="dialog")
@@ -139,3 +142,13 @@ block content
       $('#imageModal .title').text(msg);
       $('#imageModal').focus();
     })
+
+    var startTime = $('#startTime').data('time');
+    $('#startTime').text(moment(startTime).local().format('dddd, L LT'));
+
+    var endTime = $('#endTime').data('time');
+    if (endTime != '') {
+      $('#endTime').text(moment(endTime).local().format('dddd, L LT'));
+    }
+    
+    

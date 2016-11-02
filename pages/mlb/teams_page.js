@@ -11,8 +11,13 @@ var Promise = require('selenium-webdriver').promise;
 // Locators
 var TEAM_NAME = By.css('h1.name');
 var BATTING_REPORT_SELECT = By.id('s2id_reportNavBaseballTeamsStatBatting');
+var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatPitching");
+var CATCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatTeamcatching");
+var STATCAST_FIELDING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatStatcast");
+
 var STATS_TABLE = By.xpath(".//div[@id='tableBaseballTeamsStatsContainer']/table");
 var STREAKS_TABLE = By.xpath(".//div[2]/div/div/div/div/table");
+
 
 function TeamsPage(driver) {
   BasePage.call(this, driver);
@@ -23,26 +28,31 @@ TeamsPage.prototype.constructor = TeamsPage;
 
 
 TeamsPage.prototype.goToSection = function(section) {
-  var linkNum; 
+  var linkNum, lastLocator; 
   switch (section) {
     case "Batting":
       linkNum = 1;
+      lastLocator = BATTING_REPORT_SELECT;
       break;
     case "Pitching":
       linkNum = 2;
+      lastLocator = PITCHING_REPORT_SELECT;
       break;
     case "Catching":
       linkNum = 3;
+      lastLocator = CATCHING_REPORT_SELECT;
       break;
     case "Statcast Fielding":
       linkNum = 4;
+      lastLocator = STATCAST_FIELDING_REPORT_SELECT;
       break      
     default: 
       linkNum = 1;
   }
 
   var section = By.xpath(`.//nav[contains(@class, 'navbar-blue')]/div/div/ul/li[${linkNum}]/a`);
-  return this.click(section);
+  this.click(section);
+  return this.waitForEnabled(lastLocator);
 }
 
 TeamsPage.prototype.goToSubSection = function(section) {

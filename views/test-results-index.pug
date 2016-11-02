@@ -29,7 +29,22 @@ block content
         td(class=statusColor)= testRun.status
         td= testRun.passedCount
         td= testRun.failedCount
-        td= new Date(testRun.startedAt).toLocaleString()
-        td= testRun.endedAt ? new Date(testRun.endedAt).toLocaleString() : ""
+        td.start-time(data-time= testRun.startedAt)
+        td.end-time(data-time= testRun.endedAt)
 
   p *Displaying Last 20 Tests
+
+  script.
+    $('.start-time').each(function(idx, el) {
+      var startTime = $(el).data('time');
+      $(el).text(moment(startTime).local().format('MM/DD/YY - LT'));
+    })
+
+    $('.end-time').each(function(idx, el) {
+      var endTime = $(el).data('time');
+      if (endTime) {
+        $(el).text(moment(endTime).local().format('MM/DD/YY - LT'));
+      }
+    })
+
+

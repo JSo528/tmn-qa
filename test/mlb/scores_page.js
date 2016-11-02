@@ -49,7 +49,7 @@ test.describe('#Scores Page', function() {
 
   test.it('shows the winner highlighted in the box score summary', function() {
     scoresPage.getBoxScoreRowColor(1, "away").then(function(color) {
-      assert.equal( color, 'rgba(179, 255, 186, 1)', 'Correct background-color for winner');
+      assert.notEqual( color, 'rgba(255, 255, 255, 1)', 'Correct background-color for winner');
     })
   }); 
 

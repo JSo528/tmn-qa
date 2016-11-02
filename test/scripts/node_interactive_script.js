@@ -2,6 +2,7 @@ var webdriver = require('selenium-webdriver');
 driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
 var credentials = require('../lib/credentials.js');
 var By = webdriver.By;
+var Until = webdriver.until;
 // Page Objects
 var LoginPage = require('./pages/login_page.js');
 var StandingsPage = require('../pages/mlb/standings_page.js');
@@ -12,10 +13,15 @@ var Navbar = require('../pages/mlb/navbar.js');
 var ScoresPage = require('../pages/mlb/scores_page.js');
 var DetailedScorePage = require('../pages/mlb/detailed_score_page.js');
 var TeamsPage = require('../pages/mlb/teams_page.js');
+var ScorePitchByPitchPage = require('../pages/mlb/score_pitch_by_pitch_page.js');
+var PlayersPage = require('../pages/mlb/players_page.js');
+var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
+// var Filters = require('../pages/mlb/filters.js');
 
 // Log In
 loginPage = new LoginPage(driver);
 var url = "https://dodgers.trumedianetworks.com"
+var stagUrl = "https://dodgers-staging.trumedianetworks.com:3001"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 standingsPage = new StandingsPage(driver);
@@ -24,21 +30,55 @@ navbar  = new Navbar(driver);
 scoresPage = new ScoresPage(driver);
 detailedScorePage = new DetailedScorePage(driver);
 teamsPage = new TeamsPage(driver);
+statsPage = new StatsPage(driver);
+scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
+playersPage = new PlayersPage(driver);
+playersStatsPage = new PlayersStatsPage(driver);
 
-navbar.goToTeamsPage();
-teamsPage.goToSubSection("Occurences & Streaks");
+navbar.goToPlayersPage();
+playersStatsPage.changeQualifyBy("Custom", "Atbats", 50)
 
-browser.getFullContent(teamsPage.streaksTable).then(function(text) {
-  console.log(text)
+
+playersStatsPage.closeDropdownFilter(3); // close year filter
+playersStatsPage.toggleSidebarFilter('Seasons', 7) // 2014
+
+browser.openNewTab(stagUrl).then(function() {
+  browser.switchToTab(1);  
 })
 
-var locator = By.css("table")
-var element = driver.findElement(locator)
-element.isEnabled().then(function(enabled) {
-  console.log(enabled)
+loginPage = new LoginPage(driver);
+loginPage.login(credentials.testUser.email, credentials.testUser.password);
+
+
+browser.executeForEachTab(function() {
+  navbar.goToScoresPage();
+  console.log('here')
 })
 
+browser.executeForEachTab(function() {
+  scoresPage.clickBoxScore(1);
+  console.log('here')
+})
 
+browser.executeForEachTab(function() {
+  detailedScorePage.goToSection("Pitch By Pitch");
+})
+
+browser.executeForEachTab(function() {
+  scorePitchByPitchPage.addDecisiveEventFilter("yes");
+  console.log('here')
+})
+
+var contentArray;
+browser.getFullContentForEachTab(null, scorePitchByPitchPage.lastLocator).then(function(contentArray) {
+  console.log(contentArray[0] == contentArray[1])
+}) 
+
+browser.executeForEachTab(function() {
+    
+  }).then(function() {
+    console.log('done')
+  })
 
 
 // FIND LAST LOCATOR
@@ -86,7 +126,7 @@ browser.executeForEachTab(function() {
   })  
 })
 
-driver.getExecutor().then(function(url) {
+driver.getCurrentUrl().then(function(url) {
   console.log(url)
 })
 
@@ -114,3 +154,15 @@ element.getSize().then(function(size) {
 // driver.manage().window().getSize().then(function(size) {
 //   console.log(size)
 // })
+
+scoresPage.visit("https://dodgers-staging.trumedianetworks.com:3001/baseball/game-pitch-by-pitch/NYY-BAL/2016-10-02/449283?pc=%7B%22bged%22%3A%22no%22%7D&is=true&f=%7B%7D")
+
+var scorePitchByPitch = new ScorePitchByPitch(driver)
+scorePitchByPitch.clickPitchVideoIcon(1)
+scorePitchByPitch.isVideoModalDisplayed().then(function(displayed) {
+  console.log(displayed)
+})
+
+scorePitchByPitch.getVideoPlaylistText(1,1).then(function(text) {
+          console.log(text)
+        });

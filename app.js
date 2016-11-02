@@ -53,6 +53,7 @@ app.get('/test-results/', function(req, res) {
 
 app.get('/test-results/:id', function(req, res) {
   var jsdiff = require('diff');
+
   TestRun.findById(req.params.id, function(err, testRun) {
     if (err) {
       res.render('test-results', {
@@ -62,8 +63,8 @@ app.get('/test-results/:id', function(req, res) {
       testRun.testName = constants.tests[testRun.testNumber].name
       
       testRun.errorObjects.map(function(error) {
-        if (error.expectedValue && error.actualValue) {
-          error.diff = jsdiff.diffWordsWithSpace(error.expectedValue, error.actualValue);  
+        if (error.expectedValue || error.actualValue) {
+          error.diff = jsdiff.diffWordsWithSpace(String(error.expectedValue), String(error.actualValue));  
         }
       })
 
@@ -88,6 +89,15 @@ app.post('/run-tests', function(req, res) {
 
   res.redirect(303, '/test-results/'+testRun.id);
 });
+
+app.post('/kill-chrome', function(req, res) {
+  var util = require('./lib/util');
+  util.killChromeInstances();
+  
+  res.json({
+    success: true
+  })
+})
 
 app.use(function(req, res) {
   res.type('text/plain');

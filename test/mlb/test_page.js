@@ -25,14 +25,6 @@ test.describe('', function() {
 
   // Home/Standings Page
   test.describe('@ standings page', function() {
-    test.it('should have the correct page title', function() {
-      navbar.goToStandingsPage();
-
-      driver.getTitle().then(function(title) {
-        assert.equal( title, "Standing");
-      });
-    });
-
     test.it('changing year shows correct data', function() {
       standingsPage.changeYear(2015);
       
@@ -83,7 +75,7 @@ test.describe('', function() {
       });
     });  
 
-    test.it.skip('should be sorted initially by BA ascending', function() {
+    test.it('should be sorted initially by BA ascending', function() {
       var teamOneBA, teamTwoBA, teamTenBA;
 
       statsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {

@@ -88,7 +88,7 @@ ScorePitchByPitch.prototype.clickPitchVideoIcon = function(pitchNum) {
   this.click(locator);
 
   var element = this.driver.findElement(VIDEO_PLAYLIST_MODAL);
-  return this.driver.wait(Until.elementIsVisible(element));
+  return this.driver.wait(Until.elementIsVisible(element), 30000);
 }
 
 ScorePitchByPitch.prototype.closeVideoPlaylistModal = function() {
@@ -109,14 +109,25 @@ ScorePitchByPitch.prototype.isVideoModalDisplayed = function() {
 ScorePitchByPitch.prototype.clickPitchVisualsIcon = function(atBatNum) {
   var locator = By.xpath(`.//div[@id='tableBaseballGamePitchByPitchContainer']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td/span[@class='table-action-visual fa fa-lg fa-external-link-square']`);
   this.click(locator);
-
   var element = this.driver.findElement(PITCH_VISUALS_MODAL);
-  return this.driver.wait(Until.elementIsVisible(element));  
+  // hack to focus on the screen, otherwise modal doesn't open
+  this.driver.takeScreenshot();
+  this.driver.wait(Until.elementIsVisible(element), 30000).then(function() {
+    return true;
+  }, function(err) {
+    console.log('error opening pitch visuals modal:' + err);
+    return false;
+  })
 };
 
-ScorePitchByPitch.prototype.closePitchVisualsIcon = function(atBatNum) {
+ScorePitchByPitch.prototype.closePitchVisualsIcon = function() {
   this.click(PITCH_VISUALS_CLOSE_BTN);
-  return this.driver.wait(Until.elementLocated(By.xpath(".//body[not(@class='modal-open')]")), 10000);
+  this.driver.wait(Until.elementLocated(By.xpath(".//body[not(@class='modal-open')]")), 10000).then(function() {
+    return true;
+  }, function(err) {
+    console.log('error closing pitch visuals modal:' + err);
+    return false;
+  })
 };
 
 ScorePitchByPitch.prototype.isPitchVisualsModalDisplayed = function() {
@@ -124,10 +135,12 @@ ScorePitchByPitch.prototype.isPitchVisualsModalDisplayed = function() {
 };
 
 ScorePitchByPitch.prototype.getPitchVisualsBgImageHref = function() {
+  this.driver.wait(Until.elementLocated(PITCH_VISUALS_MODAL, 30000));
   return this.getAttribute(PITCH_VISUALS_BG_IMAGE, 'href');
 };
 
 ScorePitchByPitch.prototype.getPitchVisualsPitchCount = function() {
+  this.driver.wait(Until.elementLocated(PITCH_VISUALS_MODAL, 30000));
  return this.getElementCount(PITCH_VISUALS_PITCH_CIRCLE);
 };
 

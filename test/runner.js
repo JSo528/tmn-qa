@@ -9,28 +9,56 @@ module.exports = function(testRun, env) {
   // create directory to store screenshots
   fs.mkdirSync('public/data/'+testRun.id);
 
-  // create system commmand
-  cmd = 'env TEST_RUN_ID=' + testRun.id;
-  if (testRun.portNumber) {
-    cmd += ' PORT_NUMBER='+ testRun.portNumber;
-  }
-  cmd += ' mocha test/scripts/';
-  cmd += (constants.tests[testRun.testNumber].fileName + '.js');
+  // enable Xvfb for production
+  if (env == 'production') {
+    cmd = 'Xvfb :99 -screen 0 1920x3000x8 -ac 2>&1 >/dev/null & export DISPLAY=:99;';
+    var exec = require('child_process').exec;
 
-  // execute system command to start mocha test
-  var exec = require('child_process').exec;
-  exec(cmd, function(error, stdout, stderr) {
-    console.log('** child_process callback START **');
-    console.log('** child_process error: **');
-    console.log(error);
-    console.log('** child_process stderr: **');
-    console.log(stderr);
-    console.log('** child_process stdout: **');
-    console.log(stdout);
-    console.log('** child_process callback END **');
-    // using stderr instead of error, bc error returns true for any failing test
-    if (stderr) {
-      testRun.update({status: 'error'}).exec();
-    }
-  });  
+    exec(cmd, function(error, stdout, stderr) {
+      console.log('** child_process callback START **');
+      console.log(error);
+      console.log(stderr);
+      console.log(stdout);
+      console.log('** child_process callback END **');
+    })
+  }
+
+  // spawn child process to run mocha
+  var spawn = require('child_process').spawn;
+  var args = [
+    "-gc",
+    'test/scripts/'+constants.tests[testRun.testNumber].fileName + '.js' // test file
+  ]
+  var envVars = Object.create( process.env );
+  envVars.NODE_ENV = env
+  envVars.PORT_NUMBER = testRun.portNumber
+  envVars.TEST_RUN_ID = testRun.id
+  
+  var cp = spawn('mocha', args, {env: envVars})
+
+  // child process callbacks
+  cp.stdout.on('data', (data) => {
+    console.log(`${data}`)
+  });
+
+  cp.stderr.on('data', (data) => {
+    console.log("*******")
+    console.log("** STDERR **")
+    console.log("*******")
+    console.log(`*** stderr: ${data}`);
+  });
+
+  cp.on('close', (code) => {
+    console.log(`child process closed with code ${code}`);
+    TestRun.findById(testRun.id, function(err, testRunObject) {
+      testRun = testRunObject;
+      if (testRun.endedAt == undefined && testRun.status == "ongoing") {
+        testRun.update({endedAt: new Date().getTime(), status: "error"}).exec();
+      }
+    })
+  });
+
+  cp.on('exit', (code, signal) => {
+    console.log(`child process exited with code ${code} & signal ${signal}`);
+  })
 };

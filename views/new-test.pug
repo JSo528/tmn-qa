@@ -17,7 +17,7 @@ block content
           label(for='portNumber').col-sm-3.control-label Port
           .col-sm-9
             input.form-control(type='number' id='portNumber' name='portNumber')
-        button.btn.btn-primary.btn-block(type='submit') Run Tests
+        button.btn.btn-primary.btn-block(type='submit') Run Test
 
   script.
     var MIN_PORT = 3001
@@ -35,16 +35,13 @@ block content
       var portNumber = Number($('#portNumber').val());
 
       if(getEnv() == 'staging' && (portNumber < MIN_PORT || portNumber > MAX_PORT)) {
-        console.log("*1")
         $('#errorMessage').text('Please enter a valid port number: '+ MIN_PORT + ' - ' + MAX_PORT);
         $('.error-container').show();
         return false;
       } else if (getEnv() == 'production') {
-        console.log("*2")
         $('#portNumber').val("");
         return true;
       } else {
-        console.log("*3")
         return true;
       };
     });

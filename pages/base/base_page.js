@@ -114,6 +114,7 @@ BasePage.prototype.isDisplayed = function(locator, timeout) {
     timeout = timeout || WAIT_TIME_PRESENT;
     var defer = Promise.defer();
     var driver = this.driver;
+
     // Explicitly wait for the element to be located first
     driver.wait(Until.elementLocated(locator),timeout).then(function() {
         if (debug){console.log('Element is located : ' + locator);}
@@ -237,9 +238,13 @@ BasePage.prototype.click = function(locator, timeout) {
 
 BasePage.prototype.clickAndWait = function(locator, loadingLocator, timeout) {
   this.waitForEnabled(locator, timeout);
-  this.driver.findElement(locator).click();
-  var loadingElement = this.driver.findElement(loadingLocator);
-  return this.driver.wait(Until.stalenessOf(loadingElement), 20000)  
+  if (loadingLocator) {
+    this.driver.findElement(locator).click();
+    var loadingElement = this.driver.findElement(loadingLocator);
+    return this.driver.wait(Until.stalenessOf(loadingElement), 20000)    
+  } else {
+    return this.driver.findElement(locator).click();
+  }
 };
 
 BasePage.prototype.clear = function(locator, timeout) {
@@ -272,7 +277,11 @@ BasePage.prototype.getText = function(locator, timeout) {
   var d = Promise.defer();
   this.waitForEnabled(locator, timeout);
   this.driver.findElement(locator).getText().then(function(text) {
-    d.fulfill(text);
+    if (isNaN(text)) {
+      d.fulfill(text);
+    } else {
+      d.fulfill(Number(text));  
+    }
   })
   return d.promise;
 };
@@ -315,6 +324,8 @@ BasePage.prototype.getElementCount = function(locator) {
   var d = Promise.defer();
   this.driver.findElements(locator).then(function(elements) {
     d.fulfill(elements.length);
+  }, function(err) {
+    d.fulfill(err);
   })
 
   return d.promise; 

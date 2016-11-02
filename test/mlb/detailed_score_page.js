@@ -451,7 +451,7 @@ test.describe('#DetailedScore Page', function() {
         });
       });        
     });
-    
+
     test.describe('#video playlist', function() {
       test.it('clicking video icon opens video playlist', function() {
         scorePitchByPitchPage.clickPitchVideoIcon(1);
@@ -479,8 +479,11 @@ test.describe('#DetailedScore Page', function() {
     });
 
     test.describe('#pitch by pitch visuals', function() {
+      test.before(function() {
+        scorePitchByPitchPage.clickPitchVisualsIcon(1)
+      })
+
       test.it('clicking visuals icon opens pitch by pitch visuals modal', function() {
-        scorePitchByPitchPage.clickPitchVisualsIcon(1);
         scorePitchByPitchPage.isPitchVisualsModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, true);
         })
@@ -505,11 +508,8 @@ test.describe('#DetailedScore Page', function() {
         // TODO
       });     
 
-      test.it('clicking close on pitch visuals closes modal', function() {
+      test.after(function() {
         scorePitchByPitchPage.closePitchVisualsIcon();
-        scorePitchByPitchPage.isPitchVisualsModalDisplayed().then(function(modalDisplayed) {
-          assert.equal(modalDisplayed, false);
-        })
       });   
     });
   });   

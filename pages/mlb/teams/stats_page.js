@@ -23,6 +23,7 @@ var FILTER_SELECT = By.id('s2id_addFilter');
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
 var UPDATE_BUTTON = By.className('update');  
 var LOADING_CONTAINER = By.id('loadingContainer');
+var CLEAR_PINS_BTN = By.css('button.table-clear-pinned');
 
 var BATTING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatBatting");
 var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatPitching");
@@ -41,7 +42,7 @@ StatsPage.prototype.getTeamTableStat = function(teamNum, col) {
   // First 4 rows are for the headers
   var row = 4 + teamNum;
   var locator = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/tbody/tr[${row}]/td[${col}]`);
-  return this.getText(locator, 20000);
+  return this.getText(locator, 30000);
 };
 
 StatsPage.prototype.getTeamTableBgColor = function(teamNum, col) {
@@ -53,7 +54,7 @@ StatsPage.prototype.getTeamTableBgColor = function(teamNum, col) {
 
 StatsPage.prototype.getTeamTableHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/thead/tr/th[${col}]`);
-  return this.getText(locator);
+  return this.getText(locator, 30000);
 };
 
 StatsPage.prototype.getIsoTableStat = function(teamNum, col) {
@@ -75,6 +76,10 @@ StatsPage.prototype.clickTeamTablePin = function(teamNum) {
   return this.click(locator);
 };
 
+StatsPage.prototype.clearTeamTablePin = function() {
+  return this.click(CLEAR_PINS_BTN);
+};
+
 StatsPage.prototype.clickIsoBtn = function(onOrOff) {
   var locator = (onOrOff == "on") ? ISO_BTN_ON : ISO_BTN_OFF
   return this.click(locator);
@@ -87,7 +92,7 @@ StatsPage.prototype.clickChartColumnsBtn = function() {
 };
 
 StatsPage.prototype.clickHistogramLink = function() {
-  return this.click(HISTOGRAM_LINK);
+  return this.click(HISTOGRAM_LINK, 30000);
 };
 
 StatsPage.prototype.clickScatterChartLink = function() {
@@ -127,6 +132,11 @@ StatsPage.prototype.addDropdownFilter = function(filter) {
 StatsPage.prototype.toggleSidebarFilter = function(filterName, selection) {
   var locator = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
   return this.clickAndWait(locator, LOADING_CONTAINER);
+};
+
+StatsPage.prototype.toggleSidebarSelectAllFilter = function(filterName) {
+  var locator = By.xpath(`.//div[@id='common']/div/div/div[div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}:')]]/div/div/label[contains(@class, 'select-filter-all')]`)
+  return this.clickAndWait(locator);
 };
 
 StatsPage.prototype.closeDropdownFilter = function(filterNum) {
