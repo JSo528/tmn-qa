@@ -147,7 +147,7 @@ block content
     $('#startTime').text(moment(startTime).local().format('dddd, L LT'));
 
     var endTime = $('#endTime').data('time');
-    if (endTime != '') {
+    if (endTime) {
       $('#endTime').text(moment(endTime).local().format('dddd, L LT'));
     }
     

@@ -7,6 +7,7 @@ var BasePage = require('../../../pages/base/base_page.js');
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
+var Key = require('selenium-webdriver').Key;
 
 // Locators
 var ISO_BTN_ON = By.id('isoOnBtn');
@@ -136,13 +137,39 @@ StatsPage.prototype.toggleSidebarFilter = function(filterName, selection) {
 
 StatsPage.prototype.toggleSidebarSelectAllFilter = function(filterName) {
   var locator = By.xpath(`.//div[@id='common']/div/div/div[div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}:')]]/div/div/label[contains(@class, 'select-filter-all')]`)
-  return this.clickAndWait(locator);
+  return this.clickAndWait(locator, LOADING_CONTAINER);
 };
 
 StatsPage.prototype.closeDropdownFilter = function(filterNum) {
   var locator = By.xpath(`.//div[@class='col-md-8 activated']/div[${filterNum}]/div[@class='filter-header text-left']/span[@class='closer fa fa-2x fa-times-circle pull-right']`);
   return this.removeFilter(locator, UPDATE_BUTTON);
 };
+
+// if no selection, remove the first option
+StatsPage.prototype.removeSelectionFromDropdownFilter = function(filterName, selection, update) {
+  var locator;
+  if (selection) {
+    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[div[contains(text()[1], ${selection})]]/a[@class='select2-search-choice-close']`);  
+  } else {
+    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[1]/a[@class='select2-search-choice-close']`);  
+  }
+  
+  if (update) {
+    this.click(locator);
+    return this.click(UPDATE_BUTTON);
+  } else {
+    return this.click(locator);
+  }
+}
+
+StatsPage.prototype.addSelectionToDropdownFilter = function(filterName, selection) {
+  var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul`);
+  var inputLocator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[contains(@class, 'select2-search-field')]/input`);
+  this.click(locator, 30000);
+  this.sendKeys(inputLocator, selection, 30000);
+  this.sendKeys(inputLocator, Key.ENTER);
+  return this.sendKeys(inputLocator, Key.ESCAPE);
+}
 
 // Reports
 StatsPage.prototype.changeBattingReport = function(filter) {

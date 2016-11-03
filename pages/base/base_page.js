@@ -237,14 +237,18 @@ BasePage.prototype.click = function(locator, timeout) {
 };
 
 BasePage.prototype.clickAndWait = function(locator, loadingLocator, timeout) {
+  var d = Promise.defer();
+  var thiz = this;
   this.waitForEnabled(locator, timeout);
-  if (loadingLocator) {
-    this.driver.findElement(locator).click();
-    var loadingElement = this.driver.findElement(loadingLocator);
-    return this.driver.wait(Until.stalenessOf(loadingElement), 20000)    
-  } else {
-    return this.driver.findElement(locator).click();
-  }
+  this.driver.findElement(locator).click();
+  this.driver.findElement(loadingLocator).then(function(element) {
+    d.fulfill(thiz.driver.wait(Until.stalenessOf(element), 20000));
+  }, function(err) {
+    console.log("** clickAndWait error: " + err);
+    d.fulfill(true)
+  });    
+
+  return d.promise;
 };
 
 BasePage.prototype.clear = function(locator, timeout) {

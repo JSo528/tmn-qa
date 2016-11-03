@@ -9,7 +9,7 @@ var tests = [
   './mlb/scores_page',
   './mlb/detailed_score_page',
   './mlb/teams_page',
-  // './mlb/players_page',
+  './mlb/players_page',
   './mlb/data_comparison'
 ]
 

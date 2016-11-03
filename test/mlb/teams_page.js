@@ -33,9 +33,8 @@ test.describe('#Teams Page', function() {
       test.before(function() {
         battingAverageCol = 11;
         winsCol = 5;
-        statsPage.toggleSidebarSelectAllFilter("Seasons"); // All years
-        statsPage.toggleSidebarSelectAllFilter("Seasons"); // No years
-        statsPage.toggleSidebarFilter("Seasons:", 8); // 2015
+        statsPage.removeSelectionFromDropdownFilter("Seasons:");
+        statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
       });
 
       // Sorting
@@ -290,7 +289,7 @@ test.describe('#Teams Page', function() {
         var reports = [
           { type: 'Counting', topStat: 1515, statType: "H", colNum: 12 },  
           { type: 'Pitch Rates', topStat: "47.8%", statType: "InZone%", colNum: 13 },  
-          { type: 'Pitch Counts', topStat: 11026, statType: "InZone#", colNum: 12 },  
+          { type: 'Pitch Counts', topStat: 11024, statType: "InZone#", colNum: 12 },  
           { type: 'Pitch Types', topStat: "54.8%", statType: "Fast%", colNum: 7 },  
           { type: 'Pitch Type Counts', topStat: 13263, statType: "Fast#", colNum: 7 },  
           { type: 'Pitch Locations', topStat: "47.8%", statType: "InZone%", colNum: 7 },  
@@ -319,9 +318,8 @@ test.describe('#Teams Page', function() {
 
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
         teamsPage.goToSubSection('Occurences & Streaks');
-        statsPage.toggleSidebarSelectAllFilter("Seasons"); // All years
-        statsPage.toggleSidebarSelectAllFilter("Seasons"); // No years
-        statsPage.toggleSidebarFilter("Seasons:", 8); // 2015
+        statsPage.removeSelectionFromDropdownFilter("Seasons:");
+        statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
         
         driver.getCurrentUrl().then(function(url) {
           assert.match(url, /teams\-streaks\-batting/);
@@ -478,9 +476,8 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
       teamsPage.goToSection("Pitching");
-      statsPage.toggleSidebarSelectAllFilter("Seasons"); // All years
-      statsPage.toggleSidebarSelectAllFilter("Seasons"); // No years
-      statsPage.toggleSidebarFilter("Seasons:", 8); // 2015
+      statsPage.removeSelectionFromDropdownFilter("Seasons:");
+      statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
 
       eraCol = 21;
       ksCol = 19;
@@ -594,9 +591,9 @@ test.describe('#Teams Page', function() {
           { type: 'Rate', topStat: 0.233, statType: "BA", colNum: 9 },  
           { type: 'Counting', topStat: 1274, statType: "H", colNum: 9 },  
           { type: 'Pitch Rates', topStat: "52.5%", statType: "InZone%", colNum: 13 },  
-          { type: 'Pitch Counts', topStat: 12393, statType: "InZone#", colNum: 12 },  
+          { type: 'Pitch Counts', topStat: 12392, statType: "InZone#", colNum: 12 },  
           { type: 'Pitch Types', topStat: "60.0%", statType: "Fast%", colNum: 7 },  
-          { type: 'Pitch Type Counts', topStat: 13657, statType: "Fast#", colNum: 7 },  
+          { type: 'Pitch Type Counts', topStat: 13658, statType: "Fast#", colNum: 7 },  
           { type: 'Pitch Locations', topStat: "52.5%", statType: "InZone%", colNum: 7 },  
           { type: 'Pitch Calls', topStat: 336.90, statType: "SLAA", colNum: 8 },  
           { type: 'Hit Types', topStat: 1.10, statType: "GB/FB", colNum: 6 },  
@@ -622,9 +619,8 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Catching', function() {
     test.before(function() {    
       teamsPage.goToSection("Catching");
-      statsPage.toggleSidebarSelectAllFilter("Seasons"); // All years
-      statsPage.toggleSidebarSelectAllFilter("Seasons"); // No years
-      statsPage.toggleSidebarFilter("Seasons:", 8); // 2015
+      statsPage.removeSelectionFromDropdownFilter("Seasons:");
+      statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
       slaaCol = 7;
     });
 
@@ -654,7 +650,7 @@ test.describe('#Teams Page', function() {
       test.describe("#reports", function() {
         var reports = [
           { type: 'Pitch Types', topStat: "60.0%", statType: "Fast%", colNum: 7 },  
-          { type: 'Pitch Type Counts', topStat: 13657, statType: "Fast#", colNum: 7 },  
+          { type: 'Pitch Type Counts', topStat: 13658, statType: "Fast#", colNum: 7 },  
           { type: 'Catcher Defense', topStat: 10.27, statType: "FldRAA", colNum: 10 },  
           // { type: 'Catcher Opposing Batters', topStat: 1274, statType: "H", colNum: 9 },  // No Data
           { type: 'Catcher Pitch Rates', topStat: "49.2%", statType: "InZoneMdl%", colNum: 8 },  
@@ -675,6 +671,8 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
       teamsPage.goToSection("Statcast Fielding");
+      statsPage.removeSelectionFromDropdownFilter("Seasons:");
+      statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
       statCol = 10;
     });    
 
@@ -702,10 +700,6 @@ test.describe('#Teams Page', function() {
 
       // Reports
       test.describe("#reports", function() {
-        test.before(function() {
-          statsPage.closeDropdownFilter(3);
-          statsPage.toggleSidebarFilter("Seasons:", 8); // 2015
-        });
         var reports = [
           { type: 'Outfielder Air Defense Positioning', topStat: '104.2%', statType: "OFWPosAirOut%", colNum: 7 },  
           { type: 'Outfielder Air Defense Skills', topStat: "65.1%", statType: "OFAirOut%", colNum: 7 },  

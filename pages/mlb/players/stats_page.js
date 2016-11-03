@@ -7,6 +7,7 @@ var BasePage = require('../../../pages/base/base_page.js');
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
+var Key = require('selenium-webdriver').Key;
 
 // Locators
 // var ISO_BTN_ON = By.id('isoOnBtn');
@@ -30,9 +31,9 @@ var UPDATE_BUTTON = By.className('update');
 var LOADING_CONTAINER = By.id('loadingContainer');
 
 var BATTING_REPORT_SELECT = By.id("s2id_reportNavBaseballPlayersStatBatting");
-// var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatPitching");
-// var CATCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatTeamcatching");
-// var STATCAST_FIELDING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatStatcast");
+var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballPlayersStatPitching");
+var CATCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballPlayersStatCatching");
+var STATCAST_FIELDING_REPORT_SELECT = By.id("s2id_reportNavBaseballPlayersStatStatcast");
 
 function StatsPage(driver) {
   BasePage.call(this, driver);
@@ -42,40 +43,66 @@ StatsPage.prototype = Object.create(BasePage.prototype);
 StatsPage.prototype.constructor = StatsPage;
 
 
-StatsPage.prototype.getPlayerTableStat = function(teamNum, col) {
+StatsPage.prototype.getBatterTableStat = function(playerNum, col) {
   // First 4 rows are for the headers
-  var row = 4 + teamNum;
+  var row = 4 + playerNum;
   var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingContainer']/table/tbody/tr[${row}]/td[${col}]`);
   return this.getText(locator, 30000);
 };
 
-StatsPage.prototype.getPlayerTableBgColor = function(teamNum, col) {
+StatsPage.prototype.getPitcherTableStat = function(playerNum, col) {
   // First 4 rows are for the headers
-  var row = 4 + teamNum;
+  var row = 4 + playerNum;
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsPitchingContainer']/table/tbody/tr[${row}]/td[${col}]`);
+  return this.getText(locator, 30000);
+};
+
+StatsPage.prototype.getCatcherTableStat = function(playerNum, col) {
+  // First 4 rows are for the headers
+  var row = 4 + playerNum;
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsCatchingContainer']/table/tbody/tr[${row}]/td[${col}]`);
+  return this.getText(locator, 30000);
+};
+
+StatsPage.prototype.getStatcastTableStat = function(playerNum, col) {
+  // First 4 rows are for the headers
+  var row = 4 + playerNum;
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsStatcastContainer']/table/tbody/tr[${row}]/td[${col}]`);
+  return this.getText(locator, 30000);
+};
+
+StatsPage.prototype.getPlayerTableBgColor = function(playerNum, col) {
+  // First 4 rows are for the headers
+  var row = 4 + playerNum;
   var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingContainer']/table/tbody/tr[${row}]/td[${col}]`);
   return this.getCssValue(locator, "background-color");
 };
 
 StatsPage.prototype.getPlayerTableHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingContainer']/table/thead/tr/th[${col}]`);
-  return this.getText(locator);
+  return this.getText(locator, 30000);
 };
 
-StatsPage.prototype.getIsoTableStat = function(teamNum, col) {
+StatsPage.prototype.getIsoTableStat = function(playerNum, col) {
   // First 4 rows are for the headers
-  var row = 4 + teamNum;
+  var row = 4 + playerNum;
   var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingISOContainer']/table/tbody/tr[${row}]/td[${col}]`);
   return this.getText(locator, 30000);
 };
 
-StatsPage.prototype.clickPlayerTableColumnHeader = function(col) {
+StatsPage.prototype.clickBatterTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingContainer']/table/thead/tr/th[${col}]`);
   return this.click(locator); 
 };
 
+StatsPage.prototype.clickPitcherTableColumnHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsPitchingContainer']/table/thead/tr/th[${col}]`);
+  return this.click(locator); 
+};
 
-StatsPage.prototype.clickPlayerTablePin = function(teamNum) {
-  var row = 4 + teamNum;
+
+StatsPage.prototype.clickPlayerTablePin = function(playerNum) {
+  var row = 4 + playerNum;
   var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingContainer']/table/tbody/tr[${row}]/td/span[@class='table-pin fa fa-lg fa-thumb-tack']`);
   return this.click(locator);
 };
@@ -142,7 +169,12 @@ StatsPage.prototype.addDropdownFilter = function(filter) {
 
 StatsPage.prototype.toggleSidebarFilter = function(filterName, selection) {
   var locator = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
-  return this.clickAndWait(locator, LOADING_CONTAINER);
+  return this.clickAndWait(locator, LOADING_CONTAINER, 30000);
+};
+
+StatsPage.prototype.toggleSidebarSelectAllFilter = function(filterName) {
+  var locator = By.xpath(`.//div[@id='common']/div/div/div[div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}:')]]/div/div/label[contains(@class, 'select-filter-all')]`)
+  return this.clickAndWait(locator, LOADING_CONTAINER, 30000);
 };
 
 StatsPage.prototype.closeDropdownFilter = function(filterNum) {
@@ -150,21 +182,47 @@ StatsPage.prototype.closeDropdownFilter = function(filterNum) {
   return this.removeFilter(locator, UPDATE_BUTTON);
 };
 
+// if no selection, remove the first option
+StatsPage.prototype.removeSelectionFromDropdownFilter = function(filterName, selection, update) {
+  var locator;
+  if (selection) {
+    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[div[contains(text()[1], ${selection})]]/a[@class='select2-search-choice-close']`);  
+  } else {
+    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[1]/a[@class='select2-search-choice-close']`);  
+  }
+  
+  if (update) {
+    this.click(locator);
+    return this.click(UPDATE_BUTTON);
+  } else {
+    return this.click(locator);
+  }
+}
+
+StatsPage.prototype.addSelectionToDropdownFilter = function(filterName, selection) {
+  var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul`);
+  var inputLocator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[contains(@class, 'select2-search-field')]/input`);
+  this.click(locator, 30000);
+  this.sendKeys(inputLocator, selection, 30000);
+  this.sendKeys(inputLocator, Key.ENTER);
+  return this.sendKeys(inputLocator, Key.ESCAPE);
+}
+
 // Reports
 StatsPage.prototype.changeBattingReport = function(filter) {
   return this.changeDropdown(BATTING_REPORT_SELECT, DROPDOWN_INPUT, filter);
 };
 
-// StatsPage.prototype.changePitchingReport = function(filter) {
-//   return this.changeDropdown(PITCHING_REPORT_SELECT, DROPDOWN_INPUT, filter);
-// };
+StatsPage.prototype.changePitchingReport = function(filter) {
+  return this.changeDropdown(PITCHING_REPORT_SELECT, DROPDOWN_INPUT, filter);
+};
 
-// StatsPage.prototype.changeCatchingReport = function(filter) {
-//   return this.changeDropdown(CATCHING_REPORT_SELECT, DROPDOWN_INPUT, filter);
-// };
+StatsPage.prototype.changeCatchingReport = function(filter) {
+  return this.changeDropdown(CATCHING_REPORT_SELECT, DROPDOWN_INPUT, filter);
+};
 
-// StatsPage.prototype.changeStatcastFieldingReport = function(filter) {
-//   return this.changeDropdown(STATCAST_FIELDING_REPORT_SELECT, DROPDOWN_INPUT, filter);
-// };
+StatsPage.prototype.changeStatcastFieldingReport = function(filter) {
+  return this.changeDropdown(STATCAST_FIELDING_REPORT_SELECT, DROPDOWN_INPUT, filter);
+};
 
 module.exports = StatsPage;

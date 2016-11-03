@@ -3,6 +3,7 @@ driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).bui
 var credentials = require('../lib/credentials.js');
 var By = webdriver.By;
 var Until = webdriver.until;
+var Key = require('selenium-webdriver').Key;
 // Page Objects
 var LoginPage = require('./pages/login_page.js');
 var StandingsPage = require('../pages/mlb/standings_page.js');
@@ -33,52 +34,20 @@ teamsPage = new TeamsPage(driver);
 statsPage = new StatsPage(driver);
 scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
 playersPage = new PlayersPage(driver);
-playersStatsPage = new PlayersStatsPage(driver);
+statsPage = new PlayersStatsPage(driver);
 
 navbar.goToPlayersPage();
-playersStatsPage.changeQualifyBy("Custom", "Atbats", 50)
+statsPage.removeSelectionFromDropdownFilter("Seasons:")
+statsPage.addSelectionToDropdownFilter("Seasons:", 2015)
+statsPage.toggleSidebarFilter('Zone Location', 2);
 
 
-playersStatsPage.closeDropdownFilter(3); // close year filter
-playersStatsPage.toggleSidebarFilter('Seasons', 7) // 2014
-
-browser.openNewTab(stagUrl).then(function() {
-  browser.switchToTab(1);  
-})
-
-loginPage = new LoginPage(driver);
-loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
 
-browser.executeForEachTab(function() {
-  navbar.goToScoresPage();
-  console.log('here')
-})
 
-browser.executeForEachTab(function() {
-  scoresPage.clickBoxScore(1);
-  console.log('here')
-})
 
-browser.executeForEachTab(function() {
-  detailedScorePage.goToSection("Pitch By Pitch");
-})
 
-browser.executeForEachTab(function() {
-  scorePitchByPitchPage.addDecisiveEventFilter("yes");
-  console.log('here')
-})
 
-var contentArray;
-browser.getFullContentForEachTab(null, scorePitchByPitchPage.lastLocator).then(function(contentArray) {
-  console.log(contentArray[0] == contentArray[1])
-}) 
-
-browser.executeForEachTab(function() {
-    
-  }).then(function() {
-    console.log('done')
-  })
 
 
 // FIND LAST LOCATOR

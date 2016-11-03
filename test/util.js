@@ -187,9 +187,11 @@ exports.generateTests = function(title, testFiles, startUrl) {
         testRun.update({passedCount: passedCount}).exec();
       }
 
-      if (process.memoryUsage().rss > 1000000000) {
+      if (process.memoryUsage().rss > 300000000) {
+        console.log("** pre gc - " + process.memoryUsage().rss)
         if (global.gc) {
           global.gc()  
+          console.log("** post gc - " + process.memoryUsage().rss)
         } else {
           console.log('Garbage collection unavailable. Pass -gc when running mocha to enable forced garbage collection');
         }   
