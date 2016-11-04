@@ -30,7 +30,7 @@ body {
   display: none;
 }
 
-// Test Results Page
+/* Test Results Page */
 #testResultsPanel {
   margin: 0 auto;
 }
@@ -60,10 +60,15 @@ body {
   padding-bottom: 10px;
 }
 
-.error-panel .panel-heading div {
+a.stack-link {
+  color: white;
+  font-weight: 300;
+}
+
+.panel-heading div {
   display: inline-block;
 }
-.error-panel .panel-heading .actions {
+.panel-heading .actions {
   float: right;
 }
 

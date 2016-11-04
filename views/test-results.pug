@@ -20,7 +20,10 @@ block content
           strong Status: 
           span#testStatus= testRun.status
         .panel.panel-primary
-          .panel-heading Test Summary
+          .panel-heading 
+            .main Test Summary
+            .actions
+                a.stack-link [SHOW STACK]
           .panel-body
             table.table
               tr
@@ -76,7 +79,7 @@ block content
                         span.red= diff.value
                       else if diff.added == undefined
                         span= diff.value
-              .row
+              .row.stack-row.hidden
                 .col-sm-2.bold Stack:
                 .col-sm-10= error.stack                                              
 
@@ -126,6 +129,28 @@ block content
         el.closest('.error-panel').children('.panel-body').hide();
       }
     };
+
+    $('a.stack-link').on('click', function() {
+      if ($(this).hasClass('show')) {
+        toggleStackTraces(true);
+      } else {
+        toggleStackTraces(false);
+      }
+    });
+
+    function toggleStackTraces(hide) {
+      if (hide) {
+        $('a.stack-link').removeClass('show');
+        $('a.stack-link').text("[SHOW STACK]");
+        $('.stack-row').addClass('hidden');
+      } else {
+        $('a.stack-link').addClass('show');
+        $('a.stack-link').text("[HIDE STACK]");
+        $('.stack-row').removeClass('hidden');
+      }
+    };
+
+    toggleStackTraces(true);
 
     // convert this into an API call and append
     setTimeout(function() {
