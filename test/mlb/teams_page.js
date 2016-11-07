@@ -6,16 +6,18 @@ var constants = require('../../lib/constants.js');
 
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
+var Filters = require('../../pages/mlb/filters.js');
 var TeamsPage = require('../../pages/mlb/teams_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
 var ScatterPlotPage = require('../../pages/mlb/teams/scatter_plot_page');
 var StreaksPage = require('../../pages/mlb/teams/streaks_page');
-var navbar, teamsPage, statsPage, scatterPlotPage, streaksPage;
+var navbar, filters, teamsPage, statsPage, scatterPlotPage, streaksPage;
 var battingAverageCol, winsCol, eraCol, ksCol, slaaCol, statCol;
 
 test.describe('#Teams Page', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
+    filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
     statsPage = new StatsPage(driver);
   });
@@ -33,8 +35,8 @@ test.describe('#Teams Page', function() {
       test.before(function() {
         battingAverageCol = 11;
         winsCol = 5;
-        statsPage.removeSelectionFromDropdownFilter("Seasons:");
-        statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2015);
       });
 
       // Sorting
@@ -101,7 +103,7 @@ test.describe('#Teams Page', function() {
       // Filters
       test.describe("#filters", function() {
         test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
-          statsPage.addDropdownFilter('Pitch Type: Fastball');
+          filters.addDropdownFilter('Pitch Type: Fastball');
 
           statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.316);
@@ -109,7 +111,7 @@ test.describe('#Teams Page', function() {
         });
 
         test.it('adding filter: (2 outs) from sidebar displays correct data', function() {
-          statsPage.toggleSidebarFilter('Outs:', 3);
+          filters.toggleSidebarFilter('Outs:', 2, true);
 
           statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.338);
@@ -117,14 +119,14 @@ test.describe('#Teams Page', function() {
         });
 
         test.it('removing filter: (2 outs) from top section displays correct data', function() {
-          statsPage.closeDropdownFilter(5);
+          filters.closeDropdownFilter('Outs:');
           statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.316);
           });
         }); 
 
         test.it('removing filter: (pitch type-fastball) from sidebar displays correct data', function() {
-          statsPage.toggleSidebarFilter("Pitch Type:", 8);
+          filters.toggleSidebarFilter("Pitch Type:", 'Fastball', false);
           statsPage.getTeamTableStat(1,11).then(function(battingAverage) {
             assert.equal(battingAverage, 0.270);
           });
@@ -318,8 +320,8 @@ test.describe('#Teams Page', function() {
 
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
         teamsPage.goToSubSection('Occurences & Streaks');
-        statsPage.removeSelectionFromDropdownFilter("Seasons:");
-        statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2015);
         
         driver.getCurrentUrl().then(function(url) {
           assert.match(url, /teams\-streaks\-batting/);
@@ -476,8 +478,8 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
       teamsPage.goToSection("Pitching");
-      statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
+      filters.removeSelectionFromDropdownFilter("Seasons:");
+      filters.addSelectionToDropdownFilter("Seasons:", 2015);
 
       eraCol = 21;
       ksCol = 19;
@@ -555,7 +557,7 @@ test.describe('#Teams Page', function() {
         });
 
         test.it('adding filter: (venue - home) from dropdown displays correct data', function() {
-          statsPage.addDropdownFilter('Venue: Home');
+          filters.addDropdownFilter('Venue: Home');
 
           statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
             assert.equal(ks, 748);
@@ -563,7 +565,7 @@ test.describe('#Teams Page', function() {
         });
 
         test.it('adding filter: (Pitch Type: Changeup) from sidebar displays correct data', function() {
-          statsPage.toggleSidebarFilter('Pitch Type:', 3);
+          filters.toggleSidebarFilter('Pitch Type:', 'Changeup', true);
 
           statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
             assert.equal(ks, 118);
@@ -571,14 +573,14 @@ test.describe('#Teams Page', function() {
         });
 
         test.it('removing filter: (Pitch Type: Changeup) from top section displays correct data', function() {
-          statsPage.closeDropdownFilter(5);
+          filters.closeDropdownFilter('Pitch Type:');
           statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
             assert.equal(ks, 748);
           });
         }); 
 
         test.it('removing filter: (venue - home) from sidebar displays correct data', function() {
-          statsPage.toggleSidebarFilter("Venue:", 1);
+          filters.toggleSidebarFilter("Venue:", 'Home', false);
           statsPage.getTeamTableStat(1,ksCol).then(function(ks) {
             assert.equal(ks, 1430);
           });
@@ -619,8 +621,8 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Catching', function() {
     test.before(function() {    
       teamsPage.goToSection("Catching");
-      statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
+      filters.removeSelectionFromDropdownFilter("Seasons:");
+      filters.addSelectionToDropdownFilter("Seasons:", 2015);
       slaaCol = 7;
     });
 
@@ -671,8 +673,8 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
       teamsPage.goToSection("Statcast Fielding");
-      statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2015);
+      filters.removeSelectionFromDropdownFilter("Seasons:");
+      filters.addSelectionToDropdownFilter("Seasons:", 2015);
       statCol = 10;
     });    
 

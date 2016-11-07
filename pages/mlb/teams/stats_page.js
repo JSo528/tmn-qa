@@ -6,8 +6,6 @@ var BasePage = require('../../../pages/base/base_page.js');
 // Webdriver helpers
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
-var Promise = require('selenium-webdriver').promise;
-var Key = require('selenium-webdriver').Key;
 
 // Locators
 var ISO_BTN_ON = By.id('isoOnBtn');
@@ -20,12 +18,8 @@ var MODAL_CLOSE_BTN = By.xpath(".//div[@class='modal modal-chart in']/div/div/di
 var TEAM_TABLE = By.xpath(".//div[@id='tableBaseballTeamsStatsContainer']/table");
 var GROUP_BY_SELECT = By.id("s2id_pageControlBaseballGroupBy");
 var STATS_VIEW_SELECT = By.id("s2id_pageControlBaseballStatsViewTeams");
-var FILTER_SELECT = By.id('s2id_addFilter');
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
-var UPDATE_BUTTON = By.className('update');  
-var LOADING_CONTAINER = By.id('loadingContainer');
 var CLEAR_PINS_BTN = By.css('button.table-clear-pinned');
-
 var BATTING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatBatting");
 var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatPitching");
 var CATCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamsStatTeamcatching");
@@ -124,52 +118,6 @@ StatsPage.prototype.changeGroupBy = function(filter) {
 StatsPage.prototype.changeStatsView = function(filter) {
   return this.changeDropdown(STATS_VIEW_SELECT, DROPDOWN_INPUT, filter);
 };
-
-// Filters
-StatsPage.prototype.addDropdownFilter = function(filter) {
-  return this.changeDropdown(FILTER_SELECT, DROPDOWN_INPUT, filter);
-};
-
-StatsPage.prototype.toggleSidebarFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
-  return this.clickAndWait(locator, LOADING_CONTAINER);
-};
-
-StatsPage.prototype.toggleSidebarSelectAllFilter = function(filterName) {
-  var locator = By.xpath(`.//div[@id='common']/div/div/div[div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}:')]]/div/div/label[contains(@class, 'select-filter-all')]`)
-  return this.clickAndWait(locator, LOADING_CONTAINER);
-};
-
-StatsPage.prototype.closeDropdownFilter = function(filterNum) {
-  var locator = By.xpath(`.//div[@class='col-md-8 activated']/div[${filterNum}]/div[@class='filter-header text-left']/span[@class='closer fa fa-2x fa-times-circle pull-right']`);
-  return this.removeFilter(locator, UPDATE_BUTTON);
-};
-
-// if no selection, remove the first option
-StatsPage.prototype.removeSelectionFromDropdownFilter = function(filterName, selection, update) {
-  var locator;
-  if (selection) {
-    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[div[contains(text()[1], ${selection})]]/a[@class='select2-search-choice-close']`);  
-  } else {
-    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[1]/a[@class='select2-search-choice-close']`);  
-  }
-  
-  if (update) {
-    this.click(locator);
-    return this.click(UPDATE_BUTTON);
-  } else {
-    return this.click(locator);
-  }
-}
-
-StatsPage.prototype.addSelectionToDropdownFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul`);
-  var inputLocator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[contains(@class, 'select2-search-field')]/input`);
-  this.click(locator, 30000);
-  this.sendKeys(inputLocator, selection, 30000);
-  this.sendKeys(inputLocator, Key.ENTER);
-  return this.sendKeys(inputLocator, Key.ESCAPE);
-}
 
 // Reports
 StatsPage.prototype.changeBattingReport = function(filter) {

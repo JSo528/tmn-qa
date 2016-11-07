@@ -26,9 +26,6 @@ var Y_AXIS_FILTER_EXPANDER_BTN = By.xpath(".//div[@id='yAxisFilters']/div/div/di
 
 var SCATTER_PLOT_LOGO_ICON = By.css('svg.svgchart > g.root > g.data > g > image');
 
-
-
-
 function ScatterPlotPage(driver) {
   BasePage.call(this, driver);
 };

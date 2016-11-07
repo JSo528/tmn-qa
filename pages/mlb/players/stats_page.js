@@ -10,14 +10,6 @@ var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
 // Locators
-// var ISO_BTN_ON = By.id('isoOnBtn');
-// var ISO_BTN_OFF = By.id('isoOffBtn');
-// var CHART_COLUMNS_BTN = By.id('tableActive');
-// var HISTOGRAM_LINK = By.xpath(".//div[@class='chart-popover']/div[@class='chart'][1]/a");
-// var SCATTER_CHART_LINK = By.xpath(".//div[@class='chart-popover']/div[@class='chart'][2]/a");
-// var MODAL = By.xpath(".//div[@class='modal modal-chart in']/div/div[@class='modal-content']");
-// var MODAL_CLOSE_BTN = By.xpath(".//div[@class='modal modal-chart in']/div/div/div/button[@class='close']");
-// var TEAM_TABLE = By.xpath(".//div[@id='tableBaseballTeamsStatsContainer']/table");
 var GROUP_BY_SELECT = By.id("s2id_pageControlBaseballPlayersGroupBy");
 var STATS_VIEW_SELECT = By.id("s2id_pageControlBaseballStatsViewPlayers");
 var QUALIFY_BY_SELECT = By.id("s2id_pageControlBaseballQualifyByBatting");
@@ -25,10 +17,7 @@ var QUALIFY_BY_STAT_SELECT = By.id("s2id_pageControlBaseballQualifyByBattingStat
 var QUALIFY_BY_INPUT = By.id("pageControlBaseballQualifyByBattingInput");
 var QUALIFY_BY_SUBMIT = By.css(".pc-qualify-by > button");
 
-var FILTER_SELECT = By.id('s2id_addFilter');
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
-var UPDATE_BUTTON = By.className('update');  
-var LOADING_CONTAINER = By.id('loadingContainer');
 
 var BATTING_REPORT_SELECT = By.id("s2id_reportNavBaseballPlayersStatBatting");
 var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballPlayersStatPitching");
@@ -107,42 +96,6 @@ StatsPage.prototype.clickPlayerTablePin = function(playerNum) {
   return this.click(locator);
 };
 
-// StatsPage.prototype.clickIsoBtn = function(onOrOff) {
-//   var locator = (onOrOff == "on") ? ISO_BTN_ON : ISO_BTN_OFF
-//   return this.click(locator);
-// };
-
-// StatsPage.prototype.clickChartColumnsBtn = function() {
-//   // clicking button doesnt do anything if the team table isnt' visible
-//   this.driver.wait(Until.elementLocated(TEAM_TABLE));
-//   return this.click(CHART_COLUMNS_BTN);
-// };
-
-// StatsPage.prototype.clickHistogramLink = function() {
-//   return this.click(HISTOGRAM_LINK, 30000);
-// };
-
-// StatsPage.prototype.clickScatterChartLink = function() {
-//   return this.click(SCATTER_CHART_LINK); 
-// };
-
-// // @params selectionOne, selectionTwo -> column number of what you want as the x-axis & y-axis for the scatter chart
-// StatsPage.prototype.openScatterChart = function(selectionOne, selectionTwo) {
-//   this.clickTeamTableColumnHeader(selectionOne);
-//   this.click(SCATTER_CHART_LINK);
-//   this.clickTeamTableColumnHeader(selectionTwo);
-//   return this.click(SCATTER_CHART_LINK);
-// };
-
-// StatsPage.prototype.isModalDisplayed = function() {
-//   // timeout should be short bc the helper method will try to find the element for the duration of the timeout period
-//   return this.isDisplayed(MODAL, 2000);
-// };
-
-// StatsPage.prototype.closeModal = function() {
-//   return this.click(MODAL_CLOSE_BTN);
-// };
-
 StatsPage.prototype.changeQualifyBy = function(filter, stat, input) {
   if (filter == "Custom") {
     this.changeDropdown(QUALIFY_BY_SELECT, DROPDOWN_INPUT, filter);
@@ -161,52 +114,6 @@ StatsPage.prototype.changeGroupBy = function(filter) {
 StatsPage.prototype.changeStatsView = function(filter) {
   return this.changeDropdown(STATS_VIEW_SELECT, DROPDOWN_INPUT, filter);
 };
-
-// Filters
-StatsPage.prototype.addDropdownFilter = function(filter) {
-  return this.changeDropdown(FILTER_SELECT, DROPDOWN_INPUT, filter);
-};
-
-StatsPage.prototype.toggleSidebarFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
-  return this.clickAndWait(locator, LOADING_CONTAINER, 30000);
-};
-
-StatsPage.prototype.toggleSidebarSelectAllFilter = function(filterName) {
-  var locator = By.xpath(`.//div[@id='common']/div/div/div[div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}:')]]/div/div/label[contains(@class, 'select-filter-all')]`)
-  return this.clickAndWait(locator, LOADING_CONTAINER, 30000);
-};
-
-StatsPage.prototype.closeDropdownFilter = function(filterNum) {
-  var locator = By.xpath(`.//div[@class='col-md-8 activated']/div[${filterNum}]/div[@class='filter-header text-left']/span[@class='closer fa fa-2x fa-times-circle pull-right']`);
-  return this.removeFilter(locator, UPDATE_BUTTON);
-};
-
-// if no selection, remove the first option
-StatsPage.prototype.removeSelectionFromDropdownFilter = function(filterName, selection, update) {
-  var locator;
-  if (selection) {
-    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[div[contains(text()[1], ${selection})]]/a[@class='select2-search-choice-close']`);  
-  } else {
-    locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[1]/a[@class='select2-search-choice-close']`);  
-  }
-  
-  if (update) {
-    this.click(locator);
-    return this.click(UPDATE_BUTTON);
-  } else {
-    return this.click(locator);
-  }
-}
-
-StatsPage.prototype.addSelectionToDropdownFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul`);
-  var inputLocator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[contains(@class, 'select2-search-field')]/input`);
-  this.click(locator, 30000);
-  this.sendKeys(inputLocator, selection, 30000);
-  this.sendKeys(inputLocator, Key.ENTER);
-  return this.sendKeys(inputLocator, Key.ESCAPE);
-}
 
 // Reports
 StatsPage.prototype.changeBattingReport = function(filter) {

@@ -6,6 +6,7 @@ var constants = require('../../lib/constants.js');
 
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
+var Filters = require('../../pages/mlb/filters.js');
 var PlayersPage = require('../../pages/mlb/players_page.js');
 var StatsPage = require('../../pages/mlb/players/stats_page.js');
 var StreaksPage = require('../../pages/mlb/players/streaks_page.js');
@@ -16,6 +17,7 @@ var battingAverageCol, ksPerCol, eraCol, ksCol, slaaCol, statCol;
 test.describe('#Players Page', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
+    filters = new Filters(driver);
     playersPage = new PlayersPage(driver);
     statsPage = new StatsPage(driver);
   });
@@ -33,8 +35,8 @@ test.describe('#Players Page', function() {
       test.before(function() {
         battingAverageCol = 8;
         ksPerCol = 13;
-        statsPage.removeSelectionFromDropdownFilter("Seasons:");
-        statsPage.addSelectionToDropdownFilter("Seasons:", 2014);
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2014);
       });
 
       // Sorting
@@ -102,7 +104,7 @@ test.describe('#Players Page', function() {
       // Filters
       test.describe("#filters", function() {
         test.it('adding filter: (extra inning game) from dropdown displays correct data', function() {
-          statsPage.addDropdownFilter('Extra Inning Game');
+          filters.addDropdownFilter('Extra Inning Game');
 
           statsPage.getBatterTableStat(1,9).then(function(onBasePercentage) {
             assert.equal(onBasePercentage, 0.486);
@@ -110,7 +112,7 @@ test.describe('#Players Page', function() {
         });
 
         test.it('adding filter: (Batted ball: Fly ball) from sidebar displays correct data', function() {
-          statsPage.toggleSidebarFilter('Batted Ball:', 3); // fly ball
+          filters.toggleSidebarFilter('Batted Ball:', 'Fly Ball', true);
 
           statsPage.getBatterTableStat(1,17).then(function(runsPerGame) {
             assert.equal(runsPerGame, 0.250);
@@ -161,8 +163,8 @@ test.describe('#Players Page', function() {
           });                              
         });        
         test.after(function() {
-          statsPage.closeDropdownFilter(5); // close flyball filter
-          statsPage.closeDropdownFilter(4); // close extra innings filter
+          filters.closeDropdownFilter('Batted Ball:');
+          filters.closeDropdownFilter('Extra Inning Game:');
           statsPage.changeGroupBy("Total"); // change back to group by total
         });
       });
@@ -170,7 +172,7 @@ test.describe('#Players Page', function() {
       // Stats View
       test.describe("#stats view", function() {
         test.before(function() {
-          statsPage.toggleSidebarFilter('Zone Location', 2); // Out of Strike Zone
+          filters.toggleSidebarFilter('Zone Location', 'Out of Strike Zone', true);
         });
 
         // Comparing top BA in 2015 for all the different stat views
@@ -204,7 +206,7 @@ test.describe('#Players Page', function() {
           }
         });
         test.after(function() {
-          statsPage.toggleSidebarFilter('Zone Location', 2); // Remove filter
+          filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', false);
           statsPage.changeStatsView('Stat'); // Remove Stats View
         });
       });      
@@ -244,7 +246,7 @@ test.describe('#Players Page', function() {
       // Batting Reports
       test.describe("#batting reports", function() {
         test.before(function() {
-          statsPage.toggleSidebarFilter('Horizontal Location', 2); // Middle Third
+          filters.toggleSidebarFilter('Horizontal Location:', 'Middle Third', true);
         });
 
         var reports = [
@@ -272,7 +274,7 @@ test.describe('#Players Page', function() {
         });
 
         test.after(function() {
-          statsPage.toggleSidebarFilter('Horizontal Location', 2); // Remove Middle Third
+          filters.toggleSidebarFilter('Horizontal Location:', 'Middle Third', false);
         });
       });                      
     });
@@ -284,8 +286,8 @@ test.describe('#Players Page', function() {
 
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
         playersPage.goToSubSection('Occurences & Streaks');
-        statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2013);
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2013);
 
         driver.getCurrentUrl().then(function(url) {
           assert.match(url, /players\-streaks\-batting/);
@@ -349,8 +351,8 @@ test.describe('#Players Page', function() {
     test.describe('#SubSection: Scatter Plot', function() {
       test.before(function() {
         scatterPlotPage = new ScatterPlotPage(driver);
-        statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2013);
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2013);
       });
 
       test.it('clicking the scatter_plot link goes to the correct URL', function() {
@@ -397,9 +399,8 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
       playersPage.goToSection("Pitching");
-      statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2012);
-
+      filters.removeSelectionFromDropdownFilter("Seasons:");
+      filters.addSelectionToDropdownFilter("Seasons:", 2012);
       eraCol = 21;
       ksCol = 19;
     });
@@ -469,7 +470,7 @@ test.describe('#Players Page', function() {
       // Filters
       test.describe("#filters", function() {
         test.it('adding filter: (Men On: On 1B) from dropdown displays correct data', function() {
-          statsPage.addDropdownFilter('Men On: On 1B');
+          filters.addDropdownFilter('Men On: On 1B');
 
           statsPage.getPitcherTableStat(1, ksCol).then(function(ks) {
             assert.equal(ks, 68);
@@ -477,7 +478,7 @@ test.describe('#Players Page', function() {
         });
 
         test.it('adding filter: (Horizontal Location: Outer Half) from sidebar displays correct data', function() {
-          statsPage.toggleSidebarFilter('Horizontal Location:', 5);
+          filters.toggleSidebarFilter('Horizontal Location:', 'Outer Half', true);
 
           statsPage.getPitcherTableStat(1,ksCol).then(function(ks) {
             assert.equal(ks, 43);
@@ -485,8 +486,8 @@ test.describe('#Players Page', function() {
         });
 
         test.after(function() {
-          statsPage.closeDropdownFilter(5);
-          statsPage.closeDropdownFilter(4);
+          filters.closeDropdownFilter('Men On');
+          filters.closeDropdownFilter('Horizontal Location');
         });
       });  
 
@@ -524,8 +525,8 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Catching', function() {
     test.before(function() {    
       playersPage.goToSection("Catching");
-      statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2012);
+      filters.removeSelectionFromDropdownFilter("Seasons:");
+      filters.addSelectionToDropdownFilter("Seasons:", 2012);
       slaaCol = 7;
     });
 
@@ -578,9 +579,8 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
       playersPage.goToSection("Statcast Fielding");
-      statsPage.removeSelectionFromDropdownFilter("Seasons:");
-      statsPage.addSelectionToDropdownFilter("Seasons:", 2016);
-
+      filters.removeSelectionFromDropdownFilter("Seasons:");
+      filters.addSelectionToDropdownFilter("Seasons:", 2016);
       statCol = 10;
     });    
 

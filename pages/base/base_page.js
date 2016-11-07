@@ -225,7 +225,18 @@ BasePage.prototype.waitForEnabled = function(locator, timeout) {
     return defer.promise;
 };
 
+BasePage.prototype.waitUntilStaleness = function(locator, timeout) {
+  var d = Promise.defer();
+  var thiz = this;
 
+  this.driver.findElement(locator).then(function(element) {
+    d.fulfill(thiz.driver.wait(Until.stalenessOf(element), timeout));
+  }, function(err) {
+    d.fulfill(true)
+  });    
+
+  return d.promise;  
+}
 
 /**
  * Combines waiting for the element to be enabled and clicking the element
@@ -237,18 +248,9 @@ BasePage.prototype.click = function(locator, timeout) {
 };
 
 BasePage.prototype.clickAndWait = function(locator, loadingLocator, timeout) {
-  var d = Promise.defer();
-  var thiz = this;
   this.waitForEnabled(locator, timeout);
   this.driver.findElement(locator).click();
-  this.driver.findElement(loadingLocator).then(function(element) {
-    d.fulfill(thiz.driver.wait(Until.stalenessOf(element), 20000));
-  }, function(err) {
-    console.log("** clickAndWait error: " + err);
-    d.fulfill(true)
-  });    
-
-  return d.promise;
+  return this.waitUntilStaleness(loadingLocator, timeout);
 };
 
 BasePage.prototype.clear = function(locator, timeout) {

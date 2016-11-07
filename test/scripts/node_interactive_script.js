@@ -17,7 +17,7 @@ var TeamsPage = require('../pages/mlb/teams_page.js');
 var ScorePitchByPitchPage = require('../pages/mlb/score_pitch_by_pitch_page.js');
 var PlayersPage = require('../pages/mlb/players_page.js');
 var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
-// var Filters = require('../pages/mlb/filters.js');
+var Filters = require('../pages/mlb/filters.js');
 
 // Log In
 loginPage = new LoginPage(driver);
@@ -34,21 +34,28 @@ teamsPage = new TeamsPage(driver);
 statsPage = new StatsPage(driver);
 scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
 playersPage = new PlayersPage(driver);
-statsPage = new PlayersStatsPage(driver);
-
+playersStatsPage = new PlayersStatsPage(driver);
+filters = new Filters(driver);
 navbar.goToPlayersPage();
-statsPage.removeSelectionFromDropdownFilter("Seasons:")
-statsPage.addSelectionToDropdownFilter("Seasons:", 2015)
-statsPage.toggleSidebarFilter('Zone Location', 2);
 
 
 
+filters.changeFilterGroupDropdown('eBIS')
+filters.selectForBooleanDropdownSidebarFilter("Contract Type:", "MLB");
 
 
 
+filters.addSelectionToDropdownSidebarFilter('count:', '3 Balls');
+filters.removeSelectionFromDropdownSidebarFilter('count:', '3 Balls');
+filters.selectAllForDropdownSidebarFilter('count:')
 
+filters.changeFilterGroupDropdown("eBIS")
 
-
+var locator = By.xpath(`.//div[@id='common']/div/div/div[div/h5[text()='count:']]/div/div/div/ul`)
+filters.click(locator);
+var locator = By.xpath(`.//div[@id='common']/div/div/div[div/h5[text()='count:']]/div/div/div/ul/li/input`)
+filters.sendKeys(locator, '3 Balls');
+filters.sendKeys(locator, Key.ENTER);
 
 // FIND LAST LOCATOR
 driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/CHC-LAD/2016-10-22/487629?f=%7B%7D&is=true').then(function() {

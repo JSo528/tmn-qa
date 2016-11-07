@@ -5,54 +5,57 @@ var assert = chai.assert;
 var constants = require('../../lib/constants.js');
 
 // Page Objects
+var Filters = require('../../pages/mlb/filters.js');
 var Navbar = require('../../pages/mlb/navbar.js');
 var DetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
-var navbar, detailedScorePage;
+var ScorePitchByPitchPage = require('../../pages/mlb/score_pitch_by_pitch_page.js');
+var ScorePitchingSplitsPage = require('../../pages/mlb/score_pitching_splits_page.js');
+var navbar, filters, detailedScorePage, scorePitchByPitchPage, scorePitchingSplitsPage;
 
 // Page Specific
-var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283'
+var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283';
 
 test.describe('#DetailedScore Page', function() {
   test.before(function() {
     detailedScorePage = new DetailedScorePage(driver);
+    filters = new Filters(driver);
     detailedScorePage.visit(url+gameURL);
   });
 
   test.describe('#Section: Batting', function() {
-    // TODO - add tests for select all, changing filters on the created dropdowns
     test.describe('#Filters', function() {
-      test.it('adding filter: (pitcher hand-left) from dropdown displays correct data', function() {
-        detailedScorePage.addDropdownFilter('Pitcher Hand: Righty');
+      test.it('adding filter: (pitcher hand-righty) from dropdown displays correct data', function() {
+        filters.addDropdownFilter('Pitcher Hand: Righty');
 
         // Brett Gardner faced 16 pitches against a righty pitcher this game
         detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
           assert.equal(pitches, 16);
-        })
-      })
+        });
+      });
 
       test.it('adding filter: (2 outs) from sidebar displays correct data', function() {
-        detailedScorePage.toggleSidebarFilter('Outs:', 3);
+        filters.toggleSidebarFilter('Outs:', 2, true);
 
         // Michael Bourn faced 12 pitches against a righty pitcher w/ 2 outs this game
         detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
           assert.equal(pitches, 12);
-        })
-      })
+        });
+      });
 
       test.it('removing filter: (2 outs) from top section displays correct data', function() {
-        detailedScorePage.closeDropdownFilter(2);
+        filters.closeDropdownFilter("Outs:");
         detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
           assert.equal(pitches, 16);
-        })
-      }) 
+        });
+      });
 
       test.it('removing filter: (pitcher hand-left) from sidebar displays correct data', function() {
-        detailedScorePage.toggleSidebarFilter("Pitcher Hand:", 2);
+        filters.toggleSidebarFilter("Pitcher Hand:", 'Righty', false);
         detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
           assert.equal(pitches, 20);
-        })
-      })         
-    })
+        });
+      });         
+    });
 
     test.describe('#Reports', function() {
       test.describe('#Report: Rate (Home)', function() {
@@ -73,7 +76,7 @@ test.describe('#DetailedScore Page', function() {
             assert.equal(sluggingPercentage, 0.250);
           });      
         });
-      })
+      });
 
       // var reports is an array that holds data used to dynamically create tests
       // for each report we're testing the stat for: 
@@ -171,7 +174,7 @@ test.describe('#DetailedScore Page', function() {
           });
 
           test.it('team batting stats display correct ' + report.statType, function() {
-            var colNum = (report.colOffset == undefined) ? 7 : 7 + report.colOffset;
+            var colNum = (report.colOffset === undefined) ? 7 : 7 + report.colOffset;
             detailedScorePage.getTeamBattingStat("away", colNum).then(function(stat) {
               assert.equal(stat, report.teamStat);
             });      
@@ -194,12 +197,11 @@ test.describe('#DetailedScore Page', function() {
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /game\-pitching/);
       });
-    })
+    });
 
-    // TODO - add tests for select all, changing filters on the created dropdowns
     test.describe('#Filters', function() {
       test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
-        detailedScorePage.addDropdownFilter("Pitch Type: Fastball");
+        filters.addDropdownFilter("Pitch Type: Fastball");
 
         // Kevin Gausman threw 31 fastballs
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
@@ -208,7 +210,7 @@ test.describe('#DetailedScore Page', function() {
       });
 
       test.it('adding filter: (pitch result = strike) from sidebar displays correct data', function() {
-        detailedScorePage.toggleSidebarFilter("Pitch Result:", 1)
+        filters.toggleSidebarFilter("Pitch Result:", "Strike", true);
 
         // Michael Bourn faced 12 pitches against a righty pitcher w/ 2 outs this game
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
@@ -217,14 +219,14 @@ test.describe('#DetailedScore Page', function() {
       });
 
       test.it('removing filter: (pitch result = strike) from top section displays correct data', function() {
-        detailedScorePage.closeDropdownFilter(2);
+        filters.closeDropdownFilter("Pitch Result:");
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
           assert.equal(pitches, 60);
         });
       }); 
 
       test.it('removing filter: (pitch type - fastball) from sidebar displays correct data', function() {
-        detailedScorePage.toggleSidebarFilter("Pitch Type:", 8);
+        filters.toggleSidebarFilter("Pitch Type:", "Fastball", false);
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
           assert.equal(pitches, 106);
         });
@@ -358,8 +360,8 @@ test.describe('#DetailedScore Page', function() {
           reportName: 'Exit Data', 
           expectedUrlContains: /PitchingExitData/, 
           statType: "ExISO", 
-          teamStat: .061,
-          playerStat: .218
+          teamStat: 0.061,
+          playerStat: 0.218
         }          
       ];
 
@@ -373,14 +375,14 @@ test.describe('#DetailedScore Page', function() {
           });
 
           test.it('team pitching stats display correct ' + report.statType, function() {
-            var colNum = (report.colOffset == undefined) ? 11 : 11 + report.colOffset;
+            var colNum = (report.colOffset === undefined) ? 11 : 11 + report.colOffset;
             detailedScorePage.getTeamPitchingStat("away", colNum).then(function(stat) {
               assert.equal(stat, report.teamStat);
             });      
           });
 
           test.it('player pitching stats display correct ' + report.statType, function() {
-            var colNum = (report.colOffset == undefined) ? 12 : 12 + report.colOffset;
+            var colNum = (report.colOffset === undefined) ? 12 : 12 + report.colOffset;
             detailedScorePage.getPlayerPitchingStat("home", 1, colNum).then(function(stat) {
               assert.equal(stat, report.playerStat);
             });      
@@ -393,7 +395,6 @@ test.describe('#DetailedScore Page', function() {
   test.describe('#Section: Pitch By Pitch', function() {
     test.before(function() {
       detailedScorePage.goToSection("Pitch By Pitch");
-      var ScorePitchByPitchPage = require('../../pages/mlb/score_pitch_by_pitch_page.js');
       scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
     });
 
@@ -425,7 +426,7 @@ test.describe('#DetailedScore Page', function() {
 
     test.describe('#filters', function() {
       test.it("turning decisive event on successfully filters the pitches", function() {
-        scorePitchByPitchPage.addDecisiveEventFilter("yes")
+        scorePitchByPitchPage.addDecisiveEventFilter("yes");
 
         scorePitchByPitchPage.getPitchText(1, 6).then(function(text) {
           assert.equal(text, "Ground Out");
@@ -437,7 +438,7 @@ test.describe('#DetailedScore Page', function() {
       });
 
       test.it('adding filter: (batter hand - lefty) from dropdown displays correct data', function() {
-        scorePitchByPitchPage.addDropdownFilter("Batter Hand: Lefty");
+        filters.addDropdownFilter("Batter Hand: Lefty");
 
         scorePitchByPitchPage.getAtBatHeaderText(2).then(function(text) {
           assert.equal(text, "LHB B. Gardner Vs RHP K. Gausman (BAL), Bot 1, 0 Out");
@@ -445,7 +446,7 @@ test.describe('#DetailedScore Page', function() {
       });
 
       test.it('removing filter: ((batter hand - lefty) from dropdown displays correct data', function() {
-        scorePitchByPitchPage.closeDropdownFilter(1);
+        filters.closeDropdownFilter("Batter Hand:");
         scorePitchByPitchPage.getAtBatHeaderText(2).then(function(text) {
           assert.equal(text, "RHB A. Jones Vs RHP L. Cessa (NYY), Top 1, 1 Out");
         });
@@ -457,7 +458,7 @@ test.describe('#DetailedScore Page', function() {
         scorePitchByPitchPage.clickPitchVideoIcon(1);
         scorePitchByPitchPage.isVideoModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, true);
-        })
+        });
       });
 
       test.it('video playlist shows correct video', function() {
@@ -474,26 +475,26 @@ test.describe('#DetailedScore Page', function() {
         scorePitchByPitchPage.closeVideoPlaylistModal();
         scorePitchByPitchPage.isVideoModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, false);
-        })
+        });
       });                
     });
 
     test.describe('#pitch by pitch visuals', function() {
       test.before(function() {
-        scorePitchByPitchPage.clickPitchVisualsIcon(1)
-      })
+        scorePitchByPitchPage.clickPitchVisualsIcon(1);
+      });
 
       test.it('clicking visuals icon opens pitch by pitch visuals modal', function() {
         scorePitchByPitchPage.isPitchVisualsModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, true);
-        })
+        });
       });
 
       // Should show lefty image for lefty hitter
       test.it('visuals modal should show correct background image', function() {
         scorePitchByPitchPage.getPitchVisualsBgImageHref().then(function(href) {
           assert.equal(href, "/img/pitcher-view-lefty.png");
-        })
+        });
       });          
 
       test.it('visuals modal should show correct # of pitches', function() {
@@ -517,9 +518,8 @@ test.describe('#DetailedScore Page', function() {
   test.describe('#Section: Pitching Splits', function() {
     test.before(function() {
       detailedScorePage.goToSection("Pitching Splits");
-      var ScorePitchingSplitsPage = require('../../pages/mlb/score_pitching_splits_page.js');
       scorePitchingSplitsPage = new ScorePitchingSplitsPage(driver);
-    })
+    });
 
     test.it("'Pitch Type Splits' displays correct stat", function() {
       scorePitchingSplitsPage.getPitchingSplitStat(1, 1, 1, 4).then(function(stat) {

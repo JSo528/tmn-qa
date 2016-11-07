@@ -8,10 +8,6 @@ var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 
-// Locators
-// var BATTING_REPORT_SELECT = By.id('s2id_reportNavBaseballPlayersStatBatting');
-// var STATS_TABLE = By.xpath(".//div[@id='tableBaseballPlayersStatsBattingContainer']/table");
-
 function PlayersPage(driver) {
   BasePage.call(this, driver);
 };
@@ -62,12 +58,5 @@ PlayersPage.prototype.goToSubSection = function(section) {
   var section = By.xpath(`.//nav[@class='navbar navbar-default navbar-static-top report-nav navbar-gray']/div/div/ul/li[${linkNum}]/a`);
   return this.click(section);
 }
-
-// PlayersPage.prototype.getTeamName = function() {
-//   return this.getText(TEAM_NAME);
-// }
-
-// PlayersPage.prototype.statsTable = STATS_TABLE;
-// PlayersPagePlayersPage.prototype.streaksTable = STREAKS_TABLE;
 
 module.exports = PlayersPage;

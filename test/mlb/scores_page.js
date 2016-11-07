@@ -39,11 +39,11 @@ test.describe('#Scores Page', function() {
     });      
 
     scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
-      assert.equal( pitcher, 'Kevin Gausman')
+      assert.equal( pitcher, 'Kevin Gausman');
     })
 
     scoresPage.teamLogoDisplayed(1, "home").then(function(displayed) {
-    assert.equal( displayed, true)
+      assert.equal( displayed, true);
     })
   });
 
@@ -54,7 +54,7 @@ test.describe('#Scores Page', function() {
   }); 
 
   test.it('changing the season level shows correct data', function() {
-    scoresPage.changeDate('2016-5-02').then()
+    scoresPage.changeDate('2016-5-02')
     scoresPage.changeSeasonLevel("A+");
     
     scoresPage.getBoxScorePitcher(1, 'win').then(function(pitcher) {
