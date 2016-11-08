@@ -1,7 +1,7 @@
 'use strict';
 
 // Load Base Page
-var BasePage = require('../../pages/base/base_page.js')
+var BasePage = require('../../../pages/base/base_page.js')
 
 // Webdriver helpers
 var By = require('selenium-webdriver').By;
@@ -13,14 +13,14 @@ var FILTER_SELECT = By.id('s2id_filterBaseballPitcherForGame');
 var FILTER_INPUT = By.id('s2id_autogen48_search');
 var TABLES = By.css('table');
 
-function ScorePitchingSplitsPage(driver) {
+function PitchingSplitsPage(driver) {
   BasePage.call(this, driver);
 };
 
-ScorePitchingSplitsPage.prototype = Object.create(BasePage.prototype);
-ScorePitchingSplitsPage.prototype.constructor = ScorePitchingSplitsPage;
+PitchingSplitsPage.prototype = Object.create(BasePage.prototype);
+PitchingSplitsPage.prototype.constructor = PitchingSplitsPage;
 
-ScorePitchingSplitsPage.prototype.getPitchingSplitStat = function(playerNum, tableNum, row, col) {
+PitchingSplitsPage.prototype.getPitchingSplitStat = function(playerNum, tableNum, row, col) {
   // row input starts from 'Total' Row
   var outerRow = (playerNum - 1) * 7  + tableNum + 4;
   var innerRow = row + 3
@@ -29,17 +29,17 @@ ScorePitchingSplitsPage.prototype.getPitchingSplitStat = function(playerNum, tab
   return this.getText(locator);
 };
 
-ScorePitchingSplitsPage.prototype.getPitcherName = function(playerNum) {
+PitchingSplitsPage.prototype.getPitcherName = function(playerNum) {
   var row = (playerNum - 1) * 7 + 4;  
   var locator = By.xpath(`.//div[@id='pad-wrapper']/div[2]/div/div[@class='row'][${row}]/div/h1`)
   
   return this.getText(locator);
 };
 
-ScorePitchingSplitsPage.prototype.addPitcherFilter = function(pitcher) {
+PitchingSplitsPage.prototype.addPitcherFilter = function(pitcher) {
   return this.changeDropdown(FILTER_SELECT, FILTER_INPUT, pitcher);
 }
 
-ScorePitchingSplitsPage.prototype.comparisonLocator = TABLES;
+PitchingSplitsPage.prototype.comparisonLocator = TABLES;
 
-module.exports = ScorePitchingSplitsPage;
+module.exports = PitchingSplitsPage;

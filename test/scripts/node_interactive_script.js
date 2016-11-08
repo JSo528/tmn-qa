@@ -4,43 +4,54 @@ var credentials = require('../lib/credentials.js');
 var By = webdriver.By;
 var Until = webdriver.until;
 var Key = require('selenium-webdriver').Key;
+
 // Page Objects
 var LoginPage = require('./pages/login_page.js');
-var StandingsPage = require('../pages/mlb/standings_page.js');
-var TeamsPage = require('../pages/mlb/teams_page.js');
-var StatsPage = require('../pages/mlb/teams/stats_page.js');
 var Browser = require('../pages/base/browser.js');
 var Navbar = require('../pages/mlb/navbar.js');
-var ScoresPage = require('../pages/mlb/scores_page.js');
-var DetailedScorePage = require('../pages/mlb/detailed_score_page.js');
-var TeamsPage = require('../pages/mlb/teams_page.js');
-var ScorePitchByPitchPage = require('../pages/mlb/score_pitch_by_pitch_page.js');
-var PlayersPage = require('../pages/mlb/players_page.js');
-var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
 var Filters = require('../pages/mlb/filters.js');
 
-// Log In
+// Teams Pages
+var TeamsPage = require('../pages/mlb/teams/teams_page.js');
+var TeamsStatsPage = require('../pages/mlb/teams/stats_page.js');
+
+// Scores Pages
+var ScoresPage = require('../pages/mlb/scores/scores_page.js');
+var DetailedScorePage = require('../pages/mlb/scores/detailed_score_page.js');
+var PitchByPitchPage = require('../pages/mlb/scores/pitch_by_pitch_page.js');
+
+// Players Pages
+var PlayersPage = require('../pages/mlb/players/players_page.js');
+var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
+
+var StandingsPage = require('../pages/mlb/standings_page.js');
+var UmpiresPage = require('../pages/mlb/umpires_page.js');
+
+// Instance Objects
 loginPage = new LoginPage(driver);
-var url = "https://dodgers.trumedianetworks.com"
-var stagUrl = "https://dodgers-staging.trumedianetworks.com:3001"
-loginPage.visit(url);
-loginPage.login(credentials.testUser.email, credentials.testUser.password);
-standingsPage = new StandingsPage(driver);
 browser = new Browser(driver);
 navbar  = new Navbar(driver);
+standingsPage = new StandingsPage(driver);
 scoresPage = new ScoresPage(driver);
 detailedScorePage = new DetailedScorePage(driver);
 teamsPage = new TeamsPage(driver);
-statsPage = new StatsPage(driver);
-scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
+teamsStatsPage = new TeamsStatsPage(driver);
+pitchByPitchPage = new PitchByPitchPage(driver);
 playersPage = new PlayersPage(driver);
 playersStatsPage = new PlayersStatsPage(driver);
 filters = new Filters(driver);
-navbar.goToPlayersPage();
+umpiresPage = new UmpiresPage(driver);
 
+// Constants
+var url = "https://dodgers.trumedianetworks.com"
+var stagUrl = "https://dodgers-staging.trumedianetworks.com:3001"
 
+// Script
+loginPage.visit(url);
+loginPage.login(credentials.testUser.email, credentials.testUser.password);
+navbar.goToUmpiresPage();
 
-filters.changeFilterGroupDropdown('eBIS')
+filters.changeFilterGroupDropdown('pitch')
 filters.selectForBooleanDropdownSidebarFilter("Contract Type:", "MLB");
 
 

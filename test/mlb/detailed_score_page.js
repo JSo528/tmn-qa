@@ -7,9 +7,9 @@ var constants = require('../../lib/constants.js');
 // Page Objects
 var Filters = require('../../pages/mlb/filters.js');
 var Navbar = require('../../pages/mlb/navbar.js');
-var DetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
-var ScorePitchByPitchPage = require('../../pages/mlb/score_pitch_by_pitch_page.js');
-var ScorePitchingSplitsPage = require('../../pages/mlb/score_pitching_splits_page.js');
+var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js');
+var ScorePitchByPitchPage = require('../../pages/mlb/scores/pitch_by_pitch_page.js');
+var ScorePitchingSplitsPage = require('../../pages/mlb/scores/pitching_splits_page.js');
 var navbar, filters, detailedScorePage, scorePitchByPitchPage, scorePitchingSplitsPage;
 
 // Page Specific

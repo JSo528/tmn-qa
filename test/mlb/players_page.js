@@ -7,7 +7,7 @@ var constants = require('../../lib/constants.js');
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
 var Filters = require('../../pages/mlb/filters.js');
-var PlayersPage = require('../../pages/mlb/players_page.js');
+var PlayersPage = require('../../pages/mlb/players/players_page.js');
 var StatsPage = require('../../pages/mlb/players/stats_page.js');
 var StreaksPage = require('../../pages/mlb/players/streaks_page.js');
 var ScatterPlotPage = require('../../pages/mlb/players/scatter_plot_page.js');
@@ -172,7 +172,7 @@ test.describe('#Players Page', function() {
       // Stats View
       test.describe("#stats view", function() {
         test.before(function() {
-          filters.toggleSidebarFilter('Zone Location', 'Out of Strike Zone', true);
+          filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', true);
         });
 
         // Comparing top BA in 2015 for all the different stat views

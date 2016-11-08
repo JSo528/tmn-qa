@@ -34,14 +34,12 @@ function writeScreenshot(callback) {
     })
     element.getSize().then(function(size) {
       console.log("** ws 3 **")
-      console.log(size)
       var height;
       if (size.height > 3000) {
         height = 3000;
       } else {
         height = size.height
       }
-      console.log(height)
 
       driver.manage().window().setSize(1920, height).then(function() {
         console.log("** setSize success")

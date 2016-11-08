@@ -1,7 +1,7 @@
 'use strict';
 
 // Load Base Page
-var BasePage = require('../../pages/base/base_page.js');
+var BasePage = require('../../../pages/base/base_page.js');
 
 // Webdriver helpers
 var By = require('selenium-webdriver').By;
@@ -26,7 +26,8 @@ function TeamsPage(driver) {
 TeamsPage.prototype = Object.create(BasePage.prototype);
 TeamsPage.prototype.constructor = TeamsPage;
 
-
+// after going to new section, need to wait for the page to be fully loaded
+// last thing to update appears to be the report select for each page
 TeamsPage.prototype.goToSection = function(section) {
   var linkNum, lastLocator; 
   switch (section) {

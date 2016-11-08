@@ -9,7 +9,9 @@ var tests = [
   './mlb/scores_page',
   './mlb/detailed_score_page',
   './mlb/teams_page',
-  './mlb/players_page'
+  './mlb/players_page',
+  './mlb/umpires_page',
+  './mlb/groups_page'
 ]
 
 util.generateTests('[MLB Production]', tests, startUrl); 

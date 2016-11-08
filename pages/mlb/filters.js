@@ -141,7 +141,7 @@ Filters.prototype.changeFilterGroupDropdown = function(filterGroupName) {
 Filters.prototype.toggleSidebarFilter = function(filterName, optionName, select) {
   var d = Promise.defer();
   var thiz = this;
-  var locator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/label[.//text()='${optionName}']`)
+  var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/label[.//text()='${optionName}']`)
 
   this.getAttribute(locator, 'class').then(function(className) {
     var isSelected = className.includes('active');
@@ -158,7 +158,7 @@ Filters.prototype.toggleSidebarFilter = function(filterName, optionName, select)
 Filters.prototype.toggleSelectAllSidebarFilter = function(filterName, select) {
   var d = Promise.defer();
   var thiz = this;
-  var locator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/label[contains(@class, 'select-filter-all')]`)
+  var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/label[contains(@class, 'select-filter-all')]`)
   
   this.getAttribute(locator, 'class').then(function(className) {
     var isSelected = className.includes('active');
@@ -176,63 +176,69 @@ Filters.prototype.toggleSelectAllSidebarFilter = function(filterName, select) {
 // dateFrom<String>   : from date in the format of 'YYYY-MM-DD'
 // dateTo<String>     : to date in the format of 'YYYY-MM-DD'
 Filters.prototype.changeValuesForDateSidebarFilter = function(filterName, dateFrom, dateTo) {
-  var dateFromLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/div/input[contains(@class, 'date-range-from')]`);
-  var dateToLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/div/input[contains(@class, 'date-range-to')]`);
+  var dateFromLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/div/input[contains(@class, 'date-range-from')]`);
+  var dateToLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/div/input[contains(@class, 'date-range-to')]`);
   this.clear(dateFromLocator);
   this.clear(dateToLocator);
   this.sendKeys(dateFromLocator, dateFrom);
   this.sendKeys(dateFromLocator, Key.ENTER);
   this.sendKeys(dateToLocator, dateTo);
-  return this.sendKeys(dateToLocator, Key.ENTER);
+  this.sendKeys(dateToLocator, Key.ENTER);
+  this.waitForDisplayed(LOADING_CONTAINER);
+  return this.waitUntilStaleness(LOADING_CONTAINER);
 }
 
 // filterName<String> : name of the filter that should be changed(exact text value)
 // selection<String   : dropdown option value to be selected (exact text value)
 Filters.prototype.changeDropdownForDateSidebarFilter = function(filterName, selection) {
-  var selectLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/select`);
+  var selectLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/select`);
   this.click(selectLocator);
-  var optionLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/select/option[.//text()="${selection}"]`);
+  var optionLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/select/option[.//text()="${selection}"]`);
   return this.click(optionLocator);
 }
 
 // filterName<String> : name of the filter that should be changed (exact text value)
 // update<Bool>       : whether the update button should be pressed or not
 Filters.prototype.clickClearSidebarFilter = function(filterName, update) {
-  var clearLink = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/a[contains(@class,'clear-link')]`);
+  var clearLink = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/a[contains(@class,'clear-link')]`);
   this.click(clearLink);
 
   return update ? this.click(UPDATE_BUTTON) : Promise.fulfilled(true);  
 }
 
 Filters.prototype.changeValuesForRangeSidebarFilter = function(filterName, rangeStart, rangeEnd) {
-  var rangeStartLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/input[contains(@class,'range-text-start')]`);
-  var rangeEndLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/input[contains(@class,'range-text-end')]`);
+  var rangeStartLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/input[contains(@class,'range-text-start')]`);
+  var rangeEndLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/input[contains(@class,'range-text-end')]`);
   this.clear(rangeStartLocator);
   this.clear(rangeEndLocator);
   this.sendKeys(rangeStartLocator, rangeStart);
   this.sendKeys(rangeEndLocator, rangeEnd);
-  return this.sendKeys(rangeEndLocator, Key.ENTER);
+  this.sendKeys(rangeEndLocator, Key.ENTER);
+  this.waitForDisplayed(LOADING_CONTAINER);
+  return this.waitUntilStaleness(LOADING_CONTAINER, 60000);
 }
 
 Filters.prototype.removeSelectionFromDropdownSidebarFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul/li[div[text()='${selection}']]/a[@class='select2-search-choice-close']`);  
+  var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul/li[div[text()='${selection}']]/a[@class='select2-search-choice-close']`);  
   return this.click(locator);
 }
 
 Filters.prototype.addSelectionToDropdownSidebarFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul`);
+  var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul`);
   this.click(locator);
-  var inputLocator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul/li/input`)
+  var inputLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul/li/input`)
   this.sendKeys(inputLocator, selection);
   this.sendKeys(inputLocator, Key.ENTER);
-  return this.sendKeys(inputLocator, Key.ESCAPE);
+  this.sendKeys(inputLocator, Key.ESCAPE);
+  this.waitForDisplayed(LOADING_CONTAINER);
+  return this.waitUntilStaleness(LOADING_CONTAINER, 60000);
 }
 
 Filters.prototype.selectAllForDropdownSidebarFilter = function(filterName, select) {
   var d = Promise.defer();
   var thiz = this;
 
-  var locator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/span/input`);
+  var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/span/input`);
   var element = this.driver.findElement(locator);
   element.isSelected().then(function(selected) {
     if (selected != select) {
@@ -246,8 +252,10 @@ Filters.prototype.selectAllForDropdownSidebarFilter = function(filterName, selec
 }
 
 Filters.prototype.selectForBooleanDropdownSidebarFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@class='tab-content']/div/div/div/div[div/h5[text()='${filterName}']]/div/div/div/a`);
-  return this.changeDropdown(locator, SIDEBAR_DROPDOWN_INPUT, selection);
+  var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/a`);
+  this.changeDropdown(locator, SIDEBAR_DROPDOWN_INPUT, selection);
+  this.waitForDisplayed(LOADING_CONTAINER);
+  return this.waitUntilStaleness(LOADING_CONTAINER, 60000);
 }
 
 

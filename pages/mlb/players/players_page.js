@@ -1,7 +1,7 @@
 'use strict';
 
 // Load Base Page
-var BasePage = require('../../pages/base/base_page.js');
+var BasePage = require('../../../pages/base/base_page.js');
 
 // Webdriver helpers
 var By = require('selenium-webdriver').By;

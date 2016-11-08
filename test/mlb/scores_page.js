@@ -6,7 +6,7 @@ var constants = require('../../lib/constants.js');
   
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
-var ScoresPage = require('../../pages/mlb/scores_page.js');
+var ScoresPage = require('../../pages/mlb/scores/scores_page.js');
 var navbar, scoresPage;
 
 test.describe('#Scores Page', function() {

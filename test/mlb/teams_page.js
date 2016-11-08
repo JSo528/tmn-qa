@@ -7,7 +7,7 @@ var constants = require('../../lib/constants.js');
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
 var Filters = require('../../pages/mlb/filters.js');
-var TeamsPage = require('../../pages/mlb/teams_page.js');
+var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
 var ScatterPlotPage = require('../../pages/mlb/teams/scatter_plot_page');
 var StreaksPage = require('../../pages/mlb/teams/streaks_page');

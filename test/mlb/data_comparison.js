@@ -11,11 +11,11 @@ var Navbar = require('../../pages/mlb/navbar.js');
 var Filters = require('../../pages/mlb/filters.js');
 var LoginPage = require('../../pages/login_page.js');
 var StandingsPage = require('../../pages/mlb/standings_page.js');
-var ScoresPage = require('../../pages/mlb/scores_page.js');
-var DetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
-var ScorePitchByPitch = require('../../pages/mlb/score_pitch_by_pitch_page.js');
-var ScorePitchingSplitsPage = require('../../pages/mlb/score_pitching_splits_page.js');
-var TeamsPage = require('../../pages/mlb/teams_page.js');
+var ScoresPage = require('../../pages/mlb/scores/scores_page.js');
+var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js');
+var ScorePitchByPitch = require('../../pages/mlb/scores/pitch_by_pitch_page.js');
+var ScorePitchingSplitsPage = require('../../pages/mlb/scores/pitching_splits_page.js');
+var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var prodUrl = constants.urls.mlb.dodgers;
 var navbar, filters, standingsPage, scoresPage, detailedScorePage;
 
