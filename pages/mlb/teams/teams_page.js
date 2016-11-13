@@ -76,10 +76,6 @@ TeamsPage.prototype.goToSubSection = function(section) {
   return this.click(section);
 }
 
-TeamsPage.prototype.getTeamName = function() {
-  return this.getText(TEAM_NAME);
-}
-
 TeamsPage.prototype.statsTable = STATS_TABLE;
 TeamsPage.prototype.streaksTable = STREAKS_TABLE;
 

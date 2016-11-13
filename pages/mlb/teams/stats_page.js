@@ -64,6 +64,13 @@ StatsPage.prototype.clickTeamTableColumnHeader = function(col) {
   return this.click(locator); 
 };
 
+StatsPage.prototype.clickTeamTableCell = function(teamNum, col) {
+  // First 4 rows are for the headers
+  var row = 4 + teamNum;
+  var locator = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/tbody/tr[${row}]/td[${col}]/a`);
+  return this.click(locator); 
+};
+
 
 StatsPage.prototype.clickTeamTablePin = function(teamNum) {
   var row = 4 + teamNum;

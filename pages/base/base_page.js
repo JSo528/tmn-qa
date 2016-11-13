@@ -6,7 +6,7 @@ var Key = require('selenium-webdriver').Key;
 var By = require('selenium-webdriver').By;
 
 var WAIT_TIME_PRESENT = 10000;
-var WAIT_TIME_BEFORE_RETRY = 500;
+var WAIT_TIME_BEFORE_RETRY = 2000;
 
 // Internal debug
 var debug = false;
@@ -64,7 +64,11 @@ BasePage.prototype.waitForDisplayed = function(locator, timeout) {
         driver.wait(Until.elementIsVisible(element),timeout).then(function() {
             if (debug){console.log('waitForEnabled::Element is visible ' + locator);}
             // After it is enabled check if it is really displayed
-            return driver.findElement(locator).isDisplayed();
+            driver.findElement(locator).isDisplayed().then(function(displayed) {
+              defer.fulfill(displayed);
+            }, function (err) {
+              defer.reject(err + ' : ' + locator);
+            })
         }, function (err) /* error call back*/ {
 
             /**
@@ -77,7 +81,11 @@ BasePage.prototype.waitForDisplayed = function(locator, timeout) {
                 driver.wait(Until.elementIsVisible(element),timeout).then(function() {
                     if (debug){console.log('waitForEnabled::Element is visible after retry ' + locator);}
                     // After it is enabled check if it is really displayed
-                    return driver.findElement(locator).isDisplayed();
+                    driver.findElement(locator).isDisplayed().then(function(displayed) {
+                      defer.fulfill(displayed);
+                    }, function (err) {
+                      defer.reject(err + ' : ' + locator);
+                    })
                 }, function (err) /* error call back*/ {
                     console.log('waitForDisplayed::Element is still not visible after retry, error : ' + err);
                     defer.reject(err + ' : ' + locator)
@@ -229,11 +237,20 @@ BasePage.prototype.waitUntilStaleness = function(locator, timeout) {
   var d = Promise.defer();
   var thiz = this;
 
-  this.driver.findElement(locator).then(function(element) {
-    d.fulfill(thiz.driver.wait(Until.stalenessOf(element), timeout));
+  this.waitForDisplayed(locator).then(function() {
+    thiz.driver.findElement(locator).then(function(element) {
+      thiz.driver.wait(Until.stalenessOf(element), timeout).then(function() {
+        d.fulfill(true)
+      }, function(err) {
+        d.fulfill(true)
+      })
+    }, function(err) {
+      d.fulfill(true)
+    }); 
   }, function(err) {
-    d.fulfill(true)
-  });    
+    console.log('not displayed')
+    d.fulfill(false)
+  })
 
   return d.promise;  
 }

@@ -37,20 +37,6 @@ PitchByPitch.prototype = Object.create(BasePage.prototype);
 PitchByPitch.prototype.constructor = PitchByPitch;
 
 // Filters
-PitchByPitch.prototype.addDropdownFilter = function(filter) {
-  return this.changeDropdown(FILTER_SELECT, FILTER_INPUT, filter);
-};
-
-PitchByPitch.prototype.toggleSidebarFilter = function(filterName, selection) {
-  var locator = By.xpath(`.//div[@id='common']/div/div/div[@class='row'][div[@class='col-md-4 filter-modal-entry-label']/h5[contains(text()[1], '${filterName}')]]/div[@class='col-md-8']/div/div/label[${selection}]`)
-  return this.clickAndWait(locator, DATA_CONTAINER);
-};
-
-PitchByPitch.prototype.closeDropdownFilter = function(filterNum) {
-  var locator = By.xpath(`.//div[@class='col-md-8 activated']/div[${filterNum}]/div[@class='filter-header text-left']/span[@class='closer fa fa-2x fa-times-circle pull-right']`);
-  return this.removeFilter(locator, UPDATE_BUTTON);
-};
-
 PitchByPitch.prototype.addDecisiveEventFilter = function(filter) {
   return this.changeDropdown(DECISIVE_EVENT_FILTER_SELECT, DECISIVE_EVENT_FILTER_INPUT, filter);
 };

@@ -14,6 +14,8 @@ var Filters = require('../pages/mlb/filters.js');
 // Teams Pages
 var TeamsPage = require('../pages/mlb/teams/teams_page.js');
 var TeamsStatsPage = require('../pages/mlb/teams/stats_page.js');
+var TeamPage = require('../pages/mlb/team/team_page.js');
+var OverviewPage = require('../pages/mlb/team/overview_page.js');
 
 // Scores Pages
 var ScoresPage = require('../pages/mlb/scores/scores_page.js');
@@ -26,6 +28,8 @@ var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
 
 var StandingsPage = require('../pages/mlb/standings_page.js');
 var UmpiresPage = require('../pages/mlb/umpires_page.js');
+var GroupsPage = require('../pages/mlb/groups_page.js')
+var RosterPage = require('../pages/mlb/team/roster_page.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);
@@ -41,6 +45,10 @@ playersPage = new PlayersPage(driver);
 playersStatsPage = new PlayersStatsPage(driver);
 filters = new Filters(driver);
 umpiresPage = new UmpiresPage(driver);
+groupsPage = new GroupsPage(driver);
+teamPage = new TeamPage(driver);
+overviewPage = new OverviewPage(driver);
+rosterPage = new RosterPage(driver, 'batting')
 
 // Constants
 var url = "https://dodgers.trumedianetworks.com"
@@ -49,24 +57,31 @@ var stagUrl = "https://dodgers-staging.trumedianetworks.com:3001"
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
-navbar.goToUmpiresPage();
 
-filters.changeFilterGroupDropdown('pitch')
-filters.selectForBooleanDropdownSidebarFilter("Contract Type:", "MLB");
+navbar.goToTeamsPage();
+filters.removeSelectionFromDropdownFilter("Seasons:");
+filters.addSelectionToDropdownFilter("Seasons:", 2016).then(function() {
+  teamsStatsPage.clickTeamTableCell(1,3); // should click into BOS team link
+}).then(function() {
+  teamPage.goToSubSection("Matchups");
+}).then(function() {
+  teamPage.selectForCompSearch(2, 'Chris Archer');
+})
+
+
+teamPage.clickPitchVideoIcon(1);
+
+teamPage.getMatchupsCurrentVideoHeader().then(function(text) {
+  console.log(text)
+})
+
+
+teamPage.getMatchupsVideoText(2,2).then(function(text) {
+  console.log(text)
+})
 
 
 
-filters.addSelectionToDropdownSidebarFilter('count:', '3 Balls');
-filters.removeSelectionFromDropdownSidebarFilter('count:', '3 Balls');
-filters.selectAllForDropdownSidebarFilter('count:')
-
-filters.changeFilterGroupDropdown("eBIS")
-
-var locator = By.xpath(`.//div[@id='common']/div/div/div[div/h5[text()='count:']]/div/div/div/ul`)
-filters.click(locator);
-var locator = By.xpath(`.//div[@id='common']/div/div/div[div/h5[text()='count:']]/div/div/div/ul/li/input`)
-filters.sendKeys(locator, '3 Balls');
-filters.sendKeys(locator, Key.ENTER);
 
 // FIND LAST LOCATOR
 driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/CHC-LAD/2016-10-22/487629?f=%7B%7D&is=true').then(function() {

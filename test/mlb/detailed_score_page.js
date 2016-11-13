@@ -42,18 +42,9 @@ test.describe('#DetailedScore Page', function() {
         });
       });
 
-      test.it('removing filter: (2 outs) from top section displays correct data', function() {
+      test.after(function() {
         filters.closeDropdownFilter("Outs:");
-        detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
-          assert.equal(pitches, 16);
-        });
-      });
-
-      test.it('removing filter: (pitcher hand-left) from sidebar displays correct data', function() {
         filters.toggleSidebarFilter("Pitcher Hand:", 'Righty', false);
-        detailedScorePage.getPlayerBattingStat("home", 1, 5).then(function(pitches) {
-          assert.equal(pitches, 20);
-        });
       });         
     });
 

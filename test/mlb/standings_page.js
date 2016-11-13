@@ -7,13 +7,13 @@ var constants = require('../../lib/constants.js');
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
 var StandingsPage = require('../../pages/mlb/standings_page.js');
-var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
+var TeamPage = require('../../pages/mlb/team/team_page.js');
 var standingsPage, teamsPage, navbar;
 
 test.describe('#Standings Page', function() {
   test.before(function() {
     standingsPage = new StandingsPage(driver);
-    teamsPage = new TeamsPage(driver);
+    teamPage = new TeamPage(driver);
     navbar  = new Navbar(driver);
   });
 
@@ -51,7 +51,7 @@ test.describe('#Standings Page', function() {
     standingsPage.changeSeasonLevel("MLB");
     standingsPage.goToTeamPage(constants.divisions.al_east, 1);
       
-    teamsPage.getTeamName().then(function(text) {
+    teamPage.getTeamName().then(function(text) {
       assert.equal( text, 'Baltimore Orioles', 'goes to the correct team page');
     });
   });

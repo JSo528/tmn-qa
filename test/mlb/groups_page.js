@@ -20,7 +20,7 @@ test.describe('#Groups Page', function() {
     navbar.goToGroupsPage();
   });
 
-  test.describe.skip('#Section: Batting', function() {
+  test.describe('#Section: Batting', function() {
     test.before(function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2009);
