@@ -5,10 +5,12 @@ html
     script(src='//code.jquery.com/jquery-2.0.2.min.js')
     script(src='/vendor/js/bootstrap.min.js')
     script(src='/vendor/js/moment.js')
+    script(src='/vendor/js/handlebars.js')
     link(rel='stylesheet' href='/vendor/css/bootstrap.min.css')
     link(rel='stylesheet' href='/vendor/css/bootstrap-theme.min.css')
     link(rel='stylesheet' href='/css/custom.css')
     link(rel='shortcut icon' type="image/x-icon" href="/img/favicon.ico")
+    block extraHeaders
   body
     .navbar.navbar-inverse
       .container-fluid

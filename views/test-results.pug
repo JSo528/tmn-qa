@@ -1,4 +1,10 @@
 extend layouts/main
+
+block extraHeaders
+  script(src='/vendor/js/underscore.min.js')
+  script(src='/vendor/js/backbone.min.js')
+  script(src='/js/app.js')
+
 block content
   #testResultsPanel.div.div-default
     .div-body
@@ -16,7 +22,7 @@ block content
           default
             - alertClass = 'alert-success'
         
-        .alert(class=alertClass)
+        #statusFlash.alert(class=alertClass)
           strong Status: 
           span#testStatus= testRun.status
         .panel.panel-primary
@@ -34,74 +40,17 @@ block content
                 td= testRun.portNumber
               tr
                 th Passed
-                td= testRun.passedCount
+                td#passedCount= testRun.passedCount
               tr
                 th Failed
-                td= testRun.failedCount
+                td#failedCount= testRun.failedCount
               tr
                 th Start
                 td#startTime(data-time=testRun.startedAt)
               tr
                 th Finish
                 td#endTime(data-time=testRun.endedAt)
-
-        - var errorCount = 1
-        each error in testRun.errorObjects
-          .panel.panel-default.error-panel
-            .panel-heading
-              .main= errorCount + ") " + error.title
-              .actions
-                a.expander [MIN]
-            .panel-body
-              .row
-                .col-sm-2.bold Path:
-                .col-sm-10= error.fullTitle
-              .row
-                .col-sm-2.bold Type:
-                .col-sm-10= error.errorType
-              .row
-                .col-sm-2.bold Message:
-                .col-sm-10= error.errorMessage                      
-              if error.diff
-                .row
-                  .col-sm-2.bold Actual
-                  .col-sm-10
-                    each diff in error.diff
-                      if diff.added
-                        span.green= diff.value
-                      else if diff.removed == undefined
-                        span= diff.value              
-                .row
-                  .col-sm-2.bold Expected
-                  .col-sm-10
-                    each diff in error.diff
-                      if diff.removed
-                        span.red= diff.value
-                      else if diff.added == undefined
-                        span= diff.value
-              .row.stack-row.hidden
-                .col-sm-2.bold Stack:
-                .col-sm-10= error.stack                                              
-
-              .row
-                .col-sm-12
-                  .dividing-line
-              .row
-                if error.imgFiles.length == 1
-                  - imgFile = error.imgFiles[0]
-                  .col-sm-12
-                    .url-container
-                      a.url(href=imgFile.url target='_blank')= imgFile.url
-                    if imgFile.name
-                      img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
-                else
-                  each imgFile in error.imgFiles
-                    .col-sm-6
-                      .url-container
-                        a.url(href=imgFile.url target='_blank')= imgFile.url
-                      if imgFile.name
-                        img.error-img(src="/data/"+testRun.id+"/"+imgFile.name data-toggle="modal" data-target="#imageModal")
-          - errorCount += 1
+        #failedTestsContainer
 
   .modal.fade#imageModal(tabindex="-1", role="dialog")
     .modal-dialog(role="document")
@@ -112,68 +61,4 @@ block content
           h4.title
         .modal-body
           img
-
-  script.
-    $('.expander').on('click', function() {
-      toggleExpander($(this));
-    });
-
-    function toggleExpander(el) {
-      if (el.hasClass('minimized')) {
-        el.removeClass('minimized');
-        el.text("[MIN]");
-        el.closest('.error-panel').children('.panel-body').show();
-      } else {
-        el.addClass('minimized')
-        el.text("[MAX]");
-        el.closest('.error-panel').children('.panel-body').hide();
-      }
-    };
-
-    $('a.stack-link').on('click', function() {
-      if ($(this).hasClass('show')) {
-        toggleStackTraces(true);
-      } else {
-        toggleStackTraces(false);
-      }
-    });
-
-    function toggleStackTraces(hide) {
-      if (hide) {
-        $('a.stack-link').removeClass('show');
-        $('a.stack-link').text("[SHOW STACK]");
-        $('.stack-row').addClass('hidden');
-      } else {
-        $('a.stack-link').addClass('show');
-        $('a.stack-link').text("[HIDE STACK]");
-        $('.stack-row').removeClass('hidden');
-      }
-    };
-
-    toggleStackTraces(true);
-
-    // convert this into an API call and append
-    setTimeout(function() {
-      if($('#testStatus').text() == "ongoing") {
-        window.location.reload();
-      }
-    }, 60000);
-
-
-    $('.error-img').on('click', function() {
-      var src = $(this).attr('src');
-      $('#imageModal img').attr('src', src);
-      var msg = $(this).closest('.panel').find('.main').text();
-      $('#imageModal .title').text(msg);
-      $('#imageModal').focus();
-    })
-
-    var startTime = $('#startTime').data('time');
-    $('#startTime').text(moment(startTime).local().format('dddd, L LT'));
-
-    var endTime = $('#endTime').data('time');
-    if (endTime) {
-      $('#endTime').text(moment(endTime).local().format('dddd, L LT'));
-    }
-    
     

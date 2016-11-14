@@ -62,10 +62,11 @@ app.get('/test-results/:id', function(req, res) {
     } else {
       testRun.testName = constants.tests[testRun.testNumber].name
       
-      testRun.errorObjects.map(function(error) {
+      testRun.errorObjects.map(function(error, index) {
         if (error.expectedValue || error.actualValue) {
           error.diff = jsdiff.diffWordsWithSpace(String(error.expectedValue), String(error.actualValue));  
         }
+        error.errorNumber = index+1;
       })
 
       res.render('test-results', {
@@ -88,6 +89,34 @@ app.post('/run-tests', function(req, res) {
   runner(testRun, app.get('env'));
 
   res.redirect(303, '/test-results/'+testRun.id);
+});
+
+// API
+app.get('/api/test-runs/:id', function(req, res) {
+  var jsdiff = require('diff');
+
+  TestRun.findById(req.params.id, function(err, testRun) {
+    if (err) {
+      res.json({
+        success: false,
+        errorMessage: "No test found"
+      });    
+    } else {
+      testRun.testName = constants.tests[testRun.testNumber].name
+      
+      testRun.errorObjects.map(function(error, index) {
+        if (error.expectedValue || error.actualValue) {
+          error.diff = jsdiff.diffWordsWithSpace(String(error.expectedValue), String(error.actualValue));  
+        }
+        error.errorNumber = index+1;
+      })
+
+      res.json({
+        sucess: true,
+        data: testRun
+      });    
+    }
+  });
 });
 
 app.post('/kill-chrome', function(req, res) {

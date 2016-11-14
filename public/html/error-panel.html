@@ -1,0 +1,70 @@
+<div class="panel-heading">
+  <div class="main">{{errorNumber}}) {{title}}</div>
+  <div class="actions"><a class="expander">[MIN]</a></div>
+</div>
+<div class="panel-body">
+  <div class="row">
+    <div class="col-sm-2 bold">Path:</div>
+    <div class="col-sm-10">{{fullTitle}}</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2 bold">Type:</div>
+    <div class="col-sm-10">{{errorType}}</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2 bold">Message:</div>
+    <div class="col-sm-10 white-space">{{errorMessage}}</div>
+  </div>
+  {{#if diff}}
+    <div class="row">
+      <div class="col-sm-2 bold">Actual</div>
+      <div class="col-sm-10 white-space">
+        {{#each diff}}
+          {{#if added}}
+            <span class="green">{{value}}</span>
+          {{else if removed}}
+          {{else}}
+            <span>{{value}}</span>
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+  {{#if diff}}
+    <div class="row">
+      <div class="col-sm-2 bold">Expected</div>
+      <div class="col-sm-10 white-space">
+        {{#each diff}}
+          {{#if added}}
+          {{else if removed}}
+            <span class="red">{{value}}</span>
+          {{else}}
+            <span>{{value}}</span>
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}  
+  <div class="row stack-row hidden">
+    <div class="col-sm-2 bold">Stack:</div>
+    <div class="col-sm-10 white-space">{{stack}}</div>
+  </div>
+  {{#if imgFiles}}  
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="dividing-line">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      {{#each imgFiles}}
+        <div class="col-sm-6">
+          <div class="url-container">
+            <a class="url" href={{url}} target="_blank">{{url}}</a>
+          </div>
+          <img class="error-img" src="/data/{{../testRunID}}/{{name}}" data-toggle="modal" data-target="#imageModal">
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+</div>

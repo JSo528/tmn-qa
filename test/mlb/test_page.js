@@ -9,19 +9,21 @@ var credentials = require('../../lib/credentials.js');
 var Navbar = require('../../pages/mlb/navbar.js');
 var LoginPage = require('../../pages/login_page.js');
 var StandingsPage = require('../../pages/mlb/standings_page.js');
-var TeamsPage = require('../../pages/mlb/teams_page.js');
+var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
+var TeamPage = require('../../pages/mlb/team/team_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
-var ScoresPage = require('../../pages/mlb/scores_page.js');
-var ScorePitchByPitchPage = require('../../pages/mlb/score_pitch_by_pitch_page.js');
-var DetailedScorePage = require('../../pages/mlb/detailed_score_page.js');
+var ScoresPage = require('../../pages/mlb/scores/scores_page.js');
+var ScorePitchByPitchPage = require('../../pages/mlb/scores/pitch_by_pitch_page.js');
+var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js');
 var prodUrl = constants.urls.mlb.dodgers;
 
-var navbar, standingsPage, teamsPage, scorePitchByPitchPage, detailedScorePage;
+var navbar, standingsPage, teamsPage, teamPage, scorePitchByPitchPage, detailedScorePage;
 
 test.describe('', function() {
   test.before(function() {    
     standingsPage = new StandingsPage(driver);
     teamsPage = new TeamsPage(driver);
+    teamPage = new TeamPage(driver);
     navbar  = new Navbar(driver);
   });
 
@@ -42,7 +44,7 @@ test.describe('', function() {
       standingsPage.changeSeasonLevel("MLB");
       standingsPage.goToTeamPage(constants.divisions.al_east, 1);
 
-      teamsPage.getTeamName().then(function(text) {
+      teamPage.getTeamName().then(function(text) {
         assert.equal( text, 'Los Angeles Dodgers', 'goes to the correct team page');
       });
     });
