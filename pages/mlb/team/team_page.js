@@ -92,12 +92,13 @@ TeamPage.prototype.goToSection = function(section) {
   this.section = section;
   var section = By.xpath(`.//nav[contains(@class, 'navbar-blue')]/.//li[${SECTION_LINK_NUM[this.section]}]/a`);
   this.click(section);
-  return this.waitForEnabled(REPORT_SELECT[this.section]);
+  return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
 }
 
 TeamPage.prototype.goToSubSection = function(subSection) {
   var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
-  return this.click(locator);
+  this.click(locator);
+  return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
 }
 
 TeamPage.prototype.getTeamName = function() {
@@ -106,7 +107,7 @@ TeamPage.prototype.getTeamName = function() {
 
 TeamPage.prototype.changeReport = function(report) {
   this.changeDropdown(REPORT_SELECT[this.section], DROPDOWN_INPUT, report);
-  return this.waitForEnabled(REPORT_SELECT[this.section]);
+  return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
 };
 
 // Game Log Page
@@ -164,7 +165,7 @@ TeamPage.prototype.drawBoxOnHeatMap = function(topOrBottom, x, y, width, height)
     .mouseUp() // click up
     .perform();
     
-    this.waitUntilStaleness(imageLocator);
+    this.waitUntilStaleness(imageLocator, 10000);
     return this.waitForEnabled(imageLocator)
 };
 

@@ -30,6 +30,7 @@ var StandingsPage = require('../pages/mlb/standings_page.js');
 var UmpiresPage = require('../pages/mlb/umpires_page.js');
 var GroupsPage = require('../pages/mlb/groups_page.js')
 var RosterPage = require('../pages/mlb/team/roster_page.js');
+var PlayerPage = require('../pages/mlb/player/player_page.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);
@@ -42,13 +43,14 @@ teamsPage = new TeamsPage(driver);
 teamsStatsPage = new TeamsStatsPage(driver);
 pitchByPitchPage = new PitchByPitchPage(driver);
 playersPage = new PlayersPage(driver);
-playersStatsPage = new PlayersStatsPage(driver);
+playersStatsPage = new PlayersStatsPage(driver, 'batting');
 filters = new Filters(driver);
 umpiresPage = new UmpiresPage(driver);
 groupsPage = new GroupsPage(driver);
 teamPage = new TeamPage(driver);
 overviewPage = new OverviewPage(driver);
 rosterPage = new RosterPage(driver, 'batting')
+playerPage = new PlayerPage(driver)
 
 // Constants
 var url = "https://dodgers.trumedianetworks.com"
@@ -58,28 +60,17 @@ var stagUrl = "https://dodgers-staging.trumedianetworks.com:3001"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-navbar.goToTeamsPage();
-filters.removeSelectionFromDropdownFilter("Seasons:");
-filters.addSelectionToDropdownFilter("Seasons:", 2016).then(function() {
-  teamsStatsPage.clickTeamTableCell(1,3); // should click into BOS team link
-}).then(function() {
-  teamPage.goToSubSection("Matchups");
-}).then(function() {
-  teamPage.selectForCompSearch(2, 'Chris Archer');
-})
+navbar.goToPlayersPage();
 
 
-teamPage.clickPitchVideoIcon(1);
-
-teamPage.getMatchupsCurrentVideoHeader().then(function(text) {
-  console.log(text)
-})
+playersStatsPage.clickTableStat(7,3);
 
 
-teamPage.getMatchupsVideoText(2,2).then(function(text) {
-  console.log(text)
-})
+playerPage.drawBoxOnHeatMap(150,150,25,25);
 
+playerPage.getHitChartHitCount().then(function(hitCount) {
+  console.log(hitCount)
+});
 
 
 

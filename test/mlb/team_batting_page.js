@@ -147,8 +147,8 @@ test.describe('#Team Batting Section', function() {
         { type: 'Called Strike Rate', title: 'CallStrk%' },  
         { type: 'Strike Looking Above Average', title: 'SLAA' },  
         { type: 'Correct Call Rate', title: 'CC%' },  
-        // { type: 'Strike Rate', title: 'Strike%' }, // selecting wrong option, need to change dropdown so it selects based off of text  
-        // { type: 'Ball Rate', title: 'Ball%' },  
+        { type: 'Strike Rate', title: 'Strike%' },
+        { type: 'Ball Rate', title: 'Ball%' },  
         { type: 'Swing Rate', title: 'Swing%' },  
         { type: 'Contact Rate', title: 'Contact%' },  
         { type: 'Miss Rate', title: 'Miss%' },  

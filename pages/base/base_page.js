@@ -6,7 +6,7 @@ var Key = require('selenium-webdriver').Key;
 var By = require('selenium-webdriver').By;
 
 var WAIT_TIME_PRESENT = 10000;
-var WAIT_TIME_BEFORE_RETRY = 2000;
+var WAIT_TIME_BEFORE_RETRY = 1000;
 
 // Internal debug
 var debug = false;

@@ -10,7 +10,6 @@ var App = {
 
 // Template
 var failedObjectTemplate;
-
 $.get("/html/error-panel.html", function(html) { 
   failedObjectTemplate = Handlebars.compile(html);
 })

@@ -15,7 +15,11 @@ var tests = [
   './mlb/team_batting_page',
   './mlb/team_pitching_page',
   './mlb/team_catching_page',
-  './mlb/team_statcast_fielding_page'
+  './mlb/team_statcast_fielding_page',
+  './mlb/player_batting_page',
+  './mlb/player_pitching_page',
+  './mlb/player_catching_page',
+  './mlb/player_statcast_fielding_page'
 ]
 
 util.generateTests('[MLB Production]', tests, startUrl); 

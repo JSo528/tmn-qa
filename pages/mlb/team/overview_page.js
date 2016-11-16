@@ -30,7 +30,7 @@ var OUT_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(128,1
 
 // TEAM GRID
 var TEAM_GRID = By.css('#teamGrid > svg');
-var TEAM_GRID_PITCH = By.css('#teamHeatMap circle.heat-map-ball');
+var TEAM_GRID_PITCH = By.css('#teamGrid circle.heat-map-ball');
 
 var VISUAL_MODE_SELECT = By.id('s2id_pageControlBaseballVisMode');
 var GRID_MODE_SELECT = By.id('s2id_pageControlBaseballGridMode');
@@ -73,8 +73,7 @@ OverviewPage.prototype.drawBoxOnHeatMap = function(x, y, width, height) {
     .mouseMove({x: width, y: height}) // move mouse width to the right and height downwards
     .mouseUp() // click up
     .perform();
-
-    this.waitUntilStaleness(HEATMAP_IMAGE);
+    this.waitUntilStaleness(HEATMAP_IMAGE, 10000);
     return this.waitForEnabled(HEATMAP_IMAGE)
 };
 
@@ -191,15 +190,11 @@ OverviewPage.prototype.getHeatMapImageTitle = function() {
   return d.promise;
 };
 
-OverviewPage.prototype.changeVisualMode = function(type) {
-  return this.changeDropdown(VISUAL_MODE_SELECT, DROPDOWN_INPUT, type);
-  
-  // need to select the actual li, but for some reason the selector isn't working
-  // this.click(VISUAL_MODE_SELECT, 30000);
-  // this.sendKeys(DROPDOWN_INPUT, type, 30000);
-  // var inputElement = this.driver.findElement(By.xpath(`.//ul[contains(@class, 'select2-results')]/li[div[text()='SLG']]`));
-  // return inputElement.click();
-}
+OverviewPage.prototype.changeVisualMode = function(mode) { 
+  this.click(VISUAL_MODE_SELECT);
+  var locator = By.xpath(`.//ul[@id='select2-results-1']/li/div[text()='${mode}']`);
+  return this.click(locator)
+};
 
 /****************************************************************************
 ** Catching Heat Maps
