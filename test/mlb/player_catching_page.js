@@ -27,7 +27,7 @@ test.describe('#Player Catching Section', function() {
     statsPage.clickTableStat(15,3); // should click into Yadier Molina player link
   });  
 
-  test.it('should be on Yadier Molina 2016 team page', function() {
+  test.it('should be on Yadier Molina 2016 player page', function() {
     playerPage.goToSection('catching');
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Yadier Molina');
@@ -74,59 +74,88 @@ test.describe('#Player Catching Section', function() {
       });
     });
 
-    // TODO - these tests work, but they're all broken on the site
-    // test.describe('#visual mode', function() {
-    //   // Visual Mode Dropdown
-    //   test.describe("#visual modes", function() {
-    //     var visualModes = [
-    //       { type: 'SLG', title: 'SLG' },  
-    //       { type: 'ISO', title: 'ISO' },  
-    //       { type: 'wOBA', title: 'wOBA' },  
-    //       { type: 'Expected BA', title: 'ExAVG' },  
-    //       { type: 'Expected SLG', title: 'ExSLG' },  
-    //       { type: 'Expected ISO', title: 'ExISO' },  
-    //       { type: 'Expected wOBA', title: 'ExWOBA' },  
-    //       { type: 'In Play BA', title: 'BA' },  
-    //       { type: 'In Play SLG', title: 'SLG' },  
-    //       { type: 'In Play ISO', title: 'ISO' },  
-    //       { type: 'Line Drive Rate', title: 'Line%' },
-    //       { type: 'Groundball Rate', title: 'Ground%' },  
-    //       { type: 'Flyball Rate', title: 'Fly%' },  
-    //       { type: 'Flyball Distance', title: 'FBDst' },  
-    //       { type: 'Exit Velocity', title: 'ExitVel' },  
-    //       { type: 'Forward Velocity', title: 'ForwVel' },  
-    //       { type: 'Efficient Velocity', title: 'EffVel' },  
-    //       // { type: 'Pitch Frequency', title: 'Pitch Frequency' }, // looks like this doesn't follow the pattern of the others
-    //       // { type: 'Release Velocity', title: 'Release Velocity' },  // TODO - looks like its broken
-    //       { type: 'Called Strike Rate', title: 'CallStrk%' },  
-    //       { type: 'Strike Looking Above Average', title: 'SLAA' },  
-    //       { type: 'Correct Call Rate', title: 'CC%' },  
-    //       { type: 'Strike Rate', title: 'Strike%' }, // selecting wrong option, need to change dropdown so it selects based off of text  
-    //       { type: 'Ball Rate', title: 'Ball%' },  
-    //       { type: 'Swing Rate', title: 'Swing%' },  
-    //       { type: 'Contact Rate', title: 'Contact%' },  
-    //       { type: 'Miss Rate', title: 'Miss%' },  
-    //       { type: 'In Play Rate', title: 'InPlay%' },  
-    //       { type: 'Foul Rate', title: 'Foul%' }  
-    //     ];
+    test.describe('#visual mode', function() {
+      // Visual Mode Dropdown
+      test.describe("#visual modes", function() {
+        var visualModes = [
+          { type: 'SLG', title: 'SLG' },  
+          { type: 'ISO', title: 'ISO' },  
+          { type: 'wOBA', title: 'wOBA' },  
+          { type: 'Expected BA', title: 'ExAVG' },  
+          { type: 'Expected SLG', title: 'ExSLG' },  
+          { type: 'Expected ISO', title: 'ExISO' },  
+          { type: 'Expected wOBA', title: 'ExWOBA' },  
+          { type: 'In Play BA', title: 'BA' },  
+          { type: 'In Play SLG', title: 'SLG' },  
+          { type: 'In Play ISO', title: 'ISO' },  
+          { type: 'Line Drive Rate', title: 'Line%' },
+          { type: 'Groundball Rate', title: 'Ground%' },  
+          { type: 'Flyball Rate', title: 'Fly%' },  
+          { type: 'Flyball Distance', title: 'FBDst' },  
+          { type: 'Exit Velocity', title: 'ExitVel' },  
+          { type: 'Forward Velocity', title: 'ForwVel' },  
+          { type: 'Efficient Velocity', title: 'EffVel' },  
+          // { type: 'Pitch Frequency', title: 'Pitch Frequency' }, // looks like this doesn't follow the pattern of the others
+          // { type: 'Release Velocity', title: 'Release Velocity' },  // TODO - looks like its broken
+          { type: 'Called Strike Rate', title: 'CallStrk%' },  
+          { type: 'Strike Looking Above Average', title: 'SLAA' },  
+          { type: 'Correct Call Rate', title: 'CC%' },  
+          { type: 'Strike Rate', title: 'Strike%' }, // selecting wrong option, need to change dropdown so it selects based off of text  
+          { type: 'Ball Rate', title: 'Ball%' },  
+          { type: 'Swing Rate', title: 'Swing%' },  
+          { type: 'Contact Rate', title: 'Contact%' },  
+          { type: 'Miss Rate', title: 'Miss%' },  
+          { type: 'In Play Rate', title: 'InPlay%' },  
+          { type: 'Foul Rate', title: 'Foul%' }  
+        ];
 
-    //     visualModes.forEach(function(visualMode) {
-    //       test.it("selecting " + visualMode.type + " shows the correct title ", function() {
-    //         playerPage.changeVisualMode(visualMode.type);
-    //         catcherPage.getHeatMapImageTitle('lefty').then(function(title) {
-    //           assert.equal(title, visualMode.title, 'lefty visual title');
-    //         });
-    //         catcherPage.getHeatMapImageTitle('righty').then(function(title) {
-    //           assert.equal(title, visualMode.title, 'righty visual title');
-    //         });            
-    //       });
-    //     });        
-    //   });      
-    // });   
+        visualModes.forEach(function(visualMode) {
+          test.it("selecting " + visualMode.type + " shows the correct title ", function() {
+            playerPage.changeVisualMode(visualMode.type);
+            catcherPage.getHeatMapImageTitle('lefty').then(function(title) {
+              assert.equal(title, visualMode.title, 'lefty visual title');
+            });
+            catcherPage.getHeatMapImageTitle('righty').then(function(title) {
+              assert.equal(title, visualMode.title, 'righty visual title');
+            });            
+          });
+        });        
+      });      
+    });   
 
-    // test.describe('#grid mode', function() {
-      
-    // })    
+    // Grid Mode Dropdown
+    test.describe("#grid modes", function() {
+      var gridModes = [
+        { mode: 'HOTCOLD' },  
+        { mode: 'HOT' },  
+        { mode: 'COLD' },  
+        { mode: 'CONTINUOUS' },  
+        
+      ];
+
+      gridModes.forEach(function(gridMode) {
+        test.it("selecting " + gridMode.mode + " gets he correct grid mode", function() {
+          playerPage.changeGridMode(gridMode.mode);
+          playerPage.getGridHrefMode().then(function(mode) {
+            assert.equal(mode, gridMode.mode);
+          });
+        });
+      });        
+    });    
+
+    // eBIS Modal
+    test.describe("#eBIS Modal", function() {
+      test.it('modal shows the correct data', function() {
+        playerPage.clickEbisModalBtn();
+        playerPage.getEbisModalText(1, 3).then(function(data) {
+          assert.equal(data, 'Draft: 2000 Round 4, Pick 113, STL', 'Yadier Molina draft information');
+        });
+      });
+
+      test.after(function() {
+        playerPage.clickCloseEbisModalBtn();
+      })
+    })
 
     test.describe('#filters', function() {
       test.it('adding filter: (Pitch Type: Breaking Ball (curve/slider)) from sidebar displays correct data', function() {

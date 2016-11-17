@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('../../test/util');
-var startUrl = 'https://dodgers-staging.trumedianetworks.com:' + process.env.PORT_NUMBER;
+var startUrl = 'https://mlbdemo-staging.trumedianetworks.com:' + process.env.PORT_NUMBER;
 
 var tests = [
   './mlb/login_page',
@@ -20,6 +20,7 @@ var tests = [
   './mlb/player_pitching_page',
   './mlb/player_catching_page',
   './mlb/player_statcast_fielding_page',
+  './mlb/umpire_page',
   './mlb/data_comparison'
 ]
 

@@ -203,9 +203,9 @@ test.describe('#Team StatcastFielding Section', function() {
         filters.changeValuesForRangeSidebarFilter('Launch Angle:', 0, 30);
       });
       
-      test.it('should show the correct at bat header text', function() {
-        pitchLogPage.getByInningAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "Vs LHP M. Moore (LAD), Top 2, 1 Out");
+      test.it('should show the correct at bat footer text', function() {
+        pitchLogPage.getByInningAtBatFooterText(1).then(function(text) {
+          assert.equal(text, "Adrian Gonzalez Lines Out Softly To Left Fielder Angel Pagan.");
         });
       });
 

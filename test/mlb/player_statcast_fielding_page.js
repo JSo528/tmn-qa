@@ -12,7 +12,7 @@ var PlayerPage = require('../../pages/mlb/player/player_page.js');
 
 var navbar, filters, statsPage, playerPage;
 
-test.describe('#Player Batting Section', function() {
+test.describe('#Player StatcastFielding Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
@@ -25,7 +25,7 @@ test.describe('#Player Batting Section', function() {
     statsPage.clickTableStat(7,3); // should click into Mookie Betts
   });  
 
-  test.it('should be on Mookie Betts 2016 team page', function() {
+  test.it('should be on Mookie Betts 2016 player page', function() {
     playerPage.goToSection('statcastFielding');
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Mookie Betts');
@@ -44,20 +44,28 @@ test.describe('#Player Batting Section', function() {
         filters.toggleSidebarFilter('Men On:', 'Loaded', true);
       });
 
-      test.it('clicking a statcast fielding event shoud show correct data in modal', function() {
+      // can't consistently click on the same fielding event, so just check if modal exists with data in it
+      test.it('clicking a statcast fielding event should show data in modal', function() {
         playerPage.clickStatcastFieldingChartEvent(1);
-        playerPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
-          assert.equal(date, '6/1/2016', '1st row date');
+        playerPage.getStatcastFieldingModalTitle().then(function(title) {
+          assert.equal(title, 'Pop up Play by Play', 'modal title');
         });
 
-        playerPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
-          assert.equal(result, 'Outfield Line Drive Hit', '1st row result');
+        playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
+          assert.equal(header, 'Inn', '1st col header');
         });
 
-        playerPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
-          assert.equal(outProb, '0.0%', '1st row OutProb');
-        });            
-      
+        playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
+          assert.equal(header, 'Opp', '3rd col header');
+        });
+
+        playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
+          assert.equal(header, 'OutProb', '8th col header');
+        });
+
+        playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
+          assert.equal(header, 'PosIndOutProb', '9th col header');
+        });
       });
       test.after(function() {
         playerPage.closeStatcastFieldingModal();
@@ -76,6 +84,20 @@ test.describe('#Player Batting Section', function() {
         });
       });   
     });
+
+    // eBIS Modal
+    test.describe("#eBIS Modal", function() {
+      test.it('modal shows the correct data', function() {
+        playerPage.clickEbisModalBtn();
+        playerPage.getEbisModalText(1, 3).then(function(data) {
+          assert.equal(data, 'Draft: 2011 Round 5, Pick 172, BOS', 'Mookie Betts draft information');
+        });
+      });
+
+      test.after(function() {
+        playerPage.clickCloseEbisModalBtn();
+      })
+    })    
 
     test.describe("#Reports", function() {
       var reports = [
@@ -158,9 +180,9 @@ test.describe('#Player Batting Section', function() {
         filters.changeValuesForRangeSidebarFilter('Launch Angle:', 0, 30);
       });
       
-      test.it('should show the correct at bat header text', function() {
-        playerPage.getByInningAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "Vs LHP D. Pomeranz (TOR), Top 9, 1 Out");
+      test.it('should show the correct at bat footer text', function() {
+        playerPage.getByInningAtBatFooterText(1).then(function(text) {
+          assert.equal(text, "Devon Travis Flies Out To Right Fielder Mookie Betts.");
         });
       });
 

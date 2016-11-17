@@ -227,7 +227,7 @@ Filters.prototype.addSelectionToDropdownSidebarFilter = function(filterName, sel
   var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul`);
   this.click(locator);
   var inputLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul/li/input`)
-  this.sendKeys(inputLocator, selection);
+  this.sendKeys(inputLocator, selection, 30000);
   this.sendKeys(inputLocator, Key.ENTER);
   this.sendKeys(inputLocator, Key.ESCAPE);
   return this.waitUntilStaleness(LOADING_CONTAINER, 30000);

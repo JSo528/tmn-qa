@@ -26,6 +26,26 @@ test.describe('#Umpires Page', function() {
     filters.addSelectionToDropdownFilter("Seasons:", 2016);
   });
 
+  // Main
+  test.describe('#Main', function() {
+    test.it("should have the correct title", function() {
+      umpiresPage.getPageTitle().then(function(title) {
+        assert.equal(title, 'Umpires', 'page title');
+      });
+    });
+
+    test.it("clicking a stat should open playlist modal & show correct data", function() {
+      umpiresPage.clickTableStat(1,5);
+      umpiresPage.getPitchLogAtBatHeaderText(1).then(function(text) {
+        assert.equal(text, 'RHP R. Gsellman (NYM) Vs LHB C. Hernandez (PHI), Top 1, 0 Out', '1st Video - at bat header text');
+      });
+    });
+
+    test.after(function() {
+      umpiresPage.clickPitchLogModalCloseBtn();
+    });
+  });
+
   // Sorting
   test.describe('#Sorting', function() {
     test.it('should be sorted initially by SLAA asc', function() {

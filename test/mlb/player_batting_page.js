@@ -25,7 +25,7 @@ test.describe('#Player Batting Section', function() {
     statsPage.clickTableStat(3,3); // should click into Jose Altuve player link
   });  
 
-  test.it('should be on Jose Altuve 2016 team page', function() {
+  test.it('should be on Jose Altuve 2016 player page', function() {
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Jose Altuve');
     });
@@ -161,8 +161,8 @@ test.describe('#Player Batting Section', function() {
     });
 
     // Grid Mode Dropdown
-      test.describe("#grid modes", function() {
-      var visualModes = [
+    test.describe("#grid modes", function() {
+      var gridModes = [
         { mode: 'HOTCOLD' },  
         { mode: 'HOT' },  
         { mode: 'COLD' },  
@@ -170,11 +170,11 @@ test.describe('#Player Batting Section', function() {
         
       ];
 
-      visualModes.forEach(function(visualMode) {
-        test.it("selecting " + visualMode.mode + " gets he correct grid mode", function() {
-          playerPage.changeGridMode(visualMode.mode);
+      gridModes.forEach(function(gridMode) {
+        test.it("selecting " + gridMode.mode + " gets he correct grid mode", function() {
+          playerPage.changeGridMode(gridMode.mode);
           playerPage.getGridHrefMode().then(function(mode) {
-            assert.equal(mode, visualMode.mode);
+            assert.equal(mode, gridMode.mode);
           });
         });
       });        
@@ -576,7 +576,7 @@ test.describe('#Player Batting Section', function() {
       });
 
       test.after(function() {
-        filters.removeSelectionToDropdownSidebarFilter("Opp Org:", "Oak");
+        filters.removeSelectionFromDropdownSidebarFilter("Opp Org:", "Oak");
       })
     });                 
   });  
@@ -592,17 +592,25 @@ test.describe('#Player Batting Section', function() {
     test.describe('clicking into OF Area', function() {
       test.it('clicking a statcast fielding event shoud show correct data in modal', function() {
         playerPage.clickStatcastFieldingChartEvent(1);
-        playerPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
-          assert.equal(date, '7/8/2016', '1st row date');
+        playerPage.getStatcastFieldingModalTitle().then(function(title) {
+          assert.equal(title, 'Pop up Play by Play', 'modal title');
         });
 
-        playerPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
-          assert.equal(result, 'Outfield Line Drive Hit', '1st row result');
+        playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
+          assert.equal(header, 'Inn', '1st col header');
         });
 
-        playerPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
-          assert.equal(outProb, '0.0%', '1st row OutProb');
-        });            
+        playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
+          assert.equal(header, 'Opp', '3rd col header');
+        });
+
+        playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
+          assert.equal(header, 'OutProb', '8th col header');
+        });
+
+        playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
+          assert.equal(header, 'PosIndOutProb', '9th col header');
+        });  
       });
 
       test.after(function() {

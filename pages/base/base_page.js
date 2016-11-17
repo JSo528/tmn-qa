@@ -5,7 +5,7 @@ var Until = require('selenium-webdriver').until;
 var Key = require('selenium-webdriver').Key;
 var By = require('selenium-webdriver').By;
 
-var WAIT_TIME_PRESENT = 10000;
+var WAIT_TIME_PRESENT = 30000;
 var WAIT_TIME_BEFORE_RETRY = 1000;
 
 // Internal debug
@@ -77,7 +77,11 @@ BasePage.prototype.waitForDisplayed = function(locator, timeout) {
             if (err.name === 'StaleElementReferenceError') {
                 if (debug){console.log('waitForDisplayed::Element not visible with error : ' + err.name + ' retrying...');}
                 driver.sleep(WAIT_TIME_BEFORE_RETRY);
-                element = driver.findElement(locator);
+                driver.findElement(locator).then(function(foundElement) {
+                  element = foundElement;
+                }, function (err) {
+                  defer.reject(err + ' : ' + locator);
+                })
                 driver.wait(Until.elementIsVisible(element),timeout).then(function() {
                     if (debug){console.log('waitForEnabled::Element is visible after retry ' + locator);}
                     // After it is enabled check if it is really displayed
@@ -248,7 +252,6 @@ BasePage.prototype.waitUntilStaleness = function(locator, timeout) {
       d.fulfill(true)
     }); 
   }, function(err) {
-    console.log('not displayed')
     d.fulfill(false)
   })
 
@@ -284,12 +287,20 @@ BasePage.prototype.sendKeys = function(locator, keys, timeout) {
   return this.driver.findElement(locator).sendKeys(keys);
 };
 
+// types into the search box for dropdown
 BasePage.prototype.changeDropdown = function(selectLocator, inputLocator, value) {
   this.click(selectLocator, 30000);
   this.sendKeys(inputLocator, value, 30000);
   var inputElement = this.driver.findElement(inputLocator);
   return inputElement.sendKeys(Key.ENTER);
 };
+
+// exact match for dropdown (clicks on the li element)
+BasePage.prototype.clickDropdown = function(selectLocator, ulID, value) {
+  this.click(selectLocator);
+  var locator = By.xpath(`.//ul[@id='${ulID}']/li/div[text()='${value}']`);
+  return this.click(locator)
+}
 
 BasePage.prototype.removeFilter = function(locator, updateButtonLocator) {
   this.click(locator);
@@ -353,5 +364,18 @@ BasePage.prototype.getElementCount = function(locator) {
 
   return d.promise; 
 };
+
+BasePage.prototype.selectFromSearch = function(inputLocator, searchTerm, selectionNum, updateLocator) {
+  this.clear(inputLocator);
+  this.sendKeys(inputLocator, searchTerm); 
+  var selectionLocator = By.xpath(`.//span[@class='tt-suggestions']/div[@class='tt-suggestion'][${selectionNum}]`)
+  
+  if (updateLocator) {
+    this.click(selectionLocator);
+    return this.waitUntilStaleness(updateLocator, 20000);  
+  } else {
+    return this.click(selectionLocator);
+  }
+}
 
 module.exports = BasePage;

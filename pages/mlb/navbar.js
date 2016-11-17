@@ -15,8 +15,9 @@ var PLAYERS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-
 var UMPIRES_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][5]/a");
 var GROUPS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][6]/a");
 
-var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavBaseballTeamsStatBatting")
-var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavBaseballPlayersStatBatting")
+var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavBaseballTeamsStatBatting");
+var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavBaseballPlayersStatBatting");
+var UMPIRES_LAST_LOCATOR = By.id("s2id_reportNavBaseballUmpiresStatUmpires");
 
 function MlbNavbar(driver) {
   BasePage.call(this, driver);
@@ -44,7 +45,8 @@ MlbNavbar.prototype.goToPlayersPage = function() {
 };
 
 MlbNavbar.prototype.goToUmpiresPage = function() {
-  return this.click(UMPIRES_LINK);
+  this.click(UMPIRES_LINK);
+  return this.waitForEnabled(UMPIRES_LAST_LOCATOR, 30000);
 };
 
 MlbNavbar.prototype.goToGroupsPage = function() {

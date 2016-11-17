@@ -52,12 +52,15 @@ var PITCH_VIEW_PITCH = By.css('.pitch-chart circle.pitch-chart-ball');
 // HIT CHART
 var HIT_CHART = By.css('#hitChart > svg');
 var HIT_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint');
-var SINGLE_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(255,255,255,1)"]');
-var DOUBLE_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(0,0,255,1)"]');
-var TRIPE_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(128,0,128,1)"]');
-var HOME_RUN_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(255,0,0,1)"]');
-var ROE_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(255,255,0,1)"]');
-var OUT_PLOT_POINT = By.css('#hitChart > svg > circle.plotPoint[fill="rgba(128,128,128,1)"]');
+var HIT_TYPE = {
+  'single': By.css('#hitChart > svg > circle.plotPoint[fill="rgba(255,255,255,1)"]'),
+  'double': By.css('#hitChart > svg > circle.plotPoint[fill="rgba(0,0,255,1)"]'),
+  'triple': By.css('#hitChart > svg > circle.plotPoint[fill="rgba(128,0,128,1)"]'),
+  'homeRun': By.css('#hitChart > svg > circle.plotPoint[fill="rgba(255,0,0,1)"]'),
+  'roe': By.css('#hitChart > svg > circle.plotPoint[fill="rgba(255,255,0,1)"]'),
+  'out': By.css('#hitChart > svg > circle.plotPoint[fill="rgba(128,128,128,1)"]'),
+  'all': By.css('#hitChart > svg > circle.plotPoint')
+};
 
 // PLAYER GRID
 var PLAYER_GRID = By.css('#playerGrid > svg');
@@ -122,7 +125,6 @@ var VISUAL_MODE_BOTTOM_SELECT = By.id('s2id_pageControlBaseballVisMode2');
 // COMPS
 var COMP_SEARCH_1_INPUT = By.css('#compSearch1 input');
 var COMP_SEARCH_2_INPUT = By.css('#compSearch2 input');
-var TYPEAHEAD_SUGGESTION_BOX = By.css('.tt-suggestions');
 
 // MATCHUPS
 var INLINE_VIDEO_PLAYLIST_HEADER = By.css('h5.video-inline-header-txt');
@@ -142,6 +144,10 @@ var VS_TABLE = By.xpath('.//div[@id="tableBaseballPlayerStatsContainer"]/table')
 // STATCAST FIELDING
 var BALLPARK_IMAGE = By.css('.field-container svg g');
 var BALLPARK_SELECT = By.css('tmn-ballpark-selector select');
+var STATCAST_FIELDING_CHART_EVENT = By.css('statcast-fielding-chart .bin-events path');
+var STATCSAT_FIELDING_MODAL_CLOSE_BTN = By.css('#tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoId button');
+var STATCAST_FIELDING_MODAL_TITLE = By.css('#tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoId h4.modal-title');
+
 
 function PlayerPage(driver, section) {
   BasePage.call(this, driver);
@@ -177,35 +183,11 @@ PlayerPage.prototype.changeReport = function(report) {
 /****************************************************************************
 ** Overview
 *****************************************************************************/
-PlayerPage.prototype.getHitChartHitCount = function(hitType) {
+PlayerPage.prototype.getHitChartHitCount = function(hitType) {  
   var d = Promise.defer();
-  var locator;
-  
-  switch (hitType) {
-    case 'single':
-      locator = SINGLE_PLOT_POINT;
-      break;
-    case 'double':
-      locator = DOUBLE_PLOT_POINT;
-      break;
-    case 'triple':
-      locator = TRIPE_PLOT_POINT;
-      break;
-    case 'homeRun':
-      locator = HOME_RUN_PLOT_POINT;
-      break;
-    case 'error':
-      locator = ROE_PLOT_POINT;
-      break;      
-    case 'out':
-      locator = OUT_PLOT_POINT;
-      break;            
-    default:
-      locator = HIT_PLOT_POINT;
-  }
-
   this.waitForEnabled(HIT_CHART, 30000);
-  this.getElementCount(locator).then(function(count) {
+  var hitTypeLocator = HIT_TYPE[hitType] || HIT_TYPE['all'];
+  this.getElementCount(hitTypeLocator).then(function(count) {
     d.fulfill(count);
   });
 
@@ -221,8 +203,8 @@ PlayerPage.prototype.drawBoxOnHeatMap = function(x, y, width, height) {
     .mouseUp() // click up
     .perform();
 
-    this.waitUntilStaleness(HEATMAP_IMAGE, 10000);
-    return this.waitForEnabled(HEATMAP_IMAGE)
+    this.waitUntilStaleness(HIT_CHART, 10000);
+    return this.waitForEnabled(HIT_CHART)
 };
 
 PlayerPage.prototype.clearHeatMap = function() {
@@ -232,12 +214,8 @@ PlayerPage.prototype.clearHeatMap = function() {
     }
   })
 
-  this.waitUntilStaleness(HIT_CHART, 10000).then(function() {
-    console.log('** not stale 1')
-  })
-  this.waitUntilStaleness(HIT_CHART, 10000).then(function() {
-    console.log('** not stale 2')
-  })
+  this.waitUntilStaleness(HIT_CHART, 10000);
+  this.waitUntilStaleness(HIT_CHART, 10000);
   return this.waitForEnabled(HIT_CHART, 20000);
 };
 
@@ -307,9 +285,7 @@ PlayerPage.prototype.getHeatMapImageTitle = function() {
 };
 
 PlayerPage.prototype.changeVisualMode = function(mode) {
-  this.click(VISUAL_MODE_SELECT);
-  var locator = By.xpath(`.//ul[@id='select2-results-1']/li/div[text()='${mode}']`);
-  return this.click(locator)
+  return this.clickDropdown(VISUAL_MODE_SELECT, 'select2-results-1', mode);
 }
 
 PlayerPage.prototype.getGridHrefMode = function() {
@@ -323,9 +299,7 @@ PlayerPage.prototype.getGridHrefMode = function() {
 };
 
 PlayerPage.prototype.changeGridMode = function(mode) {
-  this.click(GRID_MODE_SELECT);
-  var locator = By.xpath(`.//ul[@id='select2-results-2']/li/div[text()='${mode}']`);
-  return this.click(locator)
+  return this.clickDropdown(GRID_MODE_SELECT, 'select2-results-2', mode);
 }
 
 // eBIS Modal
@@ -447,7 +421,7 @@ PlayerPage.prototype.getMultiFilterStat = function(rowNum, col) {
 
 PlayerPage.prototype.drawBoxOnMultiFilterHeatMap = function(topOrBottom, x, y, width, height) {
   var locator = (topOrBottom == 'top') ? HEATMAP_TOP : HEATMAP_BOTTOM;
-  var imageLocator = (topOrBottom == 'top') ? HEATMAP_IMAGE_TOP : HEATMAP_IMAGE_BOTTOM;
+  var hitChartLocator = (topOrBottom == 'top') ? HIT_CHART_TOP : HIT_CHART_BOTTOM;
   var element = driver.findElement(locator);
   driver.actions()
     .mouseMove(element, {x: x, y: y}) // start at (x,y)
@@ -456,8 +430,8 @@ PlayerPage.prototype.drawBoxOnMultiFilterHeatMap = function(topOrBottom, x, y, w
     .mouseUp() // click up
     .perform();
     
-    this.waitUntilStaleness(imageLocator, 10000);
-    return this.waitForEnabled(imageLocator);
+    this.waitUntilStaleness(hitChartLocator, 10000);
+    return this.waitForEnabled(hitChartLocator);
 };
 
 PlayerPage.prototype.getMultiFilterHitChartHitCount = function(topOrBottom) {
@@ -494,9 +468,7 @@ PlayerPage.prototype.getMultiFilterHeatMapImageTitle = function(topOrBottom) {
 *****************************************************************************/
 PlayerPage.prototype.selectForCompSearch = function(compNum, name) {
   var locator = compNum == 1 ? COMP_SEARCH_1_INPUT : COMP_SEARCH_2_INPUT
-  this.clear(locator);
-  this.sendKeys(locator, name); 
-  return this.click(TYPEAHEAD_SUGGESTION_BOX);
+  return this.selectFromSearch(locator, name, 1);
 };
 
 PlayerPage.prototype.getCompTableStat = function(rowNum, col) {
@@ -530,7 +502,6 @@ PlayerPage.prototype.clickPitchVideoIcon = function(pitchNum) {
 ** Vs Teams/Pitchers
 *****************************************************************************/
 PlayerPage.prototype.getVsTableStat = function(rowNum, col) {
-  this.waitUntilStaleness(VS_TABLE, 5000)
   var locator = By.xpath(`.//div[@id='tableBaseballPlayerStatsContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
   return this.getText(locator, 10000);
 };
@@ -538,15 +509,18 @@ PlayerPage.prototype.getVsTableStat = function(rowNum, col) {
 /****************************************************************************
 ** Statcast Fielding
 *****************************************************************************/
-PlayerPage.prototype.getStatcastFieldingModalTableStat = function(row, col) {
-  var locator = By.xpath(`.//div[@id='tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoContainer']/table/tbody/tr[${row}]/td[${col}]`);
+PlayerPage.prototype.getStatcastFieldingModalTitle = function() {
+  return this.getText(STATCAST_FIELDING_MODAL_TITLE, 30000);
+};
+
+PlayerPage.prototype.getStatcastFieldingModalTableHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoContainer']/table/thead/tr/th[${col}]`);
   return this.getText(locator, 30000);
 };
 
 PlayerPage.prototype.clickStatcastFieldingChartEvent = function(eventNum) {
   var d = Promise.defer();
-  var locator = By.css('statcast-fielding-chart .bin-events path');
-  driver.findElements(locator).then(function(elements) {
+  driver.findElements(STATCAST_FIELDING_CHART_EVENT).then(function(elements) {
     d.fulfill(elements[eventNum].click());
   });
 
@@ -554,8 +528,7 @@ PlayerPage.prototype.clickStatcastFieldingChartEvent = function(eventNum) {
 };
 
 PlayerPage.prototype.closeStatcastFieldingModal = function() {
-  var locator = By.css('#tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoId button');
-  var element = driver.findElement(locator);
+  var element = driver.findElement(STATCSAT_FIELDING_MODAL_CLOSE_BTN);
   return element.click();
 };
 

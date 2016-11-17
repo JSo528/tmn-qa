@@ -37,13 +37,11 @@ PitchLogPage.prototype.constructor = PitchLogPage;
 
 
 PitchLogPage.prototype.clickByInningTab = function() {
-  var element = this.driver.findElement(BY_INNING_TAB);
-  return element.click();  
+  return this.click(BY_INNING_TAB);  
 };
 
 PitchLogPage.prototype.clickFlatViewTab = function() {
-  var element = this.driver.findElement(FLAT_VIEW_TAB);
-  return element.click();  
+  return this.click(FLAT_VIEW_TAB);  
 };
 
 // By Inning Table
@@ -90,9 +88,7 @@ PitchLogPage.prototype.getSimiliarPlaysTableStat = function(playNum, col) {
 };
 
 PitchLogPage.prototype.closeSimiliarPlaysModal = function() {
-  var element = driver.findElement(SIMILAR_PLAYS_MODAL_CLOSE_BTN);
-  element.click();
-  return this.waitForEnabled(By.xpath(`//div[@id='tableBaseballFindSimilarModalContainer']/table`));
+  return this.click(SIMILAR_PLAYS_MODAL_CLOSE_BTN);
 };
 
 

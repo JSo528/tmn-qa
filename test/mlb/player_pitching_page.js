@@ -29,7 +29,7 @@ test.describe('#Player Pitching Section', function() {
     statsPage.clickTableStat(1,3); // should click into Kyle Hendricks player link
   });  
 
-  test.it('should be on Kyle Hendricks 2016 team page', function() {
+  test.it('should be on Kyle Hendricks 2016 player page', function() {
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Kyle Hendricks');
     });
@@ -280,7 +280,7 @@ test.describe('#Player Pitching Section', function() {
     test.describe('when selecting filter (Catchers: Miguel Montero)', function() {
       test.before(function() {
         filters.changeFilterGroupDropdown('Situation');
-        filters.addSelectionToDropdownFilter('Catchers:', 'Miguel Montero');
+        filters.addSelectionToDropdownSidebarFilter('Catchers:', 'Miguel Montero');
       });
       
       test.it('should show the correct at bat header text', function() {
@@ -535,7 +535,7 @@ test.describe('#Player Pitching Section', function() {
       });
 
       test.after(function() {
-        filters.removeSelectionToDropdownSidebarFilter("count:", "2 Strikes");
+        filters.removeSelectionFromDropdownSidebarFilter("count:", "2 Strikes");
       })
     });                 
   });  

@@ -60,7 +60,7 @@ var VISUAL_MODE_BOTTOM_SELECT = By.id('s2id_pageControlBaseballVisMode2');
 // Comps
 var COMP_SEARCH_1_INPUT = By.css('#compSearch1 input');
 var COMP_SEARCH_2_INPUT = By.css('#compSearch2 input');
-var TYPEAHEAD_SUGGESTION_BOX = By.css('.tt-suggestions');
+var COMP_CONTAINER = By.id('tableBaseballCompContainer');
 
 // Matchups
 var INLINE_VIDEO_PLAYLIST_HEADER = By.css('h5.video-inline-header-txt');
@@ -97,8 +97,7 @@ TeamPage.prototype.goToSection = function(section) {
 
 TeamPage.prototype.goToSubSection = function(subSection) {
   var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
-  this.click(locator);
-  return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
+  return this.click(locator);
 }
 
 TeamPage.prototype.getTeamName = function() {
@@ -206,14 +205,12 @@ TeamPage.prototype.getHeatMapImageTitle = function(topOrBottom) {
 // Comps
 TeamPage.prototype.selectForCompSearch = function(compNum, name) {
   var locator = compNum == 1 ? COMP_SEARCH_1_INPUT : COMP_SEARCH_2_INPUT
-  this.clear(locator);
-  this.sendKeys(locator, name); 
-  return this.click(TYPEAHEAD_SUGGESTION_BOX);
+  return this.selectFromSearch(locator, name, 1, COMP_CONTAINER)
 };
 
 TeamPage.prototype.getCompTableStat = function(rowNum, col) {
   var locator = By.xpath(`.//div[@id='tableBaseballCompContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
-  return this.getText(locator, 10000);
+  return this.getText(locator, 30000);
 };
 
 // Matchups
@@ -227,7 +224,6 @@ TeamPage.prototype.getMatchupsVideoText = function(videoNum, lineNum) {
 };
 
 TeamPage.prototype.getMatchupsAtBatHeaderText = function(atBatNum) {
-  this.waitUntilStaleness(AT_BAT_TABLE, 30000)
   var locator = By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td`);
   return this.getText(locator, 30000);
 };
@@ -239,7 +235,6 @@ TeamPage.prototype.clickPitchVideoIcon = function(pitchNum) {
 
 // Vs Teams/Pitchers
 TeamPage.prototype.getVsTableStat = function(rowNum, col) {
-  this.waitUntilStaleness(VS_TABLE, 5000)
   var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
   return this.getText(locator, 10000);
 };

@@ -28,6 +28,7 @@ var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
 
 var StandingsPage = require('../pages/mlb/standings_page.js');
 var UmpiresPage = require('../pages/mlb/umpires_page.js');
+var UmpirePage = require('../pages/mlb/umpire_page.js');
 var GroupsPage = require('../pages/mlb/groups_page.js')
 var RosterPage = require('../pages/mlb/team/roster_page.js');
 var PlayerPage = require('../pages/mlb/player/player_page.js');
@@ -51,26 +52,24 @@ teamPage = new TeamPage(driver);
 overviewPage = new OverviewPage(driver);
 rosterPage = new RosterPage(driver, 'batting')
 playerPage = new PlayerPage(driver)
+umpirePage = new UmpirePage(driver)
 
 // Constants
 var url = "https://dodgers.trumedianetworks.com"
-var stagUrl = "https://dodgers-staging.trumedianetworks.com:3001"
+var stagUrl = "https://dodgers-staging.trumedianetworks.com:3005"
 
 // Script
-loginPage.visit(url);
+loginPage.visit(stagUrl);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-navbar.goToPlayersPage();
+navbar.goToUmpiresPage();
 
 
-playersStatsPage.clickTableStat(7,3);
 
 
-playerPage.drawBoxOnHeatMap(150,150,25,25);
 
-playerPage.getHitChartHitCount().then(function(hitCount) {
-  console.log(hitCount)
-});
+
+
 
 
 

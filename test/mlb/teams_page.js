@@ -153,73 +153,140 @@ test.describe('#Teams Page', function() {
         });
       });
 
+      // (temporary)
+      // TODO - remove after push
+      test.describe('#ISO Mode', function() {
+        test.it('selecting LA from search should add team to table', function() {
+          statsPage.clickIsoBtn("on");
+          statsPage.addTeamToIsoTable('LA', 2);
+          statsPage.getTeamTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' LAD', '1st row team name');
+          });
+        });
+
+        test.after(function() {
+          statsPage.clickIsoBtn("off");
+          statsPage.clearTeamTablePin();
+        });
+      });
+      
       // Isolation Mode
-      // TODO - look into this, its populating the main table and hiding the iso table
-      // test.describe("#isolation mode", function() {
-      //   test.it('turning on isolation mode should hide teams table', function() {
-      //     statsPage.clickIsoBtn("on");
-      //   });      
+      test.describe("#isolation mode", function() {
+        test.it('selecting LA Dodgers from search should add team to table', function() {
+          statsPage.clickIsoBtn("on");
+          statsPage.addTeamToIsoTable('LA Dodgers', 1)
+          // the ISO table doesn't actually show when ISO mode is on
+          // instead what's happening is that the main table's data is replaced
+          // when ISO mode is off, both tables show
+          statsPage.getTeamTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' LAD', '1st row team name');
+          })
+        });      
 
-      //   // BUG - trying to add minor league team doesn't work
-      //   test.it('adding Giants should add team to table', function() {
+  
+        test.it('selecting SF Giants from search should add team to table', function() {
+          statsPage.addTeamToIsoTable('Giants', 1)
+          statsPage.getTeamTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' SF', '1st row team name');
+          });
 
-      //   });         
+          statsPage.getTeamTableStat(2,3).then(function(stat) {
+            assert.equal(stat, ' LAD', '2n row team name');
+          });
+        });         
 
-      //   test.it('adding Cubs should add team to table', function() {
+        test.it('pinned total should show the correct sum', function() {
+          statsPage.getPinnedTotalTableStat(5).then(function(wins) {
+            assert.equal(wins, 176, 'pinned total - wins');
+          });
 
-      //   });                   
+          statsPage.getPinnedTotalTableStat(11).then(function(ba) {
+            assert.equal(ba, 0.259, 'pinned total - ba');
+          });
+        });                                       
 
-      //   test.it('pinned total should show the correct sum', function() {
+        test.it('turning off isolation mode should show teams in iso table', function() {
+          statsPage.clickIsoBtn("off");
+          statsPage.getIsoTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' SF', '1st row team name');
+          });
 
-      //   });
-        
-      //   test.it('removing the Giants should update the table', function() {
-
-      //   });                                         
-
-      //   test.it('turning off isolation mode should show full table', function() {
-      //     statsPage.clickIsoBtn("off");
-      //   });                                                   
-      // });
+          statsPage.getIsoTableStat(2,3).then(function(stat) {
+            assert.equal(stat, ' LAD', '2n row team name');
+          });
+        });                                               
+      });
 
       // Chart/Edit Columns
       // TODO - these tests are too unreliable
-      // test.describe("#chart/edit columns", function() {
+      test.describe("#chart/edit columns", function() {
         // histograms
         
-        // test.it('clicking show histogram link should open histogram modal', function() {
-        //   statsPage.clickChartColumnsBtn()
-        //   statsPage.clickTeamTableColumnHeader(14);  
-        //   statsPage.clickHistogramLink()  
+        test.it('clicking show histogram link should open histogram modal', function() {
+          statsPage.clickChartColumnsBtn()
           
-        //   statsPage.isModalDisplayed().then(function(isDisplayed) {
-        //     assert.equal(isDisplayed, true);
-        //   })
-        // });  
+          statsPage.openHistogram(14);  
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, true);
+          });
+        });  
 
-        // test.it('clicking close histogram button should close histogram modal', function() {
-        //   statsPage.closeModal();
-        //   statsPage.isModalDisplayed().then(function(isDisplayed) {
-        //     assert.equal(isDisplayed, false);
-        //   }); 
-        // })                 
+        test.it('hovering over bar should show stats for teams', function() {
+          statsPage.hoverOverHistogramStack(1)
+          statsPage.getTooltipText().then(function(text) {
+            assert.equal(text, 'MIA: .694\nCWS: .686\nSD: .686\nPHI: .684\nATL: .674', 'tooltip for 1st bar');
+          });
+        });
+
+        test.it('pinned teams should be represented by circles', function() {
+          statsPage.getHistogramCircleCount().then(function(count) {
+            assert.equal(count, 2, '# of circles on histogram')
+          })
+        })
+
+        test.it("selecting 'Display pins as bars' should add team to the histogram", function() {
+          statsPage.toggleHistogramDisplayPinsAsBars();
+          statsPage.getHistogramBarCount().then(function(count) {
+            // 1 original bar and 4 new bars will have height=0 and will appear invisible
+            assert.equal(count, 12, '# of bars on histogram');
+          });
+        });
+
+        test.it("changing Bin Count should update the histogram", function() {
+          statsPage.changeHistogramBinCount(3);
+          statsPage.getHistogramBarCount().then(function(count) {
+            // 1 original bar and 4 new bars will have height=0 and will appear invisible
+            assert.equal(count, 6, '# of bars on histogram');
+          });
+        })        
+
+        test.it('clicking close histogram button should close histogram modal', function() {
+          statsPage.closeModal();
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, false);
+          }); 
+        })                 
 
         // scatter plots          
-        // test.it('clicking add scatter plot link for 2 different categories should open up scatter chart modal', function() {
-        //   statsPage.openScatterChart(10,11);
+        test.it('clicking add scatter plot link for 2 different categories should open up scatter chart modal', function() {
+          statsPage.openScatterChart(10,11);
 
-        //   statsPage.isModalDisplayed().then(function(isDisplayed) {
-        //     assert.equal(isDisplayed, true);
-        //   }); 
-        // });
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, true);
+          }); 
+        });
 
-        // test.it('clicking close button should close scatter chart modal', function() {
-        //   statsPage.closeModal();
-        //   statsPage.isModalDisplayed().then(function(isDisplayed) {
-        //     assert.equal(isDisplayed, false);
-        //   }); 
-        // })   
-      // });
+        test.it('clicking close button should close scatter chart modal', function() {
+          statsPage.closeModal();
+          statsPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, false);
+          }); 
+        });
+
+        test.after(function() {
+          statsPage.clearTeamTablePin();
+        });   
+      });
 
       // Group By
       test.describe("#group by", function() {

@@ -47,13 +47,14 @@ CatcherPage.prototype.drawBoxOnHeatMap = function(leftyOrRighty, x, y, width, he
 
 CatcherPage.prototype.clearHeatMap = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? CLOSE_LEFTY_HEATMAP_BOX_BUTTON : CLOSE_RIGHTY_HEATMAP_BOX_BUTTON;
+  var heatmapLocator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP : RIGHTY_HEATMAP;
   this.driver.findElements(locator).then(function(elements) {
     for(var i=0; i < elements.length; i++) {
       elements[i].click();
     }
   })
 
-  return this.waitForEnabled(locator, 20000);
+  return this.waitForEnabled(heatmapLocator, 20000);
 };
 
 CatcherPage.prototype.clickHeatMapLink = function(leftyOrRighty) {

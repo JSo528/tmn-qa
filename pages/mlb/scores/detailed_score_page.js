@@ -50,11 +50,11 @@ DetailedScorePage.prototype.goToSection = function(section) {
 }
 
 DetailedScorePage.prototype.changeBattingReport = function(report) {
-  this.changeDropdown(BATTING_REPORT_SELECT, REPORT_INPUT, report);
+  return this.changeDropdown(BATTING_REPORT_SELECT, REPORT_INPUT, report);
 };
 
 DetailedScorePage.prototype.changePitchingReport = function(report) {
-  this.changeDropdown(PITCHING_REPORT_SELECT, REPORT_INPUT, report);
+  return this.changeDropdown(PITCHING_REPORT_SELECT, REPORT_INPUT, report);
 };
 
 // Get Stat
