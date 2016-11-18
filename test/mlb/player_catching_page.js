@@ -121,27 +121,7 @@ test.describe('#Player Catching Section', function() {
           });
         });        
       });      
-    });   
-
-    // Grid Mode Dropdown
-    test.describe("#grid modes", function() {
-      var gridModes = [
-        { mode: 'HOTCOLD' },  
-        { mode: 'HOT' },  
-        { mode: 'COLD' },  
-        { mode: 'CONTINUOUS' },  
-        
-      ];
-
-      gridModes.forEach(function(gridMode) {
-        test.it("selecting " + gridMode.mode + " gets he correct grid mode", function() {
-          playerPage.changeGridMode(gridMode.mode);
-          playerPage.getGridHrefMode().then(function(mode) {
-            assert.equal(mode, gridMode.mode);
-          });
-        });
-      });        
-    });    
+    });     
 
     // eBIS Modal
     test.describe("#eBIS Modal", function() {

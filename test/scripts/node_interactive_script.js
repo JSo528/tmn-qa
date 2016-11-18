@@ -55,15 +55,16 @@ playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
 // Constants
-var url = "https://dodgers.trumedianetworks.com"
-var stagUrl = "https://dodgers-staging.trumedianetworks.com:3005"
+var url = "https://rockies.trumedianetworks.com"
+// var stagUrl = "https://dodgers-staging.trumedianetworks.com:3005"
 
 // Script
-loginPage.visit(stagUrl);
+loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-navbar.goToUmpiresPage();
-
+var Rockies = require('../pages/mlb/custom_reports/rockies.js');
+rockies = new Rockies(driver);
+rockies.currentPage = 'playerCustomBatting';
 
 
 

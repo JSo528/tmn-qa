@@ -56,24 +56,9 @@ TeamsPage.prototype.goToSection = function(section) {
   return this.waitForEnabled(lastLocator);
 }
 
-TeamsPage.prototype.goToSubSection = function(section) {
-  var linkNum; 
-  switch (section) {
-    case "Stats":
-      linkNum = 1;
-      break;
-    case "Occurences & Streaks":
-      linkNum = 2;
-      break;
-    case "Scatter Plot":
-      linkNum = 3;
-      break
-    default: 
-      linkNum = 1;
-  }
-
-  var section = By.xpath(`.//nav[@class='navbar navbar-default navbar-static-top report-nav navbar-gray']/div/div/ul/li[${linkNum}]/a`);
-  return this.click(section);
+TeamsPage.prototype.goToSubSection = function(subSection) {
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
+  return this.click(locator);
 }
 
 TeamsPage.prototype.statsTable = STATS_TABLE;

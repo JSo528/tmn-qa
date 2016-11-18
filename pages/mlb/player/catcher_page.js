@@ -84,7 +84,7 @@ CatcherPage.prototype.getHeatMapImageTitle = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_IMAGE : RIGHTY_HEATMAP_IMAGE;
 
   this.getAttribute(locator, 'href').then(function(href) {
-    d.fulfill(href.match(/(%5B).{2,20}(%5D.+from)/)[0].replace(/(%5B|%5D.+)/g, '').replace(/(%25)/g, '%'));
+    d.fulfill(href.match(/(%5B).{2,20}(%5D.+from)/)[0].replace(/(%5B|%5D.+|%7C.+)/g, '').replace(/(%25)/g, '%'));
   });
 
   return d.promise;

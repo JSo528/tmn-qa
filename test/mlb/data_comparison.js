@@ -208,9 +208,9 @@ test.describe('#Data Comparison', function() {
         })  
       });
 
-      test.it('occurences & streaks shows the same data', function() {
+      test.it('occurrences & streaks shows the same data', function() {
         browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("Occurences & Streaks");
+          teamsPage.goToSubSection("Occurrences & Streaks");
         })
 
         browser.getFullContentForEachTab(teamsPage.streaksTable).then(function(contentArray) {
@@ -232,9 +232,9 @@ test.describe('#Data Comparison', function() {
         })  
       });
 
-      test.it('occurences & streaks shows the same data', function() {
+      test.it('occurrences & streaks shows the same data', function() {
         browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("Occurences & Streaks");
+          teamsPage.goToSubSection("Occurrences & Streaks");
         })
 
         browser.getFullContentForEachTab(teamsPage.streaksTable).then(function(contentArray) {
@@ -256,9 +256,9 @@ test.describe('#Data Comparison', function() {
         })  
       });
 
-      test.it('occurences & streaks shows the same data', function() {
+      test.it('occurrences & streaks shows the same data', function() {
         browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("Occurences & Streaks");
+          teamsPage.goToSubSection("Occurrences & Streaks");
         })
 
         browser.getFullContentForEachTab(teamsPage.streaksTable, teamsPage.streaksTable).then(function(contentArray) {
@@ -280,9 +280,9 @@ test.describe('#Data Comparison', function() {
         })  
       });
 
-      test.it('occurences & streaks shows the same data', function() {
+      test.it('occurrences & streaks shows the same data', function() {
         browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("Occurences & Streaks");
+          teamsPage.goToSubSection("Occurrences & Streaks");
         })
 
         browser.getFullContentForEachTab(teamsPage.streaksTable, teamsPage.streaksTable).then(function(contentArray) {

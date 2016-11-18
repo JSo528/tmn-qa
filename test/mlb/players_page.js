@@ -287,7 +287,7 @@ test.describe('#Players Page', function() {
       });
 
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
-        playersPage.goToSubSection('Occurences & Streaks');
+        playersPage.goToSubSection('Occurrences & Streaks');
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2013);
 
