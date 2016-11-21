@@ -10,6 +10,7 @@ var Promise = require('selenium-webdriver').promise;
 
 // Locators
 var ON_TEAM_SELECT = By.id("s2id_pageControlBaseballRosterOnTeam");
+var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input"); 
 var TABLE_ID = {
   'batting': 'tableBaseballTeamStatsRosterBattingContainer',
   'pitching': 'tableBaseballTeamStatsRosterPitchingContainer',

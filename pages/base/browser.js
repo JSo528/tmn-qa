@@ -58,7 +58,6 @@ Browser.prototype.switchToTab = function(tab) {
 
 Browser.prototype.getFullContent = function(locator) {
   locator = locator || By.id("content");
-
   return this.getText(locator, 30000)
 };
 

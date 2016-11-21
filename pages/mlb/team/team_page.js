@@ -78,9 +78,10 @@ var MATCHUPS_VIDEO_TEXT_TABLE_ID = {
 var AT_BAT_TABLE = By.xpath('.//div[@id="tableBaseballTeamPitchLogBattingContainer"]/table')
 var VS_TABLE = By.xpath('.//div[@id="tableBaseballTeamStatsContainer"]/table')
 
-function TeamPage(driver) {
+function TeamPage(driver, section, subSection) {
   BasePage.call(this, driver);
-  this.section = 'batting'
+  this.section = 'batting';
+  this.subSection = 'overview';
 };
 
 TeamPage.prototype = Object.create(BasePage.prototype);
@@ -239,5 +240,20 @@ TeamPage.prototype.getVsTableStat = function(rowNum, col) {
   return this.getText(locator, 10000);
 };
 
+// Data Comparison
+TeamPage.prototype.overviewStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsOverviewContainer']/table");
+TeamPage.prototype.rosterBattingStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsRosterBattingContainer']/table");
+TeamPage.prototype.gameLogStatsTable = By.xpath(".//div[@id='tableBaseballTeamGameLogContainer']/table");
+TeamPage.prototype.splitsStatsTable = By.xpath(".//div[@id='tableBaseballTeamSplitsContainer']/table");
+TeamPage.prototype.pitchLogBattingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogBattingContainer']/table");
+TeamPage.prototype.matchupsBattingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogBattingVidMatchupContainer']/table");
+TeamPage.prototype.vsStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table");
+
+TeamPage.prototype.rosterPitchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsRosterPitchingContainer']/table");
+TeamPage.prototype.pitchLogPitchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogPitchingContainer']/table");
+TeamPage.prototype.matchupsPitchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogPitchingVidMatchupContainer']/table");
+
+TeamPage.prototype.rosterCatchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsRosterCatchingContainer']/table");
+TeamPage.prototype.pitchLogCatchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogCatchingContainer']/table");
 
 module.exports = TeamPage;

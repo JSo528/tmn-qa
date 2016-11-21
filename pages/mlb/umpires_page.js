@@ -22,6 +22,8 @@ var QUALIFY_BY_SUBMIT = By.css(".pc-qualify-by > button");
 var STATS_VIEW_SELECT = By.id("s2id_pageControlBaseballStatsViewPlayers");
 var REPORT_SELECT = By.id("s2id_reportNavBaseballUmpiresStatUmpires");
 
+var STATS_TABLE = By.xpath(".//div[@id='tableBaseballUmpiresStatsContainer']/table");
+
 function UmpiresPage(driver) {
   BasePage.call(this, driver);
 }
@@ -102,6 +104,16 @@ UmpiresPage.prototype.clickPitchLogModalCloseBtn = function() {
   return this.click(PITCH_LOG_MODAL_CLOSE_BTN);
 }
 
+// Data Comparison
+UmpiresPage.prototype.reports = [
+    "Pitch Calls",
+    "Batters",
+    "Pitch Rates",
+    "Pitch Counts",
+    "Pitch Types",
+    "Pitch Type Counts",
+  ]
 
+UmpiresPage.prototype.statsTable = STATS_TABLE;
 
 module.exports = UmpiresPage;

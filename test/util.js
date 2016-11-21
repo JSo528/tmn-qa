@@ -22,51 +22,37 @@ function writeScreenshot(callback) {
   var screenshotPath = 'public/data/'+testRun.id+'/';
   var fileName = new Date().getTime() + '.png';
   var locator = By.id('main');
-  console.log("** ws 1 **")
+  var maxWidth = constants.screenSize.maxWidth;
+  var maxHeight = constants.screenSize.maxHeight;
+
   driver.wait(Until.elementLocated(locator), 5000).then(function() {
-    console.log("** ws 2 **")
     var element = driver.findElement(locator);
   
-    driver.manage().window().maximize().then(function() {
-      console.log("** window maximize success")
-    }, function(err) {
-      console.log("** window maximize error: " + err)
-    })
+    // driver.manage().window().maximize().then(function() {
+    //   console.log("** window maximize success")
+    // }, function(err) {
+    //   console.log("** window maximize error: " + err)
+    // })
+    
+    driver.manage().window().setSize(maxWidth, maxHeight)
     element.getSize().then(function(size) {
-      console.log("** ws 3 **")
-      var height;
-      if (size.height > 3000) {
-        height = 3000;
-      } else {
-        height = size.height
-      }
-
-      driver.manage().window().setSize(1920, height).then(function() {
-        console.log("** setSize success")
-      }, function(err) {
-        console.log("** setSize error: "+err)
-      })
-      console.log("** ws 3b **")
+      var height = (size.height > maxHeight) ? maxHeight : size.height;
+      driver.manage().window().setSize(maxWidth, height);
     })
 
     driver.takeScreenshot().then(function(data) {
-      console.log("** ws 4a **")
       fs.writeFileSync(screenshotPath + fileName, data, 'base64');
-      console.log("** ws 4b **")
       driver.getCurrentUrl().then(function(currentUrl) {
-        console.log("** ws 4c **")
         callback({
           url: currentUrl,
           name: fileName
         })
       })
     }, function(err) {
-      console.log("** ws 4aa **")
-      console.log(err)
+      console.log('takeScreenshot err: ' + err);
     })
   }, function(err) {
-    console.log("** ws 5 **")
-    console.log(err)
+    console.log('writeScreenshot err: ' + err);
     driver.takeScreenshot().then(function(data) {
       fs.writeFileSync(screenshotPath + fileName, data, 'base64');
       driver.getCurrentUrl().then(function(currentUrl) {
@@ -76,8 +62,7 @@ function writeScreenshot(callback) {
         })
       })
     }, function(err) {
-      console.log("** ws 4ab **")
-      console.log(err)
+      console.log('takeScreenshot2 err: ' + err);
     })
   })
 }
@@ -89,7 +74,11 @@ function updateTestRun(imgFiles) {
     testRun = newObj;
     var i = testRun.errorObjects.length;
     testRun.errorObjects[i-1].imgFiles = imgFiles
-    testRun.update({errorObjects: testRun.errorObjects}).exec()
+    testRun.update({errorObjects: testRun.errorObjects}).exec(function(err, obj) {
+      if (err) {
+        console.log('err2: '+ err);  
+      }
+    });
   })
 }
 
@@ -138,15 +127,37 @@ exports.generateTests = function(title, testFiles, startUrl) {
     });   
 
     test.afterEach(function() {
+      this.timeout(120000)
       var t = this.currentTest;
 
       if (t.state == 'failed') {
         failedCount += 1;
         var imgFiles = []
 
+        var expectedValue = t.err.expected;
+        var actualValue = t.err.actual;
+        var errorMessage = t.err.message;
+        var stack = t.err.stack;
+
+        if (String(expectedValue).length > 1000) {
+          expectedValue = String(expectedValue).substr(0,1000) + ' ...'
+        } 
+
+        if (String(actualValue).length > 1000) {
+          actualValue = String(actualValue).substr(0,1000) + ' ...'
+        }
+
+        if (errorMessage.length > 1000) {
+          errorMessage = errorMessage.substr(0,1000) + ' ...'
+        }
+
+        if (t.err.stack.length > 1000) {
+          stack = t.err.stack.substr(0,1000) + ' ...'
+        }
+
+
         // This needs to run before in case theres an error in writeScreenshot
         // Can't seem to catch certain webdriver errors
-        console.log("** update obj **")
         var updateObj = {
           failedCount: failedCount,
           $push: {
@@ -154,15 +165,20 @@ exports.generateTests = function(title, testFiles, startUrl) {
               title: t.title,
               fullTitle: t.parent.fullTitle(),
               errorType: t.err.name,
-              errorMessage: t.err.message,
-              expectedValue: t.err.expected,
-              actualValue: t.err.actual,
-              stack: t.err.stack,
+              errorMessage: errorMessage,
+              expectedValue: expectedValue,
+              actualValue: actualValue,
+              stack: stack,
               imgFiles: imgFiles
             }
           }
         };
-        testRun.update(updateObj).exec()
+
+        testRun.update(updateObj).exec(function(err, obj) {
+          if (err) {
+            console.log('err1: '+ err);  
+          }
+        });
 
         // if (t.err.name == 'WebDriverError' && t.err.message.includes('chrome not reachable')) {
         

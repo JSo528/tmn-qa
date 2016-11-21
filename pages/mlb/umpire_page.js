@@ -10,6 +10,12 @@ var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
 // Locators
+var SUB_SECTION_TITLE = {
+  'overview': 'Overview',
+  'gameLog': 'Game Log',
+  'pitchLog': 'Pitch Log'
+}
+
 var REPORT_SELECT = By.id('s2id_reportNavBaseballUmpireStatUmpires');
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
 var UMPIRE_NAME = By.css('h1.name');
@@ -37,9 +43,9 @@ var VISUAL_MODE_UL_ID = 'select2-results-1';
 var BY_INNING_TAB = By.xpath(".//div[@id='reportTabsSection0']/.//li[1]/a");
 var FLAT_VIEW_TAB = By.xpath(".//div[@id='reportTabsSection0']/.//li[2]/a");
 
-function UmpirePage(driver, section) {
+function UmpirePage(driver, subSection) {
   BasePage.call(this, driver);
-  this.section = section || 'batting';
+  this.subSection = subSection || 'overview';
 };
 
 UmpirePage.prototype = Object.create(BasePage.prototype);
@@ -55,7 +61,8 @@ UmpirePage.prototype.changeReport = function(report) {
 };
 
 UmpirePage.prototype.goToSubSection = function(subSection) {
-  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
+  this.subSection = subSection
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
   return this.click(locator);
 }
 
@@ -184,6 +191,23 @@ UmpirePage.prototype.getByInningTableStat = function(pitchNum, col) {
 UmpirePage.prototype.getFlatViewTableStat = function(rowNum, col) {
   var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchTableContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
   return this.getText(locator, 30000);
+};
+
+/****************************************************************************
+** Data Comparison
+*****************************************************************************/
+UmpirePage.prototype.statsTable = function() {
+  switch(this.subSection) {
+    case 'overview':
+      return By.xpath(".//div[@id='tableBaseballUmpireStatsOverviewContainer']/table"); 
+      break;
+    case 'gameLog':
+      return By.xpath(".//div[@id='tableBaseballUmpireGameLogContainer']/table");
+      break;
+    case 'pitchLog':
+      return By.xpath(".//div[@id='tableBaseballUmpirePitchLogContainer']/table"); 
+      break;    
+  };
 };
 
 module.exports = UmpirePage;

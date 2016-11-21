@@ -24,6 +24,21 @@ var SECTION_TITLE = {
   'statcastFielding': 'Statcast Fielding'
 }
 
+var SUB_SECTION_TITLE = {
+  'overview': 'Overview',
+  'gameLog': 'Game Log',
+  'splits': 'Splits',
+  'pitchLog': 'Pitch Log',
+  'occurrencesAndStreaks': 'Occurences & Streaks',
+  'multiFilter': 'Multi-Filter',
+  'comps': 'Comps',
+  'matchups': 'Matchups',
+  'vsTeams': 'Vs Teams',
+  'vsPitchers': 'Vs Pitchers',
+  'vsHitters': 'Vs Hitters',
+  'defensivePositioning': 'Defensive Positioning',
+}
+
 var PLAYER_NAME = By.css('h1.name');
 
 // OVERVIEW PAGE
@@ -149,9 +164,10 @@ var STATCSAT_FIELDING_MODAL_CLOSE_BTN = By.css('#tableBaseballPlayerTeamPitchLog
 var STATCAST_FIELDING_MODAL_TITLE = By.css('#tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoId h4.modal-title');
 
 
-function PlayerPage(driver, section) {
+function PlayerPage(driver, section, subSection) {
   BasePage.call(this, driver);
   this.section = section || 'batting';
+  this.subSection = subSection || 'overview';
 };
 
 PlayerPage.prototype = Object.create(BasePage.prototype);
@@ -165,7 +181,8 @@ PlayerPage.prototype.goToSection = function(section) {
 };
 
 PlayerPage.prototype.goToSubSection = function(subSection) {
- var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
+  this.subSection = subSection
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
   return this.click(locator);
 };
   
@@ -549,6 +566,35 @@ PlayerPage.prototype.getCurrentBallparkImageID = function() {
     });
   });
   return d.promise;
+};
+
+// Data Comparison
+PlayerPage.prototype.statsTable = function() {
+  switch(this.subSection) {
+    case 'overview':
+      return By.xpath(`.//div[@id='${OVERVIEW_TABLE_ID[this.section]}']/table`); 
+      break;
+    case 'gameLog':
+      return By.xpath(".//div[@id='tableBaseballPlayerGameLogContainer']/table");
+      break;
+    case 'splits':
+      return By.xpath(".//div[@id='tableBaseballPlayerSplitsContainer']/table");
+      break;
+    case 'pitchLog':
+      return By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[position() <= 20]`); 
+      break;    
+    case 'matchups':
+      return By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table`);
+      break;    
+    case 'vsTeams':
+    case 'vsPitchers':
+    case 'vsHitters':
+      return By.xpath(".//div[@id='tableBaseballPlayerStatsContainer']/table");
+      break;        
+    case 'defensivePositioning':  
+      return By.xpath(".//div[@id='tableBaseballPlayerStatsOverviewStatcastBatterPositioningContainer']/table");
+      break;        
+  };
 };
 
 module.exports = PlayerPage;
