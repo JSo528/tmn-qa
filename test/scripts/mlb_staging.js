@@ -29,7 +29,7 @@ var tests = [
   './mlb/custom_reports/twins',
   './mlb/custom_reports/dbacks',
   './mlb/custom_reports/angels',
-  './mlb/custom_reports/indians'
+  './mlb/custom_reports/indians',
   './mlb/data_comparison'
 ]
 
