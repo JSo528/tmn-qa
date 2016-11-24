@@ -128,6 +128,7 @@ exports.generateTests = function(title, testFiles, startUrl) {
 
     test.afterEach(function() {
       this.timeout(120000)
+      var maxChars = constants.errorObjects.maxChars;
       var t = this.currentTest;
 
       if (t.state == 'failed') {
@@ -139,20 +140,20 @@ exports.generateTests = function(title, testFiles, startUrl) {
         var errorMessage = t.err.message;
         var stack = t.err.stack;
 
-        if (String(expectedValue).length > 1000) {
-          expectedValue = String(expectedValue).substr(0,1000) + ' ...'
+        if (String(expectedValue).length > maxChars) {
+          expectedValue = String(expectedValue).substr(0,maxChars) + ' ...'
         } 
 
-        if (String(actualValue).length > 1000) {
-          actualValue = String(actualValue).substr(0,1000) + ' ...'
+        if (String(actualValue).length > maxChars) {
+          actualValue = String(actualValue).substr(0,maxChars) + ' ...'
         }
 
-        if (errorMessage.length > 1000) {
-          errorMessage = errorMessage.substr(0,1000) + ' ...'
+        if (errorMessage.length > maxChars) {
+          errorMessage = errorMessage.substr(0,maxChars) + ' ...'
         }
 
-        if (t.err.stack.length > 1000) {
-          stack = t.err.stack.substr(0,1000) + ' ...'
+        if (t.err.stack.length > maxChars) {
+          stack = t.err.stack.substr(0,maxChars) + ' ...'
         }
 
 

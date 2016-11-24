@@ -22,6 +22,14 @@ var tests = [
   './mlb/player_statcast_fielding_page',
   './mlb/umpire_page',
   './mlb/custom_reports/rockies',
+  './mlb/custom_reports/phillies',
+  './mlb/custom_reports/marlins',
+  './mlb/custom_reports/brewers',
+  './mlb/custom_reports/tigers',
+  './mlb/custom_reports/twins',
+  './mlb/custom_reports/dbacks',
+  './mlb/custom_reports/angels',
+  './mlb/custom_reports/indians'
 ]
 
 util.generateTests('[MLB Production]', tests, startUrl); 

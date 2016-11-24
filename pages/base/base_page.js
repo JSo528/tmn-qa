@@ -267,6 +267,16 @@ BasePage.prototype.click = function(locator, timeout) {
   return this.driver.findElement(locator).click();
 };
 
+BasePage.prototype.clickOffset = function(locator, xOffset, yOffset, timeout) {
+  this.waitForEnabled(locator, timeout);
+  var element = this.driver.findElement(locator);
+  return driver.actions()
+    .mouseMove(element, {x: xOffset, y: yOffset})
+    .mouseDown()
+    .mouseUp()
+    .perform();
+};
+
 BasePage.prototype.clickAndWait = function(locator, loadingLocator, timeout) {
   this.waitForEnabled(locator, timeout);
   this.driver.findElement(locator).click();
@@ -377,5 +387,14 @@ BasePage.prototype.selectFromSearch = function(inputLocator, searchTerm, selecti
     return this.click(selectionLocator);
   }
 }
+
+BasePage.prototype.getParameterByName = function(name, url) {
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+};
 
 module.exports = BasePage;

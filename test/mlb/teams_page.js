@@ -380,13 +380,13 @@ test.describe('#Teams Page', function() {
       });
     });
 
-    test.describe('#SubSection: Occurences & Streaks', function() {
+    test.describe('#SubSection: Occurrences & Streaks', function() {
       test.before(function() {
         streaksPage = new StreaksPage(driver);
       });
 
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
-        teamsPage.goToSubSection('Occurences & Streaks');
+        teamsPage.goToSubSection('occurrencesAndStreaks');
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2015);
         
@@ -466,7 +466,7 @@ test.describe('#Teams Page', function() {
       });
 
       test.it('clicking the scatter_plot link goes to the correct URL', function() {
-        teamsPage.goToSubSection('Scatter Plot');
+        teamsPage.goToSubSection('scatterPlot');
         driver.getCurrentUrl().then(function(url) {
           assert.match(url, /teams\-scatter\-plot\-batting/);
         });
@@ -544,7 +544,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
-      teamsPage.goToSection("Pitching");
+      teamsPage.goToSection("pitching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2015);
 
@@ -687,7 +687,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Catching', function() {
     test.before(function() {    
-      teamsPage.goToSection("Catching");
+      teamsPage.goToSection("catching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2015);
       slaaCol = 7;
@@ -739,7 +739,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
-      teamsPage.goToSection("Statcast Fielding");
+      teamsPage.goToSection("statcastFielding");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2015);
       statCol = 10;

@@ -1,0 +1,140 @@
+'use strict';
+
+// Load Base Page
+var BasePage = require('../../../pages/base/base_page.js');
+
+// Webdriver helpers
+var By = require('selenium-webdriver').By;
+var Until = require('selenium-webdriver').until;
+var Promise = require('selenium-webdriver').promise;
+var Key = require('selenium-webdriver').Key;
+
+// Locators
+var SUB_SECTION_TITLE = {
+  'hittingSituationMaps': 'Hitting Situation Maps',
+  'heatMaps': 'Heat Maps'
+};
+
+// Hitting Matchups / Pitching Matchups
+var MODAL_BTN = {
+  'batters': By.id('editRosterBatters'),
+};
+
+var MODAL_ID = {
+  'batters': 'tableBaseballRosterBattersModal',
+};
+
+var MODAL_TABLE_ID = {
+  'batters': 'tableBaseballRosterBattersContainer',
+};
+
+var MODAL_SEARCH_INPUT = {
+  'batters': By.css('#tableBaseballRosterBattersRosterSearch input'),
+};
+
+function Dbacks(driver) {
+  BasePage.call(this, driver);
+}
+
+Dbacks.prototype = Object.create(BasePage.prototype);
+Dbacks.prototype.constructor = Dbacks;
+
+Dbacks.prototype.goToSubSection = function(subSection) {
+  this.subSection = subSection;
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[this.subSection]}']`);
+  return this.click(locator);
+};
+
+// Team Heat Maps
+Dbacks.prototype.getTeamHeatMapTitle = function(playerNum, slgOrAvg, row, col) {
+  var d = Promise.defer();
+  var thiz = this;
+
+  var tableNum;
+
+  if (isNaN(playerNum)) {
+    tableNum = playerNum;
+  } else {
+    var addRows = (slgOrAvg == 'slg') ? 1 : 2;
+    tableNum = (playerNum - 1) * 2 + addRows;  
+  }
+
+  var rowNum = row+1;
+  
+  var locator = By.xpath(`.//table[${tableNum}]/tbody/tr[${rowNum}]/td[${col}]/img`);
+  
+  this.getAttribute(locator, 'src').then(function(src) {
+    d.fulfill(thiz.getParameterByName('title', src));
+  });
+
+  return d.promise;  
+};
+
+Dbacks.prototype.getPlayerName = function(playerNum, slgOrAvg) {
+  // for things like last(), etc.
+  var row;
+  if (isNaN(playerNum)) {
+    row = playerNum;
+  } else {
+    var addRows = (slgOrAvg == 'slg') ? 1 : 2;
+    row = (playerNum - 1) * 2 + addRows;  
+  }
+    
+  var locator = By.xpath(`.//table[${row}]/tbody/tr[1]/td/h4`);
+  return this.getText(locator);
+};
+
+// Umpire Heat Maps
+Dbacks.prototype.getUmpireHeatMapTitle = function(table, row, col) {
+  var d = Promise.defer();
+  var thiz = this;
+  var rowNum = row * 2 + 1;
+
+  var locator = By.xpath(`.//div/table[${table}]/tbody/tr[${rowNum}]/td[${col}]/img`);
+  
+  this.getAttribute(locator, 'src').then(function(src) {
+    d.fulfill(thiz.getParameterByName('title', src));
+  });
+
+  return d.promise;  
+};
+
+Dbacks.prototype.getUmpireHeatMapSectionTitle = function(table) {
+  var locator = By.xpath(`.//table[${table}]/tbody/tr[1]/td/h4`);
+  
+  return this.getText(locator);
+};
+
+// modal
+Dbacks.prototype.clickEditRosterBtn = function(modalType) {
+  this.modalType = modalType;
+  this.waitForEnabled(MODAL_BTN[this.modalType]);
+  this.click(MODAL_BTN[this.modalType]);
+  return this.waitForEnabled(By.xpath(`.//div[@id='${MODAL_TABLE_ID[this.modalType]}']/table`));
+};
+
+Dbacks.prototype.removePlayerFromModal = function(playerNum) {
+  var locator = By.xpath(`.//div[@id='${MODAL_TABLE_ID[this.modalType]}']/table/tbody/tr[${playerNum}]/td[1]/span`);
+  return this.clickOffset(locator, 5, 5);
+};
+
+Dbacks.prototype.getModalTableStat = function(playerNum, col) {
+  var locator = By.xpath(`.//div[@id='${MODAL_TABLE_ID[this.modalType]}']/table/tbody/tr[${playerNum}]/td[${col}]`);
+  return this.getText(locator);
+};
+
+Dbacks.prototype.selectForAddPlayerSearch = function(name) {
+  return this.selectFromSearch(MODAL_SEARCH_INPUT[this.modalType], name, 1);
+};
+
+Dbacks.prototype.selectDefaultRoster = function() {
+  var locator = By.xpath(`.//div[@id='${MODAL_ID[this.modalType]}']/.//div[@class='modal-footer']/button[1]`);
+  return this.click(locator);
+};
+
+Dbacks.prototype.closeModal = function() {
+  var locator = By.xpath(`.//div[@id='${MODAL_ID[this.modalType]}']/.//div[@class='modal-footer']/button[2]`);
+  return this.click(locator);
+};
+
+module.exports = Dbacks;

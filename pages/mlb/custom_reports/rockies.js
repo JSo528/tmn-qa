@@ -21,17 +21,17 @@ var TABLE_ID = {
   'teamCustomBatting': 'tableBaseballRockiesTeamBatterContainer',
   'teamCustomPitching': 'tableBaseballRockiesTeamPitcherContainer',
   'teamRockWAR': 'tableBaseballPlayersRockiesTeamRockWARContainer'
-}
+};
 
 var TABLE_ROW_OFFSET = {
   'playersCustomBatting': 1,
   'playersCustomPitching': 1,
-}
+};
 
 var PLAYER_CARD_TABLE_OFFSET = {
   'playerBattingCard': 1,
   'playerPitchingCard': 3,
-}
+};
 
 var STATS_VIEW_SELECT = By.id('s2id_pageControlBaseballRockiesStatsViewPlayers');
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
@@ -44,10 +44,16 @@ var TPA_YEAR_SELECT = By.id('s2id_pageControlStatYear');
 function Rockies(driver, currentPage) {
   BasePage.call(this, driver);
   this.currentPage = currentPage;
-};
+}
 
 Rockies.prototype = Object.create(BasePage.prototype);
 Rockies.prototype.constructor = Rockies;
+
+Rockies.prototype.goToSubSection = function(subSection) {
+  this.subSection = subSection;
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
+  return this.click(locator);
+};
 
 Rockies.prototype.getReportTitle = function() {
   return this.getText(REPORT_TITLE);
@@ -59,11 +65,11 @@ Rockies.prototype.getTableHeader = function(col) {
 };
 
 Rockies.prototype.getTableStat = function(playerNum, col) {
-  var rowOffset = TABLE_ROW_OFFSET[this.currentPage] || 0
-  var row = playerNum + rowOffset
+  var rowOffset = TABLE_ROW_OFFSET[this.currentPage] || 0;
+  var row = playerNum + rowOffset;
 
   var locator = By.xpath(`.//div[@id='${TABLE_ID[this.currentPage]}']/table/tbody/tr[${row}]/td[${col}]`);
-  return this.getText(locator); 
+  return this.getText(locator, 60000); 
 };
 
 Rockies.prototype.changeStatsView = function(filter) {
@@ -78,7 +84,7 @@ Rockies.prototype.changeRockWARQualifyBy = function(filter) {
 // Player - Player Cards
 Rockies.prototype.getPlayerCardTableHeader = function(table, col) {
   var divNum = table + PLAYER_CARD_TABLE_OFFSET[this.currentPage];
-  var locator = By.xpath(`.//div[${divNum}]/table[contains(@class,'cardtable')]/tbody/tr[1]/th[${col}]`)
+  var locator = By.xpath(`.//div[${divNum}]/table[contains(@class,'cardtable')]/tbody/tr[1]/th[${col}]`);
   return this.getText(locator);
 };
 
@@ -103,8 +109,5 @@ Rockies.prototype.getTPATableStat = function(table, row, col) {
   var locator = By.xpath(`.//table[${table}]/tbody/tr[${row}]/td[${col}]`);
   return this.getText(locator); 
 };
-
-
-
 
 module.exports = Rockies;

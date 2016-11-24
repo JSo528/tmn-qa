@@ -55,26 +55,32 @@ playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
 // Constants
-// var url = "https://rockies.trumedianetworks.com"
-var url = "https://dodgers-staging.trumedianetworks.com:3005"
+var url = "https://tigers.trumedianetworks.com"
+// var url = "https://dodgers-staging.trumedianetworks.com:3005"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-var Rockies = require('../pages/mlb/custom_reports/rockies.js');
-rockies = new Rockies(driver);
+// Custom Report
+var Tigers = require('../pages/mlb/custom_reports/tigers.js');
+tigers = new Tigers(driver);
 
-rockies.currentPage = 'playerCustomBatting';
+navbar.goToTeamsPage();
+teamsStatsPage.clickTeamTableCell(25,3);
+
+marlins.goToSubSection('Hitting Matchups');
 
 
-driver.takeScreenshot().then(function(data) {
-  console.log("** here **")
-})
-browser.openNewTab(url).then(function() {
-      browser.switchToTab(1);  
+var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "Pitch Type:")]]/div/ul/li/div`)
+var array = []
+driver.findElements(locator).then(function(elements) {
+  elements.forEach(function(element) {
+    element.getText().then(function(text) {
+      array.push(text)
     })
-
+  })
+})
 
 
 

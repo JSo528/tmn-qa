@@ -29,7 +29,7 @@ var SUB_SECTION_TITLE = {
   'gameLog': 'Game Log',
   'splits': 'Splits',
   'pitchLog': 'Pitch Log',
-  'occurrencesAndStreaks': 'Occurences & Streaks',
+  'occurrencesAndStreaks': 'Occurrences & Streaks',
   'multiFilter': 'Multi-Filter',
   'comps': 'Comps',
   'matchups': 'Matchups',
@@ -185,7 +185,6 @@ PlayerPage.prototype.goToSubSection = function(subSection) {
   var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
   return this.click(locator);
 };
-  
 
 PlayerPage.prototype.getPlayerName = function() {
   return this.getText(PLAYER_NAME, 30000);
@@ -303,7 +302,7 @@ PlayerPage.prototype.getHeatMapImageTitle = function() {
 
 PlayerPage.prototype.changeVisualMode = function(mode) {
   return this.clickDropdown(VISUAL_MODE_SELECT, 'select2-results-1', mode);
-}
+};
 
 PlayerPage.prototype.getGridHrefMode = function() {
   var d = Promise.defer();
@@ -317,7 +316,7 @@ PlayerPage.prototype.getGridHrefMode = function() {
 
 PlayerPage.prototype.changeGridMode = function(mode) {
   return this.clickDropdown(GRID_MODE_SELECT, 'select2-results-2', mode);
-}
+};
 
 // eBIS Modal
 PlayerPage.prototype.clickEbisModalBtn = function() {

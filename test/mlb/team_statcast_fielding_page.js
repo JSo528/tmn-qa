@@ -124,7 +124,7 @@ test.describe('#Team StatcastFielding Section', function() {
   // Roster Section
   test.describe("#Subsection: Roster", function() {
     test.before(function() {
-      teamPage.goToSubSection("Roster");
+      teamPage.goToSubSection("roster");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -151,7 +151,7 @@ test.describe('#Team StatcastFielding Section', function() {
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
     test.before(function() {
-      teamPage.goToSubSection("Game Log");
+      teamPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -192,7 +192,7 @@ test.describe('#Team StatcastFielding Section', function() {
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
     test.before(function() {
-      teamPage.goToSubSection("Pitch Log");
+      teamPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });

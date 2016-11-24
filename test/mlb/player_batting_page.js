@@ -210,7 +210,7 @@ test.describe('#Player Batting Section', function() {
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
     test.before(function() {
-      playerPage.goToSubSection("Game Log");
+      playerPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -255,7 +255,7 @@ test.describe('#Player Batting Section', function() {
   // Splits Section
   test.describe("#Subsection: Splits", function() {
     test.before(function() {
-      playerPage.goToSubSection("Splits");
+      playerPage.goToSubSection("splits");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
       filters.toggleSidebarFilter("Men On:", 'Empty', true);
@@ -313,7 +313,7 @@ test.describe('#Player Batting Section', function() {
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
     test.before(function() {
-      playerPage.goToSubSection("Pitch Log");
+      playerPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -361,7 +361,7 @@ test.describe('#Player Batting Section', function() {
   // Occurences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
     test.before(function() {
-      playerPage.goToSubSection("Occurrences & Streaks");
+      playerPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -381,7 +381,7 @@ test.describe('#Player Batting Section', function() {
   // Multi-Filter
   test.describe('#SubSection: Multi-Filter', function() {
     test.before(function() {
-      playerPage.goToSubSection("Multi-Filter");
+      playerPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -458,7 +458,7 @@ test.describe('#Player Batting Section', function() {
   // Comps
   test.describe('#SubSection: Comps', function() {
     test.before(function() {
-      playerPage.goToSubSection("Comps");
+      playerPage.goToSubSection("comps");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -478,7 +478,7 @@ test.describe('#Player Batting Section', function() {
   // Matchups
   test.describe('#SubSection: Matchups', function() {
     test.before(function() {
-      playerPage.goToSubSection("Matchups");
+      playerPage.goToSubSection("matchups");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -517,7 +517,7 @@ test.describe('#Player Batting Section', function() {
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
     test.before(function() {
-      playerPage.goToSubSection("Vs Teams");
+      playerPage.goToSubSection("vsTeams");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -546,7 +546,7 @@ test.describe('#Player Batting Section', function() {
   // Vs. Pitchers
   test.describe("#Subsection: Vs Pitchers", function() {
     test.before(function() {
-      playerPage.goToSubSection("Vs Pitchers");
+      playerPage.goToSubSection("vsPitchers");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -584,7 +584,7 @@ test.describe('#Player Batting Section', function() {
   // Defensive Positioning
   test.describe("#Subsection: Defensive Positioning", function() {
     test.before(function() {
-      playerPage.goToSubSection("Defensive Positioning");
+      playerPage.goToSubSection("defensivePositioning");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });

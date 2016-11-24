@@ -22,7 +22,7 @@ test.describe('#Player Pitching Section', function() {
     statsPage = new StatsPage(driver, 'pitching');
 
     navbar.goToPlayersPage();
-    playersPage.goToSection('Pitching');
+    playersPage.goToSection('pitching');
     filters.removeSelectionFromDropdownFilter("Seasons:");
     filters.addSelectionToDropdownFilter("Seasons:", 2016);
 
@@ -168,7 +168,7 @@ test.describe('#Player Pitching Section', function() {
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
     test.before(function() {
-      playerPage.goToSubSection("Game Log");
+      playerPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -214,7 +214,7 @@ test.describe('#Player Pitching Section', function() {
   // Splits Section
   test.describe("#Subsection: Splits", function() {
     test.before(function() {
-      playerPage.goToSubSection("Splits");
+      playerPage.goToSubSection("splits");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -272,7 +272,7 @@ test.describe('#Player Pitching Section', function() {
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
     test.before(function() {
-      playerPage.goToSubSection("Pitch Log");
+      playerPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -320,7 +320,7 @@ test.describe('#Player Pitching Section', function() {
   // Occurrences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
     test.before(function() {
-      playerPage.goToSubSection("Occurrences & Streaks");
+      playerPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -340,7 +340,7 @@ test.describe('#Player Pitching Section', function() {
   // Multi-Filter
   test.describe('#SubSection: Multi-Filter', function() {
     test.before(function() {
-      playerPage.goToSubSection("Multi-Filter");
+      playerPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -418,7 +418,7 @@ test.describe('#Player Pitching Section', function() {
   // Comps
   test.describe('#SubSection: Comps', function() {
     test.before(function() {
-      playerPage.goToSubSection("Comps");
+      playerPage.goToSubSection("comps");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -438,7 +438,7 @@ test.describe('#Player Pitching Section', function() {
   // Matchups
   test.describe('#SubSection: Matchups', function() {
     test.before(function() {
-      playerPage.goToSubSection("Matchups");
+      playerPage.goToSubSection("matchups");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -477,7 +477,7 @@ test.describe('#Player Pitching Section', function() {
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
     test.before(function() {
-      playerPage.goToSubSection("Vs Teams");
+      playerPage.goToSubSection("vsTeams");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -506,7 +506,7 @@ test.describe('#Player Pitching Section', function() {
   // Vs. Hitters
   test.describe("#Subsection: Vs Hitters", function() {
     test.before(function() {
-      playerPage.goToSubSection("Vs Hitters");
+      playerPage.goToSubSection("vsHitters");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });

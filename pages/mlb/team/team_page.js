@@ -17,13 +17,53 @@ var SECTION_LINK_NUM = {
   'catching': 3,
   'statcastFielding': 4
 }
+
+var SUB_SECTION_TITLE = {
+  'overview': 'Overview',
+  'roster': 'Roster',
+  'gameLog': 'Game Log',
+  'splits': 'Splits',
+  'pitchLog': 'Pitch Log',
+  'occurrencesAndStreaks': 'Occurrences & Streaks',
+  'multiFilter': 'Multi-Filter',
+  'comps': 'Comps',
+  'matchups': 'Matchups',
+  'vsTeams': 'Vs Teams',
+  'vsPitchers': 'Vs Pitchers',
+  'vsHitters': 'Vs Hitters',
+  'defensivePositioning': 'Defensive Positioning',
+}
+
 var REPORT_SELECT = {
   'batting': By.id('s2id_reportNavBaseballTeamStatBatting'),
   'pitching': By.id('s2id_reportNavBaseballTeamStatPitching'),
-  'catching': By.id('s2id_reportNavBaseballTeamStatTeamcatching'),
+  'catching': By.id('tableBaseballTeamStatsRosterCatchingContainer'),
   'statcastFielding': By.id('s2id_reportNavBaseballTeamStatTeamstatcast')
 }
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
+
+// Roster
+var ROSTER_TABLE_ID = {
+  'batting': 'tableBaseballPlayerStatsOverviewContainer',
+  'pitching': 'tableBaseballTeamStatsRosterPitchingContainer',
+  'catching': 'tableBaseballPlayerStatsOverviewCatchingContainer',
+  'statcastFielding': 'tableBaseballPlayerStatsOverviewStatcastContainer'
+}
+
+// Pitch Logs
+var BY_INNING_TABLE_ID = {
+  'batting': 'tableBaseballTeamPitchLogBattingContainer',
+  'pitching': 'tableBaseballTeamPitchLogPitchingContainer',
+  'catching': 'tableBaseballTeamPitchLogCatchingContainer',
+  'statcastFielding': 'tableBaseballTeamPitchLogStatcastContainer'
+}
+
+var FLAT_VIEW_TABLE_ID = {
+  'batting': 'tableBaseballTeamPitchTableBattingContainer',
+  'pitching': 'tableBaseballTeamPitchTablePitchingContainer',
+  'catching': 'tableBaseballTeamPitchTableCatchingContainer',
+  'statcastFielding': 'tableBaseballTeamPitchTableStatcastContainer'
+}
 
 // Occurences & Streaks
 var STREAK_TYPE_SELECT = By.id('s2id_pageControlBaseballStrkType');
@@ -97,7 +137,8 @@ TeamPage.prototype.goToSection = function(section) {
 }
 
 TeamPage.prototype.goToSubSection = function(subSection) {
-  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
+  this.subSection = subSection
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
   return this.click(locator);
 }
 
@@ -241,19 +282,32 @@ TeamPage.prototype.getVsTableStat = function(rowNum, col) {
 };
 
 // Data Comparison
-TeamPage.prototype.overviewStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsOverviewContainer']/table");
-TeamPage.prototype.rosterBattingStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsRosterBattingContainer']/table");
-TeamPage.prototype.gameLogStatsTable = By.xpath(".//div[@id='tableBaseballTeamGameLogContainer']/table");
-TeamPage.prototype.splitsStatsTable = By.xpath(".//div[@id='tableBaseballTeamSplitsContainer']/table");
-TeamPage.prototype.pitchLogBattingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogBattingContainer']/table");
-TeamPage.prototype.matchupsBattingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogBattingVidMatchupContainer']/table");
-TeamPage.prototype.vsStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table");
-
-TeamPage.prototype.rosterPitchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsRosterPitchingContainer']/table");
-TeamPage.prototype.pitchLogPitchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogPitchingContainer']/table");
-TeamPage.prototype.matchupsPitchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogPitchingVidMatchupContainer']/table");
-
-TeamPage.prototype.rosterCatchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamStatsRosterCatchingContainer']/table");
-TeamPage.prototype.pitchLogCatchingStatsTable = By.xpath(".//div[@id='tableBaseballTeamPitchLogCatchingContainer']/table");
+TeamPage.prototype.statsTable = function() {
+  switch(this.subSection) {
+    case 'overview':
+      return By.xpath(".//div[@id='tableBaseballTeamStatsOverviewContainer']/table");
+      break;
+    case 'roster':
+      return By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table`);
+      break;
+    case 'gameLog':
+      return By.xpath(".//div[@id='tableBaseballTeamGameLogContainer']/table");
+      break;
+    case 'splits':
+      return By.xpath(".//div[@id='tableBaseballTeamSplitsContainer']/table");
+      break;
+    case 'pitchLog':
+      return By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[position() <= 20]`); 
+      break;    
+    case 'matchups':
+      return By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table`);
+      break;    
+    case 'vsTeams':
+    case 'vsPitchers':
+    case 'vsHitters':
+      return By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table");
+      break;        
+  };
+};
 
 module.exports = TeamPage;
