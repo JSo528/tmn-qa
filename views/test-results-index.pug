@@ -13,8 +13,11 @@ block content
       - var statusColor;
       case testRun.status
         when 'ongoing'
+          - statusColor = 'yellow bold';
+        when 'queued'
           - statusColor = 'yellow';
         when 'error'
+        when 'killed'
           - statusColor = 'red';
         when 'success'
           - statusColor = 'green';

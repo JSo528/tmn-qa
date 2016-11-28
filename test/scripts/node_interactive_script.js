@@ -55,16 +55,18 @@ playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
 // Constants
-var url = "https://tigers.trumedianetworks.com"
+var url = "https://dodgers.trumedianetworks.com"
 // var url = "https://dodgers-staging.trumedianetworks.com:3005"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
+navbar.toggleLockFiltersCheckbox(true)
+
 // Custom Report
-var Tigers = require('../pages/mlb/custom_reports/tigers.js');
-tigers = new Tigers(driver);
+// var Tigers = require('../pages/mlb/custom_reports/tigers.js');
+// tigers = new Tigers(driver);
 
 navbar.goToTeamsPage();
 teamsStatsPage.clickTeamTableCell(25,3);
@@ -83,6 +85,10 @@ driver.findElements(locator).then(function(elements) {
 })
 
 
+
+/html/body/header[@class='navbar-tmn']/div[2]/div[@class='persist-search-state checkbox']/label/input
+var locator = By.css('.navbar-tmn .persist-search-state input');
+filters.click(locator)
 
 
 // FIND LAST LOCATOR

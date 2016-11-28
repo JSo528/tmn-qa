@@ -20,6 +20,7 @@ test.describe('#Teams Page', function() {
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
     statsPage = new StatsPage(driver);
+    navbar.toggleLockFiltersCheckbox(false);
   });
 
   test.it('clicking the teams link goes to the correct page', function() {
@@ -544,6 +545,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
+      teamsPage.goToSubSection('stats');
       teamsPage.goToSection("pitching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2015);
@@ -687,6 +689,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Catching', function() {
     test.before(function() {    
+      teamsPage.goToSubSection('stats');
       teamsPage.goToSection("catching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2015);
@@ -739,6 +742,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
+      teamsPage.goToSubSection('stats');
       teamsPage.goToSection("statcastFielding");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2015);

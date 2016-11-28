@@ -24,7 +24,7 @@ var SECTION_TITLE = {
 }
 
 var SUB_SECTION_TITLE = {
-  'stats': 'stats',
+  'stats': 'Stats',
   'occurrencesAndStreaks': 'Occurrences & Streaks',
   'scatterPlot': 'Scatter Plot'
 }
@@ -44,7 +44,7 @@ function TeamsPage(driver, section, subSection) {
 TeamsPage.prototype = Object.create(BasePage.prototype);
 TeamsPage.prototype.constructor = TeamsPage;
 
-TeamsPage.prototype.goToSection = function(section, subSection) {
+TeamsPage.prototype.goToSection = function(section) {
   this.section = section;
   var sectionLink = By.xpath(`.//nav[contains(@class, 'navbar-blue')]/.//li/a[text()='${SECTION_TITLE[section]}']`);
   this.click(sectionLink);

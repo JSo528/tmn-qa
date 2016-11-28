@@ -21,12 +21,14 @@ html
                 a(href='/') New Test
               li
                 a(href='/test-results') Test Results
+              li
+                a(href='/util') Util
 
     .container
       if flash
-        .alert.alert-dismissible
+        .alert.alert-dismissible(class= 'alert-'+flash.type)
           button.close(type='button' data-dismiss='alert' aria-hidden='true') &times;
           strong= flash.intro
-          flash.message
+          p= flash.message
       #content
         block content

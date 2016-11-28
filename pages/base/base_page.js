@@ -310,7 +310,22 @@ BasePage.prototype.clickDropdown = function(selectLocator, ulID, value) {
   this.click(selectLocator);
   var locator = By.xpath(`.//ul[@id='${ulID}']/li/div[text()='${value}']`);
   return this.click(locator)
-}
+};
+
+BasePage.prototype.toggleCheckbox = function(locator, check, timeout) {
+  var d = Promise.defer();
+  this.waitForEnabled(locator, timeout);
+  var element = this.driver.findElement(locator);
+  element.isSelected().then(function(checked) {  
+    if (checked && !check || !checked && check) {
+      d.fulfill(element.click());
+    } else {
+      d.fulfill(false);
+    }
+  });
+
+  return d.promise;
+};
 
 BasePage.prototype.removeFilter = function(locator, updateButtonLocator) {
   this.click(locator);

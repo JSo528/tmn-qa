@@ -13,9 +13,11 @@ block content
       else
         - var alertClass;
         case testRun.status 
+          when 'queued'
           when 'ongoing'
             - alertClass = 'alert-warning'
           when 'error'
+          when 'killed'
             - alertClass = 'alert-danger'
           when 'success'
             - alertClass = 'alert-success'
@@ -34,7 +36,8 @@ block content
             table.table
               tr
                 th Test
-                td= testRun.testName
+                td
+                  = testRun.testName
               tr
                 th Port
                 td= testRun.portNumber
@@ -50,6 +53,12 @@ block content
               tr
                 th Finish
                 td#endTime(data-time=testRun.endedAt)
+              if testRun.status == 'ongoing'
+                tr
+                  th &nbsp;
+                  td
+                    form(class='form-horizontal' role='form' action='/kill-test/'+testRun.id method='post')
+                      button.btn.btn-danger.float-right#killBtn(type='submit') Kill Test
         #failedTestsContainer
 
   .modal.fade#imageModal(tabindex="-1", role="dialog")

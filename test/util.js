@@ -10,6 +10,7 @@ var Until = require('selenium-webdriver').until;
 var TestRun = require('../models/test_run.js');
 var dbConnect = require('../models/db_connect.js');
 var Browser = require('../pages/base/browser.js');
+var request = require('request');
 
 function importTest(path) {
   test.describe('', function() {
@@ -27,14 +28,7 @@ function writeScreenshot(callback) {
 
   driver.wait(Until.elementLocated(locator), 5000).then(function() {
     var element = driver.findElement(locator);
-  
-    // driver.manage().window().maximize().then(function() {
-    //   console.log("** window maximize success")
-    // }, function(err) {
-    //   console.log("** window maximize error: " + err)
-    // })
-    
-    driver.manage().window().setSize(maxWidth, maxHeight)
+    driver.manage().window().setSize(maxWidth, maxHeight);
     element.getSize().then(function(size) {
       var height = (size.height > maxHeight) ? maxHeight : size.height;
       driver.manage().window().setSize(maxWidth, height);
@@ -114,12 +108,14 @@ exports.generateTests = function(title, testFiles, startUrl) {
         TestRun.findById(process.env.TEST_RUN_ID, function(err, testRunObject) {
           testRun = testRunObject;
           if (testRun.endedAt == undefined && testRun.status == "ongoing") {
-            testRun.update({endedAt: new Date().getTime(), status: "error"}).exec(function() {
-              d.fulfill(true);
-            });
-          } else {
-            d.fulfill(true);  
+            testRun.update({endedAt: new Date().getTime(), status: "error"}).exec();
           }
+
+          // check to see if there are any more tests in the queue 
+          var queueNextTestURL = constants.urls.host[app.get('env')]+'run-next-test';
+          request.post(queueNextTestURL, function (error, response, body) {
+            d.fulfill(true);
+          })
         });
       })
       

@@ -57,7 +57,8 @@ App.Collections.FailedTestList = Backbone.Collection.extend({
 App.Views.TestResultView = Backbone.View.extend({
   el: '#testResultsPanel',
   events: {
-    'click .stack-link': 'toggleStackTraces'
+    'click .stack-link': 'toggleStackTraces',
+    'click #killBtn': 'killTest'
   },
   initialize: function() {    
     this.model.on('change', this.updateDOM, this);
@@ -107,6 +108,13 @@ App.Views.TestResultView = Backbone.View.extend({
       $('a.stack-link').text("[HIDE STACK]");
       $('.stack-row').removeClass('hidden');
     }
+  },
+  killTest: function(e) {
+    var answer = confirm('Are you sure you want to kill this test?');
+
+    if (!answer) {
+      e.preventDefault();  
+    };
   }
 });
 
@@ -182,7 +190,7 @@ App.Routers.Workspace = Backbone.Router.extend({
     });
 
     setInterval(function() {
-      if(App.Instances.testRun.get('status') == 'ongoing') {
+      if(App.Instances.testRun.get('status') == 'ongoing' || App.Instances.testRun.get('status') == 'queued') {
         App.Instances.testRun.fetch();
       }
     }, 10000); 

@@ -287,7 +287,7 @@ test.describe('#Players Page', function() {
       });
 
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
-        playersPage.goToSubSection('Occurrences & Streaks');
+        playersPage.goToSubSection('occurrencesAndStreaks');
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2013);
 
@@ -358,7 +358,7 @@ test.describe('#Players Page', function() {
       });
 
       test.it('clicking the scatter_plot link goes to the correct URL', function() {
-        playersPage.goToSubSection('Scatter Plot');
+        playersPage.goToSubSection('scatterPlot');
         driver.getCurrentUrl().then(function(url) {
           assert.match(url, /players\-scatter\-plot\-batting/);
         });
@@ -401,7 +401,8 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
       statsPage = new StatsPage(driver, 'pitching');
-      playersPage.goToSection("Pitching");
+      playersPage.goToSubSection("stats");
+      playersPage.goToSection("pitching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2012);
       eraCol = 21;
@@ -528,7 +529,8 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Catching', function() {
     test.before(function() {    
       statsPage = new StatsPage(driver, 'catching');
-      playersPage.goToSection("Catching");
+      playersPage.goToSubSection("stats");
+      playersPage.goToSection("catching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2012);
       slaaCol = 7;
@@ -583,7 +585,8 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
       statsPage = new StatsPage(driver, 'statcastFielding');
-      playersPage.goToSection("Statcast Fielding");
+      playersPage.goToSubSection("stats");
+      playersPage.goToSection("statcastFielding");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
       statCol = 10;

@@ -23,6 +23,8 @@ module.exports = function(testRun, env) {
     })
   }
 
+  testRun.update({status: 'ongoing', startedAt: new Date().getTime()}).exec();
+
   // spawn child process to run mocha
   var spawn = require('child_process').spawn;
   var args = [
