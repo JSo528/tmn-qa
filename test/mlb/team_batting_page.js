@@ -11,10 +11,9 @@ var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
 var TeamPage = require('../../pages/mlb/team/team_page.js');
 var OverviewPage = require('../../pages/mlb/team/overview_page.js');
-var RosterPage = require('../../pages/mlb/team/roster_page.js');
 var PitchLogPage = require('../../pages/mlb/team/pitch_log_page.js');
 
-var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, rosterPage, pitchLogPage;
+var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, pitchLogPage;
 
 test.describe('#Team Batting Section', function() {
   test.before(function() {  
@@ -24,7 +23,6 @@ test.describe('#Team Batting Section', function() {
     statsPage = new StatsPage(driver);
     teamPage = new TeamPage(driver);
     overviewPage = new OverviewPage(driver);
-    rosterPage = new RosterPage(driver, 'batting');
     pitchLogPage = new PitchLogPage(driver, 'batting');
 
     navbar.goToTeamsPage();
@@ -205,11 +203,11 @@ test.describe('#Team Batting Section', function() {
         filters.changeFilterGroupDropdown("Game Participation");
         filters.addSelectionToDropdownSidebarFilter('Opponent Starter:', 'Corey Kluber');
 
-        rosterPage.getTableStat(1,1).then(function(player) {
+        teamPage.getRosterTableStat(1,1).then(function(player) {
           assert.equal(player, 'Mookie Betts');
         });
 
-        rosterPage.getTableStat(1,8).then(function(battingAVG) {
+        teamPage.getRosterTableStat(1,8).then(function(battingAVG) {
           assert.equal(battingAVG, 0.444);
         });          
       });

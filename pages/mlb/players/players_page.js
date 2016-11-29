@@ -12,16 +12,16 @@ var Promise = require('selenium-webdriver').promise;
 var REPORT_SELECT = {
   'batting': By.id('s2id_reportNavBaseballPlayersStatBatting'),
   'pitching': By.id('s2id_reportNavBaseballPlayersStatPitching'),
-  'catching': By.id('s2id_reportNavBaseballPlayersStatTeamcatching'),
+  'catching': By.id('s2id_reportNavBaseballPlayersStatCatching'),
   'statcastFielding': By.id('s2id_reportNavBaseballPlayersStatStatcast')
-}
+};
 
 var SECTION_TITLE = {
   'batting': 'Batting',
   'pitching': 'Pitching',
   'catching': 'Catching',
   'statcastFielding': 'Statcast Fielding'
-}
+};
 
 var SUB_SECTION_TITLE = {
   'stats': 'Stats',
@@ -31,7 +31,7 @@ var SUB_SECTION_TITLE = {
 
 function PlayersPage(driver) {
   BasePage.call(this, driver);
-};
+}
 
 PlayersPage.prototype = Object.create(BasePage.prototype);
 PlayersPage.prototype.constructor = PlayersPage;
@@ -44,10 +44,9 @@ PlayersPage.prototype.goToSection = function(section) {
 };
 
 PlayersPage.prototype.goToSubSection = function(subSection) {
-  this.subSection = subSection
+  this.subSection = subSection;
   var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
   return this.click(locator);
 };
-
 
 module.exports = PlayersPage;

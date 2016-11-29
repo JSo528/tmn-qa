@@ -23,6 +23,19 @@ var TABLE_ID = {
   'teamRockWAR': 'tableBaseballPlayersRockiesTeamRockWARContainer'
 };
 
+var SUB_SECTION_TITLE = {
+  'rockWAR': 'RockWAR',
+  'customBatting': 'Custom Batting',
+  'customPitching': 'Custom Pitching',
+  'batterCardMLB': 'Batter Card (MLB)',
+  'batterCardMiLB': 'Batter Card (MiLB)',
+  'pitcherCardMLB': 'Pitcher Card (MLB)',  
+  'pitcherCardMiLB': 'Pitcher Card (MiLB)',
+  'tpaPlusMinus': 'TPA +/-',
+  'tpa12': 'TPA 12+'
+  
+};
+
 var TABLE_ROW_OFFSET = {
   'playersCustomBatting': 1,
   'playersCustomPitching': 1,
@@ -51,9 +64,10 @@ Rockies.prototype.constructor = Rockies;
 
 Rockies.prototype.goToSubSection = function(subSection) {
   this.subSection = subSection;
-  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${subSection}']`);
+  var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[this.subSection]}']`);
   return this.click(locator);
 };
+
 
 Rockies.prototype.getReportTitle = function() {
   return this.getText(REPORT_TITLE);

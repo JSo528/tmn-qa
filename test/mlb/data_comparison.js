@@ -21,7 +21,6 @@ var ScorePitchingSplitsPage = require('../../pages/mlb/scores/pitching_splits_pa
 var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var TeamsStatsPage = require('../../pages/mlb/teams/stats_page.js');
 var TeamPage = require('../../pages/mlb/team/team_page.js');
-var TeamRosterPage = require('../../pages/mlb/team/roster_page.js');
 
 var PlayersPage = require('../../pages/mlb/players/players_page.js');
 var PlayersStatsPage = require('../../pages/mlb/players/stats_page.js');
@@ -405,27 +404,26 @@ test.describe('#DataComparison', function() {
         test.before(function() {
           report = reports.selectRandomReport('batting');
           browser.executeForEachTab(function() {
-            teamPage.goToSubSection('Roster');
+            teamPage.goToSubSection('roster');
             teamPage.changeReport(report);
           });   
         });
 
         test.it('pages show the same table data', function() {
-          browser.getFullContentForEachTab(teamPage.rosterBattingStatsTable).then(function(contentArray) {
+          browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
             assert.equal( contentArray[0], contentArray[1], 'table data for Report: '+report);
           }); 
         });
 
         test.describe('#Currently On Team', function() {
           test.before(function() {
-            var teamRosterPage = new TeamRosterPage(driver);
             browser.executeForEachTab(function() {
-              teamRosterPage.changeOnTeamDropdown('Currently On Team');
+              teamPage.changeOnTeamDropdown('Currently On Team');
             });   
           });
 
           test.it('pages show the same table data', function() {
-            browser.getFullContentForEachTab(teamPage.rosterStatsTable).then(function(contentArray) {
+            browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
               assert.equal( contentArray[0], contentArray[1] );
             }); 
           });

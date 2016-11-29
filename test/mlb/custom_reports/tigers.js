@@ -314,7 +314,7 @@ test.describe('#CustomReports: Tigers', function() {
   test.describe('#Section: PlayerBatting', function() {
     test.before(function() {
       navbar.goToPlayersPage();  
-      playersPage.goToSection('Batting');
+      playersPage.goToSection('batting');
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
       playersStatsPage.clickTableStat(1,3);

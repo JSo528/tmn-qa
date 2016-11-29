@@ -30,7 +30,6 @@ var StandingsPage = require('../pages/mlb/standings_page.js');
 var UmpiresPage = require('../pages/mlb/umpires_page.js');
 var UmpirePage = require('../pages/mlb/umpire_page.js');
 var GroupsPage = require('../pages/mlb/groups_page.js')
-var RosterPage = require('../pages/mlb/team/roster_page.js');
 var PlayerPage = require('../pages/mlb/player/player_page.js');
 
 // Instance Objects
@@ -50,23 +49,24 @@ umpiresPage = new UmpiresPage(driver);
 groupsPage = new GroupsPage(driver);
 teamPage = new TeamPage(driver);
 overviewPage = new OverviewPage(driver);
-rosterPage = new RosterPage(driver, 'batting')
 playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
 // Constants
-var url = "https://dodgers.trumedianetworks.com"
-// var url = "https://dodgers-staging.trumedianetworks.com:3005"
+var url = "https://angels.trumedianetworks.com"
+// var url = "https://angels.trumedianetworks.com:3005"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-navbar.toggleLockFiltersCheckbox(true)
+// navbar.toggleLockFiltersCheckbox(true)
 
 // Custom Report
-// var Tigers = require('../pages/mlb/custom_reports/tigers.js');
-// tigers = new Tigers(driver);
+var Angels = require('../pages/mlb/custom_reports/angels.js');
+angels = new Angels(driver);
+
+https://angels-staging.trumedianetworks.com:3005/baseball/batting-angels-team-spray-chart/BOS/111?pc=%7B%22brbip%22%3A150%7D&is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D
 
 navbar.goToTeamsPage();
 teamsStatsPage.clickTeamTableCell(25,3);
@@ -86,13 +86,8 @@ driver.findElements(locator).then(function(elements) {
 
 
 
-/html/body/header[@class='navbar-tmn']/div[2]/div[@class='persist-search-state checkbox']/label/input
-var locator = By.css('.navbar-tmn .persist-search-state input');
-filters.click(locator)
-
-
 // FIND LAST LOCATOR
-driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/CHC-LAD/2016-10-22/487629?f=%7B%7D&is=true').then(function() {
+driver.get('https://dodgers.trumedianetworks.com/baseball/player-defensive-positioning-batting/J.%20Altuve/514888?pc=%7B%7D&is=true&tpin=%7B%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22boorg%22%3A%5B%22OAK%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D').then(function() {
     // browser.waitForEnabled(By.id('s2id_reportNavBaseballTeamsStatBatting')).then(function() {
     //   console.log("*****")
       
@@ -102,13 +97,10 @@ driver.get('https://dodgers.trumedianetworks.com/baseball/game-batting/CHC-LAD/2
     //   })
     // })
 
-    browser.waitForEnabled(By.xpath(".//div[@id='tableBaseballGamePlayerBattingStatsAwayContainer']/table"), 60000).then(function() {
+    browser.waitForEnabled(By.xpath(".//div[@id='tableBaseballPlayerStatsOverviewStatcastBatterPositioningContainer']/table"), 60000).then(function() {
       console.log("*****")
       
-      browser.getFullContent(By.id('tableBaseballGamePlayerBattingStatsAwayContainer')).then(function(content) {
-        console.log('tableBaseballGamePlayerBattingStatsAwayContainer')  
-        console.log(content)
-      })
+     playerPage.clickStatcastFieldingChartEvent(1);
     })        
   // })  
 })

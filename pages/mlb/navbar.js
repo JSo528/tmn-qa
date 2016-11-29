@@ -15,6 +15,7 @@ var PLAYERS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-
 var UMPIRES_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][5]/a");
 var GROUPS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][6]/a");
 
+var SCORES_LAST_LOCATOR = By.xpath(".//div[contains(@class, 'pika-single')]");
 var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavBaseballTeamsStatBatting");
 var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavBaseballPlayersStatBatting");
 var UMPIRES_LAST_LOCATOR = By.id("s2id_reportNavBaseballUmpiresStatUmpires");
@@ -33,7 +34,8 @@ MlbNavbar.prototype.goToStandingsPage = function() {
 };
 
 MlbNavbar.prototype.goToScoresPage = function() {
-  return this.click(SCORES_LINK);
+  this.click(SCORES_LINK);
+  return this.driver.wait(Until.elementLocated(SCORES_LAST_LOCATOR));
 };
 
 MlbNavbar.prototype.goToTeamsPage = function() {

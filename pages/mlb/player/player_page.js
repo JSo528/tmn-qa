@@ -15,14 +15,14 @@ var REPORT_SELECT = {
   'pitching': By.id('s2id_reportNavBaseballPlayerStatPitching'),
   'catching': By.id('s2id_reportNavBaseballPlayerStatCatching'),
   'statcastFielding': By.id('s2id_reportNavBaseballPlayerStatStatcast')
-}
+};
 
 var SECTION_TITLE = {
   'batting': 'Batting',
   'pitching': 'Pitching',
   'catching': 'Catching',
   'statcastFielding': 'Statcast Fielding'
-}
+};
 
 var SUB_SECTION_TITLE = {
   'overview': 'Overview',
@@ -37,7 +37,11 @@ var SUB_SECTION_TITLE = {
   'vsPitchers': 'Vs Pitchers',
   'vsHitters': 'Vs Hitters',
   'defensivePositioning': 'Defensive Positioning',
-}
+};
+
+var SUB_SECTION_LAST_LOCATOR = {
+  'defensivePositioning': By.xpath(".//div[@id='tableBaseballPlayerStatsOverviewStatcastBatterPositioningContainer']/table")
+};
 
 var PLAYER_NAME = By.css('h1.name');
 
@@ -47,7 +51,8 @@ var OVERVIEW_TABLE_ID = {
   'pitching': 'tableBaseballPlayerStatsOverviewContainer',
   'catching': 'tableBaseballPlayerStatsOverviewCatchingContainer',
   'statcastFielding': 'tableBaseballPlayerStatsOverviewStatcastContainer'
-}
+};
+
 // eBIS MODAL
 var EBIS_MODAL_BUTTON = By.id('ebisModalButton');
 var CLOSE_EBIS_MODAL_BUTTON = By.css('#ebisModal .modal-footer button');
@@ -183,7 +188,12 @@ PlayerPage.prototype.goToSection = function(section) {
 PlayerPage.prototype.goToSubSection = function(subSection) {
   this.subSection = subSection
   var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
-  return this.click(locator);
+  if (SUB_SECTION_LAST_LOCATOR[subSection]) {
+    this.click(locator);
+    this.waitForEnabled(SUB_SECTION_LAST_LOCATOR[subSection])
+  } else {
+    return this.click(locator);
+  }
 };
 
 PlayerPage.prototype.getPlayerName = function() {

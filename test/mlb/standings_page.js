@@ -28,31 +28,31 @@ test.describe('#Standings Page', function() {
   test.it('changing year shows correct data', function() {
     standingsPage.changeYear(2014);
     
-    standingsPage.getTeamName(constants.divisions.al_east, 1).then(function(teamName) {
-      assert.equal( teamName, 'Orioles', 'Correct Team in 1st');
+    standingsPage.getTableStat(1,1,1,1).then(function(teamName) {
+      assert.equal( teamName, ' Orioles', '1st place team in AL East');
     });
-    standingsPage.getPythWins(constants.divisions.al_east, 1).then(function(pythWins) {
-      assert.equal( pythWins, 93.7, 'Correct Pyth Wins');
+    standingsPage.getTableStat(1,1,1,8).then(function(pythWins) {
+      assert.equal( pythWins, 93.7, 'PythW for 1st place team in AL East');
     });
   });
 
   test.it('changing season level shows correct data', function() {
     standingsPage.changeSeasonLevel("AAA");
     
-    standingsPage.getTeamName(constants.divisions.pcl_as, 1).then(function(teamName) {
-      assert.equal( teamName, 'Redbirds (STL)', 'Correct Team in 1st');
+    standingsPage.getTableStat(1,2,1,1).then(function(teamName) {
+      assert.equal( teamName, ' Redbirds (STL)', '1st place team in PCL (AS)');
     });
-    standingsPage.getPythWins(constants.divisions.pcl_as, 1).then(function(pythWins) {
-      assert.equal( pythWins, 83.4, 'Correct Pyth Wins');
+    standingsPage.getTableStat(1,2,1,8).then(function(pythWins) {
+      assert.equal( pythWins, 83.4, 'Pyth Wins for 1st place team in PCL (AS)');
     });
   });  
 
   test.it('clicking into team goes to the right page', function() {
     standingsPage.changeSeasonLevel("MLB");
-    standingsPage.goToTeamPage(constants.divisions.al_east, 1);
+    standingsPage.goToTeamPage(1,1,1);
       
     teamPage.getTeamName().then(function(text) {
-      assert.equal( text, 'Baltimore Orioles', 'goes to the correct team page');
+      assert.equal( text, 'Baltimore Orioles', 'team name for page');
     });
   });
 });

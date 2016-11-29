@@ -13,7 +13,7 @@ var tests = [
   './mlb/umpires_page',
   './mlb/groups_page',
   './mlb/team_batting_page',
-  // './mlb/team_pitching_page',
+  './mlb/team_pitching_page',
   './mlb/team_catching_page',
   './mlb/team_statcast_fielding_page',
   './mlb/player_batting_page',

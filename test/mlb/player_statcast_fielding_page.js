@@ -101,10 +101,10 @@ test.describe('#Player StatcastFielding Section', function() {
 
     test.describe("#Reports", function() {
       var reports = [
-        { type: 'Outfielder Air Defense Range', topStat: "113.2%", statType: "ExRange%" },  
-        { type: 'Outfielder Air Defense Positioning', topStat: "103.1%", statType: "OFWPosAirWOut%" },
+        { type: 'Outfielder Air Defense Range', topStat: "115.0%", statType: "ExRange%" },  
+        { type: 'Outfielder Air Defense Positioning', topStat: "103.8%", statType: "OFWPosAirWOut%" },
         { type: 'Outfielder Air Defense Skills', topStat: "65.3%", statType: "OFAirOut%" },  
-        { type: 'Outfield Batter Positioning', topStat: "104.4%", statType: "OFWPosAirWOut%" },    
+        { type: 'Outfield Batter Positioning', topStat: "104.6%", statType: "OFWPosAirWOut%" },    
       ];
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
@@ -140,7 +140,7 @@ test.describe('#Player StatcastFielding Section', function() {
       });            
       
       playerPage.getGameLogTableStat(1,13).then(function(outs) {
-        assert.equal(outs, 0.01, '# of OFOutsPM');
+        assert.equal(outs, 0, '# of OFOutsPM');
       });                  
     });
 
@@ -157,7 +157,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });          
 
         playerPage.getGameLogTableStat(3,12).then(function(outPer) {
-          assert.equal(outPer, '105.4%', 'OFWAirOut%');
+          assert.equal(outPer, '102.9%', 'OFWAirOut%');
         });                  
       });
 
@@ -225,7 +225,7 @@ test.describe('#Player StatcastFielding Section', function() {
     test.it('changing the main constraint should show the correct section header', function() {
       playerPage.changeMainConstraint("Occurrences Of", "At Least", 2, "OFNROut (Statcast)", "In a Game", "Within a Season");
       playerPage.getStreaksSectionHeaderText().then(function(text) {
-        assert.equal(text, "9 Times", '# of occurences');
+        assert.equal(text, "4 Times", '# of occurences');
       });
 
       playerPage.getStreaksTableStat(1,4).then(function(stat) {

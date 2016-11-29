@@ -11,10 +11,9 @@ var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
 var TeamPage = require('../../pages/mlb/team/team_page.js');
 var OverviewPage = require('../../pages/mlb/team/overview_page.js');
-var RosterPage = require('../../pages/mlb/team/roster_page.js');
 var PitchLogPage = require('../../pages/mlb/team/pitch_log_page.js');
 
-var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, rosterPage, pitchLogPage;
+var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, pitchLogPage;
 
 test.describe('#Team Pitching Section', function() {
   test.before(function() {  
@@ -24,7 +23,6 @@ test.describe('#Team Pitching Section', function() {
     statsPage = new StatsPage(driver);
     teamPage = new TeamPage(driver);
     overviewPage = new OverviewPage(driver);
-    rosterPage = new RosterPage(driver, 'pitching');
     pitchLogPage = new PitchLogPage(driver, 'pitching');
 
     navbar.goToTeamsPage();
@@ -148,11 +146,11 @@ test.describe('#Team Pitching Section', function() {
       test.it('adding filter: (Batter Hand: Lefty) from dropdown displays correct data', function() {
         filters.toggleSidebarFilter('Batter Hand:', 'Lefty', true);
 
-        rosterPage.getTableStat(1,1).then(function(player) {
+        teamPage.getRosterTableStat(1,1).then(function(player) {
           assert.equal(player, 'Jeremy Guthrie');
         });
 
-        rosterPage.getTableStat(1,13).then(function(hits) {
+        teamPage.getRosterTableStat(1,13).then(function(hits) {
           assert.equal(hits, 34, 'Jeremey Guthrie alowed 34 hits');
         });          
       });

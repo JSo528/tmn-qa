@@ -2,7 +2,7 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var extensions = require('../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
@@ -11,7 +11,7 @@ var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
 var ScatterPlotPage = require('../../pages/mlb/teams/scatter_plot_page');
 var StreaksPage = require('../../pages/mlb/teams/streaks_page');
-var navbar, filters, teamsPage, statsPage, scatterPlotPage, streaksPage;
+var navbar, filters, teamsPage, statsPage, scatterPlotPage, streaksPage, extensions;
 var battingAverageCol, winsCol, eraCol, ksCol, slaaCol, statCol;
 
 test.describe('#Teams Page', function() {
@@ -756,15 +756,15 @@ test.describe('#Teams Page', function() {
           var teamOne, teamTwo, teamTen;
  
           statsPage.getTeamTableStat(1,statCol).then(function(stat) {
-            teamOne = stat;
+            teamOne = extensions.perToNum(stat);
           });
 
           statsPage.getTeamTableStat(2,statCol).then(function(stat) {
-            teamTwo = stat;
+            teamTwo = extensions.perToNum(stat);
           });
 
           statsPage.getTeamTableStat(10,statCol).then(function(stat) {
-            teamTen = stat;
+            teamTen = extensions.perToNum(stat);
             assert.isAtLeast(teamOne, teamTwo, "team one's OFWAirOut% is >= team two's OFWAirOut%");
             assert.isAtLeast(teamTwo, teamTen, "team two's OFWAirOut% is >= team ten's OFWAirOut%");
           });            
@@ -774,9 +774,9 @@ test.describe('#Teams Page', function() {
       // Reports
       test.describe("#reports", function() {
         var reports = [
-          { type: 'Outfielder Air Defense Positioning', topStat: '104.2%', statType: "OFWPosAirOut%", colNum: 7 },  
-          { type: 'Outfielder Air Defense Skills', topStat: "65.1%", statType: "OFAirOut%", colNum: 7 },  
-          { type: 'Outfield Batter Positioning', topStat: ">99.9%", statType: "OFWPosAirOut%", colNum: 7 } 
+          { type: 'Outfielder Air Defense Positioning', topStat: 556, statType: "OFAirHit%", colNum: 6 },  
+          { type: 'Outfielder Air Defense Skills', topStat: 17.23, statType: "OFPkSpd", colNum: 8 },  
+          { type: 'Outfield Batter Positioning', topStat: -2.77, statType: "OFPosOutsPM", colNum: 10 } 
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {

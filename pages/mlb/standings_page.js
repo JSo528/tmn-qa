@@ -40,33 +40,25 @@ StandingsPage.prototype.changeSeasonLevel = function(seasonLevel) {
   return this.changeDropdown(SEASON_LEVEL_SELECT, SEASON_LEVEL_INPUT, seasonLevel);
 };
 
-StandingsPage.prototype.getTeamName = function(division, teamRank) {
-  var divisionID = DIVISION_IDS[division]
-  var rowNumber = teamRank + 1
-  var team = By.css(`div[id='${divisionID}']>table>tbody>tr:nth-child(${rowNumber})>td:nth-child(1)>a`);
+StandingsPage.prototype.getTableStat = function(tableRow, tableCol, teamRank, statCol) {
+  var tableRow = 1 + tableRow;
+  var teamRow = 1 + teamRank; 
 
-  return this.getText(team);
+  var locator = By.xpath(`.//div[${tableRow}]/div[${tableCol}]/div/div/div/table/tbody/tr[${teamRow}]/td[${statCol}]`);
+  return this.getText(locator);
 };
-
-StandingsPage.prototype.getPythWins = function(division, teamRank) {
-  var divisionID = DIVISION_IDS[division]
-  var rowNumber = teamRank + 1
-  var team = By.css(`div[id='${divisionID}']>table>tbody>tr:nth-child(${rowNumber})>td:nth-child(8)`)
-
-  return this.getText(team);
-}
 
 StandingsPage.prototype.getSeasonLevel = function() {
   return this.getText(SEASON_LEVEL_SELECT);
-}
+};
 
-StandingsPage.prototype.goToTeamPage = function(division, teamRank) {
-  var divisionID = DIVISION_IDS[division]
-  var rowNumber = teamRank + 1
-  var team = By.css(`div[id='${divisionID}']>table>tbody>tr:nth-child(${rowNumber})>td:nth-child(1)>a`)
-
-  return this.click(team);
-}
+StandingsPage.prototype.goToTeamPage = function(tableRow, tableCol, teamRank) {
+  var tableRow = 1 + tableRow;
+  var teamRow = 1 + teamRank;
+  
+  var locator = By.xpath(`.//div[${tableRow}]/div[${tableCol}]/div/div/div/table/tbody/tr[${teamRow}]/td[1]/a`);
+  return this.click(locator);
+};
 
 // Last Locator gets passed into functions to notify that the page isn't ready until this locator is enabled
 StandingsPage.prototype.comparisonLocator = TABLES;

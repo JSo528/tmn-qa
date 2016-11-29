@@ -85,8 +85,8 @@ OverviewPage.prototype.clearHeatMap = function() {
     }
   })
 
-  this.waitUntilStaleness(HIT_CHART);
-  this.waitUntilStaleness(HIT_CHART); // becomes stale twice
+  this.waitUntilStaleness(HIT_CHART, 10000);
+  this.waitUntilStaleness(HIT_CHART, 10000); // becomes stale twice
   return(this.waitForEnabled(HIT_CHART))
 };
 

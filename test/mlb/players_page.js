@@ -617,9 +617,9 @@ test.describe('#Players Page', function() {
       // Reports
       test.describe("#reports", function() {
         var reports = [
-          { type: 'Outfielder Air Defense Positioning', topStat: '107.4%', statType: "OFWPosAirOut%", colNum: 7 },  
+          { type: 'Outfielder Air Defense Positioning', topStat: '106.9%', statType: "OFWPosAirOut%", colNum: 7 },  
           { type: 'Outfielder Air Defense Skills', topStat: "71.0%", statType: "OFAirOut%", colNum: 7 },  
-          { type: 'Outfield Batter Positioning', topStat: "97.2%", statType: "OFWPosAirOut%", colNum: 7 } 
+          { type: 'Outfield Batter Positioning', topStat: "97.0%", statType: "OFWPosAirOut%", colNum: 7 } 
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {

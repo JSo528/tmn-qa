@@ -242,7 +242,7 @@ test.describe('#CustomReports: Twins', function() {
   test.describe('#Section: PlayerPitching', function() {
     test.before(function() {
       navbar.goToPlayersPage();  
-      playersPage.goToSection('Pitching');
+      playersPage.goToSection('pitching');
       playersStatsPage.section = 'pitching';
       playersStatsPage.clickTableStat(1,3);
     });

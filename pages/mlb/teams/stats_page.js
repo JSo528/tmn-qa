@@ -180,11 +180,6 @@ StatsPage.prototype.changeHistogramBinCount = function(selection) {
   // return this.waitUntilStaleness(LOADING_CONTAINER);
 };
 
-
-
-
-
-
 StatsPage.prototype.changeGroupBy = function(filter) {
   return this.changeDropdown(GROUP_BY_SELECT, DROPDOWN_INPUT, filter);
 };

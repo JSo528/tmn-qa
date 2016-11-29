@@ -37,18 +37,20 @@ var SUB_SECTION_TITLE = {
 var REPORT_SELECT = {
   'batting': By.id('s2id_reportNavBaseballTeamStatBatting'),
   'pitching': By.id('s2id_reportNavBaseballTeamStatPitching'),
-  'catching': By.id('tableBaseballTeamStatsRosterCatchingContainer'),
+  'catching': By.id('s2id_reportNavBaseballTeamStatTeamcatching'),
   'statcastFielding': By.id('s2id_reportNavBaseballTeamStatTeamstatcast')
 }
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
 
 // Roster
 var ROSTER_TABLE_ID = {
-  'batting': 'tableBaseballPlayerStatsOverviewContainer',
+  'batting': 'tableBaseballTeamStatsRosterBattingContainer',
   'pitching': 'tableBaseballTeamStatsRosterPitchingContainer',
-  'catching': 'tableBaseballPlayerStatsOverviewCatchingContainer',
-  'statcastFielding': 'tableBaseballPlayerStatsOverviewStatcastContainer'
+  'catching': 'tableBaseballTeamStatsRosterCatchingContainer',
+  'statcastFielding': 'tableBaseballTeamStatsRosterContainer'
 }
+
+var ON_TEAM_SELECT = By.id("s2id_pageControlBaseballRosterOnTeam");
 
 // Pitch Logs
 var BY_INNING_TABLE_ID = {
@@ -149,6 +151,19 @@ TeamPage.prototype.getTeamName = function() {
 TeamPage.prototype.changeReport = function(report) {
   this.changeDropdown(REPORT_SELECT[this.section], DROPDOWN_INPUT, report);
   return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
+};
+
+// Roster
+TeamPage.prototype.getRosterTableStat = function(playerNum, col) {
+  // First 3 rows are for the headers
+  var row = playerNum + 3;
+  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/tbody/tr[4]/td[${col}]`);
+
+  return this.getText(locator, 30000);
+};
+
+TeamPage.prototype.changeOnTeamDropdown = function(report) {
+  return this.changeDropdown(ON_TEAM_SELECT, DROPDOWN_INPUT, report);  
 };
 
 // Game Log Page
@@ -283,31 +298,19 @@ TeamPage.prototype.getVsTableStat = function(rowNum, col) {
 
 // Data Comparison
 TeamPage.prototype.statsTable = function() {
-  switch(this.subSection) {
-    case 'overview':
-      return By.xpath(".//div[@id='tableBaseballTeamStatsOverviewContainer']/table");
-      break;
-    case 'roster':
-      return By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table`);
-      break;
-    case 'gameLog':
-      return By.xpath(".//div[@id='tableBaseballTeamGameLogContainer']/table");
-      break;
-    case 'splits':
-      return By.xpath(".//div[@id='tableBaseballTeamSplitsContainer']/table");
-      break;
-    case 'pitchLog':
-      return By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[position() <= 20]`); 
-      break;    
-    case 'matchups':
-      return By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table`);
-      break;    
-    case 'vsTeams':
-    case 'vsPitchers':
-    case 'vsHitters':
-      return By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table");
-      break;        
+  var statsTables = {
+    'overview': By.xpath(".//div[@id='tableBaseballTeamStatsOverviewContainer']/table"),
+    'roster': By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table`),
+    'gameLog': By.xpath(".//div[@id='tableBaseballTeamGameLogContainer']/table"),
+    'splits': By.xpath(".//div[@id='tableBaseballTeamSplitsContainer']/table"),
+    'pitchLog': By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[position() <= 20]`),
+    'matchups': By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table`),
+    'vsTeams': By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table"),
+    'vsPitchers': By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table"),
+    'vsHitters': By.xpath(".//div[@id='tableBaseballTeamStatsContainer']/table")
   };
+
+  return statsTables[this.subSection];
 };
 
 module.exports = TeamPage;

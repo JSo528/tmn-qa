@@ -45,7 +45,7 @@ test.describe('#CustomReports: Rockies', function() {
   test.describe('#Report: Players - CustomBatting', function() {
     test.before(function() {
       navbar.goToPlayersPage();  
-      rockies.goToSubSection('Custom Batting');
+      rockies.goToSubSection('customBatting');
       rockies.currentPage = 'playersCustomBatting';
     });
 
@@ -162,7 +162,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Players - RockWAR', function() {
     test.before(function() {
-      rockies.goToSubSection('RockWAR');
+      rockies.goToSubSection('rockWAR');
       rockies.currentPage = 'playersRockWAR';
     });
 
@@ -261,12 +261,12 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Players - Custom Pitching', function() {
     test.before(function() {
-      playersPage.goToSection('Pitching');
-      rockies.goToSubSection('Custom Pitching');
-      rockies.currentPage = 'playersCustomPitching';
-    });
+      playersPage.goToSection('pitching');
+    })
 
     test.it('has the correct title', function() {
+      rockies.goToSubSection('customPitching');  
+      rockies.currentPage = 'playersCustomPitching';
       rockies.getReportTitle().then(function(title) {
         assert.equal(title, 'Players Pitching Custom');
       });
@@ -352,11 +352,11 @@ test.describe('#CustomReports: Rockies', function() {
   test.describe('#Report: Player - Custom Batting', function() {
     test.before(function() {
       navbar.goToPlayersPage();
-      playersPage.goToSection('Batting');
+      playersPage.goToSection('batting');
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
       playersStatsPage.clickTableStat(2,3);
-      rockies.goToSubSection('Custom Batting');
+      rockies.goToSubSection('customBatting');
       rockies.currentPage = 'playerCustomBatting';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -391,7 +391,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Player - Batter Card (MLB)', function() {
     test.before(function() {
-      rockies.goToSubSection('Batter Card (MLB)');
+      rockies.goToSubSection('batterCardMLB');
       rockies.currentPage = 'playerBattingCard';
     });
 
@@ -440,7 +440,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Player - Batter Card (MiLB)', function() {
     test.before(function() {
-      rockies.goToSubSection('Batter Card (MiLB)');
+      rockies.goToSubSection('batterCardMiLB');
       rockies.currentPage = 'playerBattingCard';
     });
 
@@ -490,12 +490,12 @@ test.describe('#CustomReports: Rockies', function() {
   test.describe('#Report: Player - Custom Pitching', function() {
     test.before(function() {
       navbar.goToPlayersPage();
-      playersPage.goToSection('Pitching');
+      playersPage.goToSection('pitching');
       playersStatsPage.section = 'pitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
       playersStatsPage.clickTableStat(3,3);
-      rockies.goToSubSection('Custom Pitching');
+      rockies.goToSubSection('customPitching');
       rockies.currentPage = 'playerCustomPitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -530,7 +530,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Player - Pitcher Card (MLB)', function() {
     test.before(function() {
-      rockies.goToSubSection('Pitcher Card (MLB)');
+      rockies.goToSubSection('pitcherCardMLB');
       rockies.currentPage = 'playerPitchingCard';
     });
 
@@ -583,7 +583,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Player - Pitcher Card (MiLB)', function() {
     test.before(function() {
-      rockies.goToSubSection('Pitcher Card (MiLB)');
+      rockies.goToSubSection('pitcherCardMiLB');
       rockies.currentPage = 'playerPitchingCard';
     });
 
@@ -645,7 +645,7 @@ test.describe('#CustomReports: Rockies', function() {
   test.describe('#Report: Team - Custom Batting', function() {
     test.before(function() {
       teamsStatsPage.clickTeamTableCell(2,3);
-      rockies.goToSubSection('Custom Batting');
+      rockies.goToSubSection('customBatting');
       rockies.currentPage = 'teamCustomBatting';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -660,7 +660,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Batting TPA +/-', function() {
     test.before(function() {
-      rockies.goToSubSection('TPA +/-');
+      rockies.goToSubSection('tpaPlusMinus');
       rockies.changeTPADropdown(2016);
     });
 
@@ -673,7 +673,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Batting TPA 12+', function() {
     test.before(function() {
-      rockies.goToSubSection('TPA 12+');
+      rockies.goToSubSection('tpa12');
       rockies.changeTPADropdown(2016);
     });
 
@@ -686,7 +686,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Batting Rock War', function() {
     test.before(function() {
-      rockies.goToSubSection('RockWAR');
+      rockies.goToSubSection('rockWAR');
       rockies.currentPage = 'teamRockWAR';
     });
 
@@ -700,7 +700,7 @@ test.describe('#CustomReports: Rockies', function() {
   test.describe('#Report: Team - Custom Pitching', function() {
     test.before(function() {
       teamPage.goToSection('pitching');
-      rockies.goToSubSection('Custom Pitching');
+      rockies.goToSubSection('customPitching');
       rockies.currentPage = 'teamCustomPitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -716,7 +716,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Pitching TPA +/-', function() {
     test.before(function() {
-      rockies.goToSubSection('TPA +/-');
+      rockies.goToSubSection('tpaPlusMinus');
       rockies.changeTPADropdown(2016);
     });
 
@@ -729,7 +729,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Pitching TPA 12+', function() {
     test.before(function() {
-      rockies.goToSubSection('TPA 12+');
+      rockies.goToSubSection('tpa12');
       rockies.changeTPADropdown(2016);
     });
 

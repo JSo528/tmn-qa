@@ -141,7 +141,7 @@ test.describe('#CustomReports: Indians', function() {
   test.describe('#Section: PlayerBatting', function() {    
     test.before(function() {
       navbar.goToPlayersPage();  
-      playersPage.goToSection('Batting');
+      playersPage.goToSection('batting');
       playersStatsPage.clickTableStat(1,3);
     });
 
@@ -187,11 +187,11 @@ test.describe('#CustomReports: Indians', function() {
           assert.equal(title, "Hitter's Counts (1-0, 2-0, 3-0, 3-1)", '4th Section Title')
         });
 
-        indians.getVsCountSectionTitle(4).then(function(title) {
+        indians.getVsCountSectionTitle(5).then(function(title) {
           assert.equal(title, "Pitcher's Counts (0-1, 0-2, 1-2, 2-2)", '5th Section Title')
         });
 
-        indians.getVsCountSectionTitle(4).then(function(title) {
+        indians.getVsCountSectionTitle(6).then(function(title) {
           assert.equal(title, "Full Count", '6th Section Title')
         });
       });
@@ -202,7 +202,7 @@ test.describe('#CustomReports: Indians', function() {
     test.describe('#SubSection: PitcherPercentages', function() {
       test.before(function() {
         navbar.goToPlayersPage();  
-        playersPage.goToSection('Pitching');
+        playersPage.goToSection('pitching');
         playersStatsPage.section = 'pitching';
         playersStatsPage.clickTableStat(1,3);
       });
@@ -253,11 +253,11 @@ test.describe('#CustomReports: Indians', function() {
             assert.equal(title, "Hitter's Counts (1-0, 2-0, 3-0, 3-1)", '4th Section Title')
           });
 
-          indians.getVsCountSectionTitle(4).then(function(title) {
+          indians.getVsCountSectionTitle(5).then(function(title) {
             assert.equal(title, "Pitcher's Counts (0-1, 0-2, 1-2, 2-2)", '5th Section Title')
           });
 
-          indians.getVsCountSectionTitle(4).then(function(title) {
+          indians.getVsCountSectionTitle(6).then(function(title) {
             assert.equal(title, "Full Count", '6th Section Title')
           });
         });

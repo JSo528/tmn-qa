@@ -11,10 +11,9 @@ var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var StatsPage = require('../../pages/mlb/teams/stats_page.js');
 var TeamPage = require('../../pages/mlb/team/team_page.js');
 var OverviewPage = require('../../pages/mlb/team/overview_page.js');
-var RosterPage = require('../../pages/mlb/team/roster_page.js');
 var PitchLogPage = require('../../pages/mlb/team/pitch_log_page.js');
 
-var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, rosterPage, pitchLogPage;
+var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, pitchLogPage;
 
 test.describe('#Team StatcastFielding Section', function() {
   test.before(function() {  
@@ -24,7 +23,6 @@ test.describe('#Team StatcastFielding Section', function() {
     statsPage = new StatsPage(driver);
     teamPage = new TeamPage(driver);
     overviewPage = new OverviewPage(driver);
-    rosterPage = new RosterPage(driver, 'statcastFielding');
     pitchLogPage = new PitchLogPage(driver, 'statcastFielding');
 
     navbar.goToTeamsPage();
@@ -71,7 +69,7 @@ test.describe('#Team StatcastFielding Section', function() {
     })
 
     test.describe('clicking into OF Area', function() {
-      test.it('clicking a statcast fielding event shoud show correct data in modal', function() {
+      test.it('clicking a statcast fielding event should show correct data in modal', function() {
         overviewPage.clickStatcastFieldingChartEvent(40);
         overviewPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
           assert.equal(date, '4/20/2016', '1st row date');
@@ -82,11 +80,11 @@ test.describe('#Team StatcastFielding Section', function() {
         });      
 
         overviewPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
-          assert.equal(outProb, '100.0%', '1st row OutProb');
+          assert.equal(outProb, '99.9%', '1st row OutProb');
         });            
 
         overviewPage.getStatcastFieldingModalTableStat(1,9).then(function(posIndOutProb) {
-          assert.equal(posIndOutProb, '100.0%', '1st row PosIndOutProb');
+          assert.equal(posIndOutProb, '99.9%', '1st row PosIndOutProb');
         });                  
       });
 
@@ -106,9 +104,9 @@ test.describe('#Team StatcastFielding Section', function() {
 
     test.describe("#Reports", function() {
       var reports = [
-        { type: 'Outfielder Air Defense Team Model', topStat: '105.0%', statType: "ExRange%" },  
+        { type: 'Outfielder Air Defense Team Model', topStat: '106.8%', statType: "ExRange%" },  
         { type: 'Outfielder Air Defense Team Skills', topStat: '58.4%', statType: "OFAirOut%" },  
-        { type: 'Outfield Batter Positioning', topStat: '102.2%', statType: "OFWPosAirOut%" },  
+        { type: 'Outfield Batter Positioning', topStat: '102.4%', statType: "OFWPosAirOut%" },  
       ];
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
@@ -133,11 +131,11 @@ test.describe('#Team StatcastFielding Section', function() {
       test.it('adding filter: (Batted Ball: Line Drive) from sidebar displays correct data', function() {
         filters.toggleSidebarFilter('Batted Ball:', 'Line Drive', true);
 
-        rosterPage.getTableStat(1,1).then(function(player) {
+        teamPage.getRosterTableStat(1,1).then(function(player) {
           assert.equal(player, 'Kelby Tomlinson');
         });
 
-        rosterPage.getTableStat(1,10).then(function(ofWAirOutPer) {
+        teamPage.getRosterTableStat(1,10).then(function(ofWAirOutPer) {
           assert.equal(ofWAirOutPer,  '137.0%', 'row 1 OFWAirOut%');
         });          
       });
@@ -179,7 +177,7 @@ test.describe('#Team StatcastFielding Section', function() {
         });          
 
         teamPage.getGameLogTableStat(1,8).then(function(exRange) {
-          assert.equal(exRange, '100.6%', 'row 1 ExRange%');
+          assert.equal(exRange, '101.4%', 'row 1 ExRange%');
         });                  
       });
 

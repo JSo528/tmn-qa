@@ -9,34 +9,14 @@ var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
+// Mixins
+var _ = require('underscore');
+var editRosterModal = require('../mixins/editRosterModal.js');
+
 // Locators
 var SUB_SECTION_TITLE = {
   'printableReport': 'Printable Report',
   'vsCounts': 'vs Counts',
-};
-
-var MODAL_BTN = {
-  'batters': By.id('editRosterBatters'),
-  'sp': By.id('editRosterSP'),
-  'rp': By.id('editRosterRP')
-};
-
-var MODAL_ID = {
-  'batters': 'tableBaseballRosterBattersModal',
-  'sp': 'tableBaseballRosterSPModal',
-  'rp': 'tableBaseballRosterRPModal'
-};
-
-var MODAL_TABLE_ID = {
-  'batters': 'tableBaseballRosterBattersContainer',
-  'sp': 'tableBaseballRosterSPContainer',
-  'rp': 'tableBaseballRosterRPContainer'
-};
-
-var MODAL_SEARCH_INPUT = {
-  'batters': By.css('#tableBaseballRosterBattersRosterSearch input'),
-  'sp': By.css('#tableBaseballRosterSPRosterSearch input'),
-  'rp': By.css('#tableBaseballRosterRPRosterSearch input')
 };
 
 function Indians(driver) {
@@ -116,5 +96,8 @@ Indians.prototype.getVsCountSectionTitle = function(sectionNum) {
   var locator = By.xpath(`.//div[@class='row'][${divNum}]/div/h3`);
   return this.getText(locator);
 };
+
+// Mixins
+_.extend(Indians.prototype, editRosterModal);
 
 module.exports = Indians;

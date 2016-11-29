@@ -152,7 +152,7 @@ test.describe('#CustomReports: Marlins', function() {
   test.describe('#Section: PlayerBatting', function() {
     test.before(function() {
       navbar.goToPlayersPage();  
-      playersPage.goToSection('Batting');
+      playersPage.goToSection('batting');
       playersStatsPage.clickTableStat(1,3);
     });
 
@@ -172,7 +172,7 @@ test.describe('#CustomReports: Marlins', function() {
   test.describe('#Section: PlayerPitching', function() {
     test.before(function() {
       navbar.goToPlayersPage();  
-      playersPage.goToSection('Pitching');
+      playersPage.goToSection('pitching');
       playersStatsPage.section = 'pitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);

@@ -23,11 +23,6 @@ function ScoresPage(driver) {
 ScoresPage.prototype = Object.create(BasePage.prototype);
 ScoresPage.prototype.constructor = ScoresPage;
 
-// Certain elements get added/updated after the page loads
-ScoresPage.prototype.waitForPageToFullyLoad = function() {
-  return this.driver.wait(Until.elementLocated(By.xpath(".//div[contains(@class, 'pika-single')]")));
-};
-
 // boxScoreNum is the 1st, 2nd, 3rd, etc. box score on the page
 // boxScoreNum=1 -> 1st box score on the page
 ScoresPage.prototype.getBoxScoreDatetime = function(boxScoreNum) {
@@ -87,7 +82,6 @@ ScoresPage.prototype.teamLogoDisplayed = function(boxScoreNum, homeOrAway) {
 };
 
 ScoresPage.prototype.changeDate = function(date) {
-  this.waitForPageToFullyLoad();
   this.click(DATE_INPUT);
   this.waitForEnabled(CALENDAR, 30000);
   this.clear(DATE_INPUT);
@@ -150,7 +144,6 @@ ScoresPage.prototype.clickBoxScoreFooter = function(boxScoreNum, type) {
 };
 
 ScoresPage.prototype.clickBoxScore = function(boxScoreNum) {
-  this.waitForPageToFullyLoad();
   var link = By.xpath(`.//div[@class='col-md-5 box-score'][${boxScoreNum}]`)
   return this.click(link);
 };

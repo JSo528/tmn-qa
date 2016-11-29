@@ -286,7 +286,7 @@ test.describe('#CustomReports: Phillies', function() {
     test.describe('#SubSection: HitterTendencies', function() {
       test.before(function() {
         navbar.goToPlayersPage();  
-        playersPage.goToSection('Batting');
+        playersPage.goToSection('batting');
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2016);
         playersStatsPage.clickTableStat(1,3);
@@ -326,7 +326,7 @@ test.describe('#CustomReports: Phillies', function() {
     test.describe('#SubSection: PitcherPercentages', function() {
       test.before(function() {
         navbar.goToPlayersPage();  
-        playersPage.goToSection('Pitching');
+        playersPage.goToSection('pitching');
         playersStatsPage.section = 'pitching';
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2016);

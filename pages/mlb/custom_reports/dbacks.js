@@ -9,27 +9,14 @@ var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
+// Mixins
+var _ = require('underscore');
+var editRosterModal = require('../mixins/editRosterModal.js');
+
 // Locators
 var SUB_SECTION_TITLE = {
   'hittingSituationMaps': 'Hitting Situation Maps',
   'heatMaps': 'Heat Maps'
-};
-
-// Hitting Matchups / Pitching Matchups
-var MODAL_BTN = {
-  'batters': By.id('editRosterBatters'),
-};
-
-var MODAL_ID = {
-  'batters': 'tableBaseballRosterBattersModal',
-};
-
-var MODAL_TABLE_ID = {
-  'batters': 'tableBaseballRosterBattersContainer',
-};
-
-var MODAL_SEARCH_INPUT = {
-  'batters': By.css('#tableBaseballRosterBattersRosterSearch input'),
 };
 
 function Dbacks(driver) {
@@ -105,36 +92,7 @@ Dbacks.prototype.getUmpireHeatMapSectionTitle = function(table) {
   return this.getText(locator);
 };
 
-// modal
-Dbacks.prototype.clickEditRosterBtn = function(modalType) {
-  this.modalType = modalType;
-  this.waitForEnabled(MODAL_BTN[this.modalType]);
-  this.click(MODAL_BTN[this.modalType]);
-  return this.waitForEnabled(By.xpath(`.//div[@id='${MODAL_TABLE_ID[this.modalType]}']/table`));
-};
-
-Dbacks.prototype.removePlayerFromModal = function(playerNum) {
-  var locator = By.xpath(`.//div[@id='${MODAL_TABLE_ID[this.modalType]}']/table/tbody/tr[${playerNum}]/td[1]/span`);
-  return this.clickOffset(locator, 5, 5);
-};
-
-Dbacks.prototype.getModalTableStat = function(playerNum, col) {
-  var locator = By.xpath(`.//div[@id='${MODAL_TABLE_ID[this.modalType]}']/table/tbody/tr[${playerNum}]/td[${col}]`);
-  return this.getText(locator);
-};
-
-Dbacks.prototype.selectForAddPlayerSearch = function(name) {
-  return this.selectFromSearch(MODAL_SEARCH_INPUT[this.modalType], name, 1);
-};
-
-Dbacks.prototype.selectDefaultRoster = function() {
-  var locator = By.xpath(`.//div[@id='${MODAL_ID[this.modalType]}']/.//div[@class='modal-footer']/button[1]`);
-  return this.click(locator);
-};
-
-Dbacks.prototype.closeModal = function() {
-  var locator = By.xpath(`.//div[@id='${MODAL_ID[this.modalType]}']/.//div[@class='modal-footer']/button[2]`);
-  return this.click(locator);
-};
+// Mixins
+_.extend(Dbacks.prototype, editRosterModal);
 
 module.exports = Dbacks;
