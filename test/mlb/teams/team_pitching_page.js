@@ -2,35 +2,31 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
-var StatsPage = require('../../pages/mlb/teams/stats_page.js');
-var TeamPage = require('../../pages/mlb/team/team_page.js');
-var OverviewPage = require('../../pages/mlb/team/overview_page.js');
-var PitchLogPage = require('../../pages/mlb/team/pitch_log_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
+var TeamPage = require('../../../pages/mlb/teams/team_page.js');
+var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, pitchLogPage;
+var navbar, filters, teamsPage, teamPage, overviewPage, teamPage;
 
 test.describe('#Team Pitching Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
-    statsPage = new StatsPage(driver);
     teamPage = new TeamPage(driver);
     overviewPage = new OverviewPage(driver);
-    pitchLogPage = new PitchLogPage(driver, 'pitching');
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
     filters.addSelectionToDropdownFilter("Seasons:", 2016);
     filters.removeSelectionFromDropdownFilter("Season Level:");
     filters.addSelectionToDropdownFilter("Season Level:", 'AAA');
-    statsPage.clickTeamTableCell(1,3); // should click into AAA - El Paso Chihuahua's team link
+    teamsPage.clickTeamTableCell(1,3); // should click into AAA - El Paso Chihuahua's team link
     teamPage.goToSection("pitching");
   });  
 
@@ -103,6 +99,32 @@ test.describe('#Team Pitching Section', function() {
       }); 
     });
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickOverviewTableStat(19);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'RHP C. Pimentel Vs RHB D. Garneau (ALB), Top 4, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(1);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 4, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Fastball 89 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
+    });
+
     test.describe("#Reports", function() {
       var reports = [
         { type: 'Rate', topStat: 0.293, statType: "BA" },  
@@ -130,7 +152,10 @@ test.describe('#Team Pitching Section', function() {
             assert.equal(stat, report.topStat);
           });
         });
-      });        
+      });     
+      test.after(function() {
+        teamPage.changeReport('Traditional');
+      });
     });
   });
 
@@ -141,6 +166,32 @@ test.describe('#Team Pitching Section', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickRosterTableStat(1,4);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs RHB S. Romero (TAC), Bot 7, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Bot 7, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Slider MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Batter Hand: Lefty) from dropdown displays correct data', function() {
@@ -182,6 +233,32 @@ test.describe('#Team Pitching Section', function() {
         assert.equal(bb, 1, 'row 1 bb column');
       });            
     });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickGameLogTableStat(1,5);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'RHP C. Pimentel Vs LHB M. Tauchman (ALB), Top 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Fastball 88 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Batted Ball: Ground Ball) from sidebar displays correct data', function() {
@@ -285,33 +362,32 @@ test.describe('#Team Pitching Section', function() {
 
     test.describe('when selecting filter (Pitch Result: In Play)', function() {
       test.before(function() {
-        pitchLogPage.clickByInningTab();
         filters.changeFilterGroupDropdown('Pitch');
         filters.addSelectionToDropdownSidebarFilter('Pitch Result:', 'In Play');
       });
       
       test.it('should show the correct at bat header text', function() {
-        pitchLogPage.getByInningAtBatHeaderText(1).then(function(text) {
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "RHP C. Pimentel Vs RHB C. Nelson (ALB), Top 1, 1 Out");
         });
       });
 
       test.it('should show the correct row data', function() {
-        pitchLogPage.getByInningTableStat(1,4).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        pitchLogPage.getByInningTableStat(1,6).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,6).then(function(pitch) {
           assert.equal(pitch, 'Fly Out');
         });
       });
 
       test.it('when clicking flat view tab it should show the correct stats', function() {
-        pitchLogPage.clickFlatViewTab();
-        pitchLogPage.getFlatViewTableStat(1,2).then(function(num) {
+        teamPage.clickFlatViewTab();
+        teamPage.getFlatViewPitchText(1,2).then(function(num) {
           assert.equal(num, '3', 'row 1 Num col equals 3');
         });
 
-        pitchLogPage.getFlatViewTableStat(1,3).then(function(count) {
+        teamPage.getFlatViewPitchText(1,3).then(function(count) {
           assert.equal(count, '1-1', 'row 1 count is 1-1');
         });
       });

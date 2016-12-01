@@ -2,16 +2,13 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var PlayersPage = require('../../pages/mlb/players/players_page.js');
-var StatsPage = require('../../pages/mlb/players/stats_page.js');
-var StreaksPage = require('../../pages/mlb/players/streaks_page.js');
-var ScatterPlotPage = require('../../pages/mlb/players/scatter_plot_page.js');
-var navbar, playersPage, statsPage, streaksPage, scatterPlotPage;
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var PlayersPage = require('../../../pages/mlb/players/players_page.js');
+var navbar, playersPage;
 var battingAverageCol, ksPerCol, eraCol, ksCol, slaaCol, statCol;
 
 test.describe('#Players Page', function() {
@@ -32,7 +29,6 @@ test.describe('#Players Page', function() {
   test.describe('#Section: Batting', function() {
     test.describe('#SubSection: Stats', function() {
       test.before(function() {
-        statsPage = new StatsPage(driver, 'batting');
         battingAverageCol = 8;
         ksPerCol = 13;
         filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -43,15 +39,15 @@ test.describe('#Players Page', function() {
       test.describe("#sorting", function() {
         test.it('should be sorted initially by BA descending', function() {
           var playerOneBA, playerTwoBA, playerTenBA;
-          statsPage.getTableStat(1,battingAverageCol).then(function(stat) {
+          playersPage.getTableStat(1,battingAverageCol).then(function(stat) {
             playerOneBA = stat;
           });
 
-          statsPage.getTableStat(2,battingAverageCol).then(function(stat) {
+          playersPage.getTableStat(2,battingAverageCol).then(function(stat) {
             playerTwoBA = stat;
           });
 
-          statsPage.getTableStat(10,battingAverageCol).then(function(stat) {
+          playersPage.getTableStat(10,battingAverageCol).then(function(stat) {
             playerTenBA = stat;
 
             assert.isAtLeast(playerOneBA, playerTwoBA, "player 1's BA is >= player 2's BA");
@@ -61,18 +57,16 @@ test.describe('#Players Page', function() {
 
         test.it('clicking on the BA column header should reverse the sort', function() {
           var playerOneBA, playerTwoBA, playerTenBA;
-          statsPage.clickTableColumnHeader(battingAverageCol);
-          statsPage.getTableStat(1,battingAverageCol).then(function(stat) {
+          playersPage.clickTableColumnHeader(battingAverageCol);
+          playersPage.getTableStat(1,battingAverageCol).then(function(stat) {
             playerOneBA = stat;
-            console.log(playerOneBA)
           });
 
-          statsPage.getTableStat(2,battingAverageCol).then(function(stat) {
+          playersPage.getTableStat(2,battingAverageCol).then(function(stat) {
             playerTwoBA = stat;
-            console.log(playerTwoBA)
           });
 
-          statsPage.getTableStat(10,battingAverageCol).then(function(stat) {
+          playersPage.getTableStat(10,battingAverageCol).then(function(stat) {
             playerTenBA = stat;
 
             assert.isAtMost(playerOneBA, playerTwoBA, "player 1's BA is <= player 2's BA");
@@ -82,16 +76,16 @@ test.describe('#Players Page', function() {
 
         test.it('clicking on the K% column header should sort the table by K% ascending', function() {
           var p1, p2, p10;
-          statsPage.clickTableColumnHeader(ksPerCol);
-          statsPage.getTableStat(1,ksPerCol).then(function(stat) {
+          playersPage.clickTableColumnHeader(ksPerCol);
+          playersPage.getTableStat(1,ksPerCol).then(function(stat) {
             p1 = parseFloat(stat); // 11.1% becomes 0.111
           });
 
-          statsPage.getTableStat(2,ksPerCol).then(function(stat) {
+          playersPage.getTableStat(2,ksPerCol).then(function(stat) {
             p2 = parseFloat(stat);
           });
 
-          statsPage.getTableStat(10,ksPerCol).then(function(stat) {
+          playersPage.getTableStat(10,ksPerCol).then(function(stat) {
             p10 = parseFloat(stat);
             assert.isAtMost(p1, p2, "player 1's k% is <= player 2's k%");
             assert.isAtMost(p2, p10, "player 2's k% is <= player 10's k%");
@@ -99,7 +93,7 @@ test.describe('#Players Page', function() {
         });  
 
         test.after(function() {
-          statsPage.clickTableColumnHeader(battingAverageCol);
+          playersPage.clickTableColumnHeader(battingAverageCol);
         });    
       });
 
@@ -108,7 +102,7 @@ test.describe('#Players Page', function() {
         test.it('adding filter: (extra inning game) from dropdown displays correct data', function() {
           filters.addDropdownFilter('Extra Inning Game');
 
-          statsPage.getTableStat(1,9).then(function(onBasePercentage) {
+          playersPage.getTableStat(1,9).then(function(onBasePercentage) {
             assert.equal(onBasePercentage, 0.486);
           });
         });
@@ -116,7 +110,7 @@ test.describe('#Players Page', function() {
         test.it('adding filter: (Batted ball: Fly ball) from sidebar displays correct data', function() {
           filters.toggleSidebarFilter('Batted Ball:', 'Fly Ball', true);
 
-          statsPage.getTableStat(1,17).then(function(runsPerGame) {
+          playersPage.getTableStat(1,17).then(function(runsPerGame) {
             assert.equal(runsPerGame, 0.250);
           });
         });
@@ -126,13 +120,13 @@ test.describe('#Players Page', function() {
       test.describe("#pinning", function() {
         test.it('clicking the pin icon for Corey Dickerson should add him to the pinned table', function() {
           var playerName;
-          statsPage.getTableStat(1,3).then(function(name) {
+          playersPage.getTableStat(1,3).then(function(name) {
             playerName = name;
           });
 
-          statsPage.clickPlayerTablePin(1);
+          playersPage.clickPlayerTablePin(1);
 
-          statsPage.getIsoTableStat(1,3).then(function(name) {
+          playersPage.getIsoTableStat(1,3).then(function(name) {
             assert.equal(name, playerName);
           });
         });
@@ -141,33 +135,33 @@ test.describe('#Players Page', function() {
       // Group By
       test.describe("#group by", function() {
         test.it('selecting "By Season" shows the correct headers', function() {
-          statsPage.changeGroupBy("By Season");
-          statsPage.getPlayerTableHeader(4).then(function(header) {
+          playersPage.changeGroupBy("By Season");
+          playersPage.getPlayerTableHeader(4).then(function(header) {
             assert.equal(header, "Season");
           });
         });
 
         test.it('selecting "By Game" shows the correct headers', function() {
-          statsPage.changeGroupBy("By Game");
-          statsPage.getPlayerTableHeader(4).then(function(header) {
+          playersPage.changeGroupBy("By Game");
+          playersPage.getPlayerTableHeader(4).then(function(header) {
             assert.equal(header, "Opponent");
           });          
         });        
 
         test.it('selecting "By Team Season" shows the correct headers', function() {
-          statsPage.changeGroupBy("Team Season");
-          statsPage.getPlayerTableHeader(4).then(function(header) {
+          playersPage.changeGroupBy("Team Season");
+          playersPage.getPlayerTableHeader(4).then(function(header) {
             assert.equal(header, "Season");
           });                    
 
-          statsPage.getPlayerTableHeader(5).then(function(header) {
+          playersPage.getPlayerTableHeader(5).then(function(header) {
             assert.equal(header, "Level");
           });                              
         });        
         test.after(function() {
           filters.closeDropdownFilter('Batted Ball:');
           filters.closeDropdownFilter('Extra Inning Game:');
-          statsPage.changeGroupBy("Total"); // change back to group by total
+          playersPage.changeGroupBy("Total"); // change back to group by total
         });
       });
 
@@ -177,7 +171,7 @@ test.describe('#Players Page', function() {
           filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', true);
         });
 
-        // Comparing top BA in 2015 for all the different stat views
+        // Comparing top BA in 2014 for all the different stat views
         var topColor = "rgba(108, 223, 118, 1)";
         var statViews = [
           { type: 'Stat', topStat: 0.289 },  
@@ -193,15 +187,15 @@ test.describe('#Players Page', function() {
         ];
         statViews.forEach(function(statView) {
           test.it("selecting '" + statView.type + "' shows the correct stat value", function() {
-            statsPage.changeStatsView(statView.type);  
-            statsPage.getTableStat(1,8).then(function(stat) {
+            playersPage.changeStatsView(statView.type);  
+            playersPage.getTableStat(1,8).then(function(stat) {
               assert.equal(stat, statView.topStat);
             });
           });
 
           if (statView.color) {
             test.it("selecting " + statView.type + " shows the top value the right color", function() {
-              statsPage.getPlayerTableBgColor(1,8).then(function(color) {
+              playersPage.getPlayerTableBgColor(1,8).then(function(color) {
                 assert.equal(color, topColor);
               });
             });
@@ -209,39 +203,39 @@ test.describe('#Players Page', function() {
         });
         test.after(function() {
           filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', false);
-          statsPage.changeStatsView('Stat'); // Remove Stats View
+          playersPage.changeStatsView('Stat'); // Remove Stats View
         });
       });      
 
       // Qualify By
       test.describe("#qualify by", function() {
         test.it("selecting All shows all players", function() {
-          statsPage.changeQualifyBy("All");
-          statsPage.getTableStat(1,4).then(function(games) {
+          playersPage.changeQualifyBy("All");
+          playersPage.getTableStat(1,4).then(function(games) {
             assert.equal(games, 27);
           });
 
-          statsPage.getTableStat(1,8).then(function(battingAverage) {
+          playersPage.getTableStat(1,8).then(function(battingAverage) {
             assert.equal(battingAverage, 1.000);
           });          
         });
 
         test.it("selecting Custom shows correct subset of players", function() {
-          statsPage.changeQualifyBy("Custom", "Atbats", 50);
-          statsPage.clickTableColumnHeader(7); // sort AB's descending
-          statsPage.clickTableColumnHeader(7); // sort AB's ascending
-          statsPage.getTableStat(1,7).then(function(atBats) {
+          playersPage.changeQualifyBy("Custom", "Atbats", 50);
+          playersPage.clickTableColumnHeader(7); // sort AB's descending
+          playersPage.clickTableColumnHeader(7); // sort AB's ascending
+          playersPage.getTableStat(1,7).then(function(atBats) {
             assert.equal(atBats, 50);
           });
 
-          statsPage.getTableStat(1,8).then(function(battingAverage) {
+          playersPage.getTableStat(1,8).then(function(battingAverage) {
             assert.equal(battingAverage, 0.060);
           });          
         });        
 
         test.after(function() {
-          statsPage.changeQualifyBy("Default");
-          statsPage.clickTableColumnHeader(8); // sort BA's descending
+          playersPage.changeQualifyBy("Default");
+          playersPage.clickTableColumnHeader(8); // sort BA's descending
         });
       });
 
@@ -268,8 +262,8 @@ test.describe('#Players Page', function() {
           test.it("selecting " + report.type + " shows the correct stat value", function() {
             var colNum = report.colNum || 12;
             var rowNum = report.rowNum || 1;
-            statsPage.changeReport(report.type);  
-            statsPage.getTableStat(rowNum, colNum).then(function(stat) {
+            playersPage.changeReport(report.type);  
+            playersPage.getTableStat(rowNum, colNum).then(function(stat) {
               assert.equal(stat, report.topStat);
             });
           });
@@ -282,10 +276,6 @@ test.describe('#Players Page', function() {
     });
 
     test.describe('#SubSection: Occurences & Streaks', function() {
-      test.before(function() {
-        streaksPage = new StreaksPage(driver);
-      });
-
       test.it('clicking the occurences & streaks link goes to the correct URL', function() {
         playersPage.goToSubSection('occurrencesAndStreaks');
         filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -297,54 +287,54 @@ test.describe('#Players Page', function() {
       });
 
       test.it('table should be populated on load', function() {
-        streaksPage.getTableStat(1,5).then(function(stat) {
+        playersPage.getStreaksTableStat(1,5).then(function(stat) {
           assert.isNotNull(stat);
         });
       });  
 
       test.it('table should have proper headers on load', function() {
-        streaksPage.getTableHeader(1).then(function(header) {
+        playersPage.getStreaksTableHeader(1).then(function(header) {
           assert.equal(header, "Count");
         });
 
-        streaksPage.getTableHeader(2).then(function(header) {
+        playersPage.getStreaksTableHeader(2).then(function(header) {
           assert.equal(header, "FullName");
         });        
 
-        streaksPage.getTableHeader(3).then(function(header) {
+        playersPage.getStreaksTableHeader(3).then(function(header) {
           assert.equal(header, "StartTeam");
         });        
 
-        streaksPage.getTableHeader(4).then(function(header) {
+        playersPage.getStreaksTableHeader(4).then(function(header) {
           assert.equal(header, "EndTeam");
         });        
 
-        streaksPage.getTableHeader(5).then(function(header) {
+        playersPage.getStreaksTableHeader(5).then(function(header) {
           assert.equal(header, "StartDate");
         });        
 
-        streaksPage.getTableHeader(6).then(function(header) {
+        playersPage.getStreaksTableHeader(6).then(function(header) {
           assert.equal(header, "EndDate");
         });        
 
-        streaksPage.getTableHeader(7).then(function(header) {
+        playersPage.getStreaksTableHeader(7).then(function(header) {
           assert.equal(header, "H");
         });        
       });    
 
       test.it('changing the main constraint should update the table headers', function() {
-        streaksPage.changeMainConstraint("Most Recent", "Exactly", 4, "SB (Batting)", "In a Game", "Within a Season");
-        streaksPage.getTableHeader(6).then(function(header) {
+        playersPage.changeMainConstraint("Most Recent", "Exactly", 4, "SB (Batting)", "In a Game", "Within a Season");
+        playersPage.getStreaksTableHeader(6).then(function(header) {
           assert.equal(header, "SB");
         });   
       });
 
       test.it('changing the main constraint should update the table stats', function() {
-        streaksPage.getTableStat(1,1).then(function(playerName) {
+        playersPage.getStreaksTableStat(1,1).then(function(playerName) {
           assert.equal(playerName, "Billy Hamilton (CF-CIN)");
         });
 
-        streaksPage.getTableStat(1,6).then(function(statType) {
+        playersPage.getStreaksTableStat(1,6).then(function(statType) {
           assert.equal(statType, "4");
         });         
       });          
@@ -352,7 +342,6 @@ test.describe('#Players Page', function() {
 
     test.describe('#SubSection: Scatter Plot', function() {
       test.before(function() {
-        scatterPlotPage = new ScatterPlotPage(driver);
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2013);
       });
@@ -365,33 +354,33 @@ test.describe('#Players Page', function() {
       });
 
       test.it('table should be populated on load', function() {
-        scatterPlotPage.getTableStat(1,2).then(function(stat) {
+        playersPage.getScatterPlotTableStat(1,2).then(function(stat) {
           assert.isNotNull(stat);
         });
       });  
 
       test.it('changing the x-axis stat should update the table', function() {
-        scatterPlotPage.changeXStat('BABIP');
-        scatterPlotPage.getTableHeader(3).then(function(header) {
+        playersPage.changeXStat('BABIP');
+        playersPage.getScatterPlotTableHeader(3).then(function(header) {
           assert.equal(header, 'BABIP');
         });
       });  
 
       test.it('changing the y-axis stat should update the table', function() {
-        scatterPlotPage.changeYStat('HR%');
-        scatterPlotPage.getTableHeader(4).then(function(header) {
+        playersPage.changeYStat('HR%');
+        playersPage.getScatterPlotTableHeader(4).then(function(header) {
           assert.equal(header, 'HR%');
         });      
       });        
 
       test.it('adding a global filter should update the table', function() {
         var originalHomeRunsPer;
-        scatterPlotPage.getTableStat(1,4).then(function(homeRunsPer) {
+        playersPage.getScatterPlotTableStat(1,4).then(function(homeRunsPer) {
           originalHomeRunsPer = homeRunsPer;
         });
         
-        scatterPlotPage.addGlobalFilter('Day of Week: Sunday');
-        scatterPlotPage.getTableStat(1,4).then(function(newHomeRunsPer) {
+        playersPage.addGlobalFilter('Day of Week: Sunday');
+        playersPage.getScatterPlotTableStat(1,4).then(function(newHomeRunsPer) {
           assert.notEqual(newHomeRunsPer, originalHomeRunsPer);
         });            
       });        
@@ -400,7 +389,6 @@ test.describe('#Players Page', function() {
 
   test.describe('#Section: Pitching', function() {
     test.before(function() {    
-      statsPage = new StatsPage(driver, 'pitching');
       playersPage.goToSubSection("stats");
       playersPage.goToSection("pitching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -416,15 +404,15 @@ test.describe('#Players Page', function() {
           var playerOneERA, playerTwoERA, playerTenERA;
 
           
-          statsPage.getTableStat(1,eraCol).then(function(stat) {
+          playersPage.getTableStat(1,eraCol).then(function(stat) {
             playerOneERA = stat;
           });
             
-          statsPage.getTableStat(2,eraCol).then(function(stat) {
+          playersPage.getTableStat(2,eraCol).then(function(stat) {
             playerTwoERA = stat;
           });
             
-          statsPage.getTableStat(10,eraCol).then(function(stat) {
+          playersPage.getTableStat(10,eraCol).then(function(stat) {
             playerTenERA = stat;
 
             assert.isAtMost(playerOneERA, playerTwoERA, "player one's ERA is <= player two's ERA");
@@ -434,17 +422,17 @@ test.describe('#Players Page', function() {
 
         test.it('clicking on the ERA column header should reverse the sort', function() {
           var playerOneERA, playerTwoERA, playerTenERA;
-          statsPage.clickTableColumnHeader(eraCol);
+          playersPage.clickTableColumnHeader(eraCol);
 
-          statsPage.getTableStat(1,eraCol).then(function(stat) {
+          playersPage.getTableStat(1,eraCol).then(function(stat) {
             playerOneERA = stat;
           });
 
-          statsPage.getTableStat(2,eraCol).then(function(stat) {
+          playersPage.getTableStat(2,eraCol).then(function(stat) {
             playerTwoERA = stat;
           });
             
-          statsPage.getTableStat(10,eraCol).then(function(stat) {
+          playersPage.getTableStat(10,eraCol).then(function(stat) {
             playerTenERA = stat;
             assert.isAtLeast(playerOneERA, playerTwoERA, "player one's ERA is >= player two's ERA");
             assert.isAtLeast(playerTwoERA, playerTenERA, "player two's ERA is >= player ten's ERA");
@@ -453,17 +441,17 @@ test.describe('#Players Page', function() {
 
         test.it('clicking on the Ks column header should sort the table by Ks', function() {
           var playerOneKs, playerTwoKs, playerTenKs;
-          statsPage.clickTableColumnHeader(ksCol);
+          playersPage.clickTableColumnHeader(ksCol);
 
-          statsPage.getTableStat(1,ksCol).then(function(stat) {
+          playersPage.getTableStat(1,ksCol).then(function(stat) {
             playerOneKs = stat;
           });
 
-          statsPage.getTableStat(2,ksCol).then(function(stat) {
+          playersPage.getTableStat(2,ksCol).then(function(stat) {
             playerTwoKs = stat;
           });
 
-          statsPage.getTableStat(10,ksCol).then(function(stat) {
+          playersPage.getTableStat(10,ksCol).then(function(stat) {
             playerTenKs = stat;
             assert.isAtLeast(playerOneKs, playerTwoKs, "player one's Ks is >= player two's Ks");
             assert.isAtLeast(playerTwoKs, playerTenKs, "player two's Ks is >= player ten's Ks");
@@ -471,12 +459,38 @@ test.describe('#Players Page', function() {
         });        
       });
 
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a player stat opens the play by play modal', function() {
+          playersPage.clickTableStat(1, 20);
+          playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs LHB A. Gordon (KC), Top 4, 0 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          playersPage.clickPitchVideoIcon(1);
+          playersPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Top 4, 0 out");
+          });
+
+          playersPage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "1-1 Four Seamer 94 MPH");
+          });          
+        }); 
+
+        test.after(function() {
+          playersPage.closeVideoPlaylistModal();
+          playersPage.closePlayByPlaytModal();
+        });
+      });
+
       // Filters
       test.describe("#filters", function() {
         test.it('adding filter: (Men On: On 1B) from dropdown displays correct data', function() {
           filters.addDropdownFilter('Men On: On 1B');
 
-          statsPage.getTableStat(1, ksCol).then(function(ks) {
+          playersPage.getTableStat(1, ksCol).then(function(ks) {
             assert.equal(ks, 68);
           });
         });
@@ -484,7 +498,7 @@ test.describe('#Players Page', function() {
         test.it('adding filter: (Horizontal Location: Outer Half) from sidebar displays correct data', function() {
           filters.toggleSidebarFilter('Horizontal Location:', 'Outer Half', true);
 
-          statsPage.getTableStat(1,ksCol).then(function(ks) {
+          playersPage.getTableStat(1,ksCol).then(function(ks) {
             assert.equal(ks, 43);
           });
         });
@@ -516,8 +530,8 @@ test.describe('#Players Page', function() {
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
-            statsPage.changeReport(report.type);  
-            statsPage.getTableStat(1,report.colNum).then(function(stat) {
+            playersPage.changeReport(report.type);  
+            playersPage.getTableStat(1,report.colNum).then(function(stat) {
               assert(stat, report.topStat);
             });
           });
@@ -528,7 +542,6 @@ test.describe('#Players Page', function() {
 
   test.describe('#Section: Catching', function() {
     test.before(function() {    
-      statsPage = new StatsPage(driver, 'catching');
       playersPage.goToSubSection("stats");
       playersPage.goToSection("catching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -542,19 +555,45 @@ test.describe('#Players Page', function() {
         test.it('should be sorted initially by SLAA descending', function() {
           var playerOneSLAA, playerTwoSLAA, playerTenSLAA;
 
-          statsPage.getTableStat(1,slaaCol).then(function(stat) {
+          playersPage.getTableStat(1,slaaCol).then(function(stat) {
             playerOneSLAA = stat;
           });
 
-          statsPage.getTableStat(2,slaaCol).then(function(stat) {
+          playersPage.getTableStat(2,slaaCol).then(function(stat) {
             playerTwoSLAA = stat;
           });
           
-          statsPage.getTableStat(10,slaaCol).then(function(stat) {
+          playersPage.getTableStat(10,slaaCol).then(function(stat) {
             playerTenSLAA = stat;
             assert.isAtLeast(playerOneSLAA, playerTwoSLAA, "player one's SLAA is >= player two's SLAA");
             assert.isAtLeast(playerTwoSLAA, playerTenSLAA, "player two's SLAA is >= player ten's SLAA");
           });            
+        });
+      });
+
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a player stat opens the play by play modal', function() {
+          playersPage.clickTableStat(1, 12);
+          playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs RHB C. Ruiz (PHI), Bot 4, 1 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          playersPage.clickPitchVideoIcon(1);
+          playersPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Bot 4, 1 out");
+          });
+
+          playersPage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "0-0 Four Seamer 92 MPH ProbSL:78.3%");
+          });          
+        }); 
+
+        test.after(function() {
+          playersPage.closeVideoPlaylistModal();
+          playersPage.closePlayByPlaytModal();
         });
       });
 
@@ -572,8 +611,8 @@ test.describe('#Players Page', function() {
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
-            statsPage.changeReport(report.type);  
-            statsPage.getTableStat(1,report.colNum).then(function(stat) {
+            playersPage.changeReport(report.type);  
+            playersPage.getTableStat(1,report.colNum).then(function(stat) {
               assert.equal(stat, report.topStat);
             });
           });
@@ -584,7 +623,6 @@ test.describe('#Players Page', function() {
 
   test.describe('#Section: Statcast Fielding', function() {
     test.before(function() {    
-      statsPage = new StatsPage(driver, 'statcastFielding');
       playersPage.goToSubSection("stats");
       playersPage.goToSection("statcastFielding");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -598,21 +636,55 @@ test.describe('#Players Page', function() {
         test.it('should be sorted initially by OFWAirOut% descending', function() {
           var playerOne, playerTwo, playerTen;
  
-          statsPage.getTableStat(1,statCol).then(function(stat) {
+          playersPage.getTableStat(1,statCol).then(function(stat) {
             playerOne = stat;
           });
 
-          statsPage.getTableStat(2,statCol).then(function(stat) {
+          playersPage.getTableStat(2,statCol).then(function(stat) {
             playerTwo = stat;
           });
 
-          statsPage.getTableStat(10,statCol).then(function(stat) {
+          playersPage.getTableStat(10,statCol).then(function(stat) {
             playerTen = stat;
             assert.isAtLeast(playerOne, playerTwo, "player one's OFWAirOut% is >= player two's OFWAirOut%");
             assert.isAtLeast(playerTwo, playerTen, "player two's OFWAirOut% is >= player ten's OFWAirOut%");
           });            
         });
       });
+
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a player stat opens the play by play modal', function() {
+          playersPage.clickTableStat(1, 4);
+          playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs RHP M. Andriese (KC) , Top 1, 2 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          playersPage.clickPitchVideoIcon(1);
+          playersPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Top 1, 2 out");
+          });
+
+          playersPage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "1-0 Fastball 92 MPH");
+          });          
+        }); 
+
+        test.it('clicking similar plays icon opens modal', function() {
+          playersPage.closeVideoPlaylistModal();
+          playersPage.clickSimiliarPlaysIcon(1);
+          playersPage.getSimiliarPlaysHeader().then(function(title) {
+            assert.equal(title, '50 most similar fielding plays to unsuccessful catch by Desmond Jennings in LF at Tropicana Field (8/2/2016). 0 of 50 balls caught', 'modal title');
+          })
+        });
+
+        test.after(function() {
+          playersPage.closeSimiliarPlaysModal();
+          playersPage.closePlayByPlaytModal();
+        });
+      });      
 
       // Reports
       test.describe("#reports", function() {
@@ -623,8 +695,8 @@ test.describe('#Players Page', function() {
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
-            statsPage.changeReport(report.type);  
-            statsPage.getTableStat(1,report.colNum).then(function(stat) {
+            playersPage.changeReport(report.type);  
+            playersPage.getTableStat(1,report.colNum).then(function(stat) {
               assert.equal(stat, report.topStat);
             });
           });

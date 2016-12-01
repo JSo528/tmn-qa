@@ -23,15 +23,15 @@ var RIGHTY_HEAT_MAP_LINK = By.id('visualBaseballHeatMapPlayerCatcherRighty');
 var RIGHTY_PITCH_VIEW_LINK = By.id('visualBaseballPitchChartPlayerCatcherRighty');
 var RIGHTY_PITCH_VIEW_PITCH = By.css('#playerPitchChartRighty circle.pitch-chart-ball');
 
-function CatcherPage(driver, section) {
+function PlayerCatcherPage(driver, section) {
   BasePage.call(this, driver);
   this.section = section;
 };
 
-CatcherPage.prototype = Object.create(BasePage.prototype);
-CatcherPage.prototype.constructor = CatcherPage;
+PlayerCatcherPage.prototype = Object.create(BasePage.prototype);
+PlayerCatcherPage.prototype.constructor = PlayerCatcherPage;
 
-CatcherPage.prototype.drawBoxOnHeatMap = function(leftyOrRighty, x, y, width, height) {
+PlayerCatcherPage.prototype.drawBoxOnHeatMap = function(leftyOrRighty, x, y, width, height) {
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP : RIGHTY_HEATMAP;
   var imageLocator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_IMAGE : RIGHTY_HEATMAP_IMAGE;
   var element = driver.findElement(locator);
@@ -45,7 +45,7 @@ CatcherPage.prototype.drawBoxOnHeatMap = function(leftyOrRighty, x, y, width, he
     return this.waitForEnabled(imageLocator)
 };
 
-CatcherPage.prototype.clearHeatMap = function(leftyOrRighty) {
+PlayerCatcherPage.prototype.clearHeatMap = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? CLOSE_LEFTY_HEATMAP_BOX_BUTTON : CLOSE_RIGHTY_HEATMAP_BOX_BUTTON;
   var heatmapLocator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP : RIGHTY_HEATMAP;
   this.driver.findElements(locator).then(function(elements) {
@@ -57,18 +57,18 @@ CatcherPage.prototype.clearHeatMap = function(leftyOrRighty) {
   return this.waitForEnabled(heatmapLocator, 20000);
 };
 
-CatcherPage.prototype.clickHeatMapLink = function(leftyOrRighty) {
+PlayerCatcherPage.prototype.clickHeatMapLink = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEAT_MAP_LINK : RIGHTY_HEAT_MAP_LINK;
   return this.click(locator);
 };
 
-CatcherPage.prototype.clickPitchViewLink = function(leftyOrRighty) {
+PlayerCatcherPage.prototype.clickPitchViewLink = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_PITCH_VIEW_LINK : RIGHTY_PITCH_VIEW_LINK;
   return this.click(locator);
 };
 
 
-CatcherPage.prototype.getPitchViewPitchCount = function(leftyOrRighty) {
+PlayerCatcherPage.prototype.getPitchViewPitchCount = function(leftyOrRighty) {
   var d = Promise.defer();
 
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_PITCH_VIEW_PITCH : RIGHTY_PITCH_VIEW_PITCH;
@@ -79,7 +79,7 @@ CatcherPage.prototype.getPitchViewPitchCount = function(leftyOrRighty) {
   return d.promise;
 };
 
-CatcherPage.prototype.getHeatMapImageTitle = function(leftyOrRighty) {
+PlayerCatcherPage.prototype.getHeatMapImageTitle = function(leftyOrRighty) {
   var d = Promise.defer();
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_IMAGE : RIGHTY_HEATMAP_IMAGE;
 
@@ -89,4 +89,4 @@ CatcherPage.prototype.getHeatMapImageTitle = function(leftyOrRighty) {
 
   return d.promise;
 };
-module.exports = CatcherPage;
+module.exports = PlayerCatcherPage;

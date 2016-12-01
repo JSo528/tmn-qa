@@ -13,24 +13,22 @@ var Filters = require('../pages/mlb/filters.js');
 
 // Teams Pages
 var TeamsPage = require('../pages/mlb/teams/teams_page.js');
-var TeamsStatsPage = require('../pages/mlb/teams/stats_page.js');
-var TeamPage = require('../pages/mlb/team/team_page.js');
-var OverviewPage = require('../pages/mlb/team/overview_page.js');
+var TeamPage = require('../pages/mlb/teams/team_page.js');
+var OverviewPage = require('../pages/mlb/teams/team_overview_page.js');
 
 // Scores Pages
 var ScoresPage = require('../pages/mlb/scores/scores_page.js');
 var DetailedScorePage = require('../pages/mlb/scores/detailed_score_page.js');
-var PitchByPitchPage = require('../pages/mlb/scores/pitch_by_pitch_page.js');
 
 // Players Pages
 var PlayersPage = require('../pages/mlb/players/players_page.js');
-var PlayersStatsPage = require('../pages/mlb/players/stats_page.js');
+var PlayerPage = require('../pages/mlb/players/player_page.js');
 
 var StandingsPage = require('../pages/mlb/standings_page.js');
-var UmpiresPage = require('../pages/mlb/umpires_page.js');
-var UmpirePage = require('../pages/mlb/umpire_page.js');
+var UmpiresPage = require('../pages/mlb/umpires/umpires_page.js');
+var UmpirePage = require('../pages/mlb/umpires/umpire_page.js');
 var GroupsPage = require('../pages/mlb/groups_page.js')
-var PlayerPage = require('../pages/mlb/player/player_page.js');
+
 
 // Instance Objects
 loginPage = new LoginPage(driver);
@@ -40,10 +38,7 @@ standingsPage = new StandingsPage(driver);
 scoresPage = new ScoresPage(driver);
 detailedScorePage = new DetailedScorePage(driver);
 teamsPage = new TeamsPage(driver);
-teamsStatsPage = new TeamsStatsPage(driver);
-pitchByPitchPage = new PitchByPitchPage(driver);
 playersPage = new PlayersPage(driver);
-playersStatsPage = new PlayersStatsPage(driver, 'batting');
 filters = new Filters(driver);
 umpiresPage = new UmpiresPage(driver);
 groupsPage = new GroupsPage(driver);
@@ -53,14 +48,21 @@ playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
 // Constants
-var url = "https://angels.trumedianetworks.com"
+var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-// navbar.toggleLockFiltersCheckbox(true)
+
+var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283';
+detailedScorePage.visit(url+gameURL);
+
+detailedScorePage.clickTeamBattingStat('home', 5);
+detailedScorePage.clickPitchVideoIcon(2);
+detailedScorePage.closeVideoPlaylistModal();
+detailedScorePage.closePlayByPlaytModal();
 
 // Custom Report
 var Angels = require('../pages/mlb/custom_reports/angels.js');
@@ -69,7 +71,6 @@ angels = new Angels(driver);
 https://angels-staging.trumedianetworks.com:3005/baseball/batting-angels-team-spray-chart/BOS/111?pc=%7B%22brbip%22%3A150%7D&is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D
 
 navbar.goToTeamsPage();
-teamsStatsPage.clickTeamTableCell(25,3);
 
 marlins.goToSubSection('Hitting Matchups');
 

@@ -2,33 +2,24 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../../lib/constants.js');
 var credentials = require('../../../lib/credentials.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
-var Filters = require('../../../pages/mlb/filters.js');
 var LoginPage = require('../../../pages/login_page.js');
-var TeamPage = require('../../../pages/mlb/team/team_page.js');
+var TeamPage = require('../../../pages/mlb/teams/team_page.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
-var TeamsStatsPage = require('../../../pages/mlb/teams/stats_page.js');
 var PlayersPage = require('../../../pages/mlb/players/players_page.js');
-var PlayerPage = require('../../../pages/mlb/player/player_page.js');
 var Indians = require('../../../pages/mlb/custom_reports/indians.js');
-var PlayersStatsPage = require('../../../pages/mlb/players/stats_page.js');
-var navbar, filters, loginPage, playersPage, indians, playersStatsPage;
+var navbar, loginPage, playersPage, teamsPage, teamPage, indians;
 
 test.describe('#CustomReports: Indians', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
-    filters  = new Filters(driver);  
     loginPage = new LoginPage(driver);
     indians = new Indians(driver);
     playersPage = new PlayersPage(driver);
-    playersStatsPage = new PlayersStatsPage(driver, 'batting');
-    playerPage = new PlayerPage(driver, 'batting');
     teamsPage = new TeamsPage(driver);
-    teamsStatsPage = new TeamsStatsPage(driver);
     teamPage = new TeamPage(driver);
     
     var newURL = url.replace(/\/\b\w+\b/, 'indians');
@@ -45,7 +36,7 @@ test.describe('#CustomReports: Indians', function() {
   test.describe('#Section: TeamBatting', function() {
     test.before(function() {
       navbar.goToTeamsPage();
-      teamsStatsPage.clickTeamTableCell(8,3);
+      teamsPage.clickTeamTableCell(8,3);
     });
 
     test.describe('#SubSection: Printable Report', function() {
@@ -142,7 +133,7 @@ test.describe('#CustomReports: Indians', function() {
     test.before(function() {
       navbar.goToPlayersPage();  
       playersPage.goToSection('batting');
-      playersStatsPage.clickTableStat(1,3);
+      playersPage.clickTableStat(1,3);
     });
 
     test.describe('#SubSection: Printable Report', function() {
@@ -203,8 +194,7 @@ test.describe('#CustomReports: Indians', function() {
       test.before(function() {
         navbar.goToPlayersPage();  
         playersPage.goToSection('pitching');
-        playersStatsPage.section = 'pitching';
-        playersStatsPage.clickTableStat(1,3);
+        playersPage.clickTableStat(1,3);
       });
 
       test.describe('#SubSection: Printable Report', function() {

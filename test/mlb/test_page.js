@@ -10,14 +10,12 @@ var Navbar = require('../../pages/mlb/navbar.js');
 var LoginPage = require('../../pages/login_page.js');
 var StandingsPage = require('../../pages/mlb/standings_page.js');
 var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
-var TeamPage = require('../../pages/mlb/team/team_page.js');
-var StatsPage = require('../../pages/mlb/teams/stats_page.js');
+var TeamPage = require('../../pages/mlb/teams/team_page.js');
 var ScoresPage = require('../../pages/mlb/scores/scores_page.js');
-var ScorePitchByPitchPage = require('../../pages/mlb/scores/pitch_by_pitch_page.js');
 var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js');
 var prodUrl = constants.urls.mlb.dodgers;
 
-var navbar, standingsPage, teamsPage, teamPage, scorePitchByPitchPage, detailedScorePage;
+var navbar, standingsPage, teamsPage, teamPage, scoresPage, detailedScorePage;
 
 test.describe('', function() {
   test.before(function() {    
@@ -25,6 +23,9 @@ test.describe('', function() {
     teamsPage = new TeamsPage(driver);
     teamPage = new TeamPage(driver);
     navbar  = new Navbar(driver);
+    scoresPage = new ScoresPage(driver);
+    detailedScorePage = new DetailedScorePage(driver);
+    loginPage = new LoginPage(driver);
   });
 
   // Home/Standings Page
@@ -32,10 +33,10 @@ test.describe('', function() {
     test.it('changing year shows correct data', function() {
       standingsPage.changeYear(2015);
       
-      standingsPage.getTeamName(constants.divisions.al_east, 1).then(function(teamName) {
+      standingsPage.getTableStat(1,1,1,1).then(function(teamName) {
         assert.equal( teamName, 'Orioles', 'Correct Team in 1st');
       });
-      standingsPage.getPythWins(constants.divisions.al_east, 1).then(function(pythWins) {
+      standingsPage.getTableStat(1,1,1,8).then(function(pythWins) {
         assert.equal( pythWins, 93.7, 'Correct Pyth Wins');
       });
     });  
@@ -52,10 +53,6 @@ test.describe('', function() {
 
   // Teams Page
   test.describe('@ teams page', function() {
-    test.before(function() {
-      statsPage = new StatsPage(driver);
-    });
-
     test.it('should have the correct page title', function() {
       navbar.goToTeamsPage();
 
@@ -67,7 +64,7 @@ test.describe('', function() {
     test.it('Red Sox should show 0.284 BA', function() {
       var teamOneBA, teamTenBA;
 
-      statsPage.getTeamTableStat(1,11).then(function(stat) {
+      teamsPage.getTeamTableStat(1,11).then(function(stat) {
         assert.equal(stat, 0.284);
       });           
     });    
@@ -76,37 +73,30 @@ test.describe('', function() {
   // Detailed Score Page
   test.describe('@ detailed score page', function() {
     test.before(function() {
-      scoresPage = new ScoresPage(driver);
-      detailedScorePage = new DetailedScorePage(driver);
-      scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
-
       navbar.goToScoresPage();
       scoresPage.clickBoxScore(1);
-      detailedScorePage.goToSection("Pitch By Pitch");
-      scorePitchByPitchPage.clickPitchVideoIcon(1);
+      detailedScorePage.goToSection("pitchByPitch");
+      detailedScorePage.clickPitchVideoIcon(1);
     });
 
     test.it('video playlist shows correct video', function() {
-      scorePitchByPitchPage.getVideoPlaylistText(1,1).then(function(text) {
+      detailedScorePage.getVideoPlaylistText(1,1).then(function(text) {
         assert.equal(text, "Top 2, 0 Out");
       });
     });
 
     test.after(function() {
-      scorePitchByPitchPage.closeVideoPlaylistModal();
+      detailedScorePage.closeVideoPlaylistModal();
     })
   });  
 
   // Data Comparison
   test.describe('Data Comparison', function() {
     test.before(function() {
-      scoresPage = new ScoresPage(driver);
-
       browser.openNewTab(prodUrl).then(function() {
         browser.switchToTab(1);  
       });
       
-      loginPage = new LoginPage(driver);
       loginPage.login(credentials.testUser.email, credentials.testUser.password);
     });  
 
@@ -127,7 +117,6 @@ test.describe('', function() {
     test.describe('@Detailed Scores Page', function() {
       test.describe("#batting subsection", function() {
         test.before(function() {
-          detailedScorePage = new DetailedScorePage(driver);
           browser.executeForEachTab(function() {
             scoresPage.clickBoxScore(1);
           });
@@ -142,14 +131,13 @@ test.describe('', function() {
 
       test.describe("#pitch by pitch subsection", function() {
         test.before(function() {
-          scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
           browser.executeForEachTab(function() {
-            detailedScorePage.goToSection("Pitch By Pitch");
+            detailedScorePage.goToSection("pitchByPitch");
           })
         })
 
         test.it('pitch by pitch page shows the same data  as production', function() {
-          browser.getFullContentForEachTab(scorePitchByPitchPage.comparisonDataContainer, scorePitchByPitchPage.lastLocator)
+          browser.getFullContentForEachTab(detailedScorePage.comparisonDataContainer, detailedScorePage.lastLocator)
             .then(function(contentArray) {
             assert.equal( contentArray[0], contentArray[1] );
           });

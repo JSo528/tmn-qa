@@ -15,24 +15,19 @@ var LoginPage = require('../../pages/login_page.js');
 var StandingsPage = require('../../pages/mlb/standings_page.js');
 var ScoresPage = require('../../pages/mlb/scores/scores_page.js');
 var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js');
-var ScorePitchByPitch = require('../../pages/mlb/scores/pitch_by_pitch_page.js');
-var ScorePitchingSplitsPage = require('../../pages/mlb/scores/pitching_splits_page.js');
 
 var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
-var TeamsStatsPage = require('../../pages/mlb/teams/stats_page.js');
-var TeamPage = require('../../pages/mlb/team/team_page.js');
+var TeamPage = require('../../pages/mlb/teams/team_page.js');
 
-var PlayersPage = require('../../pages/mlb/players/players_page.js');
-var PlayersStatsPage = require('../../pages/mlb/players/stats_page.js');
-var PlayerPage = require('../../pages/mlb/player/player_page.js');
+var PlayerPage = require('../../pages/mlb/players/player_page.js');
 
-var UmpiresPage = require('../../pages/mlb/umpires_page.js');
-var UmpirePage = require('../../pages/mlb/umpire_page.js');
+var UmpiresPage = require('../../pages/mlb/umpires/umpires_page.js');
+var UmpirePage = require('../../pages/mlb/umpires/umpire_page.js');
 
 var stagUrl = constants.urls.mlb.dodgersStaging;
 var prodUrl = constants.urls.mlb.dodgers;
 var navbar, filters, standingsPage, scoresPage, detailedScorePage, umpiresPage, 
-  teamsStatsPage, teamPage, playersPage, playerPage, playersStatsPage, umpirePage;
+  teamPage, playersPage, playerPage, umpirePage;
 var reports, report;
 
 
@@ -43,7 +38,6 @@ test.describe('#DataComparison', function() {
     filters = new Filters(driver);
     standingsPage = new StandingsPage(driver);
     scoresPage = new ScoresPage(driver);
-    teamsStatsPage = new TeamsStatsPage(driver);
     umpiresPage = new UmpiresPage(driver);
     reports = new Reports(driver);
 
@@ -157,7 +151,7 @@ test.describe('#DataComparison', function() {
       test.before(function() {
         report = reports.selectRandomReport('pitching');
         browser.executeForEachTab(function() {
-          detailedScorePage.goToSection("Pitching");
+          detailedScorePage.goToSection("pitching");
         })
       })
 
@@ -174,14 +168,13 @@ test.describe('#DataComparison', function() {
 
     test.describe("#pitch by pitch subsection", function() {
       test.before(function() {
-        scorePitchByPitchPage = new ScorePitchByPitch(driver);
         browser.executeForEachTab(function() {
-          detailedScorePage.goToSection("Pitch By Pitch");
+          detailedScorePage.goToSection("pitchByPitch");
         })
       })
 
       test.it('Main page shows the same data', function() {
-        browser.getFullContentForEachTab(scorePitchByPitchPage.comparisonDataContainer, scorePitchByPitchPage.lastLocator)
+        browser.getFullContentForEachTab(detailedScorePage.comparisonDataContainer, detailedScorePage.lastLocator)
           .then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
         }) 
@@ -190,10 +183,10 @@ test.describe('#DataComparison', function() {
       // TODO - this test keeps breaking in production for some reason
       // test.it('When decisive event is turned on, it should shows the same data', function() {
       //   browser.executeForEachTab(function() {
-      //     scorePitchByPitchPage.addDecisiveEventFilter("yes");
+      //     detailedScorePage.addDecisiveEventFilter("yes");
       //   })
 
-      //   browser.getFullContentForEachTab(null, scorePitchByPitchPage.lastLocator).then(function(contentArray) {
+      //   browser.getFullContentForEachTab(null, detailedScorePage.lastLocator).then(function(contentArray) {
       //     assert.equal( contentArray[0], contentArray[1] );
       //   }) 
       // });       
@@ -201,15 +194,14 @@ test.describe('#DataComparison', function() {
 
     test.describe("#pitching splits subsection", function() {
       test.before(function() {
-        scorePitchingSplitsPage = new ScorePitchingSplitsPage(driver);
         browser.executeForEachTab(function() {
-          detailedScorePage.goToSection("Pitching Splits");
+          detailedScorePage.goToSection("pitchingSplits");
         })
 
       })
 
       test.it('Main page shows the same data', function() {
-        browser.getFullContentForEachTab(scorePitchingSplitsPage.comparisonLocator).then(function(contentArray) {
+        browser.getFullContentForEachTab(detailedScorePage.comparisonLocator).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
         }) 
       });    
@@ -229,24 +221,14 @@ test.describe('#DataComparison', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
         })  
-      });
-
-      test.it('occurrences & streaks shows the same data', function() {
-        browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("occurrencesAndStreaks");
-        })
-
-        browser.getFullContentForEachTab(teamsPage.streaksTable).then(function(contentArray) {
-          assert.equal( contentArray[0], contentArray[1] );
-        })  
-      });    
-    })
+      });  
+    });
 
     test.describe('#Pitching Section', function() {
       test.before(function() {
         browser.executeForEachTab(function() {
           teamsPage.goToSection("pitching");
-        })   
+        });
       });
 
       test.it('main page shows the same data', function() {
@@ -254,17 +236,7 @@ test.describe('#DataComparison', function() {
           assert.equal( contentArray[0], contentArray[1] );
         })  
       });
-
-      test.it('occurrences & streaks shows the same data', function() {
-        browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("occurrencesAndStreaks");
-        })
-
-        browser.getFullContentForEachTab(teamsPage.streaksTable).then(function(contentArray) {
-          assert.equal( contentArray[0], contentArray[1] );
-        })  
-      });    
-    }) 
+    });
 
     test.describe('#Catching Section', function() {
       test.before(function() {
@@ -277,18 +249,8 @@ test.describe('#DataComparison', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
         })  
-      });
-
-      test.it('occurrences & streaks shows the same data', function() {
-        browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("occurrencesAndStreaks");
-        })
-
-        browser.getFullContentForEachTab(teamsPage.streaksTable, teamsPage.streaksTable).then(function(contentArray) {
-          assert.equal( contentArray[0], contentArray[1] );
-        })  
-      });    
-    }) 
+      });  
+    }); 
 
     test.describe('#Statcast Fielding Section', function() {
       test.before(function() {
@@ -301,19 +263,9 @@ test.describe('#DataComparison', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
         })  
-      });
-
-      test.it('occurrences & streaks shows the same data', function() {
-        browser.executeForEachTab(function() {
-          teamsPage.goToSubSection("occurrencesAndStreaks");
-        })
-
-        browser.getFullContentForEachTab(teamsPage.streaksTable, teamsPage.streaksTable).then(function(contentArray) {
-          assert.equal( contentArray[0], contentArray[1] );
-        })  
-      });    
-    })     
-  })
+      });   
+    });     
+  });
 
   test.describe('@Umpires Page', function() {
     test.before(function() {
@@ -331,16 +283,16 @@ test.describe('#DataComparison', function() {
     });
 
     test.describe("#umpire reports", function() {
-      UmpiresPage.prototype.reports.forEach(function(report) {
-        test.it('Report: '+report+' shows the same data', function() {
-          browser.executeForEachTab(function() {
-            umpiresPage.changeReport(report);
-          });
-
-          browser.getFullContentForEachTab(umpiresPage.statsTable).then(function(contentArray) {
-            assert.equal( contentArray[0], contentArray[1], 'data for report: '+report+' should be the same' );
-          }); 
+      test.before(function() {
+        report = reports.selectRandomReport('umpire');
+        browser.executeForEachTab(function() {
+          umpiresPage.changeReport(report);
         });
+      });
+      test.it('pages show the same table data', function() {
+        browser.getFullContentForEachTab(umpiresPage.statsTable).then(function(contentArray) {
+          assert.equal( contentArray[0], contentArray[1], 'table data for Report: '+report);
+        }); 
       });
     }); 
   }); 
@@ -350,7 +302,7 @@ test.describe('#DataComparison', function() {
       teamPage = new TeamPage(driver);
       browser.executeForEachTab(function() {
         navbar.goToTeamsPage();
-        teamsStatsPage.clickTeamTableCell(1,3);
+        teamsPage.clickTeamTableCell(1,3);
       });   
     });
 
@@ -555,7 +507,7 @@ test.describe('#DataComparison', function() {
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
           test.before(function() {
-            report = reports.selectRandomReport('statcastFielding');
+            report = reports.selectRandomReport('teamStatcastFielding');
             browser.executeForEachTab(function() {
               teamPage.goToSubSection(subSection);
               teamPage.changeReport(report);
@@ -589,12 +541,9 @@ test.describe('#DataComparison', function() {
   test.describe('@Individual Player Page', function() {
     test.before(function() { 
       playerPage = new PlayerPage(driver);
-      playersPage = new PlayersPage(driver);
-      playersStatsPage = new PlayersStatsPage(driver, 'batting');
       
       browser.executeForEachTab(function() {
-        navbar.goToPlayersPage();
-        playersStatsPage.clickTableStat(1,3);
+        navbar.search('Mookie Betts', 1);
       });   
     });  
 
@@ -649,7 +598,7 @@ test.describe('#DataComparison', function() {
     test.describe('#StatcastFieldingSection', function() {
       test.before(function() {
         browser.executeForEachTab(function() {
-          playerPage.goToSection('statcastFielding');
+          playerPage.goToSection('playerStatcastFielding');
         });   
       });
 
@@ -699,10 +648,7 @@ test.describe('#DataComparison', function() {
     test.describe('#PitchingSection', function() {
       test.before(function() {
         browser.executeForEachTab(function() {
-          navbar.goToPlayersPage();
-          playersPage.goToSection('Pitching');
-          playersStatsPage.section = 'pitching';
-          playersStatsPage.clickTableStat(1,3);
+          navbar.search('Corey Kluber', 1);
           playerPage.section = 'pitching';
         });   
       });
@@ -756,10 +702,7 @@ test.describe('#DataComparison', function() {
     test.describe('#CatchingSection', function() {
       test.before(function() {
         browser.executeForEachTab(function() {
-          navbar.goToPlayersPage();
-          playersPage.goToSection('Catching');
-          playersStatsPage.section = 'catching';
-          playersStatsPage.clickTableStat(1,3);
+          navbar.search('Buster Posey', 1);
           playerPage.goToSection('catching');
         });   
       });

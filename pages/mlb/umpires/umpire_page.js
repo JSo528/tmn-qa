@@ -1,13 +1,17 @@
 'use strict';
 
 // Load Base Page
-var BasePage = require('../../pages/base/base_page.js');
+var BasePage = require('../../../pages/base/base_page.js');
 
 // Webdriver helpers
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
+
+// Mixins
+var _ = require('underscore');
+var videoPlaylist = require('../mixins/videoPlaylist.js');
 
 // Locators
 var SUB_SECTION_TITLE = {
@@ -38,10 +42,6 @@ var RIGHTY_PITCH_VIEW_PITCH = By.css('#umpirePitchChartRighty circle.pitch-chart
 // VISUAL MODE
 var VISUAL_MODE_SELECT = By.id('s2id_pageControlBaseballVisMode');
 var VISUAL_MODE_UL_ID = 'select2-results-1';
-
-// PITCH LOGS
-var BY_INNING_TAB = By.xpath(".//div[@id='reportTabsSection0']/.//li[1]/a");
-var FLAT_VIEW_TAB = By.xpath(".//div[@id='reportTabsSection0']/.//li[2]/a");
 
 function UmpirePage(driver, subSection) {
   BasePage.call(this, driver);
@@ -140,6 +140,13 @@ UmpirePage.prototype.getOverviewTableStat = function(row, col) {
   return this.getText(locator, 30000);  
 };
 
+UmpirePage.prototype.clickOverviewTableStat = function(row, col) {
+  // First 3 rows are for the headers
+  var rowNum = row + 3;
+  var locator = By.xpath(`.//div[@id='tableBaseballUmpireStatsOverviewContainer']/table/tbody/tr[${rowNum}]/td[${col}]/span`);
+  return this.click(locator);  
+};
+
 /****************************************************************************
 ** Game Logs
 *****************************************************************************/
@@ -149,48 +156,10 @@ UmpirePage.prototype.getGameLogTableStat = function(row, col) {
   return this.getText(locator, 30000);  
 };
 
-
-/****************************************************************************
-** Pitch Logs
-*****************************************************************************/
-UmpirePage.prototype.clickByInningTab = function() {
-  var element = this.driver.findElement(BY_INNING_TAB);
-  return element.click();  
-};
-
-UmpirePage.prototype.clickFlatViewTab = function() {
-  var element = this.driver.findElement(FLAT_VIEW_TAB);
-  return element.click();  
-};
-
-// By Inning Table
-UmpirePage.prototype.getByInningHeaderText = function(topOrBottom, inning) {
-  var addRow = (topOrBottom == "bottom") ? 2 : 1;
-  var row = inning * 2 - 2 + addRow;
-  
-  var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchLogContainer']/table/tbody/tr[@class='sectionHeader sectionInning'][${row}]/td`);
-  return this.getText(locator, 20000);
-};
-
-UmpirePage.prototype.getByInningAtBatHeaderText = function(atBatNum) {
-  var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchLogContainer']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td`);
-  return this.getText(locator);
-};
-
-UmpirePage.prototype.getByInningAtBatFooterText = function(atBatNum) {
-  var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchLogContainer']/table/tbody/tr[@class='sectionHeaderAlt sectionEndOfBat'][${atBatNum}]/td`);
-  return this.getText(locator);
-};
-
-UmpirePage.prototype.getByInningTableStat = function(pitchNum, col) {
-  var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchLogContainer']/table/tbody/tr[contains(@data-tmn-row-type,'row')][${pitchNum}]/td[${col}]`);
-  return this.getText(locator);
-};
-
-// Flat View Table
-UmpirePage.prototype.getFlatViewTableStat = function(rowNum, col) {
-  var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchTableContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
-  return this.getText(locator, 30000);
+UmpirePage.prototype.clickGameLogTableStat = function(row, col) {
+  var rowNum = row + 5;
+  var locator = By.xpath(`.//div[@id='tableBaseballUmpireGameLogContainer']/table/tbody/tr[${rowNum}]/td[${col}]/span`);
+  return this.click(locator);  
 };
 
 /****************************************************************************
@@ -209,5 +178,8 @@ UmpirePage.prototype.statsTable = function() {
       break;    
   };
 };
+
+// Mixins
+_.extend(UmpirePage.prototype, videoPlaylist);
 
 module.exports = UmpirePage;

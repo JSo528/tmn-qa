@@ -20,6 +20,7 @@ var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavBaseballTeamsStatBatting");
 var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavBaseballPlayersStatBatting");
 var UMPIRES_LAST_LOCATOR = By.id("s2id_reportNavBaseballUmpiresStatUmpires");
 
+var SEARCH_INPUT = By.css('.navbar-tmn #search-bar input');
 var LOCK_FILTERS_INPUT = By.css('.navbar-tmn .persist-search-state input');
 
 function MlbNavbar(driver) {
@@ -59,6 +60,10 @@ MlbNavbar.prototype.goToGroupsPage = function() {
 
 MlbNavbar.prototype.goToGroupsPage = function() {
   return this.click(GROUPS_LINK);
+};
+
+MlbNavbar.prototype.search = function(searchTerm, selectionNum) {
+  return this.selectFromSearch(SEARCH_INPUT, searchTerm, selectionNum);
 };
 
 MlbNavbar.prototype.toggleLockFiltersCheckbox = function(check) {

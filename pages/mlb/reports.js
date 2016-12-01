@@ -64,6 +64,7 @@ var PLAYER_STATCAST_FIELDING_REPORTS = [
   "Outfielder Air Defense Positioning",
   "Outfielder Air Defense Skills",
   "Outfield Batter Positioning",
+  "Infield Ground Ball Defense Range",
 ];
 
 var UMPIRE_REPORTS = [

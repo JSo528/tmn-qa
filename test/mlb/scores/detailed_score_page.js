@@ -2,15 +2,13 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Filters = require('../../pages/mlb/filters.js');
-var Navbar = require('../../pages/mlb/navbar.js');
-var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js');
-var ScorePitchByPitchPage = require('../../pages/mlb/scores/pitch_by_pitch_page.js');
-var ScorePitchingSplitsPage = require('../../pages/mlb/scores/pitching_splits_page.js');
-var navbar, filters, detailedScorePage, scorePitchByPitchPage, scorePitchingSplitsPage;
+var Filters = require('../../../pages/mlb/filters.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var DetailedScorePage = require('../../../pages/mlb/scores/detailed_score_page.js');
+var navbar, filters, detailedScorePage;
 
 // Page Specific
 var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283';
@@ -46,6 +44,58 @@ test.describe('#DetailedScore Page', function() {
         filters.closeDropdownFilter("Outs:");
         filters.toggleSidebarFilter("Pitcher Hand:", 'Righty', false);
       });         
+    });
+
+    test.describe('#VideoPlaylist', function() {    
+      test.describe('#TeamStat', function() {    
+        test.it('clicking on a team stat opens the play by play modal', function() {
+          detailedScorePage.clickTeamBattingStat('home', 5);
+          detailedScorePage.getMatchupsAtBatHeaderText(2).then(function(text) {
+            assert.equal(text, 'Vs RHP K. Gausman (BAL), Bot 1, 1 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          detailedScorePage.clickPitchVideoIcon(2);
+          detailedScorePage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Bot 1, 0 out");
+          });
+
+          detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "0-2 Changeup 85 MPH");
+          });          
+        }); 
+
+        test.after(function() {
+          detailedScorePage.closeVideoPlaylistModal();
+          detailedScorePage.closePlayByPlaytModal();
+        });
+      });
+
+      test.describe('#PlayerStat', function() {    
+        test.it('clicking on a player stat opens the play by play modal', function() {
+          detailedScorePage.clickPlayerBattingStat('home', 1, 5);
+          detailedScorePage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs RHP K. Gausman (BAL), Bot 1, 1 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          detailedScorePage.clickPitchVideoIcon(2);
+          detailedScorePage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Bot 1, 0 out");
+          });
+
+          detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "0-2 Changeup 85 MPH");
+          });          
+        }); 
+
+        test.after(function() {
+          detailedScorePage.closeVideoPlaylistModal();
+          detailedScorePage.closePlayByPlaytModal();
+        });
+      });
     });
 
     test.describe('#Reports', function() {
@@ -184,7 +234,7 @@ test.describe('#DetailedScore Page', function() {
 
   test.describe('#Section: Pitching', function() {
     test.it("clicking pitching tab goes to the correct URL", function() {
-      detailedScorePage.goToSection("Pitching");
+      detailedScorePage.goToSection("pitching");
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /game\-pitching/);
       });
@@ -319,9 +369,9 @@ test.describe('#DetailedScore Page', function() {
         {
           reportName: 'Movement', 
           expectedUrlContains: /PitchingMovement/, 
-          statType: "SpinDir", 
-          teamStat: 201.8, 
-          playerStat: 203.2
+          statType: "TMTilt", 
+          teamStat: '1:02', 
+          playerStat: '12:55'
         },
         {
           reportName: 'Home Runs', 
@@ -385,31 +435,30 @@ test.describe('#DetailedScore Page', function() {
 
   test.describe('#Section: Pitch By Pitch', function() {
     test.before(function() {
-      detailedScorePage.goToSection("Pitch By Pitch");
-      scorePitchByPitchPage = new ScorePitchByPitchPage(driver);
+      detailedScorePage.goToSection("pitchByPitch");
     });
 
     test.describe('#main', function() {
       test.it("displays the inning header text", function() {
-        scorePitchByPitchPage.getInningHeaderText("bottom", 2).then(function(text) {
+        detailedScorePage.getInningHeaderText("bottom", 2).then(function(text) {
           assert.equal(text, "Inning Bot 2");
         });
       });
 
       test.it("displays the at bat header text", function() {
-        scorePitchByPitchPage.getAtBatHeaderText(1).then(function(text) {
+        detailedScorePage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "LHB M. Bourn Vs RHP L. Cessa (NYY), Top 1, 0 Out");
         });
       });      
 
       test.it("displays the at bat footer text", function() {
-        scorePitchByPitchPage.getAtBatFooterText(1).then(function(text) {
+        detailedScorePage.getMatchupsAtBatFooterText(1).then(function(text) {
           assert.equal(text, "Michael Bourn Grounds Out Softly, Second Baseman Donovan Solano To First Baseman Mark Teixeira.");
         });
       });
 
       test.it("displays the at bat footer text", function() {
-        scorePitchByPitchPage.getPitchText(1, 4).then(function(text) {
+        detailedScorePage.getMatchupsPitchText(1, 4).then(function(text) {
           assert.equal(text, "Fastball");
         });
       });
@@ -417,13 +466,13 @@ test.describe('#DetailedScore Page', function() {
 
     test.describe('#filters', function() {
       test.it("turning decisive event on successfully filters the pitches", function() {
-        scorePitchByPitchPage.addDecisiveEventFilter("yes");
+        detailedScorePage.addDecisiveEventFilter("yes");
 
-        scorePitchByPitchPage.getPitchText(1, 6).then(function(text) {
+        detailedScorePage.getMatchupsPitchText(1, 6).then(function(text) {
           assert.equal(text, "Ground Out");
         });
 
-        scorePitchByPitchPage.getPitchText(2, 6).then(function(text) {
+        detailedScorePage.getMatchupsPitchText(2, 6).then(function(text) {
           assert.equal(text, "Strikeout (Swinging)");
         });        
       });
@@ -431,14 +480,14 @@ test.describe('#DetailedScore Page', function() {
       test.it('adding filter: (batter hand - lefty) from dropdown displays correct data', function() {
         filters.addDropdownFilter("Batter Hand: Lefty");
 
-        scorePitchByPitchPage.getAtBatHeaderText(2).then(function(text) {
+        detailedScorePage.getMatchupsAtBatHeaderText(2).then(function(text) {
           assert.equal(text, "LHB B. Gardner Vs RHP K. Gausman (BAL), Bot 1, 0 Out");
         });
       });
 
       test.it('removing filter: ((batter hand - lefty) from dropdown displays correct data', function() {
         filters.closeDropdownFilter("Batter Hand:");
-        scorePitchByPitchPage.getAtBatHeaderText(2).then(function(text) {
+        detailedScorePage.getMatchupsAtBatHeaderText(2).then(function(text) {
           assert.equal(text, "RHB A. Jones Vs RHP L. Cessa (NYY), Top 1, 1 Out");
         });
       });        
@@ -446,25 +495,25 @@ test.describe('#DetailedScore Page', function() {
 
     test.describe('#video playlist', function() {
       test.it('clicking video icon opens video playlist', function() {
-        scorePitchByPitchPage.clickPitchVideoIcon(1);
-        scorePitchByPitchPage.isVideoModalDisplayed().then(function(modalDisplayed) {
+        detailedScorePage.clickPitchVideoIcon(1);
+        detailedScorePage.isVideoModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, true);
         });
       });
 
       test.it('video playlist shows correct video', function() {
-        scorePitchByPitchPage.getVideoPlaylistText(1,1).then(function(text) {
-          assert.equal(text, "Top 1, 0 Out");
+        detailedScorePage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 0 out");
         });
         
-        scorePitchByPitchPage.getVideoPlaylistText(1,2).then(function(text) {
+        detailedScorePage.getVideoPlaylistText(1,2).then(function(text) {
           assert.equal(text, "LHB M. Bourn Vs RHP L. Cessa (NYY)");
         });          
       });        
 
       test.it('clicking close on video playlist closes modal', function() {
-        scorePitchByPitchPage.closeVideoPlaylistModal();
-        scorePitchByPitchPage.isVideoModalDisplayed().then(function(modalDisplayed) {
+        detailedScorePage.closeVideoPlaylistModal();
+        detailedScorePage.isVideoModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, false);
         });
       });                
@@ -472,24 +521,18 @@ test.describe('#DetailedScore Page', function() {
 
     test.describe('#pitch by pitch visuals', function() {
       test.before(function() {
-        scorePitchByPitchPage.clickPitchVisualsIcon(1);
-      });
-
-      test.it('clicking visuals icon opens pitch by pitch visuals modal', function() {
-        scorePitchByPitchPage.isPitchVisualsModalDisplayed().then(function(modalDisplayed) {
-          assert.equal(modalDisplayed, true);
-        });
+        detailedScorePage.clickPitchVisualsIcon(1);
       });
 
       // Should show lefty image for lefty hitter
       test.it('visuals modal should show correct background image', function() {
-        scorePitchByPitchPage.getPitchVisualsBgImageHref().then(function(href) {
+        detailedScorePage.getPitchVisualsBgImageHref().then(function(href) {
           assert.equal(href, "/img/pitcher-view-lefty.png");
         });
       });          
 
       test.it('visuals modal should show correct # of pitches', function() {
-        scorePitchByPitchPage.getPitchVisualsPitchCount().then(function(pitchCount) {
+        detailedScorePage.getPitchVisualsPitchCount().then(function(pitchCount) {
           assert.equal(pitchCount, 3);
         });
       });                    
@@ -501,33 +544,32 @@ test.describe('#DetailedScore Page', function() {
       });     
 
       test.after(function() {
-        scorePitchByPitchPage.closePitchVisualsIcon();
+        detailedScorePage.closePitchVisualsModal();
       });   
     });
   });   
 
   test.describe('#Section: Pitching Splits', function() {
     test.before(function() {
-      detailedScorePage.goToSection("Pitching Splits");
-      scorePitchingSplitsPage = new ScorePitchingSplitsPage(driver);
+      detailedScorePage.goToSection("pitchingSplits");
     });
 
     test.it("'Pitch Type Splits' displays correct stat", function() {
-      scorePitchingSplitsPage.getPitchingSplitStat(1, 1, 1, 4).then(function(stat) {
+      detailedScorePage.getPitchingSplitStat(1, 1, 1, 4).then(function(stat) {
         // Kevin Gausman threw 38 pitches to RHB
         assert.equal(stat, 38);
       });
     });
 
     test.it("'Fastball Velocity Splits' displays correct stat", function() {
-      scorePitchingSplitsPage.getPitchingSplitStat(1, 2, 2, 12).then(function(stat) {
+      detailedScorePage.getPitchingSplitStat(1, 2, 2, 12).then(function(stat) {
         // Kevin Gausman threw 12 fastballs between 95-97 MPH in the 3rd inning
         assert.equal(stat, 12);
       });
     });
 
     test.it("'Pitch Location Splits' displays correct stat", function() {
-      scorePitchingSplitsPage.getPitchingSplitStat(2, 3, 1, 2).then(function(stat) {
+      detailedScorePage.getPitchingSplitStat(2, 3, 1, 2).then(function(stat) {
         // Zach Britton threw 12 pitches in zone
         assert.equal(stat, 12);
       });
@@ -535,20 +577,20 @@ test.describe('#DetailedScore Page', function() {
 
     // Can't really test the values for the 3 year averages since they're dyanmic values
     test.it("'Pitch Types: Game Vs 3 Year Avg Splits' displays correct row header", function() {
-      scorePitchingSplitsPage.getPitchingSplitStat(3, 4, 2, 1).then(function(stat) {
+      detailedScorePage.getPitchingSplitStat(3, 4, 2, 1).then(function(stat) {
         assert.equal(stat, "3 Years Avg");
       });
     }); 
 
     test.it("'Velocities: Game Vs 3 Year Avg Splits' displays correct stat", function() {
-      scorePitchingSplitsPage.getPitchingSplitStat(3, 5, 1, 3).then(function(stat) {
+      detailedScorePage.getPitchingSplitStat(3, 5, 1, 3).then(function(stat) {
         // Luis Cessa's this game fastballs between 95-97MPH is 73.3%
         assert.equal(stat, "73.3%");
       });
     }); 
 
     test.it("'Locations: Game Vs 3 Year Avg Splits' displays correct stat", function() {
-      scorePitchingSplitsPage.getPitchingSplitStat(3, 6, 1, 3).then(function(stat) {
+      detailedScorePage.getPitchingSplitStat(3, 6, 1, 3).then(function(stat) {
         // Luis Cessa's this game average for inside% is 14.3%
         assert.equal(stat, "14.3%");
       });
@@ -556,9 +598,9 @@ test.describe('#DetailedScore Page', function() {
 
     test.describe('#Filters', function() {
       test.it("pitcher filter returns correct pitcher", function() {
-        scorePitchingSplitsPage.addPitcherFilter("Adam Warren");
+        filters.changeSelectionToDropdownFilter("Pitchers:", "Adam Warren");
 
-        scorePitchingSplitsPage.getPitcherName(1).then(function(name) {
+        detailedScorePage.getPitchingSplitsPitcherName(1).then(function(name) {
           assert.include(name, "Adam Warren");
         });
       });

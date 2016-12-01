@@ -48,15 +48,14 @@ var CLOSE_RIGHT_CATCHING_HEATMAP_BOX_BUTTON = By.css('#teamHeatMapRighty > svg >
 var BALLPARK_IMAGE = By.css('.field-container svg g');
 var BALLPARK_SELECT = By.css('tmn-ballpark-selector select');
 
-function OverviewPage(driver) {
+function TeamOverviewPage(driver) {
   BasePage.call(this, driver);
 };
 
-OverviewPage.prototype = Object.create(BasePage.prototype);
-OverviewPage.prototype.constructor = OverviewPage;
+TeamOverviewPage.prototype = Object.create(BasePage.prototype);
+TeamOverviewPage.prototype.constructor = TeamOverviewPage;
 
-OverviewPage.prototype.getTeamTableStat = function(col) {
-  // First 3 rows are for the headers
+TeamOverviewPage.prototype.getTeamTableStat = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsOverviewContainer']/table/tbody/tr[4]/td[${col}]`);
   return this.getText(locator, 30000);
 };
@@ -65,7 +64,7 @@ OverviewPage.prototype.getTeamTableStat = function(col) {
 ** Heat Maps & Hit Chart
 *****************************************************************************/
 // x, y is the point of the top left corner of the box
-OverviewPage.prototype.drawBoxOnHeatMap = function(x, y, width, height) {
+TeamOverviewPage.prototype.drawBoxOnHeatMap = function(x, y, width, height) {
   var element = driver.findElement(HEATMAP);
   driver.actions()
     .mouseMove(element, {x: x, y: y}) // start at (x,y)
@@ -78,7 +77,7 @@ OverviewPage.prototype.drawBoxOnHeatMap = function(x, y, width, height) {
 };
 
 // not really a good way to signify which x to clear, so general function to clear all boxes
-OverviewPage.prototype.clearHeatMap = function() {
+TeamOverviewPage.prototype.clearHeatMap = function() {
   this.driver.findElements(CLOSE_HEATMAP_BOX_BUTTON).then(function(elements) {
     for(var i=0; i < elements.length; i++) {
       elements[i].click();
@@ -90,7 +89,7 @@ OverviewPage.prototype.clearHeatMap = function() {
   return(this.waitForEnabled(HIT_CHART))
 };
 
-OverviewPage.prototype.getHitChartHitCount = function(hitType) {
+TeamOverviewPage.prototype.getHitChartHitCount = function(hitType) {
   var d = Promise.defer();
   var locator;
   
@@ -125,7 +124,7 @@ OverviewPage.prototype.getHitChartHitCount = function(hitType) {
   return d.promise;
 };
 
-OverviewPage.prototype.clickHitChartPoint = function(pointNum) {
+TeamOverviewPage.prototype.clickHitChartPoint = function(pointNum) {
   var d = Promise.defer();
   var thiz = this;
 
@@ -138,7 +137,7 @@ OverviewPage.prototype.clickHitChartPoint = function(pointNum) {
   return d.promise;
 };
 
-OverviewPage.prototype.getHeatMapPitchCount = function() {
+TeamOverviewPage.prototype.getHeatMapPitchCount = function() {
   var d = Promise.defer();
 
   this.getElementCount(HEAT_MAP_PITCH).then(function(count) {
@@ -148,7 +147,7 @@ OverviewPage.prototype.getHeatMapPitchCount = function() {
   return d.promise;
 };
 
-OverviewPage.prototype.getTeamGridPitchCount = function() {
+TeamOverviewPage.prototype.getTeamGridPitchCount = function() {
   var d = Promise.defer();
 
   this.getElementCount(TEAM_GRID_PITCH).then(function(count) {
@@ -158,17 +157,17 @@ OverviewPage.prototype.getTeamGridPitchCount = function() {
   return d.promise;
 };
 
-OverviewPage.prototype.clickPitchViewLink = function() {
+TeamOverviewPage.prototype.clickPitchViewLink = function() {
   var element = this.driver.findElement(PITCH_VIEW_LINK);
   return element.click();
 };
 
-OverviewPage.prototype.clickHeatMapLink = function() {
+TeamOverviewPage.prototype.clickHeatMapLink = function() {
   var element = this.driver.findElement(HEAT_MAP_LINK);
   return element.click();  
 };
 
-OverviewPage.prototype.getPitchViewPitchCount = function() {
+TeamOverviewPage.prototype.getPitchViewPitchCount = function() {
   var d = Promise.defer();
 
   this.getElementCount(PITCH_VIEW_PITCH).then(function(count) {
@@ -179,7 +178,7 @@ OverviewPage.prototype.getPitchViewPitchCount = function() {
 };
 
 // TODO - this function isn't very reliable
-OverviewPage.prototype.getHeatMapImageTitle = function() {
+TeamOverviewPage.prototype.getHeatMapImageTitle = function() {
   var d = Promise.defer();
 
   this.getAttribute(HEATMAP_IMAGE, 'href').then(function(href) {
@@ -190,7 +189,7 @@ OverviewPage.prototype.getHeatMapImageTitle = function() {
   return d.promise;
 };
 
-OverviewPage.prototype.changeVisualMode = function(mode) { 
+TeamOverviewPage.prototype.changeVisualMode = function(mode) { 
   this.click(VISUAL_MODE_SELECT);
   var locator = By.xpath(`.//ul[@id='select2-results-1']/li/div[text()='${mode}']`);
   return this.click(locator)
@@ -199,7 +198,7 @@ OverviewPage.prototype.changeVisualMode = function(mode) {
 /****************************************************************************
 ** Catching Heat Maps
 *****************************************************************************/
-OverviewPage.prototype.drawBoxOnCatcherHeatMap = function(leftOrRight, x, y, width, height) {
+TeamOverviewPage.prototype.drawBoxOnCatcherHeatMap = function(leftOrRight, x, y, width, height) {
   var heatmapLocator = (leftOrRight == 'left') ? LEFT_CATCHING_HEATMAP : RIGHT_CATCHING_HEATMAP
   var heatmapImageLocator = (leftOrRight == 'left') ? LEFT_CATCHING_HEATMAP_IMAGE : RIGHT_CATCHING_HEATMAP_IMAGE
 
@@ -215,7 +214,7 @@ OverviewPage.prototype.drawBoxOnCatcherHeatMap = function(leftOrRight, x, y, wid
 };
 
 // not really a good way to signify which x to clear, so general function to clear all boxes
-OverviewPage.prototype.clearCatcherHeatMap = function(leftOrRight) {
+TeamOverviewPage.prototype.clearCatcherHeatMap = function(leftOrRight) {
   var closeHeatmapLocator = (leftOrRight == 'left') ? CLOSE_LEFT_CATCHING_HEATMAP_BOX_BUTTON : CLOSE_RIGHT_CATCHING_HEATMAP_BOX_BUTTON
   var heatmapLocator = (leftOrRight == 'left') ? LEFT_CATCHING_HEATMAP : RIGHT_CATCHING_HEATMAP
 
@@ -231,12 +230,12 @@ OverviewPage.prototype.clearCatcherHeatMap = function(leftOrRight) {
 /****************************************************************************
 ** Statcast Fielding
 *****************************************************************************/
-OverviewPage.prototype.getStatcastFieldingModalTableStat = function(row, col) {
+TeamOverviewPage.prototype.getStatcastFieldingModalTableStat = function(row, col) {
   var locator = By.xpath(`.//div[@id='tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoContainer']/table/tbody/tr[${row}]/td[${col}]`);
   return this.getText(locator, 30000);
 };
 
-OverviewPage.prototype.clickStatcastFieldingChartEvent = function(eventNum) {
+TeamOverviewPage.prototype.clickStatcastFieldingChartEvent = function(eventNum) {
   var d = Promise.defer();
   var locator = By.css('statcast-fielding-chart .bin-events path');
   
@@ -247,13 +246,13 @@ OverviewPage.prototype.clickStatcastFieldingChartEvent = function(eventNum) {
   return d.promise;
 };
 
-OverviewPage.prototype.closeStatcastFieldingModal = function() {
+TeamOverviewPage.prototype.closeStatcastFieldingModal = function() {
   var locator = By.css('#tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoId button');
   var element = driver.findElement(locator);
   return element.click();
 };
 
-OverviewPage.prototype.changeBallparkDropdown = function(ballpark) {
+TeamOverviewPage.prototype.changeBallparkDropdown = function(ballpark) {
   this.click(BALLPARK_SELECT);
   var optionLocator = By.xpath(`.//tmn-ballpark-selector/select/option[text()="${ballpark}"]`);
   this.click(optionLocator);
@@ -261,7 +260,7 @@ OverviewPage.prototype.changeBallparkDropdown = function(ballpark) {
   return this.waitUntilStaleness(BALLPARK_IMAGE, 30000);
 }
 
-OverviewPage.prototype.getCurrentBallparkImageID = function() {
+TeamOverviewPage.prototype.getCurrentBallparkImageID = function() {
   var d = Promise.defer();
 
   this.driver.findElements(BALLPARK_IMAGE).then(function(elements) {
@@ -274,4 +273,4 @@ OverviewPage.prototype.getCurrentBallparkImageID = function() {
 
 
 
-module.exports = OverviewPage;
+module.exports = TeamOverviewPage;

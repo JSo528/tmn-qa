@@ -2,12 +2,12 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var UmpiresPage = require('../../pages/mlb/umpires_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var UmpiresPage = require('../../../pages/mlb/umpires/umpires_page.js');
 
 var umpiresPage, filters, navbar;
 var slaaCol, ballFrmdCol;
@@ -33,18 +33,34 @@ test.describe('#Umpires Page', function() {
         assert.equal(title, 'Umpires', 'page title');
       });
     });
+  });
 
-    test.it("clicking a stat should open playlist modal & show correct data", function() {
+  test.describe('#VideoPlaylist', function() {    
+    test.it('clicking on a team stat opens the play by play modal', function() {
       umpiresPage.clickTableStat(1,5);
-      umpiresPage.getPitchLogAtBatHeaderText(1).then(function(text) {
+      umpiresPage.getMatchupsAtBatHeaderText(1).then(function(text) {
         assert.equal(text, 'RHP R. Gsellman (NYM) Vs LHB C. Hernandez (PHI), Top 1, 0 Out', '1st Video - at bat header text');
       });
     });
 
+    test.it('clicking into video opens correct video', function() {
+      umpiresPage.clickPitchVideoIcon(2);
+      umpiresPage.getVideoPlaylistText(1,1).then(function(text) {
+        assert.equal(text, "Top 1, 0 out");
+      });
+
+      umpiresPage.getVideoPlaylistText(1,3).then(function(text) {
+        assert.equal(text, "0-2 Fastball 95 MPH");
+      });          
+    }); 
+
     test.after(function() {
-      umpiresPage.clickPitchLogModalCloseBtn();
+      umpiresPage.closeVideoPlaylistModal();
+      umpiresPage.closePlayByPlaytModal();
     });
   });
+
+
 
   // Sorting
   test.describe('#Sorting', function() {
@@ -244,6 +260,10 @@ test.describe('#Umpires Page', function() {
           assert.equal(stat, report.topStat);
         });
       });
-    });        
+    });   
+
+    test.after(function() {
+      umpiresPage.changeReport('Pitch Calls');
+    });
   });
 });

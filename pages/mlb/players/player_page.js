@@ -9,6 +9,10 @@ var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
+// Mixins
+var _ = require('underscore');
+var videoPlaylist = require('../mixins/videoPlaylist.js');
+var occurrencesAndStreaks = require('../mixins/occurrencesAndStreaks.js');
 // Locators
 var REPORT_SELECT = {
   'batting': By.id('s2id_reportNavBaseballPlayerStatBatting'),
@@ -93,9 +97,6 @@ var VISUAL_MODE_SELECT = By.id('s2id_pageControlBaseballVisMode');
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
 
 // PITCH LOGS
-var BY_INNING_TAB = By.xpath(".//div[@id='reportTabsSection0']/.//li[1]/a");
-var FLAT_VIEW_TAB = By.xpath(".//div[@id='reportTabsSection0']/.//li[2]/a");
-
 var BY_INNING_TABLE_ID = {
   'batting': 'tableBaseballPlayerPitchLogBattingContainer',
   'pitching': 'tableBaseballPlayerPitchLogPitchingContainer',
@@ -111,14 +112,7 @@ var FLAT_VIEW_TABLE_ID = {
 }
 
 // OCCURENCES & STREAKS
-var STREAK_TYPE_SELECT = By.id('s2id_pageControlBaseballStrkType');
-var CONSTRAINT_COMPARE_SELECT = By.id('s2id_pageControlBaseballStrkConstraintCompare');
-var CONSTRAINT_VALUE_INPUT = By.id('pageControlBaseballStrkConstraintValue');
-
 var STREAK_GROUPING_SELECT = By.id('s2id_pageControlBaseballStrkGroupingPlayer');
-var STREAK_SCOPE_SELECT = By.id('s2id_pageControlBaseballStrkScope');
-var UPDATE_CONSTRAINTS_BUTTON = By.id('pageControlBaseballStrkBtnUpdate');
-
 var CONSTRAINT_STAT_SELECT = {
   'batting': By.id('s2id_pageControlBaseballStrkConstraintStatPlayer'),
   'pitching': By.id('s2id_pageControlBaseballStrkConstraintStatPlayerPitching'),
@@ -147,7 +141,6 @@ var COMP_SEARCH_1_INPUT = By.css('#compSearch1 input');
 var COMP_SEARCH_2_INPUT = By.css('#compSearch2 input');
 
 // MATCHUPS
-var INLINE_VIDEO_PLAYLIST_HEADER = By.css('h5.video-inline-header-txt');
 var MATCHUPS_AT_BAT_TABLE_ID = {
   'batting': 'tableBaseballPlayerPitchLogBattingVidMatchupContainer',
   'pitching': 'tableBaseballPlayerPitchLogPitchingVidMatchupContainer'
@@ -177,6 +170,10 @@ function PlayerPage(driver, section, subSection) {
 
 PlayerPage.prototype = Object.create(BasePage.prototype);
 PlayerPage.prototype.constructor = PlayerPage;
+
+// Mixins
+_.extend(PlayerPage.prototype, videoPlaylist); // Matchups
+_.extend(PlayerPage.prototype, occurrencesAndStreaks);
 
 PlayerPage.prototype.goToSection = function(section) {
   this.section = section;
@@ -351,6 +348,13 @@ PlayerPage.prototype.getOverviewTableStat = function(row, col) {
   return this.getText(locator, 30000);  
 }
 
+PlayerPage.prototype.clickOverviewTableStat = function(row, col) {
+  // First 3 rows are for the headers
+  var rowNum = row + 3;
+  var locator = By.xpath(`.//div[@id='${OVERVIEW_TABLE_ID[this.section]}']/table/tbody/tr[${rowNum}]/td[${col}]/span`);
+  return this.click(locator);  
+}
+
 /****************************************************************************
 ** Game Logs
 *****************************************************************************/
@@ -358,6 +362,12 @@ PlayerPage.prototype.getGameLogTableStat = function(row, col) {
   var rowNum = row + 5;
   var locator = By.xpath(`.//div[@id='tableBaseballPlayerGameLogContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
   return this.getText(locator, 30000);  
+}
+
+PlayerPage.prototype.clickGameLogTableStat = function(row, col) {
+  var rowNum = row + 5;
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerGameLogContainer']/table/tbody/tr[${rowNum}]/td[${col}]/span`);
+  return this.click(locator);  
 }
 
 /****************************************************************************
@@ -369,60 +379,14 @@ PlayerPage.prototype.getSplitsTableStat = function(row, col) {
 }
 
 /****************************************************************************
-** Pitch Logs
-*****************************************************************************/
-PlayerPage.prototype.clickByInningTab = function() {
-  var element = this.driver.findElement(BY_INNING_TAB);
-  return element.click();  
-};
-
-PlayerPage.prototype.clickFlatViewTab = function() {
-  var element = this.driver.findElement(FLAT_VIEW_TAB);
-  return element.click();  
-};
-
-// By Inning Table
-PlayerPage.prototype.getByInningHeaderText = function(topOrBottom, inning) {
-  var addRow = (topOrBottom == "bottom") ? 2 : 1;
-  var row = inning * 2 - 2 + addRow;
-  
-  var locator = By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[@class='sectionHeader sectionInning'][${row}]/td`);
-  return this.getText(locator, 20000);
-};
-
-PlayerPage.prototype.getByInningAtBatHeaderText = function(atBatNum) {
-  var locator = By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td`);
-  return this.getText(locator);
-};
-
-PlayerPage.prototype.getByInningAtBatFooterText = function(atBatNum) {
-  var locator = By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[@class='sectionHeaderAlt sectionEndOfBat'][${atBatNum}]/td`);
-  return this.getText(locator);
-};
-
-PlayerPage.prototype.getByInningTableStat = function(pitchNum, col) {
-  var locator = By.xpath(`.//div[@id='${BY_INNING_TABLE_ID[this.section]}']/table/tbody/tr[contains(@data-tmn-row-type,'row')][${pitchNum}]/td[${col}]`);
-  return this.getText(locator);
-};
-
-// Flat View Table
-PlayerPage.prototype.getFlatViewTableStat = function(rowNum, col) {
-  var locator = By.xpath(`.//div[@id='${FLAT_VIEW_TABLE_ID[this.section]}']/table/tbody/tr[${rowNum}]/td[${col}]`);
-  return this.getText(locator, 30000);
-};
-
-/****************************************************************************
 ** Occurences & Steaks
 *****************************************************************************/
-PlayerPage.prototype.changeMainConstraint = function(streakType, constraintCompare, constraintValue, constraintStat, streakGrouping, streakScope) {
-  this.changeDropdown(STREAK_TYPE_SELECT, DROPDOWN_INPUT, streakType);
-  this.changeDropdown(CONSTRAINT_COMPARE_SELECT, DROPDOWN_INPUT, constraintCompare);
-  this.clear(CONSTRAINT_VALUE_INPUT)
-  this.sendKeys(CONSTRAINT_VALUE_INPUT, constraintValue);
-  this.changeDropdown(CONSTRAINT_STAT_SELECT[this.section], DROPDOWN_INPUT, constraintStat);
-  this.changeDropdown(STREAK_GROUPING_SELECT, DROPDOWN_INPUT, streakGrouping);
-  this.changeDropdown(STREAK_SCOPE_SELECT, DROPDOWN_INPUT, streakScope);
-  return this.click(UPDATE_CONSTRAINTS_BUTTON);
+PlayerPage.prototype.constraintStatSelect = function() {
+  return CONSTRAINT_STAT_SELECT[this.section];
+};
+
+PlayerPage.prototype.streakGroupingSelect = function() {
+  return STREAK_GROUPING_SELECT;
 };
 
 PlayerPage.prototype.getStreaksTableStat = function(rowNum, col) {
@@ -503,28 +467,6 @@ PlayerPage.prototype.getCompTableStat = function(rowNum, col) {
 };
 
 /****************************************************************************
-** Matchups
-*****************************************************************************/
-PlayerPage.prototype.getMatchupsCurrentVideoHeader = function() {
-  return this.getText(INLINE_VIDEO_PLAYLIST_HEADER, 10000);
-}
-
-PlayerPage.prototype.getMatchupsVideoText = function(videoNum, lineNum) {
-  var locator = By.xpath(`.//div[@id='${MATCHUPS_VIDEO_TEXT_TABLE_ID[this.section]}']/.//a[@class='list-group-item'][${videoNum}]/div[${lineNum}]`);
-  return this.getText(locator, 10000);
-};
-
-PlayerPage.prototype.getMatchupsAtBatHeaderText = function(atBatNum) {
-  var locator = By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td`);
-  return this.getText(locator, 30000);
-};
-
-PlayerPage.prototype.clickPitchVideoIcon = function(pitchNum) {
-  var locator = By.xpath(`.//div[@id='${MATCHUPS_AT_BAT_TABLE_ID[this.section]}']/table/tbody/tr[contains(@data-tmn-row-type,'row')][${pitchNum}]/td[1]/i[@class='fa fa-film pull-left film-icon']`);
-  return this.click(locator);
-}
-
-/****************************************************************************
 ** Vs Teams/Pitchers
 *****************************************************************************/
 PlayerPage.prototype.getVsTableStat = function(rowNum, col) {
@@ -576,6 +518,20 @@ PlayerPage.prototype.getCurrentBallparkImageID = function() {
   });
   return d.promise;
 };
+
+PlayerPage.prototype.getDefensivePositioningTableStat = function(row, col) {
+  var rowNum = row + 3;
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerStatsOverviewStatcastBatterPositioningContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
+  return this.getText(locator, 30000);  
+};
+
+PlayerPage.prototype.clickDefensivePositioningTableStat = function(row, col) {
+  var rowNum = row + 3;
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerStatsOverviewStatcastBatterPositioningContainer']/table/tbody/tr[${rowNum}]/td[${col}]/span`);
+  return this.click(locator);  
+};
+
+
 
 // Data Comparison
 PlayerPage.prototype.statsTable = function() {

@@ -2,33 +2,29 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
-var StatsPage = require('../../pages/mlb/teams/stats_page.js');
-var TeamPage = require('../../pages/mlb/team/team_page.js');
-var OverviewPage = require('../../pages/mlb/team/overview_page.js');
-var PitchLogPage = require('../../pages/mlb/team/pitch_log_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
+var TeamPage = require('../../../pages/mlb/teams/team_page.js');
+var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, pitchLogPage;
+var navbar, filters, teamsPage, teamPage, overviewPage, teamPage;
 
 test.describe('#Team Catching Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
-    statsPage = new StatsPage(driver);
     teamPage = new TeamPage(driver);
     overviewPage = new OverviewPage(driver);
-    pitchLogPage = new PitchLogPage(driver, 'catching');
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
     filters.addSelectionToDropdownFilter("Seasons:", 2016);
-    statsPage.clickTeamTableCell(5,3); // should click into Texas Rangers
+    teamsPage.clickTeamTableCell(5,3); // should click into Texas Rangers
     teamPage.goToSection("catching");
   });  
 
@@ -79,6 +75,32 @@ test.describe('#Team Catching Section', function() {
       }); 
     });
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickOverviewTableStat(10);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'LHP M. Perez Vs LHB C. Dickerson (TB), Top 3, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(1);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 3, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-1 Fastball 94 MPH ProbSL:20.3%");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
+    });
+
     test.describe("#Reports", function() {
       var reports = [
         { type: 'Pitch Types', topStat: '10.9%', statType: "Curve%" },  
@@ -96,6 +118,10 @@ test.describe('#Team Catching Section', function() {
           });
         });
       });        
+
+      test.after(function() {
+        teamPage.changeReport('Catcher Framing');
+      });
     });
   });
 
@@ -148,6 +174,32 @@ test.describe('#Team Catching Section', function() {
       });            
     });
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickGameLogTableStat(1,6);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'LHP M. Perez Vs RHB L. Forsythe (TB), Top 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-1 Changeup 85 MPH ProbSL:98.1%");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
+    });    
+
     test.describe("#filters", function() {
       test.it('adding filter: (Vs Team: LA Angels) from sidebar displays correct data', function() {
         filters.addSelectionToDropdownSidebarFilter("Vs Team:", "LA Angels", true);
@@ -181,32 +233,31 @@ test.describe('#Team Catching Section', function() {
 
     test.describe('when selecting filter (Exit Direction: 0-30)', function() {
       test.before(function() {
-        pitchLogPage.clickByInningTab();
         filters.changeValuesForRangeSidebarFilter('Exit Direction:', 0, 30);
       });
       
       test.it('should show the correct at bat header text', function() {
-        pitchLogPage.getByInningAtBatHeaderText(1).then(function(text) {
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "LHP M. Perez Vs LHB C. Dickerson (TB), Top 3, 0 Out");
         });
       });
 
       test.it('should show the correct row data', function() {
-        pitchLogPage.getByInningTableStat(1,4).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        pitchLogPage.getByInningTableStat(1,6).then(function(probSL) {
+        teamPage.getMatchupsPitchText(1,6).then(function(probSL) {
           assert.equal(probSL, '88.4%');
         });
       });
 
       test.it('when clicking flat view tab it should show the correct stats', function() {
-        pitchLogPage.clickFlatViewTab();
-        pitchLogPage.getFlatViewTableStat(1,2).then(function(num) {
+        teamPage.clickFlatViewTab();
+        teamPage.getFlatViewPitchText(1,2).then(function(num) {
           assert.equal(num, 5, 'row 1 Num pithes');
         });
 
-        pitchLogPage.getFlatViewTableStat(1,3).then(function(count) {
+        teamPage.getFlatViewPitchText(1,3).then(function(count) {
           assert.equal(count, '0-2', 'row 1 count');
         });
       });

@@ -64,6 +64,14 @@ Filters.prototype.addSelectionToDropdownFilter = function(filterName, selection)
   return this.sendKeys(inputLocator, Key.ESCAPE);
 };
 
+// single select dropdown filters
+Filters.prototype.changeSelectionToDropdownFilter = function(filterName, selection) {
+  var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/a`);
+  var inputLocator = By.xpath(`.//ul[@class='select2-results']/li/div[contains(text(),"${selection}")]`);
+  this.click(locator);
+  return this.click(inputLocator)
+};
+
 // filterName<String> : name of the filter that should be changed 
 // select<Bool>       : whether the filter should be selected all or not  
 // update<Bool>       : whether the update button should be pressed or not
@@ -147,8 +155,7 @@ Filters.prototype.getCurrentFiltersForDropdownFilter = function(filterName) {
 Filters.prototype.changeFilterGroupDropdown = function(filterGroupName) {
   this.click(SIDEBAR_FILTER_GROUP_SELECT);
   var optionLocator = By.xpath(`.//select[@id='filterSideViewGroupSelect']/option[text()="${filterGroupName}"]`);
-  this.click(optionLocator);
-  return this.waitUntilStaleness(LOADING_CONTAINER);
+  return this.click(optionLocator);
 };
 
 // filterName<String> : name of the filter that should be changed 
@@ -162,7 +169,7 @@ Filters.prototype.toggleSidebarFilter = function(filterName, optionName, select)
   this.getAttribute(locator, 'class').then(function(className) {
     var isSelected = className.includes('active');
     if ((isSelected && !select) || (!isSelected && select)) {
-      d.fulfill(thiz.clickAndWait(locator, LOADING_CONTAINER));   
+      d.fulfill(thiz.clickAndWait(locator, LOADING_CONTAINER, 10000));   
     } else {
       d.fulfill(false);
     }

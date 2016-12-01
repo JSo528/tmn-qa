@@ -2,21 +2,18 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../../lib/constants.js');
 var credentials = require('../../../lib/credentials.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var LoginPage = require('../../../pages/login_page.js');
-var TeamPage = require('../../../pages/mlb/team/team_page.js');
+var TeamPage = require('../../../pages/mlb/teams/team_page.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
-var TeamsStatsPage = require('../../../pages/mlb/teams/stats_page.js');
 var PlayersPage = require('../../../pages/mlb/players/players_page.js');
-var PlayerPage = require('../../../pages/mlb/player/player_page.js');
+var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 var Rockies = require('../../../pages/mlb/custom_reports/rockies.js');
-var PlayersStatsPage = require('../../../pages/mlb/players/stats_page.js');
-var navbar, filters, loginPage, playersPage, rockies, playersStatsPage;
+var navbar, filters, loginPage, teamsPage, teamPage, playersPage, playerPage, rockies;
 
 test.describe('#CustomReports: Rockies', function() {
   test.before(function() {  
@@ -25,10 +22,8 @@ test.describe('#CustomReports: Rockies', function() {
     loginPage = new LoginPage(driver);
     rockies = new Rockies(driver);
     playersPage = new PlayersPage(driver);
-    playersStatsPage = new PlayersStatsPage(driver, 'batting');
     playerPage = new PlayerPage(driver, 'batting');
     teamsPage = new TeamsPage(driver);
-    teamsStatsPage = new TeamsStatsPage(driver);
     teamPage = new TeamPage(driver);
     
     var newURL = url.replace(/\/\b\w+\b/, 'rockies');
@@ -261,6 +256,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Players - Custom Pitching', function() {
     test.before(function() {
+      playersPage.goToSubSection('stats');
       playersPage.goToSection('pitching');
     })
 
@@ -352,10 +348,9 @@ test.describe('#CustomReports: Rockies', function() {
   test.describe('#Report: Player - Custom Batting', function() {
     test.before(function() {
       navbar.goToPlayersPage();
-      playersPage.goToSection('batting');
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersStatsPage.clickTableStat(2,3);
+      playersPage.clickTableStat(2,3);
       rockies.goToSubSection('customBatting');
       rockies.currentPage = 'playerCustomBatting';
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -491,10 +486,9 @@ test.describe('#CustomReports: Rockies', function() {
     test.before(function() {
       navbar.goToPlayersPage();
       playersPage.goToSection('pitching');
-      playersStatsPage.section = 'pitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersStatsPage.clickTableStat(3,3);
+      playersPage.clickTableStat(3,3);
       rockies.goToSubSection('customPitching');
       rockies.currentPage = 'playerCustomPitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -635,7 +629,7 @@ test.describe('#CustomReports: Rockies', function() {
       });
 
       test.it('table shows the correct data', function() {
-        teamsStatsPage.getTeamTableStat(1,10).then(function(stat) {
+        teamsPage.getTeamTableStat(1,10).then(function(stat) {
           assert.equal(stat, 402.36, '2016 BOS OFFwTPA');
         });
       });
@@ -644,7 +638,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Custom Batting', function() {
     test.before(function() {
-      teamsStatsPage.clickTeamTableCell(2,3);
+      teamsPage.clickTeamTableCell(2,3);
       rockies.goToSubSection('customBatting');
       rockies.currentPage = 'teamCustomBatting';
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -699,6 +693,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Team - Custom Pitching', function() {
     test.before(function() {
+      teamPage.goToSubSection('overview');
       teamPage.goToSection('pitching');
       rockies.goToSubSection('customPitching');
       rockies.currentPage = 'teamCustomPitching';

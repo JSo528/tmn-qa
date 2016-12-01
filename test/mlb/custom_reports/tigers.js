@@ -2,21 +2,17 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../../lib/constants.js');
 var credentials = require('../../../lib/credentials.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var LoginPage = require('../../../pages/login_page.js');
-var TeamPage = require('../../../pages/mlb/team/team_page.js');
+var TeamPage = require('../../../pages/mlb/teams/team_page.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
-var TeamsStatsPage = require('../../../pages/mlb/teams/stats_page.js');
 var PlayersPage = require('../../../pages/mlb/players/players_page.js');
-var PlayerPage = require('../../../pages/mlb/player/player_page.js');
 var Tigers = require('../../../pages/mlb/custom_reports/tigers.js');
-var PlayersStatsPage = require('../../../pages/mlb/players/stats_page.js');
-var navbar, filters, loginPage, playersPage, tigers, playersStatsPage;
+var navbar, filters, loginPage, playersPage, tigers, teamsPage, teamPage;
 
 test.describe('#CustomReports: Tigers', function() {
   test.before(function() {  
@@ -25,10 +21,7 @@ test.describe('#CustomReports: Tigers', function() {
     loginPage = new LoginPage(driver);
     tigers = new Tigers(driver);
     playersPage = new PlayersPage(driver);
-    playersStatsPage = new PlayersStatsPage(driver, 'batting');
-    playerPage = new PlayerPage(driver, 'batting');
     teamsPage = new TeamsPage(driver);
-    teamsStatsPage = new TeamsStatsPage(driver);
     teamPage = new TeamPage(driver);
     
     var newURL = url.replace(/\/\b\w+\b/, 'tigers.analyst');
@@ -47,7 +40,7 @@ test.describe('#CustomReports: Tigers', function() {
       navbar.goToTeamsPage();
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      teamsStatsPage.clickTeamTableCell(1,3);
+      teamsPage.clickTeamTableCell(1,3);
     });
 
     test.describe('#SubSection: OpposingHittingMatchupsWOBA', function() {
@@ -317,7 +310,7 @@ test.describe('#CustomReports: Tigers', function() {
       playersPage.goToSection('batting');
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersStatsPage.clickTableStat(1,3);
+      playersPage.clickTableStat(1,3);
     });
 
     test.describe('#SubSection: HittingTendencies', function() {

@@ -2,13 +2,13 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var UmpiresPage = require('../../pages/mlb/umpires_page.js');
-var UmpirePage = require('../../pages/mlb/umpire_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var UmpiresPage = require('../../../pages/mlb/umpires/umpires_page.js');
+var UmpirePage = require('../../../pages/mlb/umpires/umpire_page.js');
 
 var umpiresPage, umpirePage, filters, navbar;
 
@@ -121,6 +121,32 @@ test.describe('#Umpire Page', function() {
       });      
     });       
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        umpirePage.clickOverviewTableStat(1,14);
+        umpirePage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'RHP R. Gsellman (NYM) Vs RHB M. Franco (PHI), Top 1, 2 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        umpirePage.clickPitchVideoIcon(1);
+        umpirePage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 2 out");
+        });
+
+        umpirePage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Slider 89 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        umpirePage.closeVideoPlaylistModal();
+        umpirePage.closePlayByPlaytModal();
+      });
+    });
+
     test.describe('#filters', function() {
       test.it('adding filter: (Break Length (in): 6-9) from sidebar displays correct data', function() {
         filters.changeFilterGroupDropdown('Pitch')
@@ -155,7 +181,11 @@ test.describe('#Umpire Page', function() {
             assert.equal(stat, report.topStat, '2016 Season ' + report.statType);
           });
         });
-      });     
+      });  
+
+      test.after(function() {
+        umpirePage.changeReport('Pitch Call');
+      });   
     });
   });
 
@@ -184,6 +214,33 @@ test.describe('#Umpire Page', function() {
         assert.equal(slaa, 6.08, '9/25/2016 - SLAA');
       });                  
     });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        umpirePage.clickGameLogTableStat(1,7);
+        umpirePage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'RHP R. Gsellman (NYM) Vs LHB C. Hernandez (PHI), Top 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        umpirePage.clickPitchVideoIcon(1);
+        umpirePage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 0 out");
+        });
+
+        umpirePage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-2 Fastball 95 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        umpirePage.closeVideoPlaylistModal();
+        umpirePage.closePlayByPlaytModal();
+      });
+    });
+
 
     test.describe("#filters", function() {
       test.it('adding filter: (Forward Velocity: 60-80) from sidebar displays correct data', function() {
@@ -214,16 +271,16 @@ test.describe('#Umpire Page', function() {
       });
       
       test.it('should show the correct at bat header text', function() {
-        umpirePage.getByInningAtBatHeaderText(1).then(function(text) {
+        umpirePage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "RHP R. Gsellman (NYM) Vs LHB R. Howard (PHI), Top 1, 2 Out");
         });
       });
 
       test.it('should show the correct row data', function() {
-        umpirePage.getByInningTableStat(1,5).then(function(vel) {
+        umpirePage.getMatchupsPitchText(1,5).then(function(vel) {
           assert.equal(vel, 87, 'row 1 vel');
         });
-        umpirePage.getByInningTableStat(1,6).then(function(result) {
+        umpirePage.getMatchupsPitchText(1,6).then(function(result) {
           assert.equal(result, 'Strike Looking', 'row 1 Result');
         });
       });
@@ -232,11 +289,11 @@ test.describe('#Umpire Page', function() {
     test.describe('when clicking flat view tab', function() {
       test.it('should show the correct stats', function() {
         umpirePage.clickFlatViewTab();
-        umpirePage.getFlatViewTableStat(1,5).then(function(vel) {
+        umpirePage.getFlatViewPitchText(1,5).then(function(vel) {
           assert.equal(vel, 84, 'row 1 velocity');
         });
 
-        umpirePage.getFlatViewTableStat(4,7).then(function(result) {
+        umpirePage.getFlatViewPitchText(4,7).then(function(result) {
           assert.equal(result, 'LD', 'row 4 BattedBallType');
         });
       });

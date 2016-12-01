@@ -2,14 +2,13 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var StatsPage = require('../../pages/mlb/players/stats_page.js');
-var PlayerPage = require('../../pages/mlb/player/player_page.js');
-var CatcherPage = require('../../pages/mlb/player/catcher_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var PlayerPage = require('../../../pages/mlb/players/player_page.js');
+var CatcherPage = require('../../../pages/mlb/players/player_catcher_page.js');
 
 var navbar, filters, statsPage, playerPage, catcherPage;
 
@@ -19,12 +18,8 @@ test.describe('#Player Catching Section', function() {
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver);
     catcherPage = new CatcherPage(driver);
-    statsPage = new StatsPage(driver, 'batting');
 
-    navbar.goToPlayersPage();
-    filters.removeSelectionFromDropdownFilter("Seasons:");
-    filters.addSelectionToDropdownFilter("Seasons:", 2016);
-    statsPage.clickTableStat(15,3); // should click into Yadier Molina player link
+    navbar.search('Yadier Molina', 1);
   });  
 
   test.it('should be on Yadier Molina 2016 player page', function() {
@@ -137,6 +132,32 @@ test.describe('#Player Catching Section', function() {
       })
     })
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        playerPage.clickOverviewTableStat(5,12);
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs RHB R. Zimmerman (WSH), Top 1, 1 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        playerPage.clickPitchVideoIcon(1);
+        playerPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 1 out");
+        });
+
+        playerPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Two Seamer 92 MPH ProbSL:98.1%");
+        });          
+      }); 
+
+      test.after(function() {
+        playerPage.closeVideoPlaylistModal();
+        playerPage.closePlayByPlaytModal();
+      });
+    });    
+
     test.describe('#filters', function() {
       test.it('adding filter: (Pitch Type: Breaking Ball (curve/slider)) from sidebar displays correct data', function() {
         filters.toggleSidebarFilter("Pitch Type:", 'Breaking Ball (curve/slider)', true);
@@ -173,6 +194,10 @@ test.describe('#Player Catching Section', function() {
           });
         });
       });     
+
+      test.after(function() {
+        playerPage.changeReport('Catcher Framing');
+      });
     });
   });
 
@@ -201,6 +226,32 @@ test.describe('#Player Catching Section', function() {
         assert.equal(frmCntRaa, 0.19, '10/2/2016 - FrmCntRAA');
       });                  
     });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        playerPage.clickGameLogTableStat(1,7);
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs LHB J. Jaso (PIT), Top 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        playerPage.clickPitchVideoIcon(2);
+        playerPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 0 out");
+        });
+
+        playerPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Fastball 92 MPH ProbSL:88.7%");
+        });          
+      }); 
+
+      test.after(function() {
+        playerPage.closeVideoPlaylistModal();
+        playerPage.closePlayByPlaytModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Pitcher Pitch #: 60-150) from sidebar displays correct data', function() {
@@ -237,16 +288,16 @@ test.describe('#Player Catching Section', function() {
       });
       
       test.it('should show the correct at bat header text', function() {
-        playerPage.getByInningAtBatHeaderText(1).then(function(text) {
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "Vs LHB J. Bell (PIT), Top 5, 2 Out");
         });
       });
 
       test.it('should show the correct row data', function() {
-        playerPage.getByInningTableStat(1,6).then(function(probSl) {
+        playerPage.getMatchupsPitchText(1,6).then(function(probSl) {
           assert.equal(probSl, '0.0%', 'row 1 ProbSL');
         });
-        playerPage.getByInningTableStat(1,7).then(function(result) {
+        playerPage.getMatchupsPitchText(1,7).then(function(result) {
           assert.equal(result, 'Ball', 'row 1 Result');
         });
       });
@@ -255,11 +306,11 @@ test.describe('#Player Catching Section', function() {
     test.describe('when clicking flat view tab', function() {
       test.it('should show the correct stats', function() {
         playerPage.clickFlatViewTab();
-        playerPage.getFlatViewTableStat(1,5).then(function(vel) {
+        playerPage.getFlatViewPitchText(1,5).then(function(vel) {
           assert.equal(vel, 76, 'row 1 velocity');
         });
 
-        playerPage.getFlatViewTableStat(1,7).then(function(result) {
+        playerPage.getFlatViewPitchText(1,7).then(function(result) {
           assert.equal(result, 'Ball in the Dirt', 'row 1 result');
         });
       });

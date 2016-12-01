@@ -2,33 +2,29 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
-var StatsPage = require('../../pages/mlb/teams/stats_page.js');
-var TeamPage = require('../../pages/mlb/team/team_page.js');
-var OverviewPage = require('../../pages/mlb/team/overview_page.js');
-var PitchLogPage = require('../../pages/mlb/team/pitch_log_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
+var TeamPage = require('../../../pages/mlb/teams/team_page.js');
+var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, statsPage, teamPage, overviewPage, pitchLogPage;
+var navbar, filters, teamsPage, teamPage, overviewPage;
 
 test.describe('#Team Batting Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
-    statsPage = new StatsPage(driver);
     teamPage = new TeamPage(driver);
     overviewPage = new OverviewPage(driver);
-    pitchLogPage = new PitchLogPage(driver, 'batting');
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
     filters.addSelectionToDropdownFilter("Seasons:", 2016);
-    statsPage.clickTeamTableCell(1,3); // should click into BOS team link
+    teamsPage.clickTeamTableCell(1,3); // should click into BOS team link
   });  
 
   test.it('should be on BOS 2016 team page', function() {
@@ -119,6 +115,33 @@ test.describe('#Team Batting Section', function() {
         });        
       }); 
     });
+  
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickOverviewTableStat(9);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Bot 1, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "1-1 Fastball 97 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
+    });
+
 
     // Visual Mode Dropdown
     test.describe("#visual modes", function() {
@@ -187,6 +210,10 @@ test.describe('#Team Batting Section', function() {
           });
         });
       });        
+
+      test.after(function() {
+        teamPage.changeReport('Rate');
+      });
     });
   });
 
@@ -196,6 +223,32 @@ test.describe('#Team Batting Section', function() {
       teamPage.goToSubSection("roster");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
+    });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickRosterTableStat(1,7);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs RHP A. Sanchez (TOR), Bot 1, 2 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Bot 1, 2 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "2-2 Fastball 98 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
     });
 
     test.describe("#filters", function() {
@@ -238,6 +291,32 @@ test.describe('#Team Batting Section', function() {
       teamPage.getGameLogTableStat(1,10).then(function(obp) {
         assert.equal(obp, 0.235);
       });            
+    });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickGameLogTableStat(1,8);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Bot 1, 0 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "1-1 Fastball 97 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+        teamPage.closePlayByPlaytModal();
+      });
     });
 
     test.describe("#filters", function() {
@@ -357,22 +436,21 @@ test.describe('#Team Batting Section', function() {
 
     test.describe('when selecting filter (Pitch Result: Strike Looking)', function() {
       test.before(function() {
-        pitchLogPage.clickByInningTab();
         filters.changeFilterGroupDropdown('Pitch');
         filters.addSelectionToDropdownSidebarFilter('Pitch Result:', 'Strike Looking');
       });
       
       test.it('should show the correct at bat header text', function() {
-        pitchLogPage.getByInningAtBatHeaderText(1).then(function(text) {
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out");
         });
       });
 
       test.it('should show the correct row data', function() {
-        pitchLogPage.getByInningTableStat(1,4).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        pitchLogPage.getByInningTableStat(1,6).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,6).then(function(pitch) {
           assert.equal(pitch, 'Strike Looking');
         });
       });
@@ -380,12 +458,12 @@ test.describe('#Team Batting Section', function() {
 
     test.describe('when clicking flat view tab', function() {
       test.it('should show the correct stats', function() {
-        pitchLogPage.clickFlatViewTab();
-        pitchLogPage.getFlatViewTableStat(1,2).then(function(num) {
+        teamPage.clickFlatViewTab();
+        teamPage.getFlatViewPitchText(1,2).then(function(num) {
           assert.equal(num, '1', 'row 1 Num col equals 1');
         });
 
-        pitchLogPage.getFlatViewTableStat(1,3).then(function(count) {
+        teamPage.getFlatViewPitchText(1,3).then(function(count) {
           assert.equal(count, '0-0', 'row 1 count is 0-0');
         });
       });
@@ -536,19 +614,13 @@ test.describe('#Team Batting Section', function() {
       });
     });
 
-    test.it('clicking pitch video icon selects the correct video', function() {
-      teamPage.clickPitchVideoIcon(1);
-      teamPage.getMatchupsCurrentVideoHeader().then(function(text) {
-        assert.equal(text, '9/23/2016, 7:10 PM ET BOS 2 @ TB 1 - RHB D. Pedroia Vs RHP C. Archer (TB), Top 1, 0 out', 'video playlist header');
-      });
-    });  
-
     test.it('video playlist displays correct side information', function() {
-      teamPage.getMatchupsVideoText(2,1).then(function(text) {
-        assert.equal(text, 'Top 1, 0 Out', '2nd video, top line');
+      teamPage.clickPitchVideoIcon(1);
+      teamPage.getVideoPlaylistText(2,1).then(function(text) {
+        assert.equal(text, 'Top 1, 0 out', '2nd video, top line');
       });
 
-      teamPage.getMatchupsVideoText(2,2).then(function(text) {
+      teamPage.getVideoPlaylistText(2,2).then(function(text) {
         assert.equal(text, 'RHB D. Pedroia Vs RHP C. Archer (TB)', '2nd video, 2nd line');
       });      
     });  

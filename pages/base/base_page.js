@@ -241,7 +241,7 @@ BasePage.prototype.waitUntilStaleness = function(locator, timeout) {
   var d = Promise.defer();
   var thiz = this;
 
-  this.waitForDisplayed(locator).then(function() {
+  this.driver.wait(Until.elementLocated(locator),timeout).then(function () {
     thiz.driver.findElement(locator).then(function(element) {
       thiz.driver.wait(Until.stalenessOf(element), timeout).then(function() {
         d.fulfill(true)

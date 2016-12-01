@@ -217,8 +217,14 @@ exports.generateTests = function(title, testFiles, startUrl) {
     // since this is the last test
     test.describe('Last Test', function() {
       test.it('update testRun object', function() {
-        testRun.update({endedAt: new Date().getTime(), status: "finished"}).exec()
-      })  
-    })
+        // this accounts for the times when we kill a test
+        TestRun.findById(testRun.id, function(err, testRunObject) {
+          testRun = testRunObject;
+          if (testRun.endedAt == undefined && testRun.status == "ongoing") {
+            testRun.update({endedAt: new Date().getTime(), status: "finished"}).exec();
+          }
+        })
+      });  
+    });
   });
 };

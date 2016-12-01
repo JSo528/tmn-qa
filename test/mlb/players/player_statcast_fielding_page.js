@@ -2,27 +2,22 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var StatsPage = require('../../pages/mlb/players/stats_page.js');
-var PlayerPage = require('../../pages/mlb/player/player_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 
-var navbar, filters, statsPage, playerPage;
+var navbar, filters, playerPage;
 
 test.describe('#Player StatcastFielding Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver);
-    statsPage = new StatsPage(driver, 'batting');
 
-    navbar.goToPlayersPage();
-    filters.removeSelectionFromDropdownFilter("Seasons:");
-    filters.addSelectionToDropdownFilter("Seasons:", 2016);
-    statsPage.clickTableStat(7,3); // should click into Mookie Betts
+    navbar.search('Mookie Betts', 1);
   });  
 
   test.it('should be on Mookie Betts 2016 player page', function() {
@@ -99,12 +94,38 @@ test.describe('#Player StatcastFielding Section', function() {
       })
     })    
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        playerPage.clickOverviewTableStat(1,8);
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs RHP M. Barnes (NYY) , Bot 6, 2 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        playerPage.clickPitchVideoIcon(1);
+        playerPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Bot 6, 2 out");
+        });
+
+        playerPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Fastball 96 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        playerPage.closeVideoPlaylistModal();
+        playerPage.closePlayByPlaytModal();
+      });
+    });
+
     test.describe("#Reports", function() {
       var reports = [
-        { type: 'Outfielder Air Defense Range', topStat: "115.0%", statType: "ExRange%" },  
-        { type: 'Outfielder Air Defense Positioning', topStat: "103.8%", statType: "OFWPosAirWOut%" },
-        { type: 'Outfielder Air Defense Skills', topStat: "65.3%", statType: "OFAirOut%" },  
+        { type: 'Outfielder Air Defense Skills', topStat: "65.5%", statType: "OFAirOut%" },  
         { type: 'Outfield Batter Positioning', topStat: "104.6%", statType: "OFWPosAirWOut%" },    
+        { type: 'Outfielder Air Defense Positioning', topStat: "103.8%", statType: "OFWPosAirWOut%" },
+        { type: 'Outfielder Air Defense Range', topStat: "115.0%", statType: "ExRange%" },  
       ];
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
@@ -114,7 +135,7 @@ test.describe('#Player StatcastFielding Section', function() {
             assert.equal(stat, report.topStat, '2016 Season: ' + report.statType);
           });
         });
-      });        
+      });
     });
   });
 
@@ -143,6 +164,40 @@ test.describe('#Player StatcastFielding Section', function() {
         assert.equal(outs, 0, '# of OFOutsPM');
       });                  
     });
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        playerPage.clickGameLogTableStat(1,6);
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs LHP D. Pomeranz (TOR) , Top 9, 1 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        playerPage.clickPitchVideoIcon(1);
+        playerPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 9, 1 out");
+        });
+
+        playerPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "1-0 Fastball 93 MPH");
+        });          
+      }); 
+
+      test.it('clicking similar plays icon opens modal', function() {
+        playerPage.closeVideoPlaylistModal();
+        playerPage.clickSimiliarPlaysIcon(1);
+        playerPage.getSimiliarPlaysHeader().then(function(title) {
+          assert.equal(title, '50 most similar fielding plays to successful catch by Mookie Betts in RF at Fenway Park (10/2/2016). 49 of 50 balls caught', 'modal title');
+        })
+      });
+
+      test.after(function() {
+        playerPage.closeSimiliarPlaysModal();
+        playerPage.closePlayByPlaytModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Exit Velocity: 90-120) from sidebar displays correct data', function() {
@@ -181,16 +236,16 @@ test.describe('#Player StatcastFielding Section', function() {
       });
       
       test.it('should show the correct at bat footer text', function() {
-        playerPage.getByInningAtBatFooterText(1).then(function(text) {
+        playerPage.getMatchupsAtBatFooterText(1).then(function(text) {
           assert.equal(text, "Devon Travis Flies Out To Right Fielder Mookie Betts.");
         });
       });
 
       test.it('should show the correct row data', function() {
-        playerPage.getByInningTableStat(1,2).then(function(hang) {
+        playerPage.getMatchupsPitchText(1,2).then(function(hang) {
           assert.equal(hang, '3.67s', 'row 1 hang');
         });
-        playerPage.getByInningTableStat(1,3).then(function(distance) {
+        playerPage.getMatchupsPitchText(1,3).then(function(distance) {
           assert.equal(distance, '42.8ft', 'row 1 dist');
         });
       });
@@ -199,11 +254,11 @@ test.describe('#Player StatcastFielding Section', function() {
     test.describe('when clicking flat view tab', function() {
       test.it('should show the correct stats', function() {
         playerPage.clickFlatViewTab();
-        playerPage.getFlatViewTableStat(1,4).then(function(react) {
+        playerPage.getFlatViewPitchText(1,4).then(function(react) {
           assert.equal(react, '0.8s', 'row 1 react');
         });
 
-        playerPage.getFlatViewTableStat(1,6).then(function(pathEff) {
+        playerPage.getFlatViewPitchText(1,6).then(function(pathEff) {
           assert.equal(pathEff, '88.6%', 'row 1 pathEff');
         });
       });

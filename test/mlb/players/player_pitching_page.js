@@ -2,31 +2,22 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
+var constants = require('../../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/mlb/navbar.js');
-var Filters = require('../../pages/mlb/filters.js');
-var PlayersPage = require('../../pages/mlb/players/players_page.js');
-var StatsPage = require('../../pages/mlb/players/stats_page.js');
-var PlayerPage = require('../../pages/mlb/player/player_page.js');
+var Navbar = require('../../../pages/mlb/navbar.js');
+var Filters = require('../../../pages/mlb/filters.js');
+var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 
-var navbar, filters, statsPage, playerPage;
+var navbar, filters, playerPage;
 
 test.describe('#Player Pitching Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver, 'pitching');
-    playersPage = new PlayersPage(driver);
-    statsPage = new StatsPage(driver, 'pitching');
 
-    navbar.goToPlayersPage();
-    playersPage.goToSection('pitching');
-    filters.removeSelectionFromDropdownFilter("Seasons:");
-    filters.addSelectionToDropdownFilter("Seasons:", 2016);
-
-    statsPage.clickTableStat(1,3); // should click into Kyle Hendricks player link
+    navbar.search('Kyle Hendricks', 1);
   });  
 
   test.it('should be on Kyle Hendricks 2016 player page', function() {
@@ -133,6 +124,32 @@ test.describe('#Player Pitching Section', function() {
       });        
     });
 
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        playerPage.clickOverviewTableStat(1,13);
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs LHB M. Carpenter (STL), Top 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        playerPage.clickPitchVideoIcon(1);
+        playerPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 0 out");
+        });
+
+        playerPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "2-2 Changeup 81 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        playerPage.closeVideoPlaylistModal();
+        playerPage.closePlayByPlaytModal();
+      });
+    });      
+
     test.describe("#Reports", function() {
       var reports = [
         { type: 'Rate', topStat: '22.8%', statType: "K%" },  
@@ -146,7 +163,7 @@ test.describe('#Player Pitching Section', function() {
         { type: 'Hit Types', topStat: 96, statType: "Fly#" },  
         { type: 'Hit Locations', topStat: "17.2%", statType: "HDeadCtr%" },  
         { type: 'Home Runs', topStat: 2, statType: "HROpp" },  
-        { type: 'Movement', topStat: 203.6, statType: "SpinDir" },  
+        { type: 'Movement', topStat: '1:03', statType: "SpinDir" },  
         { type: 'Bids', topStat: 1, statType: "NH8++", colNum: 10 },  
         { type: 'Baserunning', topStat: '76.5%', statType: "SB%", colNum: 8 },  
         { type: 'Exit Data', topStat: 0.117, statType: "ExISO" },  
@@ -161,7 +178,11 @@ test.describe('#Player Pitching Section', function() {
             assert.equal(stat, report.topStat, '2016 Season: ' + report.statType);
           });
         });
-      });        
+      }); 
+
+      test.after(function() {
+        playerPage.changeReport('Traditional');
+      });       
     });
   });
 
@@ -186,6 +207,33 @@ test.describe('#Player Pitching Section', function() {
         assert.equal(pitches, 88, '# of Pitches');
       });            
     });
+
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        playerPage.clickGameLogTableStat(1,6);
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs RHB J. Peraza (CIN), Bot 1, 0 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        playerPage.clickPitchVideoIcon(2);
+        playerPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Bot 1, 0 out");
+        });
+
+        playerPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-0 Fastball 87 MPH");
+        });          
+      }); 
+
+      test.after(function() {
+        playerPage.closeVideoPlaylistModal();
+        playerPage.closePlayByPlaytModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (After Pitch Run Diff: -1 to 1) from sidebar displays correct data', function() {
@@ -250,7 +298,7 @@ test.describe('#Player Pitching Section', function() {
         { type: 'Hit Types', topStat: 124, statType: "Line#" },  
         { type: 'Hit Locations', topStat: "20.5%", statType: "HRtCtr%" },  
         { type: 'Home Runs', topStat: 303.5, statType: "FBDst", colNum: 8 },   
-        { type: 'Movement', topStat: 5.80, statType: "Extension" },  
+        { type: 'Movement', topStat: 1533, statType: "SVSpin" },  
         { type: 'Bids', topStat: 8.0, statType: "NHIP", colNum: 13 },  
         { type: 'Baserunning', topStat: 13, statType: "SB", colNum: 4 },  
         { type: 'Exit Data', topStat: 0.281, statType: "ExWOBA" }        
@@ -284,16 +332,16 @@ test.describe('#Player Pitching Section', function() {
       });
       
       test.it('should show the correct at bat header text', function() {
-        playerPage.getByInningAtBatHeaderText(1).then(function(text) {
+        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, "Vs LHB J. Villar (MIL), Top 1, 0 Out");
         });
       });
 
       test.it('should show the correct row data', function() {
-        playerPage.getByInningTableStat(1,4).then(function(pitch) {
+        playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        playerPage.getByInningTableStat(1,6).then(function(pitch) {
+        playerPage.getMatchupsPitchText(1,6).then(function(pitch) {
           assert.equal(pitch, 'Strike Looking');
         });
       });
@@ -302,11 +350,11 @@ test.describe('#Player Pitching Section', function() {
     test.describe('when clicking flat view tab', function() {
       test.it('should show the correct stats', function() {
         playerPage.clickFlatViewTab();
-        playerPage.getFlatViewTableStat(1,2).then(function(num) {
+        playerPage.getFlatViewPitchText(1,2).then(function(num) {
           assert.equal(num, '1', 'row 1 Num (pitches) col');
         });
 
-        playerPage.getFlatViewTableStat(1,3).then(function(count) {
+        playerPage.getFlatViewPitchText(1,3).then(function(count) {
           assert.equal(count, '0-0', 'row 1 count');
         });
       });
@@ -456,19 +504,13 @@ test.describe('#Player Pitching Section', function() {
       });
     });
 
-    test.it('clicking pitch video icon selects the correct video', function() {
-      playerPage.clickPitchVideoIcon(1);
-      playerPage.getMatchupsCurrentVideoHeader().then(function(text) {
-        assert.equal(text, '9/26/2016, 7:05 PM ET CHC 12 @ PIT 2 - Vs RHB A. McCutchen (PIT), Bot 1, 1 out', 'video playlist header');
-      });
-    });  
-
     test.it('video playlist displays correct side information', function() {
-      playerPage.getMatchupsVideoText(2,1).then(function(text) {
-        assert.equal(text, 'Bot 1, 1 Out', '2nd video, top line');
+      playerPage.clickPitchVideoIcon(1);
+      playerPage.getVideoPlaylistText(2,1).then(function(text) {
+        assert.equal(text, 'Bot 1, 1 out', '2nd video, top line');
       });
 
-      playerPage.getMatchupsVideoText(2,3).then(function(text) {
+      playerPage.getVideoPlaylistText(2,3).then(function(text) {
         assert.equal(text, '1-1 Changeup 80 MPH');
       });      
     });  

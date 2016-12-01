@@ -1,12 +1,16 @@
 'use strict';
 
 // Load Base Page
-var BasePage = require('../../pages/base/base_page.js');
+var BasePage = require('../../../pages/base/base_page.js');
 
 // Webdriver helpers
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
+
+// Mixins
+var _ = require('underscore');
+var videoPlaylist = require('../mixins/videoPlaylist.js');
 
 // Locators
 var PAGE_TITLE = By.css('h2.report-title');
@@ -94,26 +98,9 @@ UmpiresPage.prototype.changeReport = function(report) {
   return this.changeDropdown(REPORT_SELECT, DROPDOWN_INPUT, report);
 };
 
-// Video Playlist
-UmpiresPage.prototype.getPitchLogAtBatHeaderText = function(atBatNum) {
-  var locator = By.xpath(`.//div[@id='tableBaseballUmpirePitchLogModalContainer']/table/tbody/tr[@class='sectionHeaderAlt sectionStartOfBat'][${atBatNum}]/td`);
-  return this.getText(locator, 30000);
-};
-
-UmpiresPage.prototype.clickPitchLogModalCloseBtn = function() {
-  return this.click(PITCH_LOG_MODAL_CLOSE_BTN);
-}
-
-// Data Comparison
-UmpiresPage.prototype.reports = [
-    "Pitch Calls",
-    "Batters",
-    "Pitch Rates",
-    "Pitch Counts",
-    "Pitch Types",
-    "Pitch Type Counts",
-  ]
-
 UmpiresPage.prototype.statsTable = STATS_TABLE;
+
+// Mixins
+_.extend(UmpiresPage.prototype, videoPlaylist);
 
 module.exports = UmpiresPage;
