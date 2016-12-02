@@ -91,7 +91,7 @@ test.describe('#Team Catching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-1 Fastball 94 MPH ProbSL:20.3%");
+          assert.equal(text, "0-1 Fastball 93.9341 MPH ,20.3% ProbSL - Strike Looking");
         });          
       }); 
 
@@ -190,7 +190,7 @@ test.describe('#Team Catching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-1 Changeup 85 MPH ProbSL:98.1%");
+          assert.equal(text, "0-1 Changeup 85.1066 MPH ,98.1% ProbSL - Ground Out");
         });          
       }); 
 

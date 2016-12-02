@@ -57,8 +57,8 @@ test.describe('#Player Pitching Section', function() {
       });      
 
       test.it('selecting a heat map rectangle updates the data table', function() {
-        playerPage.getOverviewTableStat(3,4).then(function(count) {
-          assert.equal(count, 269, 'correct number of pitches');
+        playerPage.getOverviewTableStat(5,4).then(function(count) {
+          assert.equal(count, 269, '2016 Season - # of pitches');
         });              
       });            
 
@@ -85,8 +85,8 @@ test.describe('#Player Pitching Section', function() {
       test.it('clearing the heat maps resets the data table', function() {
         playerPage.clickHeatMapLink();
         playerPage.clearHeatMap();
-        playerPage.getOverviewTableStat(3,4).then(function(count) {
-          assert.equal(count, 2888, '2016 season: pitches');
+        playerPage.getOverviewTableStat(10,4).then(function(count) {
+          assert.equal(count, 2888, '2016 season - # of pitches');
         });        
       }); 
     });
@@ -127,7 +127,7 @@ test.describe('#Player Pitching Section', function() {
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    
       test.it('clicking on a stat opens the play by play modal', function() {
-        playerPage.clickOverviewTableStat(1,13);
+        playerPage.clickOverviewTableStat(8,13);
         playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, 'Vs LHB M. Carpenter (STL), Top 1, 0 Out');
         });
@@ -140,7 +140,7 @@ test.describe('#Player Pitching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2-2 Changeup 81 MPH");
+          assert.equal(text, "2-2 Changeup 81.0796 MPH - Single on a Fly Ball");
         });          
       }); 
 
@@ -174,7 +174,7 @@ test.describe('#Player Pitching Section', function() {
           playerPage.changeReport(report.type);  
           // 2016 Season, 13th Col
           var col = report.colNum || 13
-          playerPage.getOverviewTableStat(3,col).then(function(stat) {
+          playerPage.getOverviewTableStat(10,col).then(function(stat) {
             assert.equal(stat, report.topStat, '2016 Season: ' + report.statType);
           });
         });
@@ -225,7 +225,7 @@ test.describe('#Player Pitching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 87 MPH");
+          assert.equal(text, "0-0 Fastball 86.6839 MPH - Ball");
         });          
       }); 
 
@@ -478,7 +478,7 @@ test.describe('#Player Pitching Section', function() {
       });
 
       playerPage.getCompTableStat(1,10).then(function(ip) {
-        assert.equal(ip, 149.0);
+        assert.equal(ip, 152.0, 'Clayton Kershaw 2016 Season - # of IP');
       });
     });
   });
@@ -511,7 +511,7 @@ test.describe('#Player Pitching Section', function() {
       });
 
       playerPage.getVideoPlaylistText(2,3).then(function(text) {
-        assert.equal(text, '1-1 Changeup 80 MPH');
+        assert.equal(text, '0-1 Changeup 79.6 MPH - Ball');
       });      
     });  
   });  

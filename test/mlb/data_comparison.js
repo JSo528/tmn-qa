@@ -24,7 +24,6 @@ var PlayerPage = require('../../pages/mlb/players/player_page.js');
 var UmpiresPage = require('../../pages/mlb/umpires/umpires_page.js');
 var UmpirePage = require('../../pages/mlb/umpires/umpire_page.js');
 
-var stagUrl = constants.urls.mlb.dodgersStaging;
 var prodUrl = constants.urls.mlb.dodgers;
 var navbar, filters, standingsPage, scoresPage, detailedScorePage, umpiresPage, 
   teamPage, playersPage, playerPage, umpirePage;
@@ -41,7 +40,7 @@ test.describe('#DataComparison', function() {
     umpiresPage = new UmpiresPage(driver);
     reports = new Reports(driver);
 
-    browser.visit(stagUrl);
+    browser.visit(url);
     browser.openNewTab(prodUrl).then(function() {
       browser.switchToTab(1);  
     })
@@ -308,34 +307,17 @@ test.describe('#DataComparison', function() {
 
     test.describe('#BattingSection', function() {
       var subSectionsWithReport = [
-        "overview",
         "gameLog",
         "splits",
         "vsTeams",
-        "vsPitchers"
+        "vsPitchers",
+        "overview"
       ];
 
       var subSectionsWithoutReport = [
         "pitchLog",
         "matchups"
       ];
-      
-      subSectionsWithReport.forEach(function(subSection) {
-        test.describe('#subSection: '+subSection, function() {
-          test.before(function() {
-            report = reports.selectRandomReport('batting');
-            browser.executeForEachTab(function() {
-              teamPage.goToSubSection(subSection);
-              teamPage.changeReport(report);
-            });
-          });
-          test.it('pages show the same table data', function() {
-            browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
-              assert.equal( contentArray[0], contentArray[1], 'table data for Report: '+report);
-            }); 
-          });
-        });
-      });
 
       subSectionsWithoutReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {          
@@ -350,6 +332,23 @@ test.describe('#DataComparison', function() {
             }); 
           });
         });
+
+        subSectionsWithReport.forEach(function(subSection) {
+          test.describe('#subSection: '+subSection, function() {
+            test.before(function() {
+              report = reports.selectRandomReport('batting');
+              browser.executeForEachTab(function() {
+                teamPage.goToSubSection(subSection);
+                teamPage.changeReport(report);
+              });
+            });
+            test.it('pages show the same table data', function() {
+              browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
+                assert.equal( contentArray[0], contentArray[1], 'table data for Report: '+report);
+              }); 
+            });
+          });
+        });        
       });
 
       test.describe('#subSection: roster', function() {
@@ -391,12 +390,12 @@ test.describe('#DataComparison', function() {
       });
 
       var subSectionsWithReport = [
-        "overview",
         "roster",
         "gameLog",
         "splits",
         "vsTeams",
-        "vsHitters"
+        "vsHitters",
+        "overview"
       ];
 
       var subSectionsWithoutReport = [
@@ -404,6 +403,20 @@ test.describe('#DataComparison', function() {
         "matchups",
       ];
       
+      subSectionsWithoutReport.forEach(function(subSection) {
+        test.describe('#subSection: '+subSection, function() {          
+          test.before(function() {
+            browser.executeForEachTab(function() {
+              teamPage.goToSubSection(subSection);
+            });   
+          })
+          test.it('pages show the same table data', function() {
+            browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
+              assert.equal( contentArray[0], contentArray[1]);
+            }); 
+          });
+        });
+      });      
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
           test.before(function() {
@@ -420,6 +433,24 @@ test.describe('#DataComparison', function() {
           });
         });
       });
+    }); 
+
+    test.describe('#CatchingSection', function() {
+      test.before(function() {
+        browser.executeForEachTab(function() {
+          teamPage.goToSection('catching');
+        });
+      });
+
+      var subSectionsWithReport = [
+        "roster",
+        "gameLog",
+        "overview",
+      ];
+
+      var subSectionsWithoutReport = [
+        "pitchLog",
+      ];
 
       subSectionsWithoutReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {          
@@ -435,25 +466,7 @@ test.describe('#DataComparison', function() {
           });
         });
       });
-    }); 
 
-    test.describe('#CatchingSection', function() {
-      test.before(function() {
-        browser.executeForEachTab(function() {
-          teamPage.goToSection('catching');
-        });
-      });
-
-      var subSectionsWithReport = [
-        "overview",
-        "roster",
-        "gameLog",
-      ];
-
-      var subSectionsWithoutReport = [
-        "pitchLog",
-      ];
-      
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
           test.before(function() {
@@ -469,8 +482,26 @@ test.describe('#DataComparison', function() {
             }); 
           });
         });
+      });      
+    }); 
+   
+    test.describe('#StatcastFieldingSection', function() {
+      test.before(function() {
+        browser.executeForEachTab(function() {
+          teamPage.goToSection('statcastFielding');
+        });
       });
 
+      var subSectionsWithReport = [
+        "roster",
+        "gameLog",
+        "overview"
+      ];
+
+      var subSectionsWithoutReport = [
+        "pitchLog"
+      ];
+      
       subSectionsWithoutReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {          
           test.before(function() {
@@ -485,25 +516,7 @@ test.describe('#DataComparison', function() {
           });
         });
       });
-    }); 
-   
-    test.describe('#StatcastFieldingSection', function() {
-      test.before(function() {
-        browser.executeForEachTab(function() {
-          teamPage.goToSection('statcastFielding');
-        });
-      });
 
-      var subSectionsWithReport = [
-        "overview",
-        "roster",
-        "gameLog",
-      ];
-
-      var subSectionsWithoutReport = [
-        "pitchLog",
-      ];
-      
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
           test.before(function() {
@@ -516,21 +529,6 @@ test.describe('#DataComparison', function() {
           test.it('pages show the same table data', function() {
             browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
               assert.equal( contentArray[0], contentArray[1], 'table data for Report: '+report);
-            }); 
-          });
-        });
-      });
-
-      subSectionsWithoutReport.forEach(function(subSection) {
-        test.describe('#subSection: '+subSection, function() {          
-          test.before(function() {
-            browser.executeForEachTab(function() {
-              teamPage.goToSubSection(subSection);
-            });   
-          })
-          test.it('pages show the same table data', function() {
-            browser.getFullContentForEachTab(teamPage.statsTable()).then(function(contentArray) {
-              assert.equal( contentArray[0], contentArray[1]);
             }); 
           });
         });
@@ -549,11 +547,11 @@ test.describe('#DataComparison', function() {
 
     test.describe('#BattingSection', function() {
       var subSectionsWithReport = [
-        "overview",
         "gameLog",
         "splits",
         "vsTeams",
-        "vsPitchers"
+        "vsPitchers",
+        "overview",
       ];
 
       var subSectionsWithoutReport = [
@@ -561,6 +559,21 @@ test.describe('#DataComparison', function() {
         "matchups",
         "defensivePositioning"
       ];
+
+      subSectionsWithoutReport.forEach(function(subSection) {
+        test.describe('#subSection: '+subSection, function() {          
+          test.before(function() {
+            browser.executeForEachTab(function() {
+              playerPage.goToSubSection(subSection);
+            });   
+          })
+          test.it('pages show the same table data', function() {
+            browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
+              assert.equal( contentArray[0], contentArray[1]);
+            }); 
+          });
+        });
+      });
 
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
@@ -579,20 +592,7 @@ test.describe('#DataComparison', function() {
         });
       });
 
-      subSectionsWithoutReport.forEach(function(subSection) {
-        test.describe('#subSection: '+subSection, function() {          
-          test.before(function() {
-            browser.executeForEachTab(function() {
-              playerPage.goToSubSection(subSection);
-            });   
-          })
-          test.it('pages show the same table data', function() {
-            browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
-              assert.equal( contentArray[0], contentArray[1]);
-            }); 
-          });
-        });
-      });
+  
     }); 
 
     test.describe('#StatcastFieldingSection', function() {
@@ -603,13 +603,29 @@ test.describe('#DataComparison', function() {
       });
 
       var subSectionsWithReport = [
-        "overview",
-        "gameLog"
+        "gameLog",
+        "overview"
       ];
 
       var subSectionsWithoutReport = [
         "pitchLog"
       ];
+
+      subSectionsWithoutReport.forEach(function(subSection) {
+        test.describe('#subSection: '+subSection, function() {          
+          test.before(function() {
+            browser.executeForEachTab(function() {
+              playerPage.goToSubSection(subSection);
+            });   
+          });
+
+          test.it('pages show the same table data', function() { 
+            browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
+              assert.equal( contentArray[0], contentArray[1]);
+            }); 
+          });
+        });
+      });
 
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
@@ -627,22 +643,6 @@ test.describe('#DataComparison', function() {
           });
         });
       });
-
-      subSectionsWithoutReport.forEach(function(subSection) {
-        test.describe('#subSection: '+subSection, function() {          
-          test.before(function() {
-            browser.executeForEachTab(function() {
-              playerPage.goToSubSection(subSection);
-            });   
-          });
-
-          test.it('pages show the same table data', function() { 
-            browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
-              assert.equal( contentArray[0], contentArray[1]);
-            }); 
-          });
-        });
-      });
     }); 
 
     test.describe('#PitchingSection', function() {
@@ -654,17 +654,32 @@ test.describe('#DataComparison', function() {
       });
 
       var subSectionsWithReport = [
-        "overview",
         "gameLog",
         "splits",
         "vsTeams",
-        "vsHitters"
+        "vsHitters",
+        "overview"
       ];
 
       var subSectionsWithoutReport = [
         "pitchLog",
         "matchups"
       ];
+
+      subSectionsWithoutReport.forEach(function(subSection) {
+        test.describe('#subSection: '+subSection, function() {          
+          test.before(function() {
+            browser.executeForEachTab(function() {
+              playerPage.goToSubSection(subSection);
+            });   
+          });
+          test.it('pages show the same table data', function() {
+            browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
+              assert.equal( contentArray[0], contentArray[1]);
+            }); 
+          });
+        });
+      });
 
       subSectionsWithReport.forEach(function(subSection) {
         test.describe('#subSection: '+subSection, function() {
@@ -678,21 +693,6 @@ test.describe('#DataComparison', function() {
           test.it('pages show the same table data', function() {
             browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
               assert.equal( contentArray[0], contentArray[1], 'table data for Report: '+report);
-            }); 
-          });
-        });
-      });
-
-      subSectionsWithoutReport.forEach(function(subSection) {
-        test.describe('#subSection: '+subSection, function() {          
-          test.before(function() {
-            browser.executeForEachTab(function() {
-              playerPage.goToSubSection(subSection);
-            });   
-          });
-          test.it('pages show the same table data', function() {
-            browser.getFullContentForEachTab(playerPage.statsTable()).then(function(contentArray) {
-              assert.equal( contentArray[0], contentArray[1]);
             }); 
           });
         });

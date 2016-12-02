@@ -132,7 +132,7 @@ test.describe('#Team Batting Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-1 Fastball 97 MPH");
+          assert.equal(text, "1-1 Fastball 96.5058 MPH - Ground Out");
         });          
       }); 
 
@@ -241,7 +241,7 @@ test.describe('#Team Batting Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2-2 Fastball 98 MPH");
+          assert.equal(text, "2-2 Fastball 97.5489 MPH - Fly Out");
         });          
       }); 
 
@@ -309,7 +309,7 @@ test.describe('#Team Batting Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-1 Fastball 97 MPH");
+          assert.equal(text, "1-1 Fastball 96.5058 MPH - Ground Out");
         });          
       }); 
 

@@ -62,7 +62,7 @@ test.describe('#DetailedScore Page', function() {
           });
 
           detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-2 Changeup 85 MPH");
+            assert.equal(text, "0-2 Changeup 85.3742 MPH - Strikeout (Swinging)");
           });          
         }); 
 

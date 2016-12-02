@@ -113,7 +113,7 @@ test.describe('#Teams Page', function() {
           });
 
           teamsPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-2 Fastball 100 MPH");
+            assert.equal(text, "0-2 Fastball 99.9587 MPH - Single on a Line Drive");
           });          
         }); 
 

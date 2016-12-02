@@ -148,7 +148,7 @@ test.describe('#Player Catching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Two Seamer 92 MPH ProbSL:98.1%");
+          assert.equal(text, "0-0 Two Seamer 92.1 MPH ,98.1% ProbSL - Ball");
         });          
       }); 
 
@@ -243,7 +243,7 @@ test.describe('#Player Catching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 92 MPH ProbSL:88.7%");
+          assert.equal(text, "0-0 Fastball 92.1997 MPH ,88.7% ProbSL - Ground Out");
         });          
       }); 
 

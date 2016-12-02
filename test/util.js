@@ -33,8 +33,9 @@ function writeScreenshot(callback) {
       var height = (size.height > maxHeight) ? maxHeight : size.height;
       driver.manage().window().setSize(maxWidth, height);
     })
-
+    console.log('** about to take Screenshot');
     driver.takeScreenshot().then(function(data) {
+      console.log('** finished taking Screenshot');
       fs.writeFileSync(screenshotPath + fileName, data, 'base64');
       driver.getCurrentUrl().then(function(currentUrl) {
         callback({

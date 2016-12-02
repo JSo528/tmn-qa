@@ -475,7 +475,7 @@ test.describe('#Players Page', function() {
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "1-1 Four Seamer 94 MPH");
+            assert.equal(text, "1-1 Four Seamer 94 MPH - Home Run on a 371 ft Fly Ball");
           });          
         }); 
 
@@ -587,7 +587,7 @@ test.describe('#Players Page', function() {
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-0 Four Seamer 92 MPH ProbSL:78.3%");
+            assert.equal(text, "0-0 Four Seamer 92 MPH ,78.3% ProbSL - Ball");
           });          
         }); 
 
@@ -668,7 +668,7 @@ test.describe('#Players Page', function() {
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "1-0 Fastball 92 MPH");
+            assert.equal(text, "2.16s HT, 128.5ft, 0.8s RT, 0 Jmp, 98.9% Eff, 14.2mph 0.0% outProb - Single on a Line Drive");
           });          
         }); 
 
@@ -676,7 +676,7 @@ test.describe('#Players Page', function() {
           playersPage.closeVideoPlaylistModal();
           playersPage.clickSimiliarPlaysIcon(1);
           playersPage.getSimiliarPlaysHeader().then(function(title) {
-            assert.equal(title, '50 most similar fielding plays to unsuccessful catch by Desmond Jennings in LF at Tropicana Field (8/2/2016). 0 of 50 balls caught', 'modal title');
+            assert.match(title, /50 most similar fielding plays to unsuccessful catch by Desmond Jennings in LF at Tropicana Field \(8\/2\/2016\)/, 'modal title');
           })
         });
 

@@ -137,7 +137,7 @@ test.describe('#Umpire Page', function() {
         });
 
         umpirePage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Slider 89 MPH");
+          assert.equal(text, "0-0 Slider 88.7187 MPH - Ball");
         });          
       }); 
 
@@ -231,7 +231,7 @@ test.describe('#Umpire Page', function() {
         });
 
         umpirePage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-2 Fastball 95 MPH");
+          assert.equal(text, "0-2 Fastball 94.6642 MPH - Strikeout (Swinging)");
         });          
       }); 
 

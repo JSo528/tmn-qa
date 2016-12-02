@@ -110,7 +110,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 96 MPH");
+          assert.equal(text, "5.90s HT, 127.6ft, 0.9s RT, 1.87s Jmp, 99.0% Eff, 19.9mph 25.3% outProb - Fly Out");
         });          
       }); 
 
@@ -181,7 +181,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-0 Fastball 93 MPH");
+          assert.equal(text, "3.67s HT, 42.8ft, 0.9s RT, 2.07s Jmp, 92.6% Eff, 11.6mph 99.6% outProb - Fly Out", '3rd line of 1st video description');
         });          
       }); 
 
@@ -189,7 +189,7 @@ test.describe('#Player StatcastFielding Section', function() {
         playerPage.closeVideoPlaylistModal();
         playerPage.clickSimiliarPlaysIcon(1);
         playerPage.getSimiliarPlaysHeader().then(function(title) {
-          assert.equal(title, '50 most similar fielding plays to successful catch by Mookie Betts in RF at Fenway Park (10/2/2016). 49 of 50 balls caught', 'modal title');
+          assert.match(title, /50 most similar fielding plays to successful catch by Mookie Betts in RF at Fenway Park \(10\/2\/2016\)/, 'modal title');   
         })
       });
 

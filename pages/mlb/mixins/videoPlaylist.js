@@ -33,9 +33,6 @@ VideoPlaylist = {
   PITCH_VISUALS_BG_IMAGE: By.css(".in .modal-bb-pitch-by-pitch #heatmapBg"),
   PITCH_VISUALS_PITCH_CIRCLE: By.css('.in .modal-bb-pitch-by-pitch circle.heat-map-ball'),
   
-  // when the video playlist modal is closed, the body tag loses its class
-  EMPTY_BODY: By.xpath(".//body[@class='']"),
-  
   /****************************************************************************
   ** Functions
   *****************************************************************************/
@@ -78,8 +75,7 @@ VideoPlaylist = {
     var thiz = this;
 
     this.driver.wait(Until.elementLocated(this.PLAY_BY_PLAY_CLOSE_BTN),1000).then(function() {
-      thiz.click(thiz.PLAY_BY_PLAY_CLOSE_BTN, 10000);
-      d.fulfill(thiz.driver.wait(Until.elementLocated(thiz.EMPTY_BODY), 2000));
+      d.fulfill(thiz.click(thiz.PLAY_BY_PLAY_CLOSE_BTN, 10000));
     }, function(err) {
       console.log(err)
       d.fulfill(false)
@@ -103,8 +99,7 @@ VideoPlaylist = {
     var thiz = this;
 
     this.driver.wait(Until.elementLocated(this.VIDEO_PLAYLIST_CLOSE_BTN),1000).then(function() {
-      thiz.click(thiz.VIDEO_PLAYLIST_CLOSE_BTN, 10000);
-      d.fulfill(thiz.driver.wait(Until.elementLocated(thiz.EMPTY_BODY), 2000));
+      d.fulfill(thiz.click(thiz.VIDEO_PLAYLIST_CLOSE_BTN, 10000));
     }, function(err) {
       console.log(err)
       d.fulfill(false)
@@ -140,8 +135,7 @@ VideoPlaylist = {
     var thiz = this;
 
     this.driver.wait(Until.elementLocated(this.SIMILIAR_PLAYS_CLOSE_BTN),1000).then(function() {
-      thiz.click(thiz.SIMILIAR_PLAYS_CLOSE_BTN, 10000);
-      d.fulfill(thiz.driver.wait(Until.elementLocated(thiz.EMPTY_BODY), 2000));
+      d.fulfill(thiz.click(thiz.SIMILIAR_PLAYS_CLOSE_BTN, 10000));
     }, function(err) {
       console.log(err)
       d.fulfill(false)
@@ -170,8 +164,7 @@ VideoPlaylist = {
     var thiz = this;
 
     this.driver.wait(Until.elementLocated(this.PITCH_VISUALS_CLOSE_BTN),1000).then(function() {
-      thiz.click(thiz.PITCH_VISUALS_CLOSE_BTN, 10000);
-      d.fulfill(thiz.driver.wait(Until.elementLocated(thiz.EMPTY_BODY), 2000));
+      d.fulfill(thiz.click(thiz.PITCH_VISUALS_CLOSE_BTN, 10000));
     }, function(err) {
       console.log(err)
       d.fulfill(false)

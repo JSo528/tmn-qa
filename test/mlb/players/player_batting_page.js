@@ -86,13 +86,13 @@ test.describe('#Player Batting Section', function() {
         playerPage.clickHeatMapLink();
         playerPage.clearHeatMap();
         playerPage.getHitChartHitCount().then(function(hitCount) {
-          assert.equal(hitCount, 224);
+          assert.equal(hitCount, 224, '# of hits on hitChart');
         });
       });                 
 
       test.it('clearing the heat maps resets the data table', function() {
-        playerPage.getOverviewTableStat(6,5).then(function(count) {
-          assert.equal(count, 2474, 'correct number of pitches');
+        playerPage.getOverviewTableStat(8,5).then(function(count) {
+          assert.equal(count, 2474, '2016 Season - # of pitches');
         });        
       }); 
     });
@@ -221,7 +221,7 @@ test.describe('#Player Batting Section', function() {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
           playerPage.changeReport(report.type);  
           // 2016 Season, 12th Col
-          playerPage.getOverviewTableStat(6,12).then(function(stat) {
+          playerPage.getOverviewTableStat(8,12).then(function(stat) {
             assert.equal(stat, report.topStat, '2016 Season: ' + report.statType);
           });
         });
@@ -271,7 +271,7 @@ test.describe('#Player Batting Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Slider 85 MPH");
+          assert.equal(text, "0-0 Slider 84.9478 MPH - Foul");
         });          
       }); 
 

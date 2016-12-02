@@ -165,7 +165,7 @@ TeamPage.prototype.clickOverviewTableStat = function(col) {
 TeamPage.prototype.getRosterTableStat = function(playerNum, col) {
   // First 3 rows are for the headers
   var row = playerNum + 3;
-  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/tbody/tr[4]/td[${col}]`);
+  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/tbody/tr[${row}]/td[${col}]`);
 
   return this.getText(locator, 30000);
 };
@@ -173,7 +173,7 @@ TeamPage.prototype.getRosterTableStat = function(playerNum, col) {
 TeamPage.prototype.clickRosterTableStat = function(playerNum, col) {
   // First 3 rows are for the headers
   var row = playerNum + 3;
-  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/tbody/tr[4]/td[${col}]/span`);
+  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/tbody/tr[${row}]/td[${col}]/span`);
 
   return this.click(locator);
 };

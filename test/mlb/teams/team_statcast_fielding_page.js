@@ -120,7 +120,8 @@ test.describe('#Team StatcastFielding Section', function() {
         teamPage.closeVideoPlaylistModal();
         teamPage.clickSimiliarPlaysIcon(1);
         teamPage.getSimiliarPlaysHeader().then(function(title) {
-          assert.equal(title, '23 most similar fielding plays to unsuccessful catch by Angel Pagan in LF at AT&T Park (8/14/2016). 21 of 23 balls caught', 'modal title');
+          // need to use match since this is dynamic
+          assert.match(title, /50 most similar fielding plays to unsuccessful catch by Angel Pagan in LF at AT&T Park \(8\/14\/2016\)/, 'modal title');
         })
       });
 
@@ -194,8 +195,8 @@ test.describe('#Team StatcastFielding Section', function() {
           assert.equal(player, 'Mike Broadway');
         });
 
-        teamPage.getRosterTableStat(1,10).then(function(ofWAirOutPer) {
-          assert.equal(ofWAirOutPer,  '137.0%', 'row 1 OFWAirOut%');
+        teamPage.getRosterTableStat(3,7).then(function(ofWAirOutPer) {
+          assert.equal(ofWAirOutPer,  '121.4%', 'Vin Mazzaro OFWPosAirOut%');
         });          
       });
     });

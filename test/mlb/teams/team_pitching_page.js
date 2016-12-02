@@ -115,7 +115,7 @@ test.describe('#Team Pitching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 89 MPH");
+          assert.equal(text, "0-0 Fastball 88.7614 MPH - Home Run on a 376 ft Fly Ball");
         });          
       }); 
 
@@ -183,7 +183,7 @@ test.describe('#Team Pitching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Slider MPH");
+          assert.equal(text, "0-0 Slider MPH - Single on a Line Drive");
         });          
       }); 
 
@@ -250,7 +250,7 @@ test.describe('#Team Pitching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 88 MPH");
+          assert.equal(text, "0-0 Fastball 88.01 MPH - Strike Looking");
         });          
       }); 
 
