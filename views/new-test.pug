@@ -1,4 +1,5 @@
 extend layouts/main
+
 block content
   #main.panel.panel-default
     .panel-heading New Test
@@ -23,12 +24,22 @@ block content
     var MIN_PORT = 3001
     var MAX_PORT = 3007
 
-    $('#testNumber').on('change', function() {
+    function getEnv() {
+      var testId = $('#testNumber').val();
+      return $('option[value="'+testId+'"]').data('test-env');
+    }
+
+    function togglePortNumber() {
       if (getEnv() == 'production') {
         $('#portNumberGroup').hide();
       } else {
         $('#portNumberGroup').show();
       }
+    }
+
+    togglePortNumber();
+    $('#testNumber').on('change', function() {
+      togglePortNumber();
     });
 
     $('form').submit(function() {
@@ -45,8 +56,3 @@ block content
         return true;
       };
     });
-
-    function getEnv() {
-      var testId = $('#testNumber').val();
-      return $('option[value="'+testId+'"]').data('test-env');
-    }
