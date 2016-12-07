@@ -193,7 +193,50 @@ test.describe('#Player StatcastFielding Section', function() {
         })
       });
 
+     test.it('unchecking dist to wall, updates the table', function() {
+        var originalWall;
+        playerPage.getSimiliarPlaysAvgTableStat(7).then(function(stat) {
+          originalWall = stat;
+        });
+
+        playerPage.toggleDistToWallCheckbox(false);
+        playerPage.getSimiliarPlaysAvgTableStat(7).then(function(stat) {
+          assert.notEqual(stat, originalWall, 'Avg Wall Value changes');
+        });
+      });      
+
+      test.it('unchecking same position only, updates the table', function() {
+        playerPage.toggleSamePositionCheckbox(false);
+        playerPage.getSimiliarPlaysTableStat(3,5).then(function(pos) {
+          assert.equal(pos, 'CF', 'Pos for 3rd row is CF');
+        });
+      });
+
+      test.it('checking same stadium, updates the table', function() {
+        playerPage.toggleSameStadiumCheckbox(true);
+        playerPage.getSimiliarPlaysTableStat(2,6).then(function(stadium) {
+          assert.equal(stadium, 'Fenway Park', 'All parks should be Fenway Park');
+        });
+      });
+
+      test.it('able to play video from similar plays table', function() {
+        playerPage.clickSimiliarPlaysPitchVideoIcon(1);
+        playerPage.getSimiliarPlaysPitchVideoHeader().then(function(text) {
+          assert.equal(text, "10/2/2016, 3:05 PM ET TOR 2 @ BOS 1 Vs LHP D. Pomeranz (TOR) , Top 9, 1 out");
+        });
+      });
+
+      test.it('able to play video from clicking into hit chart', function() {
+        playerPage.closeSimilarPlaysPitchVideoModal();
+        playerPage.clickSimiliarPlaysHitChartPlotPoint();
+        playerPage.clickSimiliarPlaysTooltipPitchVideoIcon();
+        playerPage.getSimiliarPlaysTooltipPitchVideoHeader().then(function(text) {
+          assert.equal(text, '(Away - 9/18/2016) Vs RHB C. Young (BOS)');
+        });
+      });     
+
       test.after(function() {
+        playerPage.closeSimiliarPlaysTooltipPitchVideoModal();
         playerPage.closeSimiliarPlaysModal();
         playerPage.closePlayByPlaytModal();
       });
@@ -222,7 +265,7 @@ test.describe('#Player StatcastFielding Section', function() {
     });
   });  
 
-  // Pitch Logs
+  // Pitch  Logs
   test.describe("#Subsection: Pitch Log", function() {
     test.before(function() {
       playerPage.goToSubSection("pitchLog");

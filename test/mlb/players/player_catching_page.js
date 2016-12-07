@@ -8,16 +8,14 @@ var constants = require('../../../lib/constants.js');
 var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var PlayerPage = require('../../../pages/mlb/players/player_page.js');
-var CatcherPage = require('../../../pages/mlb/players/player_catcher_page.js');
 
-var navbar, filters, statsPage, playerPage, catcherPage;
+var navbar, filters, statsPage, playerPage;
 
 test.describe('#Player Catching Section', function() {
   test.before(function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver);
-    catcherPage = new CatcherPage(driver);
 
     navbar.search('Yadier Molina', 1);
   });  
@@ -44,28 +42,28 @@ test.describe('#Player Catching Section', function() {
 
     test.describe('#heatMap', function() {
       test.it('drawing box on left heatmap should update the table', function() {
-        catcherPage.drawBoxOnHeatMap('lefty', 150,200,75,40);  
+        playerPage.drawBoxOnCatcherHeatMap('lefty', 150,200,75,40);  
         playerPage.getOverviewTableStat(1,7).then(function(slaa) {
           assert.equal(slaa, 53.75, '2008 season SLAA');
         });        
       });
       
       test.after(function() {
-        catcherPage.clearHeatMap('lefty');
+        playerPage.clearCatcherHeatMap('lefty');
       });
     });
 
     test.describe('#pitchView', function() {
       test.it('clicking pitch view link should show the pitch view image', function() {
-        catcherPage.clickPitchViewLink('righty');
+        playerPage.clickCatcherPitchViewLink('righty');
         
-        catcherPage.getPitchViewPitchCount('righty').then(function(pitchCount) {
+        playerPage.getCatcherPitchViewPitchCount('righty').then(function(pitchCount) {
           assert.equal(pitchCount, 500, 'righty pitch view pitch count');
         });        
       });
       
       test.after(function() {
-        catcherPage.clickHeatMapLink('righty');
+        playerPage.clickCatcherHeatMapLink('righty');
       });
     });
 
@@ -107,10 +105,10 @@ test.describe('#Player Catching Section', function() {
         visualModes.forEach(function(visualMode) {
           test.it("selecting " + visualMode.type + " shows the correct title ", function() {
             playerPage.changeVisualMode(visualMode.type);
-            catcherPage.getHeatMapImageTitle('lefty').then(function(title) {
+            playerPage.getCatcherHeatMapImageTitle('lefty').then(function(title) {
               assert.equal(title, visualMode.title, 'lefty visual title');
             });
-            catcherPage.getHeatMapImageTitle('righty').then(function(title) {
+            playerPage.getCatcherHeatMapImageTitle('righty').then(function(title) {
               assert.equal(title, visualMode.title, 'righty visual title');
             });            
           });

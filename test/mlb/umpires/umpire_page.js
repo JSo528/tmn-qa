@@ -46,28 +46,28 @@ test.describe('#Umpire Page', function() {
 
     test.describe('#heatMap', function() {
       test.it('drawing box on left heatmap should update the table', function() {
-        umpirePage.drawBoxOnHeatMap('lefty', 150,200,75,40);  
+        umpirePage.drawBoxOnOverviewHeatMap('lefty', 150,200,75,40);  
         umpirePage.getOverviewTableStat(1,7).then(function(ccPer) {
           assert.equal(ccPer, '93.7%', '2016 season CC%');
         });        
       });
       
       test.after(function() {
-        umpirePage.clearHeatMap('lefty');
+        umpirePage.clearOverviewHeatMap('lefty');
       });
     });
 
     test.describe('#pitchView', function() {
       test.it('clicking pitch view link should show the pitch view image', function() {
-        umpirePage.clickPitchViewLink('righty');
+        umpirePage.clickOverviewPitchViewLink('righty');
         
-        umpirePage.getPitchViewPitchCount('righty').then(function(pitchCount) {
+        umpirePage.getOverviewPitchViewPitchCount('righty').then(function(pitchCount) {
           assert.equal(pitchCount, 500, 'righty pitch view pitch count');
         });        
       });
       
       test.after(function() {
-        umpirePage.clickHeatMapLink('righty');
+        umpirePage.clickOverviewHeatMapLink('righty');
       });
     });
 
@@ -110,10 +110,10 @@ test.describe('#Umpire Page', function() {
         visualModes.forEach(function(visualMode) {
           test.it("selecting " + visualMode.type + " shows the correct title ", function() {
             umpirePage.changeVisualMode(visualMode.type);
-            umpirePage.getHeatMapImageTitle('lefty').then(function(title) {
+            umpirePage.getOverviewHeatMapImageTitle('lefty').then(function(title) {
               assert.equal(title, visualMode.title, 'lefty visual title');
             });
-            umpirePage.getHeatMapImageTitle('righty').then(function(title) {
+            umpirePage.getOverviewHeatMapImageTitle('righty').then(function(title) {
               assert.equal(title, visualMode.title, 'righty visual title');
             });            
           });
@@ -141,8 +141,27 @@ test.describe('#Umpire Page', function() {
         });          
       }); 
 
-      test.after(function() {
+      test.it('clicking into pitch visuals opens modal', function() {
         umpirePage.closeVideoPlaylistModal();
+        umpirePage.clickPitchVisualsIcon(1);
+        umpirePage.getPitchVisualsPitchCount().then(function(count) {
+          assert.equal(count, 5, '# of pitches for pitch visual');
+        });
+      }); 
+
+      // TODO - this feature is broken on the site
+      // test.it('clicking hitChart play opens tooltip', function() {
+      //   umpirePage.clickPitchVisualsHitChartPlotPoint();
+        // umpirePage.clickHitChartTooltipPitchVideoIcon()
+        // umpirePage.getHitChartTooltipPitchVideoHeader().then(function(text) {
+            // assert.equal(text, '')
+        // })
+        
+      // });       
+
+      test.after(function() {
+        // umpiresPage.closeHitChartTooltipPitchVideoModal();
+        umpirePage.closePitchVisualsModal();
         umpirePage.closePlayByPlaytModal();
       });
     });

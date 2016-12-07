@@ -9,9 +9,8 @@ var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
 var TeamPage = require('../../../pages/mlb/teams/team_page.js');
-var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, teamPage, overviewPage, teamPage;
+var navbar, filters, teamsPage, teamPage, teamPage;
 
 test.describe('#Team Pitching Section', function() {
   test.before(function() {  
@@ -19,7 +18,6 @@ test.describe('#Team Pitching Section', function() {
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
     teamPage = new TeamPage(driver);
-    overviewPage = new OverviewPage(driver);
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -41,59 +39,59 @@ test.describe('#Team Pitching Section', function() {
     // Heat Map & Hit Charts
     test.describe("#Heat Maps & Hit Charts", function() {
       test.it('has the correct number of plot points (hits) initially', function() {
-        overviewPage.getHitChartHitCount().then(function(hitCount) {
+        teamPage.getHitChartHitCount().then(function(hitCount) {
           assert.equal(hitCount, 1515);
         });
       });
 
       test.it('selecting a heat map rectangle updates the hit chart', function() {
-        overviewPage.drawBoxOnHeatMap(150,150,25,25);
+        teamPage.drawBoxOnOverviewHeatMap(150,150,25,25);
 
-        overviewPage.getHitChartHitCount('single').then(function(count) {
+        teamPage.getHitChartHitCount('single').then(function(count) {
           assert.equal(count, 16, 'correct number of singles');
         });
         
-        overviewPage.getHitChartHitCount('double').then(function(count) {
+        teamPage.getHitChartHitCount('double').then(function(count) {
           assert.equal(count, 4, 'correct number of doubles');
         });        
 
-        overviewPage.getHitChartHitCount('triple').then(function(count) {
+        teamPage.getHitChartHitCount('triple').then(function(count) {
           assert.equal(count, 0, 'correct number of triples');
         });        
 
-        overviewPage.getHitChartHitCount('homeRun').then(function(count) {
+        teamPage.getHitChartHitCount('homeRun').then(function(count) {
           assert.equal(count, 4, 'correct number of home runs');
         });        
       });      
 
       test.it('selecting a heat map rectangle updates the data table', function() {
-        overviewPage.getTeamTableStat(12).then(function(count) {
+        teamPage.getOverviewTableStat(12).then(function(count) {
           assert.equal(count, 24, 'correct number of hits');
         });        
       });            
 
       test.it('clicking a hit chart hit shows pitches on the heat map', function() {
-        overviewPage.clickHitChartPoint(1);
-        overviewPage.getHeatMapPitchCount().then(function(pitches) {
-          assert.equal(pitches, 1);
+        teamPage.clickHitChartPlotPoint();
+        teamPage.getOverviewHeatMapPitchCount().then(function(pitches) {
+          assert.equal(pitches, 5);
         });
       });
 
       test.it('clicking a hit chart hit shows pitches on the team grid', function() {
-        overviewPage.getHeatMapPitchCount().then(function(pitches) {
-          assert.equal(pitches, 1);
+        teamPage.getOverviewHeatMapPitchCount().then(function(pitches) {
+          assert.equal(pitches, 5);
         });
       });     
 
       test.it('clearing the heat maps resets the hit chart', function() {
-        overviewPage.clearHeatMap();
-        overviewPage.getHitChartHitCount().then(function(hitCount) {
+        teamPage.clearOverviewHeatMap();
+        teamPage.getHitChartHitCount().then(function(hitCount) {
           assert.equal(hitCount, 1515);
         });
       });                 
 
       test.it('clearing the heat maps resets the data table', function() {
-        overviewPage.getTeamTableStat(12).then(function(hitCount) {
+        teamPage.getOverviewTableStat(12).then(function(hitCount) {
           assert.equal(hitCount, 1450, 'correct number of hits');
         });        
       }); 
@@ -148,7 +146,7 @@ test.describe('#Team Pitching Section', function() {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
           teamPage.changeReport(report.type);  
           var col = report.colNum || 8;
-          overviewPage.getTeamTableStat(col).then(function(stat) {
+          teamPage.getOverviewTableStat(col).then(function(stat) {
             assert.equal(stat, report.topStat);
           });
         });
@@ -451,7 +449,7 @@ test.describe('#Team Pitching Section', function() {
         originalHits = hits;
       });
 
-      teamPage.drawBoxOnHeatMap('top', 160,120,25,25);
+      teamPage.drawBoxOnMultiFilterHeatMap('top', 160,120,25,25);
 
       teamPage.getMultiFilterStat(1, 11).then(function(hits) {
         assert.notEqual(hits, originalHits, 'correct number of hits for top row');
@@ -464,11 +462,11 @@ test.describe('#Team Pitching Section', function() {
 
     // doing less than because of the same reason as above
     test.it('drawing a box on the heat map should update the hit chart for both sections', function() {
-      teamPage.getHitChartHitCount('top').then(function(count) {
+      teamPage.getMultiFilterHitChartHitCount('top').then(function(count) {
         assert.isAtMost(count, 72, 'correct number of hits for top hitChart');
       });      
 
-      teamPage.getHitChartHitCount('bottom').then(function(count) {
+      teamPage.getMultiFilterHitChartHitCount('bottom').then(function(count) {
         assert.isAtMost(count, 72, 'correct number of hits for bottom hitChart');
       });            
     }); 

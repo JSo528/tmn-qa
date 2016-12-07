@@ -37,7 +37,7 @@ test.describe('#Player Batting Section', function() {
       });
 
       test.it('selecting a heat map rectangle updates the hit chart', function() {
-        playerPage.drawBoxOnHeatMap(150,150,100,40);
+        playerPage.drawBoxOnOverviewHeatMap(150,150,100,40);
 
         playerPage.getHitChartHitCount('single').then(function(count) {
           assert.equal(count, 31, 'correct number of singles');
@@ -63,28 +63,28 @@ test.describe('#Player Batting Section', function() {
       });            
 
       test.it('clicking a hit chart hit shows pitches on the heat map', function() {
-        playerPage.clickHitChartPoint(1);
-        playerPage.getHeatMapPitchCount().then(function(pitches) {
-          assert.equal(pitches, 3);
+        playerPage.clickHitChartPlotPoint();
+        playerPage.getOverviewHeatMapPitchCount().then(function(pitches) {
+          assert.equal(pitches, 6);
         });
       });
 
       test.it('clicking a hit chart hit shows pitches on the team grid', function() {
-        playerPage.getHeatMapPitchCount().then(function(pitches) {
-          assert.equal(pitches, 3);
+        playerPage.getOverviewHeatMapPitchCount().then(function(pitches) {
+          assert.equal(pitches, 6);
         });
       });  
 
       test.it('pitch view shows 500 pitches', function() {
         playerPage.clickPitchViewLink();
-        playerPage.getPitchViewPitchCount().then(function(pitches) {
+        playerPage.getOverviewPitchViewPitchCount().then(function(pitches) {
           assert.equal(pitches, 500);
         });
       });    
 
       test.it('clearing the heat maps resets the hit chart', function() {
         playerPage.clickHeatMapLink();
-        playerPage.clearHeatMap();
+        playerPage.clearOverviewHeatMap();
         playerPage.getHitChartHitCount().then(function(hitCount) {
           assert.equal(hitCount, 224, '# of hits on hitChart');
         });
@@ -95,6 +95,27 @@ test.describe('#Player Batting Section', function() {
           assert.equal(count, 2474, '2016 Season - # of pitches');
         });        
       }); 
+
+      test.it('changing hitChart settings updates hitChart', function() {
+        playerPage.clickSettingsBtn();
+        playerPage.toggleSettingsOption('Singles', false);
+        playerPage.saveAndCloseSettingsModal();
+        playerPage.getHitChartHitCount('single').then(function(count) {
+          assert.equal(count, 0);
+        });
+      });
+
+      test.it('clicking tooltip video icon opens video modal', function() {
+        playerPage.clickHitChartPlotPoint();
+        playerPage.clickHitChartTooltipPitchVideoIcon();
+        playerPage.getHitChartTooltipPitchVideoHeader().then(function(text) {
+          assert.equal(text, '(Away - 4/5/2016) Vs RHP M. Tanaka (NYY)', 'Video Modal header');
+        });
+      });
+
+      test.after(function() {
+        playerPage.closeHitChartTooltipPitchVideoModal();
+      })
     });
 
     // eBIS Modal
@@ -148,7 +169,7 @@ test.describe('#Player Batting Section', function() {
       visualModes.forEach(function(visualMode) {
         test.it("selecting " + visualMode.type + " shows the correct title ", function() {
           playerPage.changeVisualMode(visualMode.type);
-          playerPage.getHeatMapImageTitle().then(function(title) {
+          playerPage.getOverviewHeatMapImageTitle().then(function(title) {
             assert.equal(title, visualMode.title);
           });
         });
@@ -179,20 +200,20 @@ test.describe('#Player Batting Section', function() {
     // TODO - these aren't correct values bc feature is currently broken
     test.describe('#VideoPlaylist', function() {    
       test.it('clicking on a stat opens the play by play modal', function() {
-        playerPage.clickOverviewTableStat(1,7);
+        playerPage.clickOverviewTableStat(4,7);
         playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs RHP A. Sanchez (TOR), Bot 1, 2 Out');
+          assert.equal(text, 'Vs RHP C. Volstad (CHC), Top 1, 0 Out');
         });
       });
 
       test.it('clicking into video opens correct video', function() {
         playerPage.clickPitchVideoIcon(1);
         playerPage.getVideoPlaylistText(1,1).then(function(text) {
-          assert.equal(text, "Bot 1, 2 out");
+          assert.equal(text, "Top 1, 0 out");
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2-2 Fastball 98 MPH");
+          assert.equal(text, "1-1 Sinker 92.2 MPH - Ground Out");
         });          
       }); 
 

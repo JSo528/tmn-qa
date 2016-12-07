@@ -97,6 +97,28 @@ test.describe('#Players Page', function() {
         });    
       });
 
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a team stat opens the play by play modal', function() {
+          playersPage.clickTableStat(1, 7);
+          playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs RHP B. Colon (NYM), Top 1, 0 Out');
+          });
+        });
+
+        test.it('selecting "Play Top 10" videos adds 10 videos to playlist', function() {
+          playersPage.selectFromPlayVideosDropdown('Play Top 10');
+          playersPage.getVideoPlaylistCount().then(function(videoCount) {
+            assert.equal(videoCount, 10, '# videos on playlist');
+          });
+        });  
+
+        test.after(function() {
+          playersPage.closeVideoPlaylistModal();
+          playersPage.closePlayByPlaytModal();
+        }); 
+      });
+
       // Filters
       test.describe("#filters", function() {
         test.it('adding filter: (extra inning game) from dropdown displays correct data', function() {
@@ -124,7 +146,7 @@ test.describe('#Players Page', function() {
             playerName = name;
           });
 
-          playersPage.clickPlayerTablePin(1);
+          playersPage.clickTablePin(1);
 
           playersPage.getIsoTableStat(1,3).then(function(name) {
             assert.equal(name, playerName);
@@ -508,6 +530,93 @@ test.describe('#Players Page', function() {
           filters.closeDropdownFilter('Horizontal Location');
         });
       });  
+
+       // Isolation Mode
+      test.describe("#isolation mode", function() {
+        test.it('selecting Jake Arrieta from search should add player to table', function() {
+          playersPage.clickIsoBtn("on");
+          playersPage.addToIsoTable('Jake Arrieta', 1)
+
+          playersPage.getTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' J. Arrieta (P-BAL)', '1st row player name');
+          })
+        });      
+
+  
+        test.it('selecting Madison Bumgarner from search should add player to table', function() {
+          playersPage.addToIsoTable('Madison Bumgarner', 1)
+          playersPage.getTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' M. Bumgarner (P-SF)', '1st row player name');
+          });
+
+          playersPage.getTableStat(2,3).then(function(stat) {
+            assert.equal(stat, ' J. Arrieta (P-BAL)', '2nd row player name');
+          });
+        });         
+
+        test.it('pinned total should show the correct sum', function() {
+          playersPage.getPinnedTotalTableStat(4).then(function(wins) {
+            assert.equal(wins, 5225, 'pinned total - pitches');
+          });
+        });                                       
+
+        test.it('turning off isolation mode should show players in iso table', function() {
+          playersPage.clickIsoBtn("off");
+          playersPage.getIsoTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' M. Bumgarner (P-SF)', '1st row player name');
+          });
+
+        });                                               
+      });
+
+      // Chart/Edit Columns
+      test.describe("#chart/edit columns", function() {
+        // histograms
+        test.it('clicking show histogram link should open histogram modal', function() {
+          playersPage.clickChartColumnsBtn()
+          
+          playersPage.openHistogram(19);  
+          playersPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, true);
+          });
+        });  
+
+        test.it('hovering over bar should show stats for players', function() {
+          playersPage.hoverOverHistogramStack(1)
+          playersPage.getTooltipText().then(function(text) {
+            assert.equal(text, 'J. Chamberlain: 22 (NYY-P)\nH. Ambriz: 22 (HOU-P)\nE. Ramirez: 22 (NYM-P)\nN. Adcock: 22 (KC-P)\nE. Escalona: 21 (COL-P)\nA. Varvaro: 21 (ATL-P)\nK. McPherson: 21 (PIT-P)\nC. Rusin: 21 (CHC-P)\nT. Skaggs: 21 (ARI-P)\nR. Hill: 21 (BOS-P)\n+ 192 more', 'tooltip for 1st bar');
+          });
+        });
+
+        test.it('pinned players should be represented by circles', function() {
+          playersPage.getHistogramCircleCount().then(function(count) {
+            assert.equal(count, 2, '# of circles on histogram')
+          })
+        })
+
+        test.it("selecting 'Display pins as bars' should add team to the histogram", function() {
+          playersPage.toggleHistogramDisplayPinsAsBars();
+          playersPage.getHistogramBarCount().then(function(count) {
+            // 1 original bar and 4 new bars will have height=0 and will appear invisible
+            assert.equal(count, 22, '# of bars on histogram');
+          });
+        });
+
+        test.it("changing Bin Count should update the histogram", function() {
+          playersPage.changeHistogramBinCount(3);
+          playersPage.getHistogramBarCount().then(function(count) {
+            // 1 original bar and 4 new bars will have height=0 and will appear invisible
+            assert.equal(count, 6, '# of bars on histogram');
+          });
+        })        
+
+        test.it('clicking close histogram button should close histogram modal', function() {
+          playersPage.closeModal();
+          playersPage.isModalDisplayed().then(function(isDisplayed) {
+            assert.equal(isDisplayed, false);
+          }); 
+        })     
+      });
 
       // Reports
       test.describe("#reports", function() {

@@ -8,20 +8,17 @@ var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 
-// TODO - make sure doing enums correctly
-var DIVISION_IDS = {
-  AL_EAST : 'tableBaseballStandingsAL EastContainer',
-  PCL_AS: 'tableBaseballStandingsPCL \(AS\)Container'
-}
-
-// Locators
-var NAVBAR = By.className('navbar-tmn');
+/****************************************************************************
+** Locators
+*****************************************************************************/
 var YEAR_SELECT = By.id('s2id_pageControlBaseballYear');
-var YEAR_INPUT = By.id('s2id_autogen1_search');
 var SEASON_LEVEL_SELECT = By.id('s2id_pageControlBaseballSeasonLevelSingle');
-var SEASON_LEVEL_INPUT = By.id('s2id_autogen2_search');
+var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div/input");
 var TABLES = By.css('table');
 
+/****************************************************************************
+** Constructor
+*****************************************************************************/
 function StandingsPage(driver) {
   BasePage.call(this, driver)
 };
@@ -29,15 +26,15 @@ function StandingsPage(driver) {
 StandingsPage.prototype = Object.create(BasePage.prototype);
 StandingsPage.prototype.constructor = StandingsPage;
 
-// Methods
-
-// Don't need 4th param because it generates a full page reload
+/****************************************************************************
+** Functions
+*****************************************************************************/
 StandingsPage.prototype.changeYear = function(year) {
-  return this.changeDropdown(YEAR_SELECT, YEAR_INPUT, year);
+  return this.changeDropdown(YEAR_SELECT, DROPDOWN_INPUT, year);
 };
 
 StandingsPage.prototype.changeSeasonLevel = function(seasonLevel) {
-  return this.changeDropdown(SEASON_LEVEL_SELECT, SEASON_LEVEL_INPUT, seasonLevel);
+  return this.changeDropdown(SEASON_LEVEL_SELECT, DROPDOWN_INPUT, seasonLevel);
 };
 
 StandingsPage.prototype.getTableStat = function(tableRow, tableCol, teamRank, statCol) {

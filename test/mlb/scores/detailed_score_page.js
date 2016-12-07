@@ -516,7 +516,18 @@ test.describe('#DetailedScore Page', function() {
         detailedScorePage.isVideoModalDisplayed().then(function(modalDisplayed) {
           assert.equal(modalDisplayed, false);
         });
-      });                
+      });  
+
+      test.it('selecting "Play All" videos adds all videos to playlist', function() {
+        detailedScorePage.selectFromPlayVideosDropdown('Play All');
+        detailedScorePage.getVideoPlaylistCount().then(function(videoCount) {
+          assert.equal(videoCount, 70, '# videos on playlist');
+        });
+      });  
+
+      test.after(function() {
+        detailedScorePage.closeVideoPlaylistModal();
+      });         
     });
 
     test.describe('#pitch by pitch visuals', function() {

@@ -125,6 +125,17 @@ exports.generateTests = function(title, testFiles, startUrl) {
 
     test.afterEach(function() {
       this.timeout(120000)
+      
+      if (process.memoryUsage().rss > 300000000) {
+        console.log("** pre gc - " + process.memoryUsage().rss)
+        if (global.gc) {
+          global.gc()  
+          console.log("** post gc - " + process.memoryUsage().rss)
+        } else {
+          console.log('Garbage collection unavailable. Pass -gc when running mocha to enable forced garbage collection');
+        }   
+      }
+
       var maxChars = constants.errorObjects.maxChars;
       var t = this.currentTest;
 
@@ -197,16 +208,6 @@ exports.generateTests = function(title, testFiles, startUrl) {
       } else if (t.state == 'passed'){
         passedCount += 1;
         testRun.update({passedCount: passedCount}).exec();
-      }
-
-      if (process.memoryUsage().rss > 300000000) {
-        console.log("** pre gc - " + process.memoryUsage().rss)
-        if (global.gc) {
-          global.gc()  
-          console.log("** post gc - " + process.memoryUsage().rss)
-        } else {
-          console.log('Garbage collection unavailable. Pass -gc when running mocha to enable forced garbage collection');
-        }   
       }
     });
 

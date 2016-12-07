@@ -8,12 +8,12 @@ var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 
 // Locators
-var STANDINGS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][1]/a");
-var SCORES_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][2]/a");
-var TEAMS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][3]/a");
-var PLAYERS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][4]/a");
-var UMPIRES_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][5]/a");
-var GROUPS_LINK = By.xpath(".//header/div[1]/div[contains(@class, 'navbar-item-fancy-pants')][6]/a");
+var STANDINGS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Standings']");
+var SCORES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Scores']");
+var TEAMS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Teams']");
+var PLAYERS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Players']");
+var UMPIRES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Umpires']");
+var GROUPS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Groups']");
 
 var SCORES_LAST_LOCATOR = By.xpath(".//div[contains(@class, 'pika-single')]");
 var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavBaseballTeamsStatBatting");
@@ -52,10 +52,6 @@ MlbNavbar.prototype.goToPlayersPage = function() {
 MlbNavbar.prototype.goToUmpiresPage = function() {
   this.click(UMPIRES_LINK);
   return this.waitForEnabled(UMPIRES_LAST_LOCATOR, 30000);
-};
-
-MlbNavbar.prototype.goToGroupsPage = function() {
-  return this.click(GROUPS_LINK);
 };
 
 MlbNavbar.prototype.goToGroupsPage = function() {

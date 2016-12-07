@@ -43,7 +43,6 @@ filters = new Filters(driver);
 umpiresPage = new UmpiresPage(driver);
 groupsPage = new GroupsPage(driver);
 teamPage = new TeamPage(driver);
-overviewPage = new OverviewPage(driver);
 playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
@@ -55,35 +54,42 @@ var url = "https://dodgers-staging.trumedianetworks.com:3005"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
+loginPage.visit("https://dodgers-staging.trumedianetworks.com:3005/baseball/player-defensive-positioning-batting/Jose%20Altuve/514888?is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22boorg%22%3A%5B%22OAK%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D")
 
-var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283';
-detailedScorePage.visit(url+gameURL);
-
-detailedScorePage.clickTeamBattingStat('home', 5);
-detailedScorePage.clickPitchVideoIcon(2);
-detailedScorePage.closeVideoPlaylistModal();
-detailedScorePage.closePlayByPlaytModal();
-
-// Custom Report
-var Angels = require('../pages/mlb/custom_reports/angels.js');
-angels = new Angels(driver);
-
-https://angels-staging.trumedianetworks.com:3005/baseball/batting-angels-team-spray-chart/BOS/111?pc=%7B%22brbip%22%3A150%7D&is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D
-
-navbar.goToTeamsPage();
-
-marlins.goToSubSection('Hitting Matchups');
+playerPage.changeBallparkDropdown('Fenway Park');
+playerPage.getCurrentBallparkImageID().then(function(id) {
+  console.log(id)
+});
 
 
-var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "Pitch Type:")]]/div/ul/li/div`)
-var array = []
-driver.findElements(locator).then(function(elements) {
-  elements.forEach(function(element) {
-    element.getText().then(function(text) {
-      array.push(text)
-    })
-  })
-})
+// loginPage.visit('https://dodgers-staging.trumedianetworks.com:3005/baseball/players-statcast?pc=%7B%22bpgb%22%3A%22totals%22%2C%22bqbfs%22%3A%22default%22%2C%22bsvp%22%3A%22stats%22%7D&is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseasonlvl%22%3A%5B%22MLB%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D&t=%7B%22so%22%3A%22ASC%22%2C%22oc%22%3A1%7D&tpin=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BOFWAirOut%25%5D%22%7D&reportActiveTabIdx=0&sim=%7B%22sameVenue%22%3Afalse%2C%22samePos%22%3Atrue%2C%22includeWall%22%3Afalse%7D')
+navbar.search('Mookie Betts', 1);
+playerPage.goToSection('statcastFielding');
+playerPage.goToSubSection("gameLog");
+playerPage.clickGameLogTableStat(1,6);
+playerPage.clickSimiliarPlaysIcon(1);
+
+
+
+
+
+
+
+
+
+
+
+playerPage.clickSimiliarPlaysPitchVideoIcon(1);
+playerPage.getVideoPlaylistText(1,1).then(function(text) {
+  console.log(text)
+});
+
+playerPage.getSimiliarPlaysTooltipPitchVideoHeader().then(function(text) {
+          console.log(text)
+        });
+
+
+
 
 
 

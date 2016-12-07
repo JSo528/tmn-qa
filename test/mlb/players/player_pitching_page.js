@@ -37,7 +37,7 @@ test.describe('#Player Pitching Section', function() {
       });
 
       test.it('selecting a heat map rectangle updates the hit chart', function() {
-        playerPage.drawBoxOnHeatMap(150,150,100,40);
+        playerPage.drawBoxOnOverviewHeatMap(150,150,100,40);
 
         playerPage.getHitChartHitCount('single').then(function(count) {
           assert.equal(count, 11, 'correct number of singles');
@@ -63,28 +63,28 @@ test.describe('#Player Pitching Section', function() {
       });            
 
       test.it('clicking a hit chart hit shows pitches on the heat map', function() {
-        playerPage.clickHitChartPoint(1);
-        playerPage.getHeatMapPitchCount().then(function(pitches) {
+        playerPage.clickHitChartPlotPoint();
+        playerPage.getOverviewHeatMapPitchCount().then(function(pitches) {
           assert.equal(pitches, 1);
         });
       });
 
       test.it('clicking a hit chart hit shows pitches on the team grid', function() {
-        playerPage.getHeatMapPitchCount().then(function(pitches) {
+        playerPage.getOverviewHeatMapPitchCount().then(function(pitches) {
           assert.equal(pitches, 1);
         });
       });  
 
       test.it('pitch view shows 500 pitches', function() {
         playerPage.clickPitchViewLink();
-        playerPage.getPitchViewPitchCount().then(function(pitches) {
+        playerPage.getOverviewPitchViewPitchCount().then(function(pitches) {
           assert.equal(pitches, 500);
         });
       });    
 
       test.it('clearing the heat maps resets the data table', function() {
         playerPage.clickHeatMapLink();
-        playerPage.clearHeatMap();
+        playerPage.clearOverviewHeatMap();
         playerPage.getOverviewTableStat(10,4).then(function(count) {
           assert.equal(count, 2888, '2016 season - # of pitches');
         });        

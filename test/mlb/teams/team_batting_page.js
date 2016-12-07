@@ -9,9 +9,8 @@ var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
 var TeamPage = require('../../../pages/mlb/teams/team_page.js');
-var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, teamPage, overviewPage;
+var navbar, filters, teamsPage, teamPage;
 
 test.describe('#Team Batting Section', function() {
   test.before(function() {  
@@ -19,7 +18,6 @@ test.describe('#Team Batting Section', function() {
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
     teamPage = new TeamPage(driver);
-    overviewPage = new OverviewPage(driver);
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -42,75 +40,85 @@ test.describe('#Team Batting Section', function() {
       });
 
       test.it('has the correct number of plot points (hits) initially', function() {
-        overviewPage.getHitChartHitCount().then(function(hitCount) {
+        teamPage.getHitChartHitCount().then(function(hitCount) {
           assert.equal(hitCount, 1651);
         });
       });
 
       test.it('selecting a heat map rectangle updates the hit chart', function() {
-        overviewPage.drawBoxOnHeatMap(150,150,25,25);
+        teamPage.drawBoxOnOverviewHeatMap(150,150,25,25);
 
-        overviewPage.getHitChartHitCount('single').then(function(count) {
+        teamPage.getHitChartHitCount('single').then(function(count) {
           assert.equal(count, 10, 'correct number of singles');
         });
         
-        overviewPage.getHitChartHitCount('double').then(function(count) {
+        teamPage.getHitChartHitCount('double').then(function(count) {
           assert.equal(count, 6, 'correct number of doubles');
         });        
 
-        overviewPage.getHitChartHitCount('triple').then(function(count) {
+        teamPage.getHitChartHitCount('triple').then(function(count) {
           assert.equal(count, 2, 'correct number of triples');
         });        
 
-        overviewPage.getHitChartHitCount('homeRun').then(function(count) {
+        teamPage.getHitChartHitCount('homeRun').then(function(count) {
           assert.equal(count, 4, 'correct number of home runs');
         });        
       });      
 
       test.it('selecting a heat map rectangle updates the data table', function() {
-        overviewPage.getTeamTableStat(12).then(function(count) {
+        teamPage.getOverviewTableStat(12).then(function(count) {
           assert.equal(count, 6, 'correct number of doubles');
         });        
 
-        overviewPage.getTeamTableStat(13).then(function(count) {
+        teamPage.getOverviewTableStat(13).then(function(count) {
           assert.equal(count, 2, 'correct number of triples');
         });        
 
-        overviewPage.getTeamTableStat(14).then(function(count) {
+        teamPage.getOverviewTableStat(14).then(function(count) {
           assert.equal(count, 4, 'correct number of home runs');
         });        
       });            
 
       test.it('clicking a hit chart hit shows pitches on the heat map', function() {
-        overviewPage.clickHitChartPoint(1);
-        overviewPage.getHeatMapPitchCount().then(function(pitches) {
-          assert.equal(pitches, 4);
+        teamPage.clickHitChartPlotPoint();
+        teamPage.getOverviewHeatMapPitchCount().then(function(pitches) {
+          assert.equal(pitches, 2);
         });
       });
 
       test.it('clicking a hit chart hit shows pitches on the team grid', function() {
-        overviewPage.getHeatMapPitchCount().then(function(pitches) {
-          assert.equal(pitches, 4);
+        teamPage.getOverviewHeatMapPitchCount().then(function(pitches) {
+          assert.equal(pitches, 2);
         });
       });  
 
-      test.it('pitch view shows 500 pitchs', function() {
-        overviewPage.clickPitchViewLink();
-        overviewPage.getPitchViewPitchCount().then(function(pitches) {
+      test.it('pitch view shows 500 pitches', function() {
+        teamPage.clickPitchViewLink();
+        teamPage.getOverviewPitchViewPitchCount().then(function(pitches) {
           assert.equal(pitches, 500);
         });
-      });    
+      });  
+
+      test.it('clicking pitch view tooltip opens video modal', function() {
+        teamPage.clickOverviewPitchViewPlotPoint();
+        teamPage.clickHitChartTooltipPitchVideoIcon();
+        teamPage.getHitChartTooltipPitchVideoHeader().then(function(text) {
+          assert.equal(text, '(Away - 4/5/2016) Vs RHP M. Tanaka (NYY)', 'Video Modal header');
+        });
+      });  
+
 
       test.it('clearing the heat maps resets the hit chart', function() {
-        overviewPage.clickHeatMapLink();
-        overviewPage.clearHeatMap();
-        overviewPage.getHitChartHitCount().then(function(hitCount) {
+        teamPage.closeHitChartTooltipPitchVideoModal();
+        teamPage.clickHeatMapLink();
+        teamPage.clearOverviewHeatMap();
+        teamPage.getHitChartHitCount().then(function(hitCount) {
           assert.equal(hitCount, 1651);
         });
       });                 
 
       test.it('clearing the heat maps resets the data table', function() {
-        overviewPage.getTeamTableStat(11).then(function(hitCount) {
+        teamPage.getOverviewTableStat(11).then(function(hitCount) {
           assert.equal(hitCount, 1598, 'correct number of hits');
         });        
       }); 
@@ -179,8 +187,8 @@ test.describe('#Team Batting Section', function() {
 
       visualModes.forEach(function(visualMode) {
         test.it("selecting " + visualMode.type + " shows the correct title ", function() {
-          overviewPage.changeVisualMode(visualMode.type);
-          overviewPage.getHeatMapImageTitle().then(function(title) {
+          teamPage.changeVisualMode(visualMode.type);
+          teamPage.getOverviewHeatMapImageTitle().then(function(title) {
             assert.equal(title, visualMode.title);
           });
         });
@@ -205,7 +213,7 @@ test.describe('#Team Batting Section', function() {
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
           teamPage.changeReport(report.type);  
-          overviewPage.getTeamTableStat(11).then(function(stat) {
+          teamPage.getOverviewTableStat(11).then(function(stat) {
             assert.equal(stat, report.topStat);
           });
         });
@@ -516,14 +524,14 @@ test.describe('#Team Batting Section', function() {
       });
     });
 
-      // doing a notEqual because drawing the same box doesnt always lead to the exact same stats
-      test.it('drawing a box on the heat map should update the stats table for both sections', function() {
+    // doing a notEqual because drawing the same box doesnt always lead to the exact same stats
+    test.it('drawing a box on the heat map should update the stats table for both sections', function() {
       var originalAB;
       teamPage.getMultiFilterStat(1, 8).then(function(ab) {
         originalAB = ab;
       });
 
-      teamPage.drawBoxOnHeatMap('top', 160,120,25,25);
+      teamPage.drawBoxOnMultiFilterHeatMap('top', 160,120,25,25);
 
       teamPage.getMultiFilterStat(1, 8).then(function(ab) {
         assert.notEqual(ab, originalAB, 'correct number of at bats for top row');
@@ -536,11 +544,11 @@ test.describe('#Team Batting Section', function() {
 
     // doing less than because of the same reason as above
     test.it('drawing a box on the heat map should update the hit chart for both sections', function() {
-      teamPage.getHitChartHitCount('top').then(function(count) {
+      teamPage.getMultiFilterHitChartHitCount('top').then(function(count) {
         assert.isAtMost(count, 60, 'correct number of hits for top hitChart');
       });      
 
-      teamPage.getHitChartHitCount('bottom').then(function(count) {
+      teamPage.getMultiFilterHitChartHitCount('bottom').then(function(count) {
         assert.isAtMost(count, 60, 'correct number of hits for bottom hitChart');
       });            
     }); 
@@ -548,26 +556,26 @@ test.describe('#Team Batting Section', function() {
    
 
     test.it('when sync is turned on, both heat maps should update ', function() {
-      teamPage.changeVisualMode('top', 'ISO');
+      teamPage.changeMultiFilterVisualMode('top', 'ISO');
 
-      teamPage.getHeatMapImageTitle('top').then(function(title) {
+      teamPage.getMultiFilterHeatMapImageTitle('top').then(function(title) {
         assert.equal(title, 'ISO', "top heat map has title 'ISO'");
       });
 
-      teamPage.getHeatMapImageTitle('bottom').then(function(title) {
+      teamPage.getMultiFilterHeatMapImageTitle('bottom').then(function(title) {
         assert.equal(title, 'ISO', "bottom heat map has title 'ISO'");
       });
     });
 
     test.it('when sync is turned off, changing the top should not change the bottom', function() {
-      teamPage.changeVisualMode('bottom', 'BA');
-      teamPage.changeVisualMode('top', 'SLG');
+      teamPage.changeMultiFilterVisualMode('bottom', 'BA');
+      teamPage.changeMultiFilterVisualMode('top', 'SLG');
 
-      teamPage.getHeatMapImageTitle('top').then(function(title) {
+      teamPage.getMultiFilterHeatMapImageTitle('top').then(function(title) {
         assert.equal(title, 'SLG', "top heat map has title 'SLG'");
       });
 
-      teamPage.getHeatMapImageTitle('bottom').then(function(title) {
+      teamPage.getMultiFilterHeatMapImageTitle('bottom').then(function(title) {
         assert.equal(title, 'BA', "bottom heat map has title 'BA'");
       });     
     });

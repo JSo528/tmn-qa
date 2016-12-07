@@ -12,8 +12,11 @@ var Key = require('selenium-webdriver').Key;
 // Mixins
 var _ = require('underscore');
 var videoPlaylist = require('../mixins/videoPlaylist.js');
+var hitChartFunctions = require('../mixins/hitChartFunctions.js');
 
-// Locators
+/****************************************************************************
+** Locators
+*****************************************************************************/
 var SUB_SECTION_TITLE = {
   'overview': 'Overview',
   'gameLog': 'Game Log',
@@ -25,24 +28,24 @@ var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-se
 var UMPIRE_NAME = By.css('h1.name');
 
 // OVERVIEW PAGE
-var LEFTY_HEATMAP = By.css('#umpireHeatMapLefty > svg');
-var LEFTY_HEATMAP_IMAGE = By.css('#umpireHeatMapLefty #heatmapBg');
-var CLOSE_LEFTY_HEATMAP_BOX_BUTTON = By.css('#umpireHeatMapLefty > svg > text');
+var LEFTY_HEATMAP_ID = 'umpireHeatMapLefty';
 var LEFTY_HEAT_MAP_LINK = By.id('visualBaseballHeatMapUmpireLefty');
 var LEFTY_PITCH_VIEW_LINK = By.id('visualBaseballPitchChartUmpireLefty');
-var LEFTY_PITCH_VIEW_PITCH = By.css('#umpirePitchChartLefty circle.pitch-chart-ball');
+var LEFTY_PITCH_VIEW_ID = 'umpirePitchChartLefty';
 
-var RIGHTY_HEATMAP = By.css('#umpireHeatMapRighty > svg');
-var RIGHTY_HEATMAP_IMAGE = By.css('#umpireHeatMapRighty #heatmapBg');
-var CLOSE_RIGHTY_HEATMAP_BOX_BUTTON = By.css('#umpireHeatMapRighty > svg > text');
+var RIGHTY_HEATMAP_ID = 'umpireHeatMapRighty';
 var RIGHTY_HEAT_MAP_LINK = By.id('visualBaseballHeatMapUmpireRighty');
 var RIGHTY_PITCH_VIEW_LINK = By.id('visualBaseballPitchChartUmpireRighty');
-var RIGHTY_PITCH_VIEW_PITCH = By.css('#umpirePitchChartRighty circle.pitch-chart-ball');
+var RIGHTY_PITCH_VIEW_ID = 'umpirePitchChartRighty';
 
 // VISUAL MODE
 var VISUAL_MODE_SELECT = By.id('s2id_pageControlBaseballVisMode');
 var VISUAL_MODE_UL_ID = 'select2-results-1';
 
+
+/****************************************************************************
+** Constructor
+*****************************************************************************/
 function UmpirePage(driver, subSection) {
   BasePage.call(this, driver);
   this.subSection = subSection || 'overview';
@@ -51,6 +54,15 @@ function UmpirePage(driver, subSection) {
 UmpirePage.prototype = Object.create(BasePage.prototype);
 UmpirePage.prototype.constructor = UmpirePage;  
 
+// Mixins
+_.extend(UmpirePage.prototype, videoPlaylist); // Matchups
+_.extend(UmpirePage.prototype, hitChartFunctions());
+
+UmpirePage.prototype.DEFAULT_PITCH_VISUALS_MODAL_ID = 'tableBaseballUmpirePitchLogModalModal';
+
+/****************************************************************************
+** Controls
+*****************************************************************************/
 UmpirePage.prototype.getUmpireName = function() {
   return this.getText(UMPIRE_NAME, 30000);
 };
@@ -70,63 +82,34 @@ UmpirePage.prototype.goToSubSection = function(subSection) {
 /****************************************************************************
 ** Overview
 *****************************************************************************/
-UmpirePage.prototype.drawBoxOnHeatMap = function(leftyOrRighty, x, y, width, height) {
-  var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP : RIGHTY_HEATMAP;
-  var imageLocator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_IMAGE : RIGHTY_HEATMAP_IMAGE;
-  var element = driver.findElement(locator);
-  driver.actions()
-    .mouseMove(element, {x: x, y: y}) // start at (x,y)
-    .mouseDown() // click down
-    .mouseMove({x: width, y: height}) // move mouse width to the right and height downwards
-    .mouseUp() // click up
-    .perform();
-    
-    return this.waitForEnabled(imageLocator)
+UmpirePage.prototype.drawBoxOnOverviewHeatMap = function(leftyOrRighty, x, y, width, height) {
+  var heatmapID = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_ID : RIGHTY_HEATMAP_ID;
+  return this.drawBoxOnHeatMap(x,y,width,height, heatmapID);
 };
 
-UmpirePage.prototype.clearHeatMap = function(leftyOrRighty) {
-  var locator = (leftyOrRighty == 'lefty') ? CLOSE_LEFTY_HEATMAP_BOX_BUTTON : CLOSE_RIGHTY_HEATMAP_BOX_BUTTON;
-  var heatmapLocator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP : RIGHTY_HEATMAP;
-  this.driver.findElements(locator).then(function(elements) {
-    for(var i=0; i < elements.length; i++) {
-      elements[i].click();
-    }
-  })
-
-  return this.waitForEnabled(heatmapLocator, 20000);
+UmpirePage.prototype.clearOverviewHeatMap = function(leftyOrRighty) {
+  var heatMapID = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_ID : RIGHTY_HEATMAP_ID;
+  return this.clearHeatMap(heatMapID);
 };
 
-UmpirePage.prototype.clickHeatMapLink = function(leftyOrRighty) {
+UmpirePage.prototype.clickOverviewHeatMapLink = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEAT_MAP_LINK : RIGHTY_HEAT_MAP_LINK;
   return this.click(locator);
 };
 
-UmpirePage.prototype.clickPitchViewLink = function(leftyOrRighty) {
+UmpirePage.prototype.clickOverviewPitchViewLink = function(leftyOrRighty) {
   var locator = (leftyOrRighty == 'lefty') ? LEFTY_PITCH_VIEW_LINK : RIGHTY_PITCH_VIEW_LINK;
   return this.click(locator);
 };
 
-
-UmpirePage.prototype.getPitchViewPitchCount = function(leftyOrRighty) {
-  var d = Promise.defer();
-
-  var locator = (leftyOrRighty == 'lefty') ? LEFTY_PITCH_VIEW_PITCH : RIGHTY_PITCH_VIEW_PITCH;
-  this.getElementCount(locator).then(function(count) {
-    d.fulfill(count/2); // 2 circles per pitch
-  });
-
-  return d.promise;
+UmpirePage.prototype.getOverviewPitchViewPitchCount = function(leftyOrRighty) {
+  var pitchViewID = (leftyOrRighty == 'lefty') ? LEFTY_PITCH_VIEW_ID : RIGHTY_PITCH_VIEW_ID;
+  return this.getPitchViewPitchCount(pitchViewID);
 };
 
-UmpirePage.prototype.getHeatMapImageTitle = function(leftyOrRighty) {
-  var d = Promise.defer();
-  var locator = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_IMAGE : RIGHTY_HEATMAP_IMAGE;
-
-  this.getAttribute(locator, 'href').then(function(href) {
-    d.fulfill(href.match(/(%5B).{2,20}(%5D.+from)/)[0].replace(/(%5B|%5D.+)/g, '').replace(/(%25)/g, '%'));
-  });
-
-  return d.promise;
+UmpirePage.prototype.getOverviewHeatMapImageTitle = function(leftyOrRighty) {
+  var heatMapID = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_ID : RIGHTY_HEATMAP_ID;
+  return this.getHeatMapImageTitle(heatMapID)
 };
 
 UmpirePage.prototype.changeVisualMode = function(mode) {
@@ -178,8 +161,5 @@ UmpirePage.prototype.statsTable = function() {
       break;    
   };
 };
-
-// Mixins
-_.extend(UmpirePage.prototype, videoPlaylist);
 
 module.exports = UmpirePage;

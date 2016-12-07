@@ -9,9 +9,8 @@ var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
 var TeamPage = require('../../../pages/mlb/teams/team_page.js');
-var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, teamPage, overviewPage, teamPage;
+var navbar, filters, teamsPage, teamPage, teamPage;
 
 test.describe('#Team Catching Section', function() {
   test.before(function() {  
@@ -19,7 +18,6 @@ test.describe('#Team Catching Section', function() {
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
     teamPage = new TeamPage(driver);
-    overviewPage = new OverviewPage(driver);
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -37,7 +35,7 @@ test.describe('#Team Catching Section', function() {
   // Overview Section
   test.describe("#Subsection: Overview", function() {
     test.it('should initially have the correct data', function() {
-        overviewPage.getTeamTableStat(10).then(function(strkFrmd) {
+        teamPage.getOverviewTableStat(10).then(function(strkFrmd) {
           assert.equal(strkFrmd, 169, 'StrkFrmd');
         });        
       });            
@@ -45,31 +43,31 @@ test.describe('#Team Catching Section', function() {
     // Heat Map & Hit Charts
     test.describe("#Heat Maps & Hit Charts", function() {
       test.it('selecting a heat map rectangle on the left image updates the data table', function() {
-        overviewPage.drawBoxOnCatcherHeatMap('left', 130,120,120,49);  
+        teamPage.drawBoxOnCatcherHeatMap('left', 130,120,120,49);  
 
-        overviewPage.getTeamTableStat(10).then(function(strkFrmd) {
+        teamPage.getOverviewTableStat(10).then(function(strkFrmd) {
           assert.equal(strkFrmd, 27, 'StrkFrmd');
         });        
       });            
 
       test.it('clearing the left heat map resets the data table', function() {
-        overviewPage.clearCatcherHeatMap('left');
-        overviewPage.getTeamTableStat(10).then(function(strkFrmd) {
+        teamPage.clearCatcherHeatMap('left');
+        teamPage.getOverviewTableStat(10).then(function(strkFrmd) {
           assert.equal(strkFrmd, 169, 'StrkFrmd');
         });        
       });     
 
       test.it('selecting a heat map rectangle on the right image updates the data table', function() {
-        overviewPage.drawBoxOnCatcherHeatMap('right', 130,220,120,49);  
+        teamPage.drawBoxOnCatcherHeatMap('right', 130,220,120,49);  
 
-        overviewPage.getTeamTableStat(10).then(function(strkFrmd) {
+        teamPage.getOverviewTableStat(10).then(function(strkFrmd) {
           assert.isAtMost(strkFrmd, 61, 'StrkFrmd');
         });        
       });   
 
       test.it('clearing the right heat maps resets the data table', function() {
-        overviewPage.clearCatcherHeatMap('right');
-        overviewPage.getTeamTableStat(10).then(function(strkFrmd) {
+        teamPage.clearCatcherHeatMap('right');
+        teamPage.getOverviewTableStat(10).then(function(strkFrmd) {
           assert.equal(strkFrmd, 169, 'StrkFrmd');
         });        
       }); 
@@ -113,7 +111,7 @@ test.describe('#Team Catching Section', function() {
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
           teamPage.changeReport(report.type);  
-          overviewPage.getTeamTableStat(8).then(function(stat) {
+          teamPage.getOverviewTableStat(8).then(function(stat) {
             assert.equal(stat, report.topStat);
           });
         });
@@ -230,6 +228,21 @@ test.describe('#Team Catching Section', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
+    
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {     
+      test.it('selecting "Play Top 25" videos adds 25 videos to playlist', function() {
+        teamPage.selectFromPlayVideosDropdown('Play Top 25');
+        teamPage.getVideoPlaylistCount().then(function(videoCount) {
+          assert.equal(videoCount, 25, '# videos on playlist');
+        });
+      });  
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+      }); 
+    })
+
 
     test.describe('when selecting filter (Exit Direction: 0-30)', function() {
       test.before(function() {

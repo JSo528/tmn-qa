@@ -164,7 +164,7 @@ test.describe('#Teams Page', function() {
             teamName = team;
           });
 
-          teamsPage.clickTeamTablePin(1);
+          teamsPage.clickTablePin(1);
 
           teamsPage.getIsoTableStat(1,3).then(function(team) {
             assert.equal(team, teamName);
@@ -172,7 +172,7 @@ test.describe('#Teams Page', function() {
         });
 
         test.after(function() {
-          teamsPage.clearTeamTablePin();
+          teamsPage.clearTablePins();
         });
       });
 
@@ -181,7 +181,7 @@ test.describe('#Teams Page', function() {
       test.describe('#ISO Mode', function() {
         test.it('selecting LA from search should add team to table', function() {
           teamsPage.clickIsoBtn("on");
-          teamsPage.addTeamToIsoTable('LA', 2);
+          teamsPage.addToIsoTable('LA', 2);
           teamsPage.getTeamTableStat(1,3).then(function(stat) {
             assert.equal(stat, ' LAD', '1st row team name');
           });
@@ -189,7 +189,7 @@ test.describe('#Teams Page', function() {
 
         test.after(function() {
           teamsPage.clickIsoBtn("off");
-          teamsPage.clearTeamTablePin();
+          teamsPage.clearTablePins();
         });
       });
       
@@ -197,7 +197,7 @@ test.describe('#Teams Page', function() {
       test.describe("#isolation mode", function() {
         test.it('selecting LA Dodgers from search should add team to table', function() {
           teamsPage.clickIsoBtn("on");
-          teamsPage.addTeamToIsoTable('LA Dodgers', 1)
+          teamsPage.addToIsoTable('LA Dodgers', 1)
           // the ISO table doesn't actually show when ISO mode is on
           // instead what's happening is that the main table's data is replaced
           // when ISO mode is off, both tables show
@@ -208,7 +208,7 @@ test.describe('#Teams Page', function() {
 
   
         test.it('selecting SF Giants from search should add team to table', function() {
-          teamsPage.addTeamToIsoTable('Giants', 1)
+          teamsPage.addToIsoTable('Giants', 1)
           teamsPage.getTeamTableStat(1,3).then(function(stat) {
             assert.equal(stat, ' SF', '1st row team name');
           });
@@ -241,10 +241,8 @@ test.describe('#Teams Page', function() {
       });
 
       // Chart/Edit Columns
-      // TODO - these tests are too unreliable
       test.describe("#chart/edit columns", function() {
         // histograms
-        
         test.it('clicking show histogram link should open histogram modal', function() {
           teamsPage.clickChartColumnsBtn()
           
@@ -281,7 +279,7 @@ test.describe('#Teams Page', function() {
             // 1 original bar and 4 new bars will have height=0 and will appear invisible
             assert.equal(count, 6, '# of bars on histogram');
           });
-        })        
+        })     
 
         test.it('clicking close histogram button should close histogram modal', function() {
           teamsPage.closeModal();
@@ -307,7 +305,7 @@ test.describe('#Teams Page', function() {
         });
 
         test.after(function() {
-          teamsPage.clearTeamTablePin();
+          teamsPage.clearTablePins();
         });   
       });
 
@@ -638,6 +636,28 @@ test.describe('#Teams Page', function() {
         });        
       });
 
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a team stat opens the play by play modal', function() {
+          teamsPage.clickTeamTableStat(1, 20);
+          teamsPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs RHB A. Garcia (ATL), Bot 4, 0 Out');
+          });
+        });
+
+        test.it('selecting "Play All" videos adds 5 videos to playlist', function() {
+          teamsPage.selectFromPlayVideosDropdown("Play Top 5");
+          teamsPage.getVideoPlaylistCount().then(function(videoCount) {
+            assert.equal(videoCount, 5, '# videos on playlist');
+          });
+        }); 
+
+        test.after(function() {
+          teamsPage.closeVideoPlaylistModal();
+          teamsPage.closePlayByPlaytModal();
+        });
+      });
+
       // Filters
       test.describe("#filters", function() {
         test.before(function() {
@@ -734,6 +754,25 @@ test.describe('#Teams Page', function() {
             assert.isAtLeast(teamOneSLAA, teamTwoSLAA, "team one's SLAA is >= team two's SLAA");
             assert.isAtLeast(teamTwoSLAA, teamTenSLAA, "team two's SLAA is >= team ten's SLAA");
           });            
+        });
+      });
+
+      // Filters
+      test.describe("#filters", function() {
+        test.it('adding filter: (Men On: On 1B) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Men On:', 'On 1B', true);
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 88.37, 'SF Giants SLAA');
+          });
+        });
+
+        test.it('clicking "default filters" returns filters back to default state', function() {
+          filters.clickDefaultFiltersBtn();
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 373.42, 'LA Dodgers SLAA');
+          });
         });
       });
 

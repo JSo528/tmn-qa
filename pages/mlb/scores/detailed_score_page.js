@@ -29,7 +29,6 @@ var TABLES = By.css('table');
 // Batting
 var BATTING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamStatBatting");
 var AWAY_BATTING_TABLE = By.xpath(".//div[@id='tableBaseballGamePlayerBattingStatsAwayContainer']/table");
-
 // Pitching
 var PITCHING_REPORT_SELECT = By.id("s2id_reportNavBaseballTeamStatPitching");
 var AWAY_PITCHING_TABLE = By.xpath(".//div[@id='tableBaseballGamePlayerPitchingStatsAwayContainer']/table");
@@ -51,6 +50,8 @@ DetailedScorePage.prototype.constructor = DetailedScorePage;
 
 // Mixins
 _.extend(DetailedScorePage.prototype, videoPlaylist);
+
+DetailedScorePage.prototype.DEFAULT_PITCH_VISUALS_MODAL_ID = 'tableBaseballGamePitchByPitchModal';
 
 /****************************************************************************
 ** Controls

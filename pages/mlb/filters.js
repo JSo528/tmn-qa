@@ -16,6 +16,7 @@ var SIDEBAR_DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='se
 var SIDEBAR_FILTER_GROUP_SELECT = By.id('filterSideViewGroupSelect');
 var UPDATE_BUTTON = By.className('update');  
 var LOADING_CONTAINER = By.id('loadingContainer');
+var DEFAULT_FILTERS_BUTTON = By.css('#filterSet button.default-filters');
 
 function Filters(driver) {
   BasePage.call(this, driver);
@@ -147,6 +148,10 @@ Filters.prototype.getCurrentFiltersForDropdownFilter = function(filterName) {
     d.fulfill(filters);
   });
   return d.promise;
+};
+
+Filters.prototype.clickDefaultFiltersBtn = function() {
+  this.click(DEFAULT_FILTERS_BUTTON);
 };
 
 /****************************************************************************

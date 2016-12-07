@@ -13,8 +13,11 @@ var Key = require('selenium-webdriver').Key;
 var _ = require('underscore');
 var videoPlaylist = require('../mixins/videoPlaylist.js');
 var occurrencesAndStreaks = require('../mixins/occurrencesAndStreaks.js');
+var hitChartFunctions = require('../mixins/hitChartFunctions.js');
 
-// Locators
+/****************************************************************************
+** Locators
+*****************************************************************************/
 var TEAM_NAME = By.css('h1.name');
 var SECTION_LINK_NUM = {
   'batting': 1,
@@ -45,7 +48,24 @@ var REPORT_SELECT = {
   'catching': By.id('s2id_reportNavBaseballTeamStatTeamcatching'),
   'statcastFielding': By.id('s2id_reportNavBaseballTeamStatTeamstatcast')
 }
+
+var VISUAL_MODE_SELECT = By.id('s2id_pageControlBaseballVisMode');
+
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
+
+// Overview
+var OVERVIEW_HEAT_MAP_ID = 'teamHeatMap';
+var OVERVIEW_PITCH_VIEW_ID = 'teamPitchChart';
+var HEAT_MAP_LINK = By.id('visualBaseballHeatMapTeam');
+var PITCH_VIEW_LINK = By.id('visualBaseballPitchChartTeamBatter');
+
+// Catcher Overview
+var LEFT_CATCHING_HEATMAP_ID = 'teamHeatMapLefty';
+var RIGHT_CATCHING_HEATMAP_ID = 'teamHeatMapRighty';
+
+// StatcastFielding Overview
+var BALLPARK_IMAGE = By.css('.field-container svg g');
+var BALLPARK_SELECT = By.css('tmn-ballpark-selector select');
 
 // Roster
 var ROSTER_TABLE_ID = {
@@ -82,17 +102,11 @@ var CONSTRAINT_STAT_SELECT = {
 }
 
 // Multi-Filter
-var HEATMAP_TOP = By.css('#teamHeatMapMultiFilter1 > svg');
-var HEATMAP_BOTTOM = By.css('#teamHeatMapMultiFilter2 > svg');
-var HEATMAP_IMAGE_TOP = By.css('#teamHeatMapMultiFilter1 #heatmapBg');
-var HEATMAP_IMAGE_BOTTOM = By.css('#teamHeatMapMultiFilter2 #heatmapBg');
-var CLOSE_HEATMAP_BOX_BUTTON_TOP = By.css('#hitChartMultiFilter1 > svg > text');
-var CLOSE_HEATMAP_BOX_BUTTON_BOTTOM = By.css('#hitChartMultiFilter2 > svg > text');
+var TOP_HEATMAP_ID = 'teamHeatMapMultiFilter1';
+var BOTTOM_HEATMAP_ID = 'teamHeatMapMultiFilter2';
 
-var HIT_CHART_TOP = By.css('#hitChartMultiFilter1 > svg');
-var HIT_PLOT_POINT_TOP = By.css('#hitChartMultiFilter1 > svg > circle.plotPoint');
-var HIT_CHART_BOTTOM = By.css('#hitChartMultiFilter2 > svg');
-var HIT_PLOT_POINT_BOTTOM = By.css('#hitChartMultiFilter2 > svg > circle.plotPoint');
+var TOP_HIT_CHART_ID = 'hitChartMultiFilter1';
+var BOTTOM_HIT_CHART_ID = 'hitChartMultiFilter2';
 
 var VISUAL_MODE_TOP_SELECT = By.id('s2id_pageControlBaseballVisMode');
 var VISUAL_MODE_BOTTOM_SELECT = By.id('s2id_pageControlBaseballVisMode2');
@@ -117,6 +131,9 @@ var MATCHUPS_VIDEO_TEXT_TABLE_ID = {
 var AT_BAT_TABLE = By.xpath('.//div[@id="tableBaseballTeamPitchLogBattingContainer"]/table')
 var VS_TABLE = By.xpath('.//div[@id="tableBaseballTeamStatsContainer"]/table')
 
+/****************************************************************************
+** Constructor
+*****************************************************************************/
 function TeamPage(driver, section, subSection) {
   BasePage.call(this, driver);
   this.section = 'batting';
@@ -129,7 +146,12 @@ TeamPage.prototype.constructor = TeamPage;
 // Mixins
 _.extend(TeamPage.prototype, videoPlaylist); // Matchups
 _.extend(TeamPage.prototype, occurrencesAndStreaks);
+_.extend(TeamPage.prototype, hitChartFunctions());
 
+
+/****************************************************************************
+** Controls
+*****************************************************************************/
 // after going to new section, need to wait for the page to be fully loaded
 // last thing to update appears to be the report select for each page
 TeamPage.prototype.goToSection = function(section) {
@@ -154,14 +176,114 @@ TeamPage.prototype.changeReport = function(report) {
   return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
 };
 
-// Overview
+TeamPage.prototype.changeVisualMode = function(mode) { 
+  this.click(VISUAL_MODE_SELECT);
+  var locator = By.xpath(`.//ul[@id='select2-results-1']/li/div[text()='${mode}']`);
+  return this.click(locator)
+};
+ 
+/****************************************************************************
+** Overview
+*****************************************************************************/
+TeamPage.prototype.getOverviewTableStat = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsOverviewContainer']/table/tbody/tr[4]/td[${col}]`);
+  return this.getText(locator, 30000);
+};
+
 TeamPage.prototype.clickOverviewTableStat = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsOverviewContainer']/table/tbody/tr[4]/td[${col}]/span`);
   return this.click(locator);
 };
 
+TeamPage.prototype.drawBoxOnOverviewHeatMap = function(x,y,width,height) {
+  return this.drawBoxOnHeatMap(x,y,width,height, OVERVIEW_HEAT_MAP_ID);
+};
 
-// Roster
+TeamPage.prototype.clearOverviewHeatMap = function(x,y,width,height) {
+  return this.clearHeatMap(OVERVIEW_HEAT_MAP_ID);
+};
+
+TeamPage.prototype.getOverviewHeatMapPitchCount = function() {
+  return this.getHeatMapPitchCount(OVERVIEW_HEAT_MAP_ID);
+};
+
+TeamPage.prototype.getOverviewHeatMapImageTitle = function() {
+  return this.getHeatMapImageTitle(OVERVIEW_HEAT_MAP_ID);
+};
+
+TeamPage.prototype.getOverviewPitchViewPitchCount = function() {
+  return this.getPitchViewPitchCount(OVERVIEW_PITCH_VIEW_ID);
+};
+
+TeamPage.prototype.clickHeatMapLink = function() {
+  return this.click(HEAT_MAP_LINK);
+};
+
+TeamPage.prototype.clickPitchViewLink = function() {
+  return this.click(PITCH_VIEW_LINK);
+};
+
+TeamPage.prototype.clickOverviewPitchViewPlotPoint = function() {
+  return this.clickPitchViewPlotPoint(OVERVIEW_PITCH_VIEW_ID);
+};
+
+// Catcher
+TeamPage.prototype.drawBoxOnCatcherHeatMap = function(leftOrRight, x, y, width, height) {
+  var locator = (leftOrRight == 'left') ? LEFT_CATCHING_HEATMAP_ID : RIGHT_CATCHING_HEATMAP_ID;
+  return this.drawBoxOnHeatMap(x,y,width,height,locator)
+};
+
+TeamPage.prototype.clearCatcherHeatMap = function(leftOrRight) {
+  var locator = (leftOrRight == 'left') ? LEFT_CATCHING_HEATMAP_ID : RIGHT_CATCHING_HEATMAP_ID;
+  return this.clearHeatMap(locator, locator);
+};
+
+// StatcastFielding
+TeamPage.prototype.getStatcastFieldingModalTableStat = function(row, col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoContainer']/table/tbody/tr[${row}]/td[${col}]`);
+  return this.getText(locator, 30000);
+};
+
+TeamPage.prototype.clickStatcastFieldingChartEvent = function(eventNum) {
+  var d = Promise.defer();
+  var locator = By.css('statcast-fielding-chart .bin-events path');
+  
+  driver.findElements(locator).then(function(elements) {
+    d.fulfill(elements[eventNum].click());
+  });
+
+  return d.promise;
+};
+
+TeamPage.prototype.closeStatcastFieldingModal = function() {
+  var locator = By.css('#tableBaseballPlayerTeamPitchLogBattingModalStandaloneWithVideoId button');
+  var element = driver.findElement(locator);
+  return element.click();
+};
+
+TeamPage.prototype.changeBallparkDropdown = function(ballpark) {
+  this.click(BALLPARK_SELECT);
+  var optionLocator = By.xpath(`.//tmn-ballpark-selector/select/option[text()="${ballpark}"]`);
+  this.click(optionLocator);
+
+  return this.waitUntilStaleness(BALLPARK_IMAGE, 30000);
+}
+
+TeamPage.prototype.getCurrentBallparkImageID = function() {
+  var d = Promise.defer();
+
+  this.driver.findElements(BALLPARK_IMAGE).then(function(elements) {
+    elements[0].getAttribute('id').then(function(id) {
+      d.fulfill(id);
+    });
+  });
+  return d.promise;
+};
+
+
+/****************************************************************************
+** Roster
+*****************************************************************************/
 TeamPage.prototype.getRosterTableStat = function(playerNum, col) {
   // First 3 rows are for the headers
   var row = playerNum + 3;
@@ -182,7 +304,9 @@ TeamPage.prototype.changeOnTeamDropdown = function(report) {
   return this.changeDropdown(ON_TEAM_SELECT, DROPDOWN_INPUT, report);  
 };
 
-// Game Log Page
+/****************************************************************************
+** Game Log Page
+*****************************************************************************/
 TeamPage.prototype.getGameLogTableStat = function(gameNum, col) {
   var row = gameNum + 5;
   var locator = By.xpath(`.//div[@id='tableBaseballTeamGameLogContainer']/table/tbody/tr[${row}]/td[${col}]`);
@@ -195,7 +319,9 @@ TeamPage.prototype.clickGameLogTableStat = function(gameNum, col) {
   return this.click(locator);
 };
 
-// Splits Page
+/****************************************************************************
+** Splits Page
+*****************************************************************************/
 TeamPage.prototype.getSplitsTableStat = function(rowNum, col) {
   var row = rowNum + 1;
   var locator = By.xpath(`.//div[@id='tableBaseballTeamSplitsContainer']/table/tbody/tr[${row}]/td[${col}]`);
@@ -207,7 +333,9 @@ TeamPage.prototype.getSplitsTableHeaderText = function(headerNum) {
   return this.getText(locator, 30000);
 };
 
-// Occurences & Steaks
+/****************************************************************************
+** Occurrences & Steaks
+*****************************************************************************/
 TeamPage.prototype.constraintStatSelect = function() {
   return CONSTRAINT_STAT_SELECT[this.section];
 };
@@ -228,20 +356,12 @@ TeamPage.prototype.getStreaksSectionHeaderText = function(headerNum) {
   return this.getText(locator, 30000);
 };
 
-// Multi-Filter
-TeamPage.prototype.drawBoxOnHeatMap = function(topOrBottom, x, y, width, height) {
-  var locator = (topOrBottom == 'top') ? HEATMAP_TOP : HEATMAP_BOTTOM;
-  var imageLocator = (topOrBottom == 'top') ? HEATMAP_IMAGE_TOP : HEATMAP_IMAGE_BOTTOM;
-  var element = driver.findElement(locator);
-  driver.actions()
-    .mouseMove(element, {x: x, y: y}) // start at (x,y)
-    .mouseDown() // click down
-    .mouseMove({x: width, y: height}) // move mouse width to the right and height downwards
-    .mouseUp() // click up
-    .perform();
-    
-    this.waitUntilStaleness(imageLocator, 10000);
-    return this.waitForEnabled(imageLocator)
+/****************************************************************************
+** Multi-Filter
+*****************************************************************************/
+TeamPage.prototype.drawBoxOnMultiFilterHeatMap = function(topOrBottom, x, y, width, height) {
+  var locator = (topOrBottom == 'top') ? TOP_HEATMAP_ID : BOTTOM_HEATMAP_ID;
+  return this.drawBoxOnHeatMap(x,y,width,height,locator)
 };
 
 TeamPage.prototype.getMultiFilterStat = function(rowNum, col) {
@@ -249,36 +369,24 @@ TeamPage.prototype.getMultiFilterStat = function(rowNum, col) {
   return this.getText(locator, 30000);
 }
 
-TeamPage.prototype.getHitChartHitCount = function(topOrBottom) {
-  var d = Promise.defer();
-  var hitChartLocator = (topOrBottom == 'top') ? HIT_CHART_TOP : HIT_CHART_BOTTOM;
-  var hitPlotPointLocator = (topOrBottom == 'top') ? HIT_PLOT_POINT_TOP : HIT_PLOT_POINT_BOTTOM;
-
-  this.waitForEnabled(hitChartLocator);
-  this.getElementCount(hitPlotPointLocator).then(function(count) {
-    d.fulfill(count);
-  });
-
-  return d.promise;
+TeamPage.prototype.getMultiFilterHitChartHitCount = function(topOrBottom) {
+  var hitChartID = (topOrBottom == 'top') ? TOP_HIT_CHART_ID : BOTTOM_HIT_CHART_ID;
+  return this.getHitChartHitCount('all', hitChartID);
 };
 
-TeamPage.prototype.changeVisualMode = function(topOrBottom, type) {
+TeamPage.prototype.changeMultiFilterVisualMode = function(topOrBottom, type) {
   var locator = (topOrBottom == 'top') ? VISUAL_MODE_TOP_SELECT : VISUAL_MODE_BOTTOM_SELECT;
   return this.changeDropdown(locator, DROPDOWN_INPUT, type);
 };
 
-TeamPage.prototype.getHeatMapImageTitle = function(topOrBottom) {
-  var d = Promise.defer();
-  var locator = (topOrBottom == 'top') ? HEATMAP_IMAGE_TOP : HEATMAP_IMAGE_BOTTOM;
-
-  this.getAttribute(locator, 'href').then(function(href) {
-    d.fulfill(href.match(/(%5B).{2,20}(%5D.+from)/)[0].replace(/(%5B|%5D.+)/g, '').replace(/(%25)/g, '%'));
-  });
-
-  return d.promise;
+TeamPage.prototype.getMultiFilterHeatMapImageTitle = function(topOrBottom) {
+  var locator = (topOrBottom == 'top') ? TOP_HEATMAP_ID : BOTTOM_HEATMAP_ID;
+  return this.getHeatMapImageTitle(locator);
 };
 
-// Comps
+/****************************************************************************
+** Comps
+*****************************************************************************/
 TeamPage.prototype.selectForCompSearch = function(compNum, name) {
   var locator = compNum == 1 ? COMP_SEARCH_1_INPUT : COMP_SEARCH_2_INPUT
   return this.selectFromSearch(locator, name, 1, COMP_CONTAINER)
@@ -289,13 +397,17 @@ TeamPage.prototype.getCompTableStat = function(rowNum, col) {
   return this.getText(locator, 30000);
 };
 
-// Vs Teams/Pitchers
+/****************************************************************************
+** Vs Teams/Pitchers
+*****************************************************************************/
 TeamPage.prototype.getVsTableStat = function(rowNum, col) {
   var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
   return this.getText(locator, 10000);
 };
 
-// Data Comparison
+/****************************************************************************
+** Data Comparison
+*****************************************************************************/
 TeamPage.prototype.statsTable = function() {
   var statsTables = {
     'overview': By.xpath(".//div[@id='tableBaseballTeamStatsOverviewContainer']/table"),

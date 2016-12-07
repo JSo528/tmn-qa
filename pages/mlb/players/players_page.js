@@ -13,6 +13,7 @@ var _ = require('underscore');
 var videoPlaylist = require('../mixins/videoPlaylist.js');
 var occurrencesAndStreaks = require('../mixins/occurrencesAndStreaks.js');
 var scatterPlot = require('../mixins/scatterPlot.js');
+var chartColumns = require('../mixins/chartColumns.js');
 
 /****************************************************************************
 ** Locators
@@ -75,6 +76,15 @@ PlayersPage.prototype.constructor = PlayersPage;
 _.extend(PlayersPage.prototype, videoPlaylist);
 _.extend(PlayersPage.prototype, occurrencesAndStreaks);
 _.extend(PlayersPage.prototype, scatterPlot);
+_.extend(PlayersPage.prototype, chartColumns);
+
+PlayersPage.prototype.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID = STATS_TABLE_ID;
+PlayersPage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = {
+  'batting': 'tableBaseballPlayersStatsBattingISOContainer',
+  'pitching': 'tableBaseballPlayersStatsPitchingISOContainer',
+  'catching': 'tableBaseballPlayersStatsCatchingISOContainer',
+  'statcastFielding': 'tableBaseballPlayersStatsStatcastISOContainer'
+}
 
 /****************************************************************************
 ** Controls
@@ -132,22 +142,9 @@ PlayersPage.prototype.getPlayerTableHeader = function(col) {
   return this.getText(locator, 30000);
 };
 
-PlayersPage.prototype.getIsoTableStat = function(playerNum, col) {
-  // First 4 rows are for the headers
-  var row = 4 + playerNum;
-  var locator = By.xpath(`.//div[@id='tableBaseballPlayersStatsBattingISOContainer']/table/tbody/tr[${row}]/td[${col}]`);
-  return this.getText(locator, 30000);
-};
-
 PlayersPage.prototype.clickTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='${STATS_TABLE_ID[this.section]}']/table/thead/tr/th[${col}]`);
   return this.click(locator); 
-};
-
-PlayersPage.prototype.clickPlayerTablePin = function(playerNum) {
-  var row = 4 + playerNum;
-  var locator = By.xpath(`.//div[@id='${STATS_TABLE_ID[this.section]}']/table/tbody/tr[${row}]/td/span[@class='table-pin fa fa-lg fa-thumb-tack']`);
-  return this.click(locator);
 };
 
 PlayersPage.prototype.changeQualifyBy = function(filter, stat, input) {

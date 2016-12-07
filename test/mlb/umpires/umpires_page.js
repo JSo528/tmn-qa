@@ -60,8 +60,6 @@ test.describe('#Umpires Page', function() {
     });
   });
 
-
-
   // Sorting
   test.describe('#Sorting', function() {
     test.it('should be sorted initially by SLAA asc', function() {
@@ -137,6 +135,104 @@ test.describe('#Umpires Page', function() {
       filters.closeDropdownFilter("PFX X (in):");
       filters.closeDropdownFilter("PFX Z (in):");
     });
+  });
+
+  // Isolation Mode
+  test.describe("#isolation mode", function() {
+    test.it('selecting Ryan Blakney from search should add umpire to table', function() {
+      // umpiresPage.clickIsoBtn("on");
+      // umpiresPage.addToIsoTable('Larry Vanover', 5)
+      umpiresPage.clickTablePin(5, 3);
+
+      umpiresPage.getIsoTableStat(1,3).then(function(stat) {
+        assert.equal(stat, 'Ryan Blakney', '1st row umpire name');
+      })
+    });      
+
+
+    test.it('selecting Greg Gibson from search should add umpire to table', function() {
+      // umpiresPage.addToIsoTable('Jerry Meals', 1)
+      umpiresPage.clickTablePin(10, 3);
+      umpiresPage.getIsoTableStat(1,3).then(function(stat) {
+        assert.equal(stat, 'Ryan Blakney', '1st row umpire name');
+      });
+
+      umpiresPage.getIsoTableStat(2,3).then(function(stat) {
+        assert.equal(stat, 'Greg Gibson', '2nd row umpire name');
+      });
+    });         
+
+    test.it('pinned total should show the correct sum', function() {
+      umpiresPage.clickIsoBtn("on");
+      umpiresPage.getPinnedTotalTableStat(4).then(function(wins) {
+        assert.equal(wins, 65, 'pinned total - games');
+      });
+    });                                       
+
+    test.it('turning off isolation mode should show players in iso table', function() {
+      umpiresPage.clickIsoBtn("off");
+      umpiresPage.getIsoTableStat(1,3).then(function(stat) {
+        assert.equal(stat, 'Ryan Blakney', '1st row umpire name');
+      });
+
+    });                                               
+  });
+
+  // Chart/Edit Columns
+  test.describe("#chart/edit columns", function() {
+    // histograms
+    test.it('clicking show histogram link should open histogram modal', function() {
+      umpiresPage.clickChartColumnsBtn()
+      
+      umpiresPage.openHistogram(12);  
+      umpiresPage.isModalDisplayed().then(function(isDisplayed) {
+        assert.equal(isDisplayed, true);
+      });
+    });  
+
+    test.it('hovering over bar should show stats for players', function() {
+      umpiresPage.hoverOverHistogramStack(1)
+      umpiresPage.getTooltipText().then(function(text) {
+        // TODO - set this once this is fixed on production
+        assert.equal(text, 'J. Chamberlain: 22 (NYY-P)\nH. Ambriz: 22 (HOU-P)\nE. Ramirez: 22 (NYM-P)\nN. Adcock: 22 (KC-P)\nE. Escalona: 21 (COL-P)\nA. Varvaro: 21 (ATL-P)\nK. McPherson: 21 (PIT-P)\nC. Rusin: 21 (CHC-P)\nT. Skaggs: 21 (ARI-P)\nR. Hill: 21 (BOS-P)\n+ 192 more', 'tooltip for 1st bar');
+      });
+    });
+
+    test.it('pinned players should be represented by circles', function() {
+      umpiresPage.getHistogramCircleCount().then(function(count) {
+        assert.equal(count, 2, '# of circles on histogram')
+      })
+    })
+
+    test.it("selecting 'Display pins as bars' should add team to the histogram", function() {
+      umpiresPage.toggleHistogramDisplayPinsAsBars();
+      umpiresPage.getHistogramBarCount().then(function(count) {
+        // 1 original bar and 4 new bars will have height=0 and will appear invisible
+        assert.equal(count, 16, '# of bars on histogram');
+      });
+    });
+
+    test.it("changing Bin Count should update the histogram", function() {
+      umpiresPage.changeHistogramBinCount(3);
+      umpiresPage.getHistogramBarCount().then(function(count) {
+        // 1 original bar and 4 new bars will have height=0 and will appear invisible
+        assert.equal(count, 6, '# of bars on histogram');
+      });
+    });
+
+    test.it('setting title should show the title on the modal', function() {
+      umpiresPage.setTitleForHistogram('Test');
+      umpiresPage.getTitleForHistogram().then(function(title) {
+        assert.equal(title, 'Test', 'title of modal');
+      });
+    });           
+
+    test.it('clicking close histogram button should close histogram modal', function() {
+      umpiresPage.closeModal();
+      umpiresPage.isModalDisplayed().then(function(isDisplayed) {
+        assert.equal(isDisplayed, false);
+      }); 
+    })     
   });
 
   // Group By

@@ -11,13 +11,14 @@ var Promise = require('selenium-webdriver').promise;
 // Mixins
 var _ = require('underscore');
 var videoPlaylist = require('../mixins/videoPlaylist.js');
+var chartColumns = require('../mixins/chartColumns.js');
 
-// Locators
+/****************************************************************************
+** Locators
+*****************************************************************************/
 var PAGE_TITLE = By.css('h2.report-title');
 var GROUP_BY_SELECT = By.id("s2id_pageControlBaseballUmpiresGroupBy");
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
-
-var PITCH_LOG_MODAL_CLOSE_BTN = By.css('#tableBaseballUmpiresStatsModal .modal-footer button');
 
 var QUALIFY_BY_SELECT = By.id("s2id_pageControlBaseballQualifyByUmpires");
 var QUALIFY_BY_STAT_SELECT = By.id("s2id_pageControlBaseballQualifyByUmpiresStats");
@@ -28,6 +29,9 @@ var REPORT_SELECT = By.id("s2id_reportNavBaseballUmpiresStatUmpires");
 
 var STATS_TABLE = By.xpath(".//div[@id='tableBaseballUmpiresStatsContainer']/table");
 
+/****************************************************************************
+** Constructor
+*****************************************************************************/
 function UmpiresPage(driver) {
   BasePage.call(this, driver);
 }
@@ -35,6 +39,15 @@ function UmpiresPage(driver) {
 UmpiresPage.prototype = Object.create(BasePage.prototype);
 UmpiresPage.prototype.constructor = UmpiresPage;
 
+_.extend(UmpiresPage.prototype, videoPlaylist);
+_.extend(UmpiresPage.prototype, chartColumns);
+
+UmpiresPage.prototype.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID = 'tableBaseballUmpiresStatsContainer';
+UmpiresPage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = 'tableBaseballUmpiresStatsISOContainer';
+
+/****************************************************************************
+** Stats
+*****************************************************************************/
 UmpiresPage.prototype.getPageTitle = function() {
   return this.getText(PAGE_TITLE);
 };

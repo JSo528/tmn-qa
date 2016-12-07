@@ -9,9 +9,8 @@ var Navbar = require('../../../pages/mlb/navbar.js');
 var Filters = require('../../../pages/mlb/filters.js');
 var TeamsPage = require('../../../pages/mlb/teams/teams_page.js');
 var TeamPage = require('../../../pages/mlb/teams/team_page.js');
-var OverviewPage = require('../../../pages/mlb/teams/team_overview_page.js');
 
-var navbar, filters, teamsPage, teamPage, overviewPage, teamPage;
+var navbar, filters, teamsPage, teamPage, teamPage;
 
 test.describe('#Team StatcastFielding Section', function() {
   test.before(function() {  
@@ -19,7 +18,6 @@ test.describe('#Team StatcastFielding Section', function() {
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
     teamPage = new TeamPage(driver);
-    overviewPage = new OverviewPage(driver);
 
     navbar.goToTeamsPage();
     filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -37,61 +35,61 @@ test.describe('#Team StatcastFielding Section', function() {
   // Overview Section
   test.describe("#Subsection: Overview", function() {
     test.it('should initially have the correct data', function() {
-      overviewPage.getTeamTableStat(3).then(function(ofAirBall) {
+      teamPage.getOverviewTableStat(3).then(function(ofAirBall) {
         assert.equal(ofAirBall, 1425, 'OFAirBall');
       });        
     });            
 
     test.it('hitChart should have correct # of balls in play', function() {
-      overviewPage.getHitChartHitCount('single').then(function(count) {
+      teamPage.getHitChartHitCount('single').then(function(count) {
         assert.equal(count, 736, 'correct number of singles');
       });
       
-      overviewPage.getHitChartHitCount('double').then(function(count) {
+      teamPage.getHitChartHitCount('double').then(function(count) {
         assert.equal(count, 225, 'correct number of doubles');
       });        
 
-      overviewPage.getHitChartHitCount('triple').then(function(count) {
+      teamPage.getHitChartHitCount('triple').then(function(count) {
         assert.equal(count, 40, 'correct number of triples');
       });        
 
-      overviewPage.getHitChartHitCount('homeRun').then(function(count) {
+      teamPage.getHitChartHitCount('homeRun').then(function(count) {
         assert.equal(count, 0, 'correct number of home runs');
       });   
 
-      overviewPage.getHitChartHitCount('out').then(function(count) {
+      teamPage.getHitChartHitCount('out').then(function(count) {
         assert.equal(count, 2214, 'correct number of outs');
       });         
     })
 
     test.describe('clicking into OF Area', function() {
       test.it('clicking a statcast fielding event should show correct data in modal', function() {
-        overviewPage.clickStatcastFieldingChartEvent(40);
-        overviewPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
+        teamPage.clickStatcastFieldingChartEvent(40);
+        teamPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
           assert.equal(date, '4/20/2016', '1st row date');
         });
 
-        overviewPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
+        teamPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
           assert.equal(result, 'Outfield Fly Ball Out', '1st row result');
         });      
 
-        overviewPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
+        teamPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
           assert.equal(outProb, '99.9%', '1st row OutProb');
         });            
 
-        overviewPage.getStatcastFieldingModalTableStat(1,9).then(function(posIndOutProb) {
+        teamPage.getStatcastFieldingModalTableStat(1,9).then(function(posIndOutProb) {
           assert.equal(posIndOutProb, '99.9%', '1st row PosIndOutProb');
         });                  
       });
 
       test.after(function() {
-        overviewPage.closeStatcastFieldingModal();
+        teamPage.closeStatcastFieldingModal();
       });
     });
 
     test.it('changing ballpark should change background image for fielding widget', function() {
-      overviewPage.changeBallparkDropdown('AT&T Park');
-      overviewPage.getCurrentBallparkImageID().then(function(id) {
+      teamPage.changeBallparkDropdown('AT&T Park');
+      teamPage.getCurrentBallparkImageID().then(function(id) {
         assert.equal(id, 'SF_-_2395', 'image id');
       });
     });
@@ -141,7 +139,7 @@ test.describe('#Team StatcastFielding Section', function() {
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
           teamPage.changeReport(report.type);  
-          overviewPage.getTeamTableStat(6).then(function(stat) {
+          teamPage.getOverviewTableStat(6).then(function(stat) {
             assert.equal(stat, report.topStat);
           });
         });
