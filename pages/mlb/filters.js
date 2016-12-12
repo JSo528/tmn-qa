@@ -59,8 +59,8 @@ Filters.prototype.removeSelectionFromDropdownFilter = function(filterName, selec
 Filters.prototype.addSelectionToDropdownFilter = function(filterName, selection) {
   var locator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul`);
   var inputLocator = By.xpath(`.//div[@id='filterSet']/div/div/div/div[div[contains(text()[1], "${filterName}")]]/div/ul/li[contains(@class, 'select2-search-field')]/input`);
-  this.click(locator, 30000);
-  this.sendKeys(inputLocator, selection, 30000);
+  this.click(locator, 10000);
+  this.sendKeys(inputLocator, selection, 10000);
   this.sendKeys(inputLocator, Key.ENTER);
   return this.sendKeys(inputLocator, Key.ESCAPE);
 };
@@ -254,6 +254,7 @@ Filters.prototype.addSelectionToDropdownSidebarFilter = function(filterName, sel
   var locator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul`);
   this.click(locator);
   var inputLocator = By.xpath(`.//div[@class='tab-content']/div[contains(@class, 'active')]/div/div/div[div/h5[text()='${filterName}']]/div/div/div/ul/li/input`);
+  this.waitForEnabled(inputLocator);
   this.sendKeys(inputLocator, selection, 30000);
   this.sendKeys(inputLocator, Key.ENTER);
   this.sendKeys(inputLocator, Key.ESCAPE);

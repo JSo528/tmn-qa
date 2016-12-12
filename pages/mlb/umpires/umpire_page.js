@@ -28,6 +28,7 @@ var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-se
 var UMPIRE_NAME = By.css('h1.name');
 
 // OVERVIEW PAGE
+var OVERVIEW_TABLE_ID = 'tableBaseballUmpireStatsOverviewContainer';
 var LEFTY_HEATMAP_ID = 'umpireHeatMapLefty';
 var LEFTY_HEAT_MAP_LINK = By.id('visualBaseballHeatMapUmpireLefty');
 var LEFTY_PITCH_VIEW_LINK = By.id('visualBaseballPitchChartUmpireLefty');
@@ -89,7 +90,7 @@ UmpirePage.prototype.drawBoxOnOverviewHeatMap = function(leftyOrRighty, x, y, wi
 
 UmpirePage.prototype.clearOverviewHeatMap = function(leftyOrRighty) {
   var heatMapID = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_ID : RIGHTY_HEATMAP_ID;
-  return this.clearHeatMap(heatMapID);
+  return this.clearHeatMap(heatMapID, OVERVIEW_TABLE_ID);
 };
 
 UmpirePage.prototype.clickOverviewHeatMapLink = function(leftyOrRighty) {

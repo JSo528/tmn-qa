@@ -99,7 +99,7 @@ test.describe('#Team StatcastFielding Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickOverviewTableStat(8);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs RHP S. Casilla (BAL) , Top 9, 1 Out');
+          assert.equal(text, 'RHP S. Casilla (SF) Vs RHB M. Machado (BAL), Top 9, 1 Out');
         });
       });
 
@@ -110,7 +110,7 @@ test.describe('#Team StatcastFielding Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2.54s HT, 24.5ft, 1.0s RT, 0 Jmp, 0.779821 Eff, 12.1mph 97.0% outProb - Single on a Line Drive");
+          assert.equal(text, "2.54s HT | 24.5ft | 1.0s RT | 0 Jmp | 0.779821 Eff | 12.1mph | 70.7ft to Wall | 97.0% outProb | Single on a Line Drive");
         });          
       }); 
 
@@ -127,6 +127,50 @@ test.describe('#Team StatcastFielding Section', function() {
         teamPage.closeSimiliarPlaysModal();
         teamPage.closePlayByPlaytModal();
       });
+    });
+
+    test.describe("#filters", function() {
+      test.it('adding filter: (Run Diff After Inning: 1 to 3) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('Situation')
+        filters.changeValuesForRangeSidebarFilter('Run Diff After Inning:', 1, 3);
+
+        teamPage.getOverviewTableStat(3).then(function(stat) {
+          assert.equal(stat, 143, 'OFAirBall');
+        });
+      });
+
+      test.it('adding filter: (Runs After Inning: 2 to 4) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Runs After Inning:', 2, 4);
+
+        teamPage.getOverviewTableStat(3).then(function(stat) {
+          assert.equal(stat, 45, 'OFAirBall');
+        });
+      });      
+
+      test.it('adding filter: (Time Faced In Game: 0 to 1) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Time Faced In Game:', 0, 1);
+
+        teamPage.getOverviewTableStat(3).then(function(stat) {
+          assert.equal(stat, 25, 'OFAirBall');
+        });
+      });  
+
+      test.it('adding filter: (PA # In Side: 1) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('PA')
+        filters.addSelectionToDropdownSidebarFilter('PA # In Side:', 1);
+
+        teamPage.getOverviewTableStat(3).then(function(stat) {
+          assert.equal(stat, 6, 'OFAirBall');
+        });
+      });  
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getOverviewTableStat(3).then(function(stat) {
+          assert.equal(stat, 1425, '# of OFAirBall');
+        });
+      }); 
     });
 
 
@@ -164,18 +208,18 @@ test.describe('#Team StatcastFielding Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickRosterTableStat(1,4);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs RHP S. Romo (LAD) , Top 9, 0 Out');
+          assert.equal(text, 'RHP J. Peavy (SF) Vs LHB A. Amarista (SD), Top 5, 1 Out');
         });
       });
 
       test.it('clicking into video opens correct video', function() {
         teamPage.clickPitchVideoIcon(1);
         teamPage.getVideoPlaylistText(1,1).then(function(text) {
-          assert.equal(text, "Top 9, 0 out");
+          assert.equal(text, "Top 5, 1 out");
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2.10s HT, 79.9ft, 0.8s RT, 0 Jmp, 98.2% Eff, 14.9mph 0.0% outProb - Single on a Line Drive");
+          assert.equal(text, "3.64s HT | 66.8ft | 0.7s RT | 1.70s Jmp | 98.2% Eff | 18.2mph | 48.5ft to Wall | 46.0% outProb | Line Out");
         });          
       }); 
 
@@ -190,11 +234,11 @@ test.describe('#Team StatcastFielding Section', function() {
         filters.toggleSidebarFilter('Batted Ball:', 'Line Drive', true);
 
         teamPage.getRosterTableStat(1,1).then(function(player) {
-          assert.equal(player, 'Mike Broadway');
+          assert.equal(player, 'Kelby Tomlinson');
         });
 
-        teamPage.getRosterTableStat(3,7).then(function(ofWAirOutPer) {
-          assert.equal(ofWAirOutPer,  '121.4%', 'Vin Mazzaro OFWPosAirOut%');
+        teamPage.getRosterTableStat(3,7).then(function(stat) {
+          assert.equal(stat,  '103.4%', 'Gorkys Hernandez ExRange%');
         });          
       });
     });
@@ -231,7 +275,7 @@ test.describe('#Team StatcastFielding Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickGameLogTableStat(1,7);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs LHP M. Moore (LAD) , Top 4, 2 Out');
+          assert.equal(text, 'LHP M. Moore (SF) Vs LHB A. Gonzalez (LAD), Top 4, 2 Out');
         });
       });
 
@@ -242,7 +286,7 @@ test.describe('#Team StatcastFielding Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2.15s HT, 90.4ft, 1.4s RT, 0 Jmp, 0.9343 Eff, 9.0mph 0.0% outProb - Single on a Line Drive");
+          assert.equal(text, "2.15s HT | 90.4ft | 1.4s RT | 0 Jmp | 0.9343 Eff | 9.0mph | 175.9ft to Wall | 0.0% outProb | Single on a Line Drive");
         });          
       }); 
 
@@ -256,18 +300,63 @@ test.describe('#Team StatcastFielding Section', function() {
       test.it('adding filter: (Forward Velocity: 80-120) from sidebar displays correct data', function() {
         filters.changeValuesForRangeSidebarFilter("Forward Velocity:", 80, 120);
 
-        teamPage.getGameLogTableStat(1,5).then(function(bf) {
-          assert.equal(bf, 5, 'row 1 OFAirBall');
+        teamPage.getGameLogTableStat(1,5).then(function(stat) {
+          assert.equal(stat, 5, 'row 1 OFAirBall');
         });          
 
         teamPage.getGameLogTableStat(1,8).then(function(exRange) {
-          assert.equal(exRange, '83.0%', 'row 1 OFWPosAirOut%');
+          assert.equal(exRange, '101.4%', 'row 1 OFWPosAirOut%');
         });                  
       });
 
-      test.after(function() {
-        filters.closeDropdownFilter('Forward Velocity:');
+      test.it('adding filter: (Batter Age: 20-30) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('Game');
+        filters.changeValuesForRangeSidebarFilter("Batter Age:", 20, 30);
+
+        teamPage.getGameLogTableStat(1,5).then(function(stat) {
+          assert.equal(stat, 3, 'row 1 OFAirBall');
+        });                           
       });
+
+      test.it('adding filter: (Game Error Diff: 0-1) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Error Diff:", 0, 1);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '9/30/2016', 'row 1 date');
+        });                           
+      });
+
+      test.it('adding filter: (Game Hit Diff: 0-3) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Hit Diff:", 0, 3);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '9/22/2016', 'row 1 date');
+        });                           
+      });
+      
+      test.it('adding filter: (Game Opp Errors: 1-2) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Opp Errors:", 1, 2);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '9/17/2016', 'row 1 date');
+        });                           
+      });      
+
+      test.it('adding filter: (Game Opp Hits: 10-20) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Opp Hits:", 10, 20);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '5/11/2016', 'row 1 date');
+        });                           
+      });            
+      
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '10/2/2016', 'row 1 date');
+        });
+      }); 
     });
   });     
 
@@ -311,11 +400,11 @@ test.describe('#Team StatcastFielding Section', function() {
       test.describe('clicking similar plays icon', function() {
         test.it('clicking similiar icon opens up similiar plays modal and shows correct stats', function() {
           teamPage.clickSimiliarPlaysIcon(1);
-          teamPage.getSimiliarPlaysTableStat(1,10).then(function(pathEff) {
+          teamPage.getSimiliarPlaysTableStat(1,11).then(function(pathEff) {
             assert.equal(pathEff, '90.5%', '1st row PathEff')
           });
 
-          teamPage.getSimiliarPlaysTableStat(1,14).then(function(simScore) {
+          teamPage.getSimiliarPlaysTableStat(1,15).then(function(simScore) {
             assert.equal(simScore, 1.000, '1st row SimScore')
           });        
         });

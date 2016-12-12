@@ -299,7 +299,8 @@ PlayerPage.prototype.drawBoxOnCatcherHeatMap = function(leftyOrRighty, x, y, wid
 
 PlayerPage.prototype.clearCatcherHeatMap = function(leftyOrRighty) {
   var heatMapID = (leftyOrRighty == 'lefty') ? LEFTY_HEATMAP_ID : RIGHTY_HEATMAP_ID;
-  return this.clearHeatMap(heatMapID);
+  var tableID = 'tableBaseballPlayerStatsOverviewCatchingContainer';
+  return this.clearHeatMap(heatMapID, tableID);
 };
 
 PlayerPage.prototype.clickCatcherHeatMapLink = function(leftyOrRighty) {

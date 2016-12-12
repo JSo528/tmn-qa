@@ -76,7 +76,7 @@ test.describe('#DetailedScore Page', function() {
         test.it('clicking on a player stat opens the play by play modal', function() {
           detailedScorePage.clickPlayerBattingStat('home', 1, 5);
           detailedScorePage.getMatchupsAtBatHeaderText(1).then(function(text) {
-            assert.equal(text, 'Vs RHP K. Gausman (BAL), Bot 1, 1 Out');
+            assert.equal(text, 'Vs RHP K. Gausman (BAL), Bot 1, 0 Out');
           });
         });
 
@@ -87,7 +87,7 @@ test.describe('#DetailedScore Page', function() {
           });
 
           detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-2 Changeup 85 MPH");
+            assert.equal(text, "0-0 Fastball 93.6841 MPH - Strike Looking");
           });          
         }); 
 
@@ -241,37 +241,45 @@ test.describe('#DetailedScore Page', function() {
     });
 
     test.describe('#Filters', function() {
-      test.it('adding filter: (pitch type - fastball) from dropdown displays correct data', function() {
-        filters.addDropdownFilter("Pitch Type: Fastball");
-
-        // Kevin Gausman threw 31 fastballs
+      test.it('adding filter: (pitch type - Soft (change/curve/slider/splitter)) from dropdown displays correct data', function() {
+        filters.toggleSidebarFilter("Pitch Type:", "Soft (change/curve/slider/splitter)", true);
+        driver.sleep(1000); 
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
-          assert.equal(pitches, 60);
+          assert.equal(pitches, 46, '# pitches for Kevin Gausman');
         });
       });
 
       test.it('adding filter: (pitch result = strike) from sidebar displays correct data', function() {
         filters.toggleSidebarFilter("Pitch Result:", "Strike", true);
-
-        // Michael Bourn faced 12 pitches against a righty pitcher w/ 2 outs this game
+        
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
-          assert.equal(pitches, 31);
+          assert.equal(pitches, 12, '# pitches for Kevin Gausman');
         });
       });
 
-      test.it('removing filter: (pitch result = strike) from top section displays correct data', function() {
-        filters.closeDropdownFilter("Pitch Result:");
-        detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
-          assert.equal(pitches, 60);
-        });
-      }); 
+      test.it('adding filter: (vertical location: Lower Third) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter("Vertical Location:", "Lower Third", true);
 
-      test.it('removing filter: (pitch type - fastball) from sidebar displays correct data', function() {
-        filters.toggleSidebarFilter("Pitch Type:", "Fastball", false);
         detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
-          assert.equal(pitches, 106);
+          assert.equal(pitches, 8, '# pitches for Kevin Gausman');
         });
-      });         
+      });
+
+      test.it('adding filter: (PA Result: Out) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter("PA Result:", "Out", true);
+
+        detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
+          assert.equal(pitches, 1, '# pitches for Kevin Gausman');
+        });
+      });   
+
+      test.it('clicking default filters btn returns to default filters', function() {
+        filters.clickDefaultFiltersBtn();
+
+        detailedScorePage.getPlayerPitchingStat("away", 1, 3).then(function(pitches) {
+          assert.equal(pitches, 106, '# pitches for Kevin Gausman');
+        });
+      });   
     }); 
 
     test.describe('#Reports', function() {
@@ -507,7 +515,7 @@ test.describe('#DetailedScore Page', function() {
         });
         
         detailedScorePage.getVideoPlaylistText(1,2).then(function(text) {
-          assert.equal(text, "LHB M. Bourn Vs RHP L. Cessa (NYY)");
+          assert.equal(text, "Vs RHP L. Cessa (NYY) LHB M. Bourn");
         });          
       });        
 

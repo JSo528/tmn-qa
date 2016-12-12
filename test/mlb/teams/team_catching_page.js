@@ -73,12 +73,127 @@ test.describe('#Team Catching Section', function() {
       }); 
     });
 
+    test.describe("#filters", function() {
+      test.it('adding filter: (Decisive Pitch: Yes) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('Pitch')
+        filters.selectForBooleanDropdownSidebarFilter('Decisive Pitch:', 'Yes');
+
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 6186, 'Pitches');
+        });
+      });
+
+      test.it('adding filter: (Decisive Pitch: Yes) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Extension:', 5, 7);
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 5962, 'Pitches');
+        });
+      });
+
+      test.it('adding filter: (Last Count: 1 Strike) from sidebar displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter('Last Count:', '1 Strike');
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 1875, 'Pitches');
+        });
+      });
+
+      test.it('adding filter: (Last Horizontal Location: Outer Half) from sidebar displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter('Last Horizontal Location:', 'Outer Half');
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 1032, 'Pitches');
+        });
+      }); 
+
+      test.it('adding filter: (Last Pitch Result: Take) from sidebar displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter('Last Pitch Result:', 'Take');
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 583, 'Pitches');
+        });
+      }); 
+
+      test.it('adding filter: (Last Pitch Type: Fastball) from sidebar displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter('Last Pitch Type:', 'Fastball');
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 168, 'Pitches');
+        });
+      }); 
+
+      test.it('adding filter: (Last Pitch Velocity: 90-100) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Last Pitch Velocity:', 90, 100);
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 103, 'Pitches');
+        });
+      });      
+
+      test.it('adding filter: (Last Vertical Location: Lower Half) from sidebar displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter('Last Vertical Location:', 'Lower Half');
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 77, 'Pitches');
+        });
+      }); 
+
+      test.it('adding filter: (Last Zone Location: Competitve) from sidebar displays correct data', function() {
+        filters.selectForBooleanDropdownSidebarFilter('Last Zone Location:', 'Competitive');
+
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 54, 'Pitches');
+        });
+      });
+
+      test.it('adding filter: (PZ: 1-3) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('PZ:', 1, 3);
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 49, 'Pitches');
+        });
+      });  
+
+      test.it('adding filter: (Plate Vel X (ft/s): -5 to 8) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Plate Vel X (ft/s):', -5, 8);
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 45, 'Pitches');
+        });
+      });  
+
+      test.it('adding filter: (Plate Vel Z (ft/s): -16 to -10) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Plate Vel Z (ft/s):', -16, -10);
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 37, 'Pitches');
+        });
+      });  
+
+      test.it('adding filter: (Spin Rate: 2000 - 2500) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Spin Rate:', 2000, 2500);
+        
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 24, 'Pitches');
+        });
+      });        
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getOverviewTableStat(5).then(function(pitches) {
+          assert.equal(pitches, 23637, 'Pitches');
+        });
+      });        
+    });
+
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickOverviewTableStat(10);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'LHP M. Perez Vs LHB C. Dickerson (TB), Top 3, 0 Out');
+          assert.equal(text, 'Vs LHB C. Dickerson (TB), Top 3, 0 Out');
         });
       });
 
@@ -143,10 +258,48 @@ test.describe('#Team Catching Section', function() {
           assert.equal(slaa, 0.65, 'Bobby Wilson SLAA');
         });          
       });
-    });
 
-    test.after(function() {
-      filters.closeDropdownFilter('Pitch Type:');
+      test.it('adding filter: (Prob Called Strike: 0 to 0.5) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('Pitch');
+        filters.changeValuesForRangeSidebarFilter('Prob of Called Strike:', 0, 0.5);
+
+        teamPage.getRosterTableStat(1,6).then(function(stat) {
+          assert.equal(stat, 200, 'Pitches');
+        });
+      });
+
+      test.it('adding filter: (Current Run Diff: 0 to 1) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('Situation');
+        filters.changeValuesForRangeSidebarFilter('Current Run Diff:', 0, 1);
+
+        teamPage.getRosterTableStat(1,5).then(function(stat) {
+          assert.equal(stat, 6, 'Bryan Holaday BF');
+        });
+      });
+      
+      test.it('adding filter: (Current Opp Runs Scored: 0 to 3) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Current Opp Runs Scored:', 0, 3);
+
+        teamPage.getRosterTableStat(1,8).then(function(stat) {
+          assert.equal(stat, 112.3, 'Bobby Wilson SL+');
+        });
+      }); 
+
+      test.it('adding filter: (Current Team Runs Scored: 0 to 3) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Current Team Runs Scored:', 0, 3);
+
+        teamPage.getRosterTableStat(1,6).then(function(stat) {
+          assert.equal(stat, 86, 'Bobby Wilson Pitches');
+        });
+      }); 
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getRosterTableStat(1,6).then(function(stat) {
+          assert.equal(stat, 5515, 'Bobby Wilson Pitches');
+        });
+      }); 
     });
   });
 
@@ -177,7 +330,7 @@ test.describe('#Team Catching Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickGameLogTableStat(1,6);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'LHP M. Perez Vs RHB L. Forsythe (TB), Top 1, 0 Out');
+          assert.equal(text, 'Vs RHB L. Forsythe (TB), Top 1, 0 Out');
         });
       });
 
@@ -228,21 +381,6 @@ test.describe('#Team Catching Section', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
-    
-    // Video Playlist
-    test.describe('#VideoPlaylist', function() {     
-      test.it('selecting "Play Top 25" videos adds 25 videos to playlist', function() {
-        teamPage.selectFromPlayVideosDropdown('Play Top 25');
-        teamPage.getVideoPlaylistCount().then(function(videoCount) {
-          assert.equal(videoCount, 25, '# videos on playlist');
-        });
-      });  
-
-      test.after(function() {
-        teamPage.closeVideoPlaylistModal();
-      }); 
-    })
-
 
     test.describe('when selecting filter (Exit Direction: 0-30)', function() {
       test.before(function() {
@@ -251,7 +389,7 @@ test.describe('#Team Catching Section', function() {
       
       test.it('should show the correct at bat header text', function() {
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "LHP M. Perez Vs LHB C. Dickerson (TB), Top 3, 0 Out");
+          assert.equal(text, "Vs LHB C. Dickerson (TB), Top 3, 0 Out");
         });
       });
 
@@ -264,7 +402,15 @@ test.describe('#Team Catching Section', function() {
         });
       });
 
+      test.it('selecting "Play Top 25" videos adds 25 videos to playlist', function() {
+        teamPage.selectFromPlayVideosDropdown('Play Top 25');
+        teamPage.getVideoPlaylistCount().then(function(videoCount) {
+          assert.equal(videoCount, 25, '# videos on playlist');
+        });
+      });  
+
       test.it('when clicking flat view tab it should show the correct stats', function() {
+        teamPage.closeVideoPlaylistModal();
         teamPage.clickFlatViewTab();
         teamPage.getFlatViewPitchText(1,2).then(function(num) {
           assert.equal(num, 5, 'row 1 Num pithes');

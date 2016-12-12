@@ -280,11 +280,7 @@ test.describe('#CustomReports: Phillies', function() {
   test.describe('#Section: PlayerBatting', function() {
     test.describe('#SubSection: HitterTendencies', function() {
       test.before(function() {
-        navbar.goToPlayersPage();  
-        playersPage.goToSection('batting');
-        filters.removeSelectionFromDropdownFilter("Seasons:");
-        filters.addSelectionToDropdownFilter("Seasons:", 2016);
-        playersPage.clickTableStat(1,3);
+        navbar.search('DJ LeMahieu', 1);
         phillies.goToSubSection('hitterTendencies');
       });
 
@@ -320,17 +316,13 @@ test.describe('#CustomReports: Phillies', function() {
   test.describe('#Section: PlayerPitching', function() {
     test.describe('#SubSection: PitcherPercentages', function() {
       test.before(function() {
-        navbar.goToPlayersPage();  
-        playersPage.goToSection('pitching');
-        filters.removeSelectionFromDropdownFilter("Seasons:");
-        filters.addSelectionToDropdownFilter("Seasons:", 2016);
-        playersPage.clickTableStat(1,3);
+        navbar.search("Kyle Hendricks", 1);
         phillies.goToSubSection('pitcherPercentages');
-        filters.removeSelectionFromDropdownFilter("Seasons:");
-        filters.addSelectionToDropdownFilter("Seasons:", 2016);
       });
 
       test.it('velocity data shows', function() {
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2016);
         phillies.getPitcherPercentagesPitchVelocity(1).then(function(data) {
           assert.equal(data, 'Fastball : 87.7', 'Data for Fastball row');
         });

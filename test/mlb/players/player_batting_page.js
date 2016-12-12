@@ -643,7 +643,7 @@ test.describe('#Player Batting Section', function() {
       });
 
       test.after(function() {
-        filters.removeSelectionFromDropdownSidebarFilter("Opp Org:", "Oak");
+        filters.closeDropdownFilter("Opp Org:");
       })
     });                 
   });  

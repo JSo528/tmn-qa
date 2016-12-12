@@ -102,7 +102,7 @@ test.describe('#Teams Page', function() {
         test.it('clicking on a team stat opens the play by play modal', function() {
           teamsPage.clickTeamTableStat(1, 10);
           teamsPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-            assert.equal(text, 'LHB A. Gose Vs RHP F. Montas (CWS), Top 1, 0 Out');
+            assert.equal(text, 'Vs RHP F. Montas (CWS), Top 1, 0 Out');
           });
         });
 
@@ -141,19 +141,10 @@ test.describe('#Teams Page', function() {
           });
         });
 
-        test.it('removing filter: (2 outs) from top section displays correct data', function() {
+        test.after(function() {
           filters.closeDropdownFilter('Outs:');
-          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
-            assert.equal(battingAverage, 0.316);
-          });
-        }); 
-
-        test.it('removing filter: (pitch type-fastball) from sidebar displays correct data', function() {
           filters.toggleSidebarFilter("Pitch Type:", 'Fastball', false);
-          teamsPage.getTeamTableStat(1,11).then(function(battingAverage) {
-            assert.equal(battingAverage, 0.270);
-          });
-        });         
+        });
       });  
 
       // Pinning
@@ -672,26 +663,33 @@ test.describe('#Teams Page', function() {
           });
         });
 
-        test.it('adding filter: (Pitch Type: Changeup) from sidebar displays correct data', function() {
-          filters.toggleSidebarFilter('Pitch Type:', 'Changeup', true);
+        test.it('adding filter: (Pitch Type: Splitter) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Pitch Type:', 'Splitter', true);
 
           teamsPage.getTeamTableStat(1,ksCol).then(function(ks) {
-            assert.equal(ks, 118);
+            assert.equal(ks, 59);
           });
         });
 
-        test.it('removing filter: (Pitch Type: Changeup) from top section displays correct data', function() {
-          filters.closeDropdownFilter('Pitch Type:');
+        test.it('adding filter: (Pitch Type: Changeup) from top section displays correct data', function() {
+          filters.toggleSidebarFilter('Pitcher Hand:', 'Lefty', true);
           teamsPage.getTeamTableStat(1,ksCol).then(function(ks) {
-            assert.equal(ks, 748);
+            assert.equal(ks, 17);
           });
         }); 
 
-        test.it('removing filter: (venue - home) from sidebar displays correct data', function() {
-          filters.toggleSidebarFilter("Venue:", 'Home', false);
+        test.it('adding filter: (Men On: Men On) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter("Men On:", 'Men On', true);
           teamsPage.getTeamTableStat(1,ksCol).then(function(ks) {
-            assert.equal(ks, 1430);
+            assert.equal(ks, 6);
           });
+        });
+
+        test.after(function() {
+          filters.closeDropdownFilter('Pitch Type:');
+          filters.closeDropdownFilter('Venue:');
+          filters.closeDropdownFilter('Pitcher Hand:');
+          filters.closeDropdownFilter('Men On:');
         });         
       });  
 
@@ -759,13 +757,53 @@ test.describe('#Teams Page', function() {
 
       // Filters
       test.describe("#filters", function() {
-        test.it('adding filter: (Men On: On 1B) from sidebar displays correct data', function() {
-          filters.toggleSidebarFilter('Men On:', 'On 1B', true);
+        test.it('adding filter: (Men On: 1 On) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Men On:', '1 On', true);
 
           teamsPage.getTeamTableStat(1,7).then(function(slaa) {
-            assert.equal(slaa, 88.37, 'SF Giants SLAA');
+            assert.equal(slaa, 49.73, 'SD SLAA');
           });
         });
+
+        test.it('adding filter: (Men On: 2 On) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Men On:', '2 On', true);
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 92.30, 'PIT SLAA');
+          });
+        });        
+
+        test.it('adding filter: (Pitch Type: Slider) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Pitch Type:', 'Slider', true);
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 13.74, 'SD SLAA');
+          });
+        });        
+
+        test.it('adding filter: (Pitch Type: Sinker) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Pitch Type:', 'Sinker', true);
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 26.17, 'SD SLAA');
+          });
+        }); 
+
+        test.it('adding filter: (Vertical Location: Upper Third) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Vertical Location:', 'Upper Third', true);
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 12.53, 'SD SLAA');
+          });
+        }); 
+
+        test.it('adding filter: (Vertical Location: Middle Third) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Vertical Location:', 'Middle Third', true);
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, 20.64, 'SD SLAA');
+          });
+        }); 
 
         test.it('clicking "default filters" returns filters back to default state', function() {
           filters.clickDefaultFiltersBtn();
@@ -774,17 +812,22 @@ test.describe('#Teams Page', function() {
             assert.equal(slaa, 373.42, 'LA Dodgers SLAA');
           });
         });
+
+        // TODO - remove once above bug is fixed
+        test.after(function() {
+          filters.toggleSidebarFilter('Season Level:', 'MLB', true);
+        });
       });
 
       // Reports
       test.describe("#reports", function() {
         var reports = [
-          { type: 'Pitch Types', topStat: "60.0%", statType: "Fast%", colNum: 7 },  
-          { type: 'Pitch Type Counts', topStat: 13658, statType: "Fast#", colNum: 7 },  
-          { type: 'Catcher Defense', topStat: 10.27, statType: "FldRAA", colNum: 10 },  
+          { type: 'Pitch Types', topStat: "58.2%", statType: "Fast%", colNum: 7 },  
+          { type: 'Pitch Type Counts', topStat: 13841, statType: "Fast#", colNum: 7 },  
+          { type: 'Catcher Defense', topStat: 7.21, statType: "FldRAA", colNum: 10 },  
           // { type: 'Catcher Opposing Batters', topStat: 1274, statType: "H", colNum: 9 },  // No Data
-          { type: 'Catcher Pitch Rates', topStat: "49.2%", statType: "InZoneMdl%", colNum: 8 },  
-          { type: 'Catcher Pitch Counts', topStat: 351, statType: "StrkFrmd", colNum: 12 }
+          { type: 'Catcher Pitch Rates', topStat: "48.2%", statType: "InZoneMdl%", colNum: 8 },  
+          { type: 'Catcher Pitch Counts', topStat: 326, statType: "StrkFrmd", colNum: 12 }
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
@@ -829,12 +872,77 @@ test.describe('#Teams Page', function() {
         });
       });
 
+      test.describe("#filters", function() {
+        test.it('adding filter: (Men On: 1st and 2nd) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Men On:', '1st and 2nd', true);
+
+          teamsPage.getTeamTableStat(1,10).then(function(slaa) {
+            assert.equal(slaa, "104.9%", 'HOU OFWAirOut%');
+          });
+        });
+
+        test.it('adding filter: (Men On: 1st and 3rd) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Men On:', '1st and 3rd', true);
+
+          teamsPage.getTeamTableStat(1,10).then(function(slaa) {
+            assert.equal(slaa, "104.3%", 'ARI OFWAirOut%');
+          });
+        });    
+
+        test.it('adding filter: (Zone Location: In Strike Zone) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Zone Location:', 'In Strike Zone', true);
+
+          teamsPage.getTeamTableStat(1,10).then(function(slaa) {
+            assert.equal(slaa, "104.7%", 'ARI OFWAirOut%');
+          });
+        });   
+
+        test.it('adding filter: (Horizontal Location: Outer Third) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Horizontal Location:', 'Outer Third', true);
+
+          teamsPage.getTeamTableStat(1,10).then(function(slaa) {
+            assert.equal(slaa, "112.1%", 'HOU OFWAirOut%');
+          });
+        });
+
+        test.it('adding filter: (Exit Direction: _ to - 10) from sidebar displays correct data', function() {
+          filters.changeValuesForRangeSidebarFilter('Exit Direction:', "", -10);
+
+          teamsPage.getTeamTableStat(1,10).then(function(slaa) {
+            assert.equal(slaa, "128.1%", 'ARI OFWAirOut%');
+          });
+        });   
+
+        test.it('adding filter: (Exit Velocity: 90 to _) from sidebar displays correct data', function() {
+          filters.changeValuesForRangeSidebarFilter('Exit Velocity:', 90, "");
+
+          teamsPage.getTeamTableStat(1,10).then(function(slaa) {
+            assert.equal(slaa, "159.2%", 'ARI OFWAirOut%');
+          });
+        });           
+
+        test.it('clicking "default filters" returns filters back to default state', function() {
+          filters.clickDefaultFiltersBtn();
+
+          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
+            assert.equal(slaa, '111.2%', 'KC OFWAirOut%');
+          });
+        });
+
+        test.after(function() {
+          filters.removeSelectionFromDropdownFilter("Seasons:", 2016);
+          filters.addSelectionToDropdownFilter("Seasons:", 2015);
+          filters.toggleSidebarFilter('Season Level:', 'MLB', true); // TODO - remove this once default btn is fixed
+        });
+      });
+
       // Reports
       test.describe("#reports", function() {
         var reports = [
           { type: 'Outfielder Air Defense Positioning', topStat: 556, statType: "OFAirHit%", colNum: 6 },  
           { type: 'Outfielder Air Defense Skills', topStat: 17.25, statType: "OFPkSpd", colNum: 8 },  
-          { type: 'Outfield Batter Positioning', topStat: -3.39, statType: "OFPosOutsPM", colNum: 10 } 
+          { type: 'Outfield Batter Positioning', topStat: -3.39, statType: "OFPosOutsPM", colNum: 10 },
+          { type: 'Infield Ground Ball Defense Range', topStat: '101.7%', statType: "IFGBWOut%", colNum: 11 } 
         ];
         reports.forEach(function(report) {
           test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {

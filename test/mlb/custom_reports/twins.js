@@ -232,9 +232,7 @@ test.describe('#CustomReports: Twins', function() {
 
   test.describe('#Section: PlayerPitching', function() {
     test.before(function() {
-      navbar.goToPlayersPage();  
-      playersPage.goToSection('pitching');
-      playersPage.clickTableStat(1,3);
+      navabr.search('Ricky Nolasco', 1);
     });
 
     test.describe('#SubSection: TwoStrikeMaps', function() {

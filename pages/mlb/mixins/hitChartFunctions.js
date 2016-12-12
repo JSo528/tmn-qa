@@ -109,7 +109,7 @@ function HitChartFunctions() {
   }
 
   // HeatMap
-  function drawBoxOnHeatMap(x, y, width, height, heatMapID) {
+  function drawBoxOnHeatMap(x, y, width, height, heatMapID, hitChartLocator) {
     var heatMapLocator = By.css(`#${heatMapID} > svg`);
     var heatMapImageLocator = By.css(`#${heatMapID} #heatmapBg`);
     
@@ -122,6 +122,9 @@ function HitChartFunctions() {
       .perform();
 
     this.waitUntilStaleness(heatMapImageLocator, 10000);
+    if (hitChartLocator) {
+      this.waitUntilStaleness(hitChartLocator, 10000);
+    }
     return this.waitForEnabled(heatMapImageLocator)
   };
 

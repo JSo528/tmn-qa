@@ -322,7 +322,7 @@ test.describe('#Groups Page', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2011);
       filters.removeSelectionFromDropdownFilter("Game Type:");
-      filters.addSelectionToDropdownFilter("Type:", "Playoff");
+      filters.addSelectionToDropdownFilter("Type:", "Division Series");
 
       eraCol = 19;
     });
@@ -357,11 +357,11 @@ test.describe('#Groups Page', function() {
         filters.addSelectionToDropdownSidebarFilter("Day of Week:", "Sunday");
 
         groupsPage.getTableStat(1,eraCol).then(function(stat) {
-          assert.equal(stat, '0.00');
+          assert.equal(stat, 3.00);
         });
 
         groupsPage.getTableStat(1,1).then(function(stat) {
-          assert.equal(stat, 'AL West');
+          assert.equal(stat, 'AL Central');
         });
       });    
 
@@ -388,19 +388,19 @@ test.describe('#Groups Page', function() {
     test.describe("#reports", function() {
       var reports = [
           { type: 'Rate', topStat: 0.220, statType: "BA", colNum: 7 },  
-          { type: 'Counting', topStat: 42, statType: "H", colNum: 7 },  
-          { type: 'Pitch Rates', topStat: "51.2%", statType: "InZone%", colNum: 11 },  
-          { type: 'Pitch Counts', topStat: 1906, statType: "InZone#", colNum: 10 },  
-          { type: 'Pitch Types', topStat: "44.9%", statType: "Fast%", colNum: 5 },  
-          { type: 'Pitch Type Counts', topStat: 1400, statType: "Fast#", colNum: 5 },  
-          { type: 'Pitch Locations', topStat: "51.2%", statType: "InZone%", colNum: 5 },  
-          { type: 'Pitch Calls', topStat: 87.33, statType: "SLAA", colNum: 6 },  
+          { type: 'Counting', topStat: 33, statType: "H", colNum: 7 },  
+          { type: 'Pitch Rates', topStat: "53.7%", statType: "InZone%", colNum: 11 },  
+          { type: 'Pitch Counts', topStat: 644, statType: "InZone#", colNum: 10 },  
+          { type: 'Pitch Types', topStat: "41.2%", statType: "Fast%", colNum: 5 },  
+          { type: 'Pitch Type Counts', topStat: 491, statType: "Fast#", colNum: 5 },  
+          { type: 'Pitch Locations', topStat: "53.7%", statType: "InZone%", colNum: 5 },  
+          { type: 'Pitch Calls', topStat: 34.74, statType: "SLAA", colNum: 6 },  
           { type: 'Hit Types', topStat: 1.14, statType: "GB/FB", colNum: 4 },  
-          { type: 'Hit Locations', topStat: "46.0%", statType: "HPull%", colNum: 7 },  
+          { type: 'Hit Locations', topStat: "47.6%", statType: "HPull%", colNum: 7 },  
           { type: 'Home Runs', topStat: 2, statType: "HR", colNum: 4 },
-          { type: 'Movement', topStat: 90.3, statType: "Vel", colNum: 4 },
+          { type: 'Movement', topStat: 90.4, statType: "Vel", colNum: 4 },
           { type: 'Bids', topStat: 0, statType: "NH", colNum: 5 },
-          { type: 'Baserunning', topStat: "37.5%", statType: "SB%", colNum: 6 },
+          { type: 'Baserunning', topStat: "33.3%", statType: "SB%", colNum: 6 },
           { type: 'Exit Data', topStat: 0.352, statType: "ExSLG", colNum: 9 }
       ];
 
@@ -427,29 +427,9 @@ test.describe('#Groups Page', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2010);
       filters.removeSelectionFromDropdownFilter("Game Type:");
-      filters.addSelectionToDropdownFilter("Type:", "Playoff");
+      filters.addSelectionToDropdownFilter("Type:", "League Championship");
 
       slaaCol = 5;
-    });
-
-    test.describe('#Sorting', function() {
-      test.it('should be sorted initially by SLAA desc', function() {
-        var statOne, statTwo, statSix;
-        groupsPage.getTableStat(1,slaaCol).then(function(stat) {
-          statOne = stat;
-        });
-
-        groupsPage.getTableStat(2,slaaCol).then(function(stat) {
-          statTwo = stat;
-        });
-
-        groupsPage.getTableStat(6,slaaCol).then(function(stat) {
-          statSix = stat;
-
-          assert.isAtLeast(statOne, statTwo, "group 1's SLAA is >= group 2's SLAA");
-          assert.isAtLeast(statTwo, statSix, "group 2's SLAA is >= group 6's SLAA");
-        });           
-      });
     });
 
     // Filters
@@ -462,11 +442,11 @@ test.describe('#Groups Page', function() {
         filters.addSelectionToDropdownSidebarFilter("After Count:", "0-2");
 
         groupsPage.getTableStat(1,slaaCol).then(function(stat) {
-          assert.equal(stat, 1.95);
+          assert.equal(stat, 0.96);
         });
 
         groupsPage.getTableStat(1,1).then(function(stat) {
-          assert.equal(stat, 'AL West');
+          assert.equal(stat, 'NL East');
         });
       });    
 
@@ -475,7 +455,7 @@ test.describe('#Groups Page', function() {
         
 
         groupsPage.getTableStat(1,slaaCol).then(function(stat) {
-          assert.equal(stat, 1.94);
+          assert.equal(stat, 0.40);
         });
 
         groupsPage.getTableStat(1,1).then(function(stat) {
@@ -492,11 +472,11 @@ test.describe('#Groups Page', function() {
     // Groups Pitching Reports
     test.describe("#reports", function() {
       var reports = [
-          { type: 'Pitch Types', topStat: "40.4%", statType: "Fast%", colNum: 5 },  
-          { type: 'Pitch Type Counts', topStat: 785, statType: "Fast#", colNum: 5 },  
-          { type: 'Catcher Defense', topStat: 2.02, statType: "FldRAA", colNum: 8 },  
+          { type: 'Pitch Types', topStat: "39.3%", statType: "Fast%", colNum: 5 },  
+          { type: 'Pitch Type Counts', topStat: 361, statType: "Fast#", colNum: 5 },  
+          { type: 'Catcher Defense', topStat: 0.44, statType: "FldRAA", colNum: 8 },  
           { type: 'Catcher Pitch Rates', topStat: "47.3%", statType: "InZoneMdl%", colNum: 6 },  
-          { type: 'Catcher Pitch Counts', topStat: 35, statType: "StrkFrmd", colNum: 10 }
+          { type: 'Catcher Pitch Counts', topStat: 15, statType: "StrkFrmd", colNum: 10 }
       ];
 
       reports.forEach(function(report) {

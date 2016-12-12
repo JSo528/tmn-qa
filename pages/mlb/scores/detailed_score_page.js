@@ -36,6 +36,7 @@ var AWAY_PITCHING_TABLE = By.xpath(".//div[@id='tableBaseballGamePlayerPitchingS
 // PitchByPitch
 var DECISIVE_EVENT_FILTER_SELECT = By.id('s2id_pageControlBaseballGameEventDecisive');
 var DECISIVE_EVENT_FILTER_INPUT = By.id('s2id_autogen1_search');
+var PITCH_BY_PITCH_TABLE = By.xpath(".//div[@id='tableBaseballGamePitchByPitchContainer']/table");
 
 
 /****************************************************************************
@@ -162,5 +163,6 @@ DetailedScorePage.prototype.getPitchingSplitsPitcherName = function(playerNum) {
 DetailedScorePage.prototype.comparsionLocator = TABLES;
 DetailedScorePage.prototype.battingLastLocator = AWAY_BATTING_TABLE;
 DetailedScorePage.prototype.pitchingLastLocator = AWAY_PITCHING_TABLE;
+DetailedScorePage.prototype.pitchByPitchLastLocator = PITCH_BY_PITCH_TABLE;
 
 module.exports = DetailedScorePage;

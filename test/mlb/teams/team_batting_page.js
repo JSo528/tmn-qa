@@ -103,7 +103,7 @@ test.describe('#Team Batting Section', function() {
         teamPage.clickOverviewPitchViewPlotPoint();
         teamPage.clickHitChartTooltipPitchVideoIcon();
         teamPage.getHitChartTooltipPitchVideoHeader().then(function(text) {
-          assert.equal(text, '(Away - 4/5/2016) Vs RHP M. Tanaka (NYY)', 'Video Modal header');
+          assert.equal(text, '(Away - 4/9/2016) Vs RHP R. Dickey (TOR)', 'Video Modal header');
         });
       });  
 
@@ -129,7 +129,7 @@ test.describe('#Team Batting Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickOverviewTableStat(9);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
+          assert.equal(text, 'Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
         });
       });
 
@@ -150,6 +150,79 @@ test.describe('#Team Batting Section', function() {
       });
     });
 
+    test.describe("#filters", function() {
+      test.it('adding filter: (Men On: On 1B Only) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Men On:', 'On 1B Only', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 4782, '2016 Bos Pitches');
+        });
+      });
+
+      test.it('adding filter: (Men On: On 2B Only) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Men On:', 'On 2B Only', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 6762, '2016 Bos Pitches');
+        });
+      });      
+
+      test.it('adding filter: (Batted Ball: IF Air Out) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Batted Ball:', 'IF Air Out', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 105, '2016 Bos Pitches');
+        });
+      });
+
+      test.it('adding filter: (Batted Ball: Pop Up) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Batted Ball:', 'Pop Up', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 149, '2016 Bos Pitches');
+        });
+      });
+
+      test.it('adding filter: (Pitch Type: Hard (Fast/Sink/Cut)) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Pitch Type:', 'Hard (Fast/Sink/Cut)', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 89, '2016 Bos Pitches');
+        });
+      });
+
+      test.it('adding filter: (Vertical Location: Upper Half) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Vertical Location:', 'Upper Half', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 57, '2016 Bos Pitches');
+        });
+      });      
+
+      test.it('adding filter: (Zone Location: Competitve) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Zone Location:', 'Competitive', true);
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 50, '2016 Bos Pitches');
+        });
+      });            
+
+      test.it('adding filter: (Launch Angle: 50 to _) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Launch Angle:', 50, "");
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 15, '2016 Bos Pitches');
+        });
+      });            
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getOverviewTableStat(8).then(function(pitches) {
+          assert.equal(pitches, 24947, '2016 Bos Pitches');
+        });
+      });      
+    });
 
     // Visual Mode Dropdown
     test.describe("#visual modes", function() {
@@ -272,10 +345,55 @@ test.describe('#Team Batting Section', function() {
           assert.equal(battingAVG, 0.444);
         });          
       });
-    });
 
-    test.after(function() {
-      filters.closeDropdownFilter('Opponent Starter:');
+      test.it('adding filter: (Pitch Result: Miss) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown("Common");
+        filters.toggleSidebarFilter('Pitch Result:', 'Miss', true);
+
+        teamPage.getRosterTableStat(1,5).then(function(pitches) {
+          assert.equal(pitches, 6, 'David Ortiz Pitches');
+        });          
+      });
+
+      test.it('adding filter: (Pitch Result: Foul) from sidebar displays correct data', function() {
+        filters.toggleSidebarFilter('Pitch Result:', 'Foul', true);
+
+        teamPage.getRosterTableStat(1,5).then(function(pitches) {
+          assert.equal(pitches, 12, 'David Ortiz Pitches');
+        });          
+      });      
+
+      test.it('adding filter: (Pitch Result: Ball) from sidebar displays correct data', function() {filters.changeFilterGroupDropdown("Common");
+        filters.toggleSidebarFilter('Pitch Result:', 'Ball', true);
+
+        teamPage.getRosterTableStat(1,5).then(function(pitches) {
+          assert.equal(pitches, 31, 'David Ortiz Pitches');
+        });          
+      });  
+
+      test.it('adding filter: (Horizontal Location: Inner Third) from sidebar displays correct data', function() {filters.changeFilterGroupDropdown("Common");
+        filters.toggleSidebarFilter('Horizontal Location:', 'Inner Third', true);
+
+        teamPage.getRosterTableStat(1,5).then(function(pitches) {
+          assert.equal(pitches, 9, 'David Ortiz Pitches');
+        });          
+      });  
+
+      test.it('adding filter: (Vertical Location: Lower Half) from sidebar displays correct data', function() {filters.changeFilterGroupDropdown("Common");
+        filters.toggleSidebarFilter('Vertical Location:', 'Lower Half', true);
+
+        teamPage.getRosterTableStat(1,5).then(function(pitches) {
+          assert.equal(pitches, 8, 'David Ortiz Pitches');
+        });          
+      });        
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getRosterTableStat(1,5).then(function(pitches) {
+          assert.equal(pitches, 2709, 'Mookie Betts Pitches');
+        });
+      });
     });
   });
 
@@ -306,7 +424,7 @@ test.describe('#Team Batting Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickGameLogTableStat(1,8);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
+          assert.equal(text, 'Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
         });
       });
 
@@ -344,6 +462,47 @@ test.describe('#Team Batting Section', function() {
           assert.equal(ba, 0.167);
         });                  
       });
+
+      test.it('adding filter: (Game Run Diff: 3-10) from sidebar displays correct data', function() {
+        filters.changeFilterGroupDropdown('Game');
+        filters.changeValuesForRangeSidebarFilter("Game Run Diff:", 3, 10);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '9/21/2016', 'row 1 date');
+        });                           
+      });   
+
+      test.it('adding filter: (Game Team Errors: 1-5) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Team Errors:", 1, 5);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '9/12/2016', 'row 1 date');
+        });                           
+      }); 
+
+      test.it('adding filter: (Game Team Hits: 0-10) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Team Hits:", 0, 10);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '8/13/2016', 'row 1 date');
+        });                           
+      });       
+
+      test.it('adding filter: (Game Team Runs Scored: 8-15) from sidebar displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter("Game Team Runs Scored:", 8, 15);
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '7/6/2016', 'row 1 date');
+        });                           
+      });    
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getGameLogTableStat(1,3).then(function(stat) {
+          assert.equal(stat, '10/2/2016', 'row 1 date');
+        });
+      }); 
     });
   });  
 
@@ -450,7 +609,7 @@ test.describe('#Team Batting Section', function() {
       
       test.it('should show the correct at bat header text', function() {
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out");
+          assert.equal(text, "Vs RHP A. Sanchez (TOR), Bot 1, 0 Out");
         });
       });
 
@@ -611,14 +770,14 @@ test.describe('#Team Batting Section', function() {
 
     test.it('should show the correct data in the table', function() {
       teamPage.getMatchupsAtBatHeaderText(1).then(function(sectionHeaderText) {
-        assert.equal(sectionHeaderText, 'RHB D. Pedroia Vs RHP A. Sanchez (TOR), Bot 1, 0 Out', 'header for 1st at bat');
+        assert.equal(sectionHeaderText, 'Vs RHP A. Sanchez (TOR), Bot 1, 0 Out', 'header for 1st at bat');
       });
     }); 
 
     test.it('selecting Chris Archer on comp 2 search should update the pitch log', function() {
       teamPage.selectForCompSearch(2, 'Chris Archer');
       teamPage.getMatchupsAtBatHeaderText(1).then(function(sectionHeaderText) {
-        assert.equal(sectionHeaderText, 'RHB D. Pedroia Vs RHP C. Archer (TB), Top 1, 0 Out');
+        assert.equal(sectionHeaderText, 'Vs RHP C. Archer (TB), Top 1, 0 Out');
       });
     });
 
@@ -652,15 +811,67 @@ test.describe('#Team Batting Section', function() {
       test.it('adding filter: (Date Range: 2016 First Half) displays correct data', function() {
         filters.changeDropdownForDateSidebarFilter("Date Range:", "2016 First Half");
 
-        teamPage.getVsTableStat(2,9).then(function(winPer) {
-          assert.equal(winPer, 0.367, 'BA against LAA should be .367');
+        teamPage.getVsTableStat(2,9).then(function(stat) {
+          assert.equal(stat, 0.367, 'BA against LAA should be .367');
         });                                   
       });
 
-      test.after(function() {
-        filters.closeDropdownFilter("Date Range:");
+      test.it('adding filter: (Men On: On 3B Only) displays correct data', function() {
+        filters.toggleSidebarFilter('Men On:', 'On 3B Only', true);
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 3, 'CWS PA');
+        });                                   
       });
-    });                 
+
+      test.it('adding filter: (Men On: 2nd and 3rd) displays correct data', function() {
+        filters.toggleSidebarFilter('Men On:', '2nd and 3rd', true);
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 18, 'TB PA');
+        });                                   
+      });
+
+      test.it('adding filter: (PA Result: Hit) displays correct data', function() {
+        filters.toggleSidebarFilter('PA Result:', 'Hit', true);
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 14, 'Tor PA');
+        });                                   
+      });      
+
+      test.it('adding filter: (PA Result: Walk) displays correct data', function() {
+        filters.toggleSidebarFilter('PA Result:', 'Walk', true);
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 16, 'Tor PA');
+        });                                   
+      });            
+
+      test.it('adding filter: (PA Result: Sac Fly) displays correct data', function() {
+        filters.toggleSidebarFilter('PA Result:', 'Sac Fly', true);
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 17, 'Tor PA');
+        });                                   
+      });            
+
+      test.it('adding filter: (Outs: 1) displays correct data', function() {
+        filters.toggleSidebarFilter('Outs:', 1, true);
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 9, 'Tor PA');
+        });                                   
+      });            
+
+      test.it('clicking "default filters" returns filters back to default state', function() {
+        filters.clickDefaultFiltersBtn();
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 270, 'OAK PA');
+        });
+      });            
+    });
   });   
 
   // Vs. Pitchers
@@ -683,17 +894,66 @@ test.describe('#Team Batting Section', function() {
 
     test.describe("#filters", function() {
       test.it('adding filter: (Contact: Hard) displays correct data', function() {
+        teamPage.clickVsTableHeader(7);
         filters.changeFilterGroupDropdown("PA");
         filters.addSelectionToDropdownSidebarFilter("Contact:", "Hard");
 
-        teamPage.getVsTableStat(5,2).then(function(pitcher) {
-          assert.equal(pitcher, 'Collin McHugh', '5th row pitcher should be Collin McHugh');
+        teamPage.getVsTableStat(1,2).then(function(pitcher) {
+          assert.equal(pitcher, 'Kevin Gausman', '1st Row Pitcher');
         });                                   
 
-        teamPage.getVsTableStat(5,12).then(function(slg) {
-          assert.equal(slg, 1.714, '5th row slg should be 1.714');
+        teamPage.getVsTableStat(1,12).then(function(slg) {
+          assert.equal(slg, 0.727, 'Kevin Gausman slg%');
         });                                           
       });
+
+      test.it('adding filter: (Contact: Medium) displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter("Contact:", "Medium");
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 84, '1st row Pitches');
+        });                                   
+      });     
+
+      test.it('adding filter: (Pitch # in PA: 0 to 1) displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Pitch # in PA:', 0, 1); 
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 12, '1st row Pitches');
+        });                                   
+      });     
+
+      test.it('adding filter: (Infield Batted Ball: Yes) displays correct data', function() {
+        filters.selectForBooleanDropdownSidebarFilter('Infield Batted Ball:', 'Yes'); 
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 6, '1st row Pitches');
+        });                                   
+      });           
+
+      test.it('adding filter: (Batted Ball Location: Center) displays correct data', function() {
+        filters.addSelectionToDropdownSidebarFilter('Batted Ball Location:', 'Center'); 
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 3, '1st row Pitches');
+        });                                   
+      });  
+
+      test.it('adding filter: (Batted Ball Angle Range: 0 to 30) displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Batted Ball Angle Range:', 0, 30); 
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 2, '1st row Pitches');
+        });                                   
+      }); 
+
+      test.it('adding filter: (Batted Ball Distance: 0 to 90) displays correct data', function() {
+        filters.changeValuesForRangeSidebarFilter('Batted Ball Distance:', 0, 90); 
+
+        teamPage.getVsTableStat(1,7).then(function(stat) {
+          assert.equal(stat, 1, '1st row Pitches');
+        });                                   
+      });       
     });                 
   });     
 });

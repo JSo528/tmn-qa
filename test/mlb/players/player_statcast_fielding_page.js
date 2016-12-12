@@ -99,7 +99,7 @@ test.describe('#Player StatcastFielding Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         playerPage.clickOverviewTableStat(1,8);
         playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs RHP M. Barnes (NYY) , Bot 6, 2 Out');
+          assert.equal(text, 'RHP M. Barnes (BOS) Vs LHB C. Beltran (NYY), Bot 6, 2 Out');
         });
       });
 
@@ -110,7 +110,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "5.90s HT, 127.6ft, 0.9s RT, 1.87s Jmp, 99.0% Eff, 19.9mph 25.3% outProb - Fly Out");
+          assert.equal(text, "5.90s HT | 127.6ft | 0.9s RT | 1.87s Jmp | 99.0% Eff | 19.9mph | 13.8ft to Wall | 25.3% outProb | Fly Out");
         });          
       }); 
 
@@ -170,7 +170,7 @@ test.describe('#Player StatcastFielding Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         playerPage.clickGameLogTableStat(1,6);
         playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs LHP D. Pomeranz (TOR) , Top 9, 1 Out');
+          assert.equal(text, 'LHP D. Pomeranz (BOS) Vs RHB D. Travis (TOR), Top 9, 1 Out');
         });
       });
 
@@ -181,7 +181,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "3.67s HT, 42.8ft, 0.9s RT, 2.07s Jmp, 92.6% Eff, 11.6mph 99.6% outProb - Fly Out", '3rd line of 1st video description');
+          assert.equal(text, "3.67s HT | 42.8ft | 0.9s RT | 2.07s Jmp | 92.6% Eff | 11.6mph | 89.3ft to Wall | 99.6% outProb | Fly Out", '3rd line of 1st video description');
         });          
       }); 
 

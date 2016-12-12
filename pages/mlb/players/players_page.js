@@ -200,4 +200,9 @@ PlayersPage.prototype.getScatterPlotTableStat = function(row, col) {
   return this.getText(locator);
 };
 
+/****************************************************************************
+** Data Comparison
+*****************************************************************************/
+PlayersPage.prototype.statsTable = STATS_TABLE_ID[this.section];
+
 module.exports = PlayersPage;

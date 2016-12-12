@@ -189,7 +189,12 @@ exports.generateTests = function(title, testFiles, startUrl) {
           }
         });
 
-        // if (t.err.name == 'WebDriverError' && t.err.message.includes('chrome not reachable')) {
+        if (t.err.name == 'WebDriverError' && t.err.message.includes('chrome not reachable')) {
+          console.log("** CHROME NOT REACHABLE **")
+          driver.quit()
+          driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
+          browser = new Browser(driver);
+        }
         
         if (browser.tabHandles.length == 2) {
           browser.executeForEachTab(function() {

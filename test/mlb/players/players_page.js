@@ -136,6 +136,49 @@ test.describe('#Players Page', function() {
             assert.equal(runsPerGame, 0.250);
           });
         });
+
+        test.it('adding filter: (On Team: Colorado Rockies (mlb)) from sidebar displays correct data', function() {
+          filters.changeFilterGroupDropdown('Game');
+          filters.addSelectionToDropdownSidebarFilter('On Team:', 'Colorado Rockies (mlb)');
+
+          playersPage.getTableStat(1,3).then(function(stat) {
+            assert.equal(stat, ' C. Dickerson (DH-COL)', '1st row player');
+          });
+        });    
+
+        test.it('adding filter: (Player Age: 20-30) from sidebar displays correct data', function() {
+          filters.changeValuesForRangeSidebarFilter('Player Age:', 20, 30);
+
+          playersPage.getTableStat(3,3).then(function(stat) {
+            assert.equal(stat, ' D. LeMahieu (2B-COL)', '3rd row player');
+          });
+        });  
+
+        test.it('adding filter: (Stadium: Coors Field) from top displays correct data', function() {
+          filters.addSelectionToDropdownSidebarFilter('Stadium:', 'Coors Field');
+
+          playersPage.getTableStat(1,7).then(function(stat) {
+            assert.equal(stat, 1, '1st row AB');
+          });
+        }); 
+
+        test.it('adding filter: (vs Division: NL West) from sidebar displays correct data', function() {
+          filters.addDropdownFilter('vs Division');
+          filters.addSelectionToDropdownFilter('vs Division:', 'NL West');
+
+          playersPage.getTableStat(1,6).then(function(stat) {
+            assert.equal(stat, 2, '1st row PA');
+          });
+        });  
+
+        test.after(function() {
+          filters.closeDropdownFilter('On Team:');
+          filters.closeDropdownFilter('Player Age:');
+          filters.closeDropdownFilter('Stadium:');
+          filters.closeDropdownFilter('vs Division:');
+          filters.closeDropdownFilter('Batted Ball:');
+          filters.closeDropdownFilter('Extra Inning Game:');
+        });
       }); 
 
       // Pinning
@@ -181,8 +224,6 @@ test.describe('#Players Page', function() {
           });                              
         });        
         test.after(function() {
-          filters.closeDropdownFilter('Batted Ball:');
-          filters.closeDropdownFilter('Extra Inning Game:');
           playersPage.changeGroupBy("Total"); // change back to group by total
         });
       });
@@ -190,6 +231,7 @@ test.describe('#Players Page', function() {
       // Stats View
       test.describe("#stats view", function() {
         test.before(function() {
+          filters.changeFilterGroupDropdown('Common');
           filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', true);
         });
 
@@ -224,6 +266,7 @@ test.describe('#Players Page', function() {
           }
         });
         test.after(function() {
+          filters.changeFilterGroupDropdown('Common');
           filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', false);
           playersPage.changeStatsView('Stat'); // Remove Stats View
         });
@@ -264,6 +307,7 @@ test.describe('#Players Page', function() {
       // Batting Reports
       test.describe("#batting reports", function() {
         test.before(function() {
+          filters.changeFilterGroupDropdown('Common');
           filters.toggleSidebarFilter('Horizontal Location:', 'Middle Third', true);
         });
 
@@ -525,7 +569,18 @@ test.describe('#Players Page', function() {
           });
         });
 
+        test.it('changing filter: (Game Type: World Series) from sidebar displays correct data', function() {
+          filters.toggleSidebarFilter('Game Type:', 'World Series', true);
+          filters.toggleSidebarFilter('Game Type:', 'Reg', false);
+
+          playersPage.getTableStat(1,ksCol).then(function(ks) {
+            assert.equal(ks, 2);
+          });
+        });
+
         test.after(function() {
+          filters.toggleSidebarFilter('Game Type:', 'Reg', true);
+          filters.toggleSidebarFilter('Game Type:', 'World Series', false);
           filters.closeDropdownFilter('Men On');
           filters.closeDropdownFilter('Horizontal Location');
         });
@@ -680,23 +735,80 @@ test.describe('#Players Page', function() {
         });
       });
 
+      // Filters
+      test.describe("#filters", function() {
+        test.it('adding filter: (Pitch Type: Knuckleball) from dropdown displays correct data', function() {
+          playersPage.clickTableColumnHeader(5);
+          filters.toggleSidebarFilter('Pitch Type:', 'Knuckleball', true);
+
+          playersPage.getTableStat(1, 5).then(function(bf) {
+            assert.equal(bf, 619, 'Josh Thole BF');
+          });
+        });
+
+        test.it('adding filter: (Pitch Type: Screwball) from dropdown displays correct data', function() {
+          filters.toggleSidebarFilter('Pitch Type:', 'Screwball', true);
+
+          playersPage.getTableStat(3, 5).then(function(bf) {
+            assert.equal(bf, 17, 'AJ Pierzynski BF');
+          });
+        });   
+
+        test.it('adding filter: (Pitch Type: Intentional Ball) from dropdown displays correct data', function() {
+          filters.toggleSidebarFilter('Pitch Type:', 'Intentional Ball', true);
+
+          playersPage.getTableStat(1, 5).then(function(bf) {
+            assert.equal(bf, 637, 'Josh Thole BF');
+          });
+        });  
+
+        test.it('adding filter: (PA Result: Strikeout) from dropdown displays correct data', function() {
+          filters.toggleSidebarFilter('PA Result:', 'Strikeout', true);
+
+          playersPage.getTableStat(1, 5).then(function(bf) {
+            assert.equal(bf, 152, 'Josh Thole BF');
+          });
+        }); 
+
+        test.it('adding filter: (PA Result: Double Play) from dropdown displays correct data', function() {
+          filters.toggleSidebarFilter('PA Result:', 'Double Play', true);
+
+          playersPage.getTableStat(1, 5).then(function(bf) {
+            assert.equal(bf, 173, 'Josh Thole BF');
+          });
+        });
+
+        test.it('adding filter: (PA Result: ROE) from dropdown displays correct data', function() {
+          filters.toggleSidebarFilter('PA Result:', 'ROE', true);
+
+          playersPage.getTableStat(1, 5).then(function(bf) {
+            assert.equal(bf, 179, 'Josh Thole BF');
+          });
+        });         
+
+        test.after(function() {
+          filters.closeDropdownFilter('Pitch Type');
+          filters.closeDropdownFilter('PA Result');
+        })
+      });        
+
       // Video Playlist
       test.describe('#VideoPlaylist', function() {     
         test.it('clicking on a player stat opens the play by play modal', function() {
           playersPage.clickTableStat(1, 12);
           playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-            assert.equal(text, 'Vs RHB C. Ruiz (PHI), Bot 4, 1 Out');
+            assert.equal(text, 'Vs LHB B. Zobrist (TB), Bot 1, 1 Out');
           });
         });
 
         test.it('clicking into video opens correct video', function() {
           playersPage.clickPitchVideoIcon(1);
           playersPage.getVideoPlaylistText(1,1).then(function(text) {
-            assert.equal(text, "Bot 4, 1 out");
+            assert.equal(text, "Bot 1, 1 out");
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-0 Four Seamer 92 MPH ,78.3% ProbSL - Ball");
+            assert.equal(text, "1-2 Knuckle Curve 79 MPH ,76.5% ProbSL - Ball");
           });          
         }); 
 
@@ -709,7 +821,7 @@ test.describe('#Players Page', function() {
       // Reports
       test.describe("#reports", function() {
         var reports = [
-          { type: 'Catcher Framing', topStat: 211.21, statType: "SLAA", colNum: 7 },  
+          { type: 'Catcher Framing', topStat: -36.6, statType: "SLAA", colNum: 7 },  
           { type: 'Catcher Defense', topStat: 9.17, statType: "FldRAA", colNum: 10 },  
           { type: 'Catcher Opposing Batters', topStat: 4882, statType: "BF", colNum: 5 },  // Not sorted
           { type: 'Catcher Pitch Rates', topStat: "49.5%", statType: "InZoneMdl%", colNum: 8 },  
@@ -766,7 +878,7 @@ test.describe('#Players Page', function() {
         test.it('clicking on a player stat opens the play by play modal', function() {
           playersPage.clickTableStat(1, 4);
           playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-            assert.equal(text, 'Vs RHP M. Andriese (KC) , Top 1, 2 Out');
+            assert.equal(text, 'RHP M. Andriese (TB) Vs RHB L. Cain (KC), Top 1, 2 Out');
           });
         });
 
@@ -777,7 +889,7 @@ test.describe('#Players Page', function() {
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "2.16s HT, 128.5ft, 0.8s RT, 0 Jmp, 98.9% Eff, 14.2mph 0.0% outProb - Single on a Line Drive");
+            assert.equal(text, "2.16s HT | 128.5ft | 0.8s RT | 0 Jmp | 98.9% Eff | 14.2mph | 142.8ft to Wall | 0.0% outProb | Single on a Line Drive");
           });          
         }); 
 
@@ -793,7 +905,51 @@ test.describe('#Players Page', function() {
           playersPage.closeSimiliarPlaysModal();
           playersPage.closePlayByPlaytModal();
         });
-      });      
+      });    
+
+       test.describe("#filters", function() {
+        test.it('adding filter: (Height: 60 to 72) from sidebar displays correct data', function() {
+          filters.changeFilterGroupDropdown('Player')
+          filters.changeValuesForRangeSidebarFilter('Height:', 60, 72);
+
+          playersPage.getTableStat(1, 4).then(function(stat) {
+            assert.equal(stat, 351, '# of OFAirBall - Billy Hamilton');
+          });
+        });
+ 
+        test.it('adding filter: (Weight: 180 to 250) from sidebar displays correct data', function() {
+          filters.changeValuesForRangeSidebarFilter('Weight:', 180, 250);
+
+          playersPage.getTableStat(1, 4).then(function(stat) {
+            assert.equal(stat, 429, '# of OFAirBall - Mookie Betts');
+          });
+        });
+
+        test.it('adding filter: (Team Org: ATL) from sidebar displays correct data', function() {
+          filters.changeFilterGroupDropdown('Season')
+          filters.addSelectionToDropdownSidebarFilter('Team Org:', 'ATL');
+
+          playersPage.getTableStat(1, 4).then(function(stat) {
+            assert.equal(stat, 485, '# of OFAirBall - E. Inciarte');
+          });
+        });
+
+        test.it('adding filter: (Initial Fielder Result: Outfield Fly Ball Hit) from sidebar displays correct data', function() {
+          filters.changeFilterGroupDropdown('Pitch')
+          filters.addSelectionToDropdownSidebarFilter('Initial Fielder Result:', 'Outfield Fly Ball Hit');
+
+          playersPage.getTableStat(1, 4).then(function(stat) {
+            assert.equal(stat, 38, '# of OFAirBall - E. Inciarte');
+          });
+        });
+         
+        test.after(function() {
+          filters.closeDropdownFilter('Height:');
+          filters.closeDropdownFilter('Weight:');
+          filters.closeDropdownFilter('Team Org:');
+          filters.closeDropdownFilter('Initial Fielder Result:');
+        });
+      });  
 
       // Reports
       test.describe("#reports", function() {

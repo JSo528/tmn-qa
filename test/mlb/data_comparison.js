@@ -19,6 +19,7 @@ var DetailedScorePage = require('../../pages/mlb/scores/detailed_score_page.js')
 var TeamsPage = require('../../pages/mlb/teams/teams_page.js');
 var TeamPage = require('../../pages/mlb/teams/team_page.js');
 
+var PlayersPage = require('../../pages/mlb/players/players_page.js');
 var PlayerPage = require('../../pages/mlb/players/player_page.js');
 
 var UmpiresPage = require('../../pages/mlb/umpires/umpires_page.js');
@@ -43,7 +44,7 @@ test.describe('#DataComparison', function() {
     browser.visit(url);
     browser.openNewTab(prodUrl).then(function() {
       browser.switchToTab(1);  
-    })
+    });
     
     loginPage = new LoginPage(driver);
     loginPage.login(credentials.testUser.email, credentials.testUser.password);
@@ -59,7 +60,7 @@ test.describe('#DataComparison', function() {
         var stagData = contentArray[0];
         var prodData = contentArray[1];
         assert.equal( stagData, prodData, 'main data should be the same');
-      })  
+      });  
     });
 
     test.it('standings page shows the same data for 2015', function() {
@@ -69,8 +70,8 @@ test.describe('#DataComparison', function() {
 
       browser.getFullContentForEachTab(standingsPage.comparisonLocator, standingsPage.lastLocator).then(function(contentArray) {
         assert.equal( contentArray[0], contentArray[1], '2015 data should be the same' );
-      })  
-    })
+      });  
+    });
 
     test.it('standings page shows the same data for AAA', function() {
       browser.executeForEachTab(function() {
@@ -79,55 +80,55 @@ test.describe('#DataComparison', function() {
 
       browser.getFullContentForEachTab(standingsPage.comparisonLocator, standingsPage.lastLocator).then(function(contentArray) {
         assert.equal( contentArray[0], contentArray[1], 'AAA data should be the same' );
-      })  
-    })  
-  })
+      });  
+    });  
+  });
 
   test.describe('@Scores Page', function() {
     test.before(function() {
       browser.executeForEachTab(function() {
         navbar.goToScoresPage();
-      })
+      });
     });
 
     test.it('scores page shows the same data', function() {
       browser.getFullContentForEachTab(scoresPage.comparisonLocator, scoresPage.lastLocator).then(function(contentArray) {
         assert.equal( contentArray[0], contentArray[1], 'main data should be the same' );
-      })  
+      });  
     });
 
     test.it('scores page shows the same data for 2016-5-1', function() {
       browser.executeForEachTab(function() {
         scoresPage.changeDate('2016-5-1');
-      })
+      });
         
       browser.getFullContentForEachTab(scoresPage.comparisonLocator, scoresPage.lastLocator).then(function(contentArray) {
         assert.equal( contentArray[0], contentArray[1], '2016-5-1 data should be the same' );
-      })  
+      });  
     });    
 
     test.it('scores page shows the same data for AAA', function() {
       browser.executeForEachTab(function() {
         scoresPage.changeSeasonLevel('AAA');
-      })
+      });
       browser.getFullContentForEachTab(scoresPage.comparisonLocator, scoresPage.lastLocator).then(function(contentArray) {
         assert.equal( contentArray[0], contentArray[1], 'AAA data should be the same' );
-      })  
+      });  
     });        
-  })
+  });
 
   test.describe('@Detailed Scores Page', function() {
     test.before(function() {
       detailedScorePage = new DetailedScorePage(driver);
       browser.executeForEachTab(function() {
         scoresPage.clickBoxScore(1);
-      })
-    })
+      });
+    });
 
     test.it('detailed scores page shows the same data', function() {
       browser.getFullContentForEachTab(detailedScorePage.comparsionLocator, detailedScorePage.lastLocator).then(function(contentArray) {
         assert.equal( contentArray[0], contentArray[1], 'main data should be the same' );
-      })        
+      });        
     });
 
     test.describe("#batting reports", function() {
@@ -138,30 +139,30 @@ test.describe('#DataComparison', function() {
       test.it('pages shows the same data', function() {
         browser.executeForEachTab(function() {
           detailedScorePage.changeBattingReport(report);
-        })
+        });
 
         browser.getFullContentForEachTab(detailedScorePage.comparsionLocator, detailedScorePage.battingLastLocator).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1], 'data for report: '+report );
-        }) 
+        }); 
       });
-    })
+    });
 
     test.describe("#pitching reports", function() {
       test.before(function() {
         report = reports.selectRandomReport('pitching');
         browser.executeForEachTab(function() {
           detailedScorePage.goToSection("pitching");
-        })
-      })
+        });
+      });
 
       test.it('pages shows the same data', function() {
         browser.executeForEachTab(function() {
           detailedScorePage.changePitchingReport(report);
-        })
+        });
 
         browser.getFullContentForEachTab(detailedScorePage.comparsionLocator, detailedScorePage.pitchingLastLocator).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1], 'data for report: '+report+' should be the same' );
-        }) 
+        }); 
       });
     });    
 
@@ -169,42 +170,30 @@ test.describe('#DataComparison', function() {
       test.before(function() {
         browser.executeForEachTab(function() {
           detailedScorePage.goToSection("pitchByPitch");
-        })
-      })
-
-      test.it('Main page shows the same data', function() {
-        browser.getFullContentForEachTab(detailedScorePage.comparisonDataContainer, detailedScorePage.lastLocator)
-          .then(function(contentArray) {
-          assert.equal( contentArray[0], contentArray[1] );
-        }) 
+        });
       });
 
-      // TODO - this test keeps breaking in production for some reason
-      // test.it('When decisive event is turned on, it should shows the same data', function() {
-      //   browser.executeForEachTab(function() {
-      //     detailedScorePage.addDecisiveEventFilter("yes");
-      //   })
-
-      //   browser.getFullContentForEachTab(null, detailedScorePage.lastLocator).then(function(contentArray) {
-      //     assert.equal( contentArray[0], contentArray[1] );
-      //   }) 
-      // });       
-    })    
+      test.it('Main page shows the same data', function() {
+        browser.getFullContentForEachTab(detailedScorePage.comparsionLocator, detailedScorePage.pitchByPitchLastLocator)
+          .then(function(contentArray) {
+          assert.equal( contentArray[0], contentArray[1] );
+        }); 
+      });    
+    });    
 
     test.describe("#pitching splits subsection", function() {
       test.before(function() {
         browser.executeForEachTab(function() {
           detailedScorePage.goToSection("pitchingSplits");
-        })
-
-      })
+        });
+      });
 
       test.it('Main page shows the same data', function() {
         browser.getFullContentForEachTab(detailedScorePage.comparisonLocator).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
-        }) 
+        }); 
       });    
-    })        
+    });        
   });
 
   test.describe('@Teams Page', function() {
@@ -212,14 +201,14 @@ test.describe('#DataComparison', function() {
       teamsPage = new TeamsPage(driver);
       browser.executeForEachTab(function() {
         navbar.goToTeamsPage();
-      })   
+      });  
     });
 
     test.describe('#Batting Section', function() {
       test.it('main page shows the same data', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
-        })  
+        });  
       });  
     });
 
@@ -233,7 +222,7 @@ test.describe('#DataComparison', function() {
       test.it('main page shows the same data', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
-        })  
+        });  
       });
     });
 
@@ -247,7 +236,7 @@ test.describe('#DataComparison', function() {
       test.it('main page shows the same data', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
-        })  
+        });  
       });  
     }); 
 
@@ -255,11 +244,70 @@ test.describe('#DataComparison', function() {
       test.before(function() {
         browser.executeForEachTab(function() {
           teamsPage.goToSection("statcastFielding");
-        })   
+        });   
       });
 
       test.it('main page shows the same data', function() {
         browser.getFullContentForEachTab(teamsPage.statsTable).then(function(contentArray) {
+          assert.equal( contentArray[0], contentArray[1] );
+        });  
+      });   
+    });     
+  });
+
+  test.describe('@Players Page', function() {
+    test.before(function() {
+      teamsPage = new PlayersPage(driver);
+      browser.executeForEachTab(function() {
+        navbar.goToPlayersPage();
+      });   
+    });
+
+    test.describe('#Batting Section', function() {
+      test.it('main page shows the same data', function() {
+        browser.getFullContentForEachTab(playersPage.statsTable).then(function(contentArray) {
+          assert.equal( contentArray[0], contentArray[1] );
+        });  
+      });  
+    });
+
+    test.describe('#Pitching Section', function() {
+      test.before(function() {
+        browser.executeForEachTab(function() {
+          playersPage.goToSection("pitching");
+        });
+      });
+
+      test.it('main page shows the same data', function() {
+        browser.getFullContentForEachTab(playersPage.statsTable).then(function(contentArray) {
+          assert.equal( contentArray[0], contentArray[1] );
+        })  
+      });
+    });
+
+    test.describe('#Catching Section', function() {
+      test.before(function() {
+        browser.executeForEachTab(function() {
+          playersPage.goToSection("catching");
+        })   
+      });
+
+      test.it('main page shows the same data', function() {
+        browser.getFullContentForEachTab(playersPage.statsTable).then(function(contentArray) {
+          assert.equal( contentArray[0], contentArray[1] );
+        })  
+      });  
+    }); 
+
+    test.describe('#Statcast Fielding Section', function() {
+      test.before(function() {
+        browser.executeForEachTab(function() {
+          playersPage.goToSection("statcastFielding");
+        })   
+      });
+
+      test.it('main page shows the same data', function() {
+        browser.getFullContentForEachTab(playersPage.statsTable).then(function(contentArray) {
           assert.equal( contentArray[0], contentArray[1] );
         })  
       });   

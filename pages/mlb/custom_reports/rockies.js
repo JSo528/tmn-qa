@@ -33,7 +33,6 @@ var SUB_SECTION_TITLE = {
   'pitcherCardMiLB': 'Pitcher Card (MiLB)',
   'tpaPlusMinus': 'TPA +/-',
   'tpa12': 'TPA 12+'
-  
 };
 
 var TABLE_ROW_OFFSET = {

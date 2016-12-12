@@ -347,10 +347,7 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Player - Custom Batting', function() {
     test.before(function() {
-      navbar.goToPlayersPage();
-      filters.removeSelectionFromDropdownFilter("Seasons:");
-      filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersPage.clickTableStat(2,3);
+      navbar.search('Nolan Arenado', 1);
       rockies.goToSubSection('customBatting');
       rockies.currentPage = 'playerCustomBatting';
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -484,11 +481,9 @@ test.describe('#CustomReports: Rockies', function() {
 
   test.describe('#Report: Player - Custom Pitching', function() {
     test.before(function() {
-      navbar.goToPlayersPage();
-      playersPage.goToSection('pitching');
-      filters.removeSelectionFromDropdownFilter("Seasons:");
-      filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersPage.clickTableStat(3,3);
+      this.timeout(120000);
+      teamPage.goToSubSection('overview');
+      navbar.search('Noah Syndergaard', 1);
       rockies.goToSubSection('customPitching');
       rockies.currentPage = 'playerCustomPitching';
       filters.removeSelectionFromDropdownFilter("Seasons:");

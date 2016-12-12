@@ -14,7 +14,6 @@ var Filters = require('../pages/mlb/filters.js');
 // Teams Pages
 var TeamsPage = require('../pages/mlb/teams/teams_page.js');
 var TeamPage = require('../pages/mlb/teams/team_page.js');
-var OverviewPage = require('../pages/mlb/teams/team_overview_page.js');
 
 // Scores Pages
 var ScoresPage = require('../pages/mlb/scores/scores_page.js');
@@ -47,12 +46,14 @@ playerPage = new PlayerPage(driver)
 umpirePage = new UmpirePage(driver)
 
 // Constants
-var url = "https://dodgers-staging.trumedianetworks.com:3005"
+// var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
+var url = "https://dodgers.trumedianetworks.com/baseball/team-pitch-log-catching/TEX/140?pc=%7B%22bged%22%3A%22no%22%2C%22btbyto%22%3A%22team%22%7D&is=true&f=%7B%22bexitdir%22%3A%5B0%2C30%5D%2C%22bgt%22%3A%5B%22reg%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D&reportActiveTabIdx=0"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
+navbar.goToScoresPage()
 
 loginPage.visit("https://dodgers-staging.trumedianetworks.com:3005/baseball/player-defensive-positioning-batting/Jose%20Altuve/514888?is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22boorg%22%3A%5B%22OAK%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D")
 

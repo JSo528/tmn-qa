@@ -37,10 +37,7 @@ test.describe('#CustomReports: Tigers', function() {
 
   test.describe('#Section: TeamBatting', function() {
     test.before(function() {
-      navbar.goToTeamsPage();
-      filters.removeSelectionFromDropdownFilter("Seasons:");
-      filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      teamsPage.clickTeamTableCell(1,3);
+      navbar.search('Detroit Tigers', 1);
     });
 
     test.describe('#SubSection: OpposingHittingMatchupsWOBA', function() {
@@ -306,11 +303,7 @@ test.describe('#CustomReports: Tigers', function() {
 
   test.describe('#Section: PlayerBatting', function() {
     test.before(function() {
-      navbar.goToPlayersPage();  
-      playersPage.goToSection('batting');
-      filters.removeSelectionFromDropdownFilter("Seasons:");
-      filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersPage.clickTableStat(1,3);
+      navbar.search('Todd Frazier', 1);
     });
 
     test.describe('#SubSection: HittingTendencies', function() {

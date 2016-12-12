@@ -37,18 +37,12 @@ test.describe('#CustomReports: Marlins', function() {
 
   test.describe('#Section: TeamBatting', function() {
     test.before(function() {
-      navbar.goToTeamsPage();
-      filters.removeSelectionFromDropdownFilter("Seasons:");
-      filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      teamsPage.clickTeamTableCell(4,3);
+      navbar.search('Pittsburgh Pirates', 1);
     });
 
     test.describe('#SubSection: CustomBatting', function() {
-      test.before(function() {
-        marlins.goToSubSection('customBatting');
-      });
-
       test.it('images start with 9 grid zones', function() {
+        marlins.goToSubSection('customBatting');
         marlins.getNumberOfGridZonesForImages().then(function(zones) {
           assert.equal(zones, 9);
         });
@@ -163,11 +157,7 @@ test.describe('#CustomReports: Marlins', function() {
 
   test.describe('#Section: PlayerPitching', function() {
     test.before(function() {
-      navbar.goToPlayersPage();  
-      playersPage.goToSection('pitching');
-      filters.removeSelectionFromDropdownFilter("Seasons:");
-      filters.addSelectionToDropdownFilter("Seasons:", 2016);
-      playersPage.clickTableStat(1,3);
+      navbar.search('Max Scherzer', 1)
     });
 
     test.describe('#SubSection: CustomPitching', function() {
