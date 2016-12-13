@@ -11,6 +11,7 @@ var Until = require('selenium-webdriver').until;
 ** Locators
 *****************************************************************************/
 var SCOUT_LINK = By.xpath(".//header/nav/.//li/a[text()='Scout']");
+var TEAMS_LINK = By.xpath(".//header/nav/.//li/a[text()='Teams']");
 // var STANDINGS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Standings']");
 // var TEAMS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Teams']");
 // var PLAYERS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Players']");
@@ -19,6 +20,7 @@ var SCOUT_LINK = By.xpath(".//header/nav/.//li/a[text()='Scout']");
 // var PERFORMANCE_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Performance']");
 
 var SCOUT_TABLE = By.xpath(".//div[@class='reports']/.//table");
+var TEAMS_TABLE = By.xpath(".//div[@class='teams']/.//table");
 // var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavFootballTeamsSubCommon");
 // var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavFootballPlayersSubCommon");
 // var SCORES_LAST_LOCATOR = By.id("s2id_pageControlFootballYear");
@@ -41,6 +43,11 @@ Navbar.prototype.constructor = Navbar;
 Navbar.prototype.goToScoutPage = function() {
   this.click(SCOUT_LINK);
   return this.waitUntilStaleness(SCOUT_TABLE, 10000);
+};
+
+Navbar.prototype.goToTeamsPage = function() {
+  this.click(TEAMS_LINK);
+  return this.waitUntilStaleness(TEAMS_TABLE, 10000);
 };
 
 // Navbar.prototype.goToScoresPage = function() {

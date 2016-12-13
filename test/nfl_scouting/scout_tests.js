@@ -63,7 +63,6 @@ test.describe('#Page: Scout', function() {
         assert.isAtLeast(lastNameA, lastNameB, "row1 last name is smaller than row10 last name");
         assert.isAtLeast(lastNameB, lastNameC, "row10 last name is smaller than row30 last name");
       });
-
     });
 
     test.it('removing the last name sorter and selecting jags position should sort the list by jags position asc', function() {
