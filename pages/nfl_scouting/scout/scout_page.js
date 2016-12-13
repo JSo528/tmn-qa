@@ -1,7 +1,7 @@
 'use strict';
 
 // Load Base Page
-var BasePage = require('../../pages/base/base_page.js')
+var BasePage = require('../../../pages/base/base_page.js')
 
 // Webdriver helpers
 var By = require('selenium-webdriver').By;
@@ -12,7 +12,7 @@ var Promise = require('selenium-webdriver').promise;
 ** Locators
 *****************************************************************************/
 var SCOUTING_REPORTS_TABLE = By.css('.reports table');
-var SCOUTING_REPORTS_COUNT = By.xpath(".//div[@class='reports']/.//table/tbody[@inject='rows']/tr");
+var SCOUTING_REPORTS_ROWS = By.xpath(".//div[@class='reports']/.//table/tbody[@inject='rows']/tr");
 
 /****************************************************************************
 ** Constructor
@@ -28,7 +28,7 @@ ScoutPage.prototype.constructor = ScoutPage;
 ** Functions
 *****************************************************************************/
 ScoutPage.prototype.getVisibleReportsCount = function() {
-  return this.getElementCount(SCOUTING_REPORTS_COUNT);
+  return this.getElementCount(SCOUTING_REPORTS_ROWS);
 };
 
 ScoutPage.prototype.getTableStat = function(row, col) {

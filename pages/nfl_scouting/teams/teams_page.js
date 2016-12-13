@@ -12,7 +12,7 @@ var Promise = require('selenium-webdriver').promise;
 ** Locators
 *****************************************************************************/
 var TEAMS_TABLE = By.css('.teams table');
-var TEAMS_COUNT = By.xpath(".//div[@class='teams']/.//table/tbody[@inject='rows']/tr");
+var TEAMS_ROWS = By.xpath(".//div[@class='teams']/.//table/tbody[@inject='rows']/tr");
 
 /****************************************************************************
 ** Constructor
@@ -33,7 +33,7 @@ TeamsPage.prototype.clickTableHeader = function(col) {
 };
 
 TeamsPage.prototype.getVisibleTeamsCount = function() {
-  return this.getElementCount(TEAMS_COUNT);
+  return this.getElementCount(TEAMS_ROWS);
 };
 
 TeamsPage.prototype.getTableStat = function(row, col) {

@@ -2,11 +2,10 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-var constants = require('../../lib/constants.js');
 
 // Page Objects
-var Navbar = require('../../pages/nfl_scouting/navbar.js');
-var ScoutPage = require('../../pages/nfl_scouting/scout_page.js');
+var Navbar = require('../../../pages/nfl_scouting/navbar.js');
+var ScoutPage = require('../../../pages/nfl_scouting/scout/scout_page.js');
 var navbar, scoutPage;
 
 test.describe('#Page: Scout', function() {
