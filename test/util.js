@@ -189,6 +189,8 @@ exports.generateTests = function(title, testFiles, startUrl) {
           }
         });
 
+        console.log("errName:" + t.err.name);
+        console.log("errMessage:" + t.err.message);
         if (t.err.name == 'WebDriverError' && t.err.message.includes('chrome not reachable')) {
           console.log("** CHROME NOT REACHABLE **")
           driver.quit()

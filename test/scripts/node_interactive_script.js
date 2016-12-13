@@ -176,3 +176,38 @@ scorePitchByPitch.isVideoModalDisplayed().then(function(displayed) {
 scorePitchByPitch.getVideoPlaylistText(1,1).then(function(text) {
           console.log(text)
         });
+
+
+
+/****************************************************************************
+** NFL Scouting
+*****************************************************************************/
+var webdriver = require('selenium-webdriver');
+driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
+var credentials = require('../lib/credentials.js');
+var By = webdriver.By;
+var Until = webdriver.until;
+var Key = require('selenium-webdriver').Key;
+
+// Page Objects
+var LoginPage = require('./pages/login_page.js');
+var Navbar = require('../pages/nfl_scouting/navbar.js');
+var ScoutPage = require('../pages/nfl_scouting/scout_page.js');
+
+// Instance Objects
+loginPage = new LoginPage(driver);
+browser = new Browser(driver);
+navbar  = new Navbar(driver);
+scoutPage = new ScoutPage(driver);
+
+// Constants
+var url = "https://staging.jags.scouting.trumedianetworks.com/scout?tenant=jaguars"
+
+// Script
+loginPage.visit(url);
+loginPage.login(credentials.testUser.email, credentials.testUser.password);
+navbar.goToScoutPage();
+
+scoutPage.getTableStat(1,8).then(function(code) {
+  console.log(code)
+})
