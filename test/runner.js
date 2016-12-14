@@ -29,12 +29,14 @@ module.exports = function(testRun, env) {
   var spawn = require('child_process').spawn;
   var args = [
     "-gc",
-    'test/scripts/'+constants.tests[testRun.testNumber].fileName + '.js' // test file
+    'test/run_script'
   ]
   var envVars = Object.create( process.env );
-  envVars.NODE_ENV = env
-  envVars.PORT_NUMBER = testRun.portNumber
-  envVars.TEST_RUN_ID = testRun.id
+  envVars.NODE_ENV = env;
+  envVars.TEST_NUMBER = testRun.testNumber;
+  envVars.PORT_NUMBER = testRun.portNumber;
+  envVars.TEST_RUN_ID = testRun.id;
+  envVars.FILE_WHITELIST = testRun.fileWhitelist;
   
   var cp = spawn('mocha', args, {env: envVars})
 

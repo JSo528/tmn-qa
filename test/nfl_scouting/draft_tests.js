@@ -8,7 +8,7 @@ var Navbar = require('../../pages/nfl_scouting/navbar.js');
 var DraftPage = require('../../pages/nfl_scouting/draft_page.js');
 var navbar, draftPage;
 
-test.describe('#Page: Teams', function() {
+test.describe('#Page: Draft', function() {
   test.before(function() {
     draftPage = new DraftPage(driver);
     navbar = new Navbar(driver);

@@ -9,6 +9,7 @@ var port = process.env.PORT || 3000;
 var constants = require('./lib/constants.js');
 var util = require('./lib/util');
 var credentials = require('./lib/credentials.js');
+var scripts = require('./lib/scripts');
 
 // Database
 var dbConnect = require('./models/db_connect.js');
@@ -43,7 +44,7 @@ app.use(function(req, res, next) {
 // Routes
 app.get('/', function(req, res) {  
   res.render('new-test', {
-    tests: constants.tests
+    scripts: scripts
   });    
 });
 
@@ -56,7 +57,7 @@ app.get('/test-results/', function(req, res) {
     .exec(function(err, testRuns) {
       data.testRuns = testRuns.map(function(testRun) {
         delete testRun.errorObjects;
-        testRun.testName = constants.tests[testRun.testNumber].name;
+        testRun.testName = scripts[testRun.testNumber].name;
         return testRun;
       });
 
@@ -75,7 +76,7 @@ app.get('/test-results/:id', function(req, res) {
         errorMessage: "No test found"
       });    
     } else {
-      testRun.testName = constants.tests[testRun.testNumber].name
+      testRun.testName = scripts[testRun.testNumber].name
       
       testRun.errorObjects.map(function(error, index) {
         if (error.expectedValue || error.actualValue) {
@@ -92,10 +93,16 @@ app.get('/test-results/:id', function(req, res) {
 });
 
 app.post('/run-tests', function(req, res) {
+  
+  if (req.body.testFiles == 'custom') {
+    var fileWhitelist = req.body.fileWhitelist
+  }
+
   var testRun = new TestRun({
     testNumber: req.body.testNumber,
     portNumber: req.body.portNumber,
     createdAt: new Date().getTime(),
+    fileWhitelist: fileWhitelist,
     status: 'queued'
   });
   
@@ -165,7 +172,7 @@ app.get('/api/test-runs/:id', function(req, res) {
         errorMessage: "No test found"
       });    
     } else {
-      testRun.testName = constants.tests[testRun.testNumber].name
+      testRun.testName = scripts[testRun.testNumber].name
       
       testRun.errorObjects.map(function(error, index) {
         if (error.expectedValue || error.actualValue) {

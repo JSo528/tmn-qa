@@ -12,12 +12,26 @@ block content
           label(for='testNumber').col-sm-3.control-label Test
           .col-sm-9
             select(id='testNumber' name='testNumber').form-control
-              each test in tests
-                option(value=test.id data-test-env=test.environment)= test.name
+              each script in scripts
+                option(value=script.id data-test-env=script.environment)= script.name
         .form-group#portNumberGroup
           label(for='portNumber').col-sm-3.control-label Port
           .col-sm-9
             input.form-control(type='number' id='portNumber' name='portNumber')
+        .form-group
+          label(for='testFiles').col-sm-3.control-label Files
+          .col-sm-9
+            select.form-control(id='testFiles' name='testFiles')
+              option(value='runAll' name='all') All
+              option(value='custom' name='custom') Custom
+            each script in scripts
+              .test-files-container.hidden(data-test-number=script.id)
+                each file in script.testFiles
+                  .checkbox
+                    label
+                      input(type='checkbox' name='fileWhitelist[]' value=file checked disabled=true)
+                      = file
+
         button.btn.btn-primary.btn-block(type='submit') Run Test
 
   script.
@@ -37,9 +51,26 @@ block content
       }
     }
 
+    function toggleTestFilesContainer() {
+      $('.test-files-container').addClass('hidden');
+      $('.test-files-container input').attr('disabled', true);
+
+      if ($('#testFiles').val() == 'custom') {
+        var testNumber = $('#testNumber').val();
+        $('.test-files-container[data-test-number="'+testNumber+'"]').removeClass('hidden');
+        $('.test-files-container[data-test-number="'+testNumber+'"] input').attr('disabled', false);
+      }
+    }
+
     togglePortNumber();
+
     $('#testNumber').on('change', function() {
       togglePortNumber();
+      toggleTestFilesContainer();
+    });
+
+    $('#testFiles').on('change', function() {
+      toggleTestFilesContainer();
     });
 
     $('form').submit(function() {
@@ -56,3 +87,4 @@ block content
         return true;
       };
     });
+
