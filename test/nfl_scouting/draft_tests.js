@@ -12,6 +12,7 @@ test.describe('#Page: Draft', function() {
   test.before(function() {
     draftPage = new DraftPage(driver);
     navbar = new Navbar(driver);
+    browser.visit(url);
     navbar.goToDraftPage();
   })
 

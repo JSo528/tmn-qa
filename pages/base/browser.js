@@ -104,6 +104,14 @@ Browser.prototype.executeForEachTab = function(command) {
   })
     
   return d.promise;
-}
+};
+
+Browser.prototype.refresh = function() {
+  return this.driver.navigate().refresh();
+};
+
+Browser.prototype.back = function() {
+  return this.driver.navigate().back();
+};
 
 module.exports = Browser;

@@ -62,8 +62,6 @@ block content
       }
     }
 
-    togglePortNumber();
-
     $('#testNumber').on('change', function() {
       togglePortNumber();
       toggleTestFilesContainer();
@@ -87,4 +85,7 @@ block content
         return true;
       };
     });
+
+    togglePortNumber();
+    toggleTestFilesContainer();
 

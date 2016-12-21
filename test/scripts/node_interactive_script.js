@@ -188,26 +188,36 @@ var credentials = require('../lib/credentials.js');
 var By = webdriver.By;
 var Until = webdriver.until;
 var Key = require('selenium-webdriver').Key;
+var extensions = require('../lib/extensions.js');
 
 // Page Objects
+var Browser = require('../pages/base/browser.js');
 var LoginPage = require('./pages/login_page.js');
 var Navbar = require('../pages/nfl_scouting/navbar.js');
-var ScoutPage = require('../pages/nfl_scouting/scout_page.js');
+var TeamsPage = require('../pages/nfl_scouting/teams/teams_page.js');
+var TeamPage = require('../pages/nfl_scouting/teams/team_page.js');
+var PlayerPage = require('../pages/nfl_scouting/players/player_page.js');
+var ScoutPage = require('../pages/nfl_scouting/scout/scout_page.js');
+var EvaluationReportsPage = require('../pages/nfl_scouting/reports/evaluation_reports_page.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);
 browser = new Browser(driver);
 navbar  = new Navbar(driver);
-scoutPage = new ScoutPage(driver);
+teamsPage = new TeamsPage(driver);
+teamPage = new TeamPage(driver);
+playerPage = new PlayerPage(driver);
+reportPage = new EvaluationReportsPage(driver);
+scoutPage = new ScoutPage(driver)
 
 // Constants
-var url = "https://staging.jags.scouting.trumedianetworks.com/scout?tenant=jaguars"
+var url = "https://staging.jags.scouting.trumedianetworks.com/"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
+scoutPage = new ScoutPage(driver);
+navbar = new Navbar(driver);
 navbar.goToScoutPage();
 
-scoutPage.getTableStat(1,8).then(function(code) {
-  console.log(code)
-})
+scoutPage.clickSortIcon(8);

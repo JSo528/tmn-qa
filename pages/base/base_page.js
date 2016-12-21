@@ -345,6 +345,40 @@ BasePage.prototype.getText = function(locator, timeout) {
   return d.promise;
 };
 
+BasePage.prototype.getTextArray = function(locator, timeout) {
+  var d = Promise.defer();
+  var textArray = []
+  
+  this.driver.findElements(locator).then(function(elements) {
+    elements.forEach(function(el) {
+      el.getText().then(function(text) {
+        textArray.push(text)
+      })
+    })
+
+    d.fulfill(textArray)
+  })
+
+  return d.promise;
+};
+
+BasePage.prototype.getInputValueArray = function(locator, timeout) {
+  var d = Promise.defer();
+  var textArray = []
+  
+  this.driver.findElements(locator).then(function(elements) {
+    elements.forEach(function(el) {
+      el.getAttribute('value').then(function(text) {
+        textArray.push(text)
+      })
+    })
+
+    d.fulfill(textArray)
+  })
+
+  return d.promise;
+};
+
 BasePage.prototype.getTitle = function() {
   var d = Promise.defer();
   this.driver.getTitle().then(function(title) {

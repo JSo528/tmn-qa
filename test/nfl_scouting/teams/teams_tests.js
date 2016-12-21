@@ -12,6 +12,7 @@ test.describe('#Page: Teams', function() {
   test.before(function() {
     teamsPage = new TeamsPage(driver);
     navbar = new Navbar(driver);
+    browser.visit(url);
     navbar.goToTeamsPage();
   })
 

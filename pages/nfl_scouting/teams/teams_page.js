@@ -11,7 +11,6 @@ var Promise = require('selenium-webdriver').promise;
 /****************************************************************************
 ** Locators
 *****************************************************************************/
-var TEAMS_TABLE = By.css('.teams table');
 var TEAMS_ROWS = By.xpath(".//div[@class='teams']/.//table/tbody[@inject='rows']/tr");
 
 /****************************************************************************

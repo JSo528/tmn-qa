@@ -59,7 +59,7 @@ module.exports = function(testRun, env) {
       if (testRun.endedAt == undefined && testRun.status == "ongoing") {
         testRun.update({endedAt: new Date().getTime(), status: "error"}).exec();
       }
-    })
+    });
   });
 
   cp.on('exit', (code, signal) => {

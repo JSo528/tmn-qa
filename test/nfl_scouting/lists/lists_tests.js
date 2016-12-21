@@ -12,6 +12,7 @@ test.describe('#Page: Lists', function() {
   test.before(function() {
     listsPage = new ListsPage(driver);
     navbar = new Navbar(driver);
+    browser.visit(url);
     navbar.goToListsPage();
   })
 

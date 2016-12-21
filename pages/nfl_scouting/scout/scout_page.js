@@ -11,7 +11,6 @@ var Promise = require('selenium-webdriver').promise;
 /****************************************************************************
 ** Locators
 *****************************************************************************/
-var SCOUTING_REPORTS_TABLE = By.css('.reports table');
 var SCOUTING_REPORTS_ROWS = By.xpath(".//div[@class='reports']/.//table/tbody[@inject='rows']/tr");
 
 /****************************************************************************
@@ -41,7 +40,7 @@ ScoutPage.prototype.getTableStat = function(row, col) {
     d.fulfill(thiz.driver.findElement(inputLocator).getAttribute('value'));
   }, function(err) {
     d.fulfill(thiz.getText(locator));
-  })
+  });
 
   return d.promise;
 };
@@ -49,7 +48,6 @@ ScoutPage.prototype.getTableStat = function(row, col) {
 ScoutPage.prototype.clickTableHeader = function(col) {
   var locator = By.xpath(`.//div[@class='reports']/.//table/thead/tr/th[${col}]`);
   return this.click(locator);
-  // return this.waitUntilStaleness(SCOUTING_REPORTS_TABLE)
 };
 
 ScoutPage.prototype.clickSortIcon = function(col) {
