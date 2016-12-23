@@ -199,6 +199,7 @@ var TeamPage = require('../pages/nfl_scouting/teams/team_page.js');
 var PlayerPage = require('../pages/nfl_scouting/players/player_page.js');
 var ScoutPage = require('../pages/nfl_scouting/scout/scout_page.js');
 var EvaluationReportsPage = require('../pages/nfl_scouting/reports/evaluation_reports_page.js');
+var ScoutingReportsPage = require('../pages/nfl_scouting/reports/scouting_reports_page.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);
@@ -207,7 +208,8 @@ navbar  = new Navbar(driver);
 teamsPage = new TeamsPage(driver);
 teamPage = new TeamPage(driver);
 playerPage = new PlayerPage(driver);
-reportPage = new EvaluationReportsPage(driver);
+evaluationReportPage = new EvaluationReportsPage(driver);
+scoutingReportPage = new ScoutingReportsPage(driver);
 scoutPage = new ScoutPage(driver)
 
 // Constants
@@ -216,8 +218,7 @@ var url = "https://staging.jags.scouting.trumedianetworks.com/"
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
-scoutPage = new ScoutPage(driver);
-navbar = new Navbar(driver);
-navbar.goToScoutPage();
 
-scoutPage.clickSortIcon(8);
+loginPage.visit("https://staging.jags.scouting.trumedianetworks.com/scoutingReport/2224?tenant=jaguars")
+
+scoutingReportPage.changeProfileDropdown('position', 'QB');

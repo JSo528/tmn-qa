@@ -146,7 +146,7 @@ EvaluationReportsPage.prototype.toggleHelpJagsCheckbox = function() {
   return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
-EvaluationReportsPage.prototype.clickIncidentReportSpacer = function() {
+EvaluationReportsPage.prototype.clickGameReportsSpacer = function() {
   var d = Promise.defer();
   var thiz = this;
 

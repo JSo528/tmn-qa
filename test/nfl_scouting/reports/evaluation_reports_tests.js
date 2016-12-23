@@ -77,11 +77,7 @@ test.describe('#Page: EvaulationReports', function() {
   test.describe("#reportSections", function() {
     test.describe('#initialInput', function() {
       test.before(function() {
-        reportPage.isDisplayed(By.css('.-game-reports .bottom-spacer i')).then(function(disp) {
-          console.log("*** isDisp: " + disp);
-        });
-
-        reportPage.clickIncidentReportSpacer();
+        reportPage.clickGameReportsSpacer();
         reportPage.changeSectionText('Game Reports', sectionData.gameReportsText);
         reportPage.changeSectionGrade('Athletic Ability', sectionData.athleticAbility);
         reportPage.changeSectionText('Athletic Ability', sectionData.athleticAbilityText);
@@ -97,7 +93,7 @@ test.describe('#Page: EvaulationReports', function() {
       });
 
       test.it('game reports text should persist on reload', function() {
-        reportPage.clickIncidentReportSpacer();
+        reportPage.clickGameReportsSpacer();
         reportPage.getSectionText('Game Reports').then(function(text) {
           assert.equal(text, sectionData.gameReportsText, 'game reports text');
         });
@@ -175,7 +171,7 @@ test.describe('#Page: EvaulationReports', function() {
       });
 
       test.it('game reports text should persist on reload', function() {
-        reportPage.clickIncidentReportSpacer();
+        reportPage.clickGameReportsSpacer();
         reportPage.getSectionText('Game Reports').then(function(text) {
           assert.equal(text, sectionDataUpdate.gameReportsText, 'game reports text');
         });

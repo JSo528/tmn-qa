@@ -17,7 +17,7 @@ var BODY_CONTENT = By.css('.player-profile table');
 var SAVE_ICON = By.css('.status');
 
 
-// IncidenceReport
+// IncidentReport
 var INCIDENT_REPORT_SPACER = By.css('.-incidents .-show');
 var CREATE_INCIDENT_REPORT_BTN = By.css('.-incidents .-create');
 var INCIDENT_REPORT_WEEK_INPUT = By.xpath(".//div[@class='incident']/div/div/.//div[@inject='week']/div");
