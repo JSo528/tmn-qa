@@ -11,6 +11,7 @@ var TestRun = require('../models/test_run.js');
 var dbConnect = require('../models/db_connect.js');
 var Browser = require('../pages/base/browser.js');
 var request = require('request');
+var scripts = require('../lib/scripts.js')
 
 function importTest(path) {
   test.describe('', function() {
@@ -22,17 +23,25 @@ function importTest(path) {
 function writeScreenshot(callback) {
   var screenshotPath = 'public/data/'+testRun.id+'/';
   var fileName = new Date().getTime() + '.png';
-  var locator = By.id('main');
+  var locator = scripts[process.env.TEST_NUMBER].screenshotLocator;
   var maxWidth = constants.screenSize.maxWidth;
   var maxHeight = constants.screenSize.maxHeight;
+  var height;
 
   driver.wait(Until.elementLocated(locator), 5000).then(function() {
+    // set size of window
     var element = driver.findElement(locator);
     driver.manage().window().setSize(maxWidth, maxHeight);
     element.getSize().then(function(size) {
-      var height = (size.height > maxHeight) ? maxHeight : size.height;
-      driver.manage().window().setSize(maxWidth, height);
-    })
+      height = size.height + 100;
+    }).then(function() {
+      element.getLocation().then(function(location) {
+        height += location.y;
+        height = (height > maxHeight) ? maxHeight : height;
+        driver.manage().window().setSize(maxWidth, height);
+      });
+    });
+    
     console.log('** about to take Screenshot');
     driver.takeScreenshot().then(function(data) {
       console.log('** finished taking Screenshot');

@@ -12,10 +12,11 @@ var Key = require('selenium-webdriver').Key
 /****************************************************************************
 ** Locators
 *****************************************************************************/
-var NAME_LINK = By.xpath(".//div[contains(@class,'title')]/div/a");
 var BODY_CONTENT = By.css('.player-profile table');
 var SAVE_ICON = By.css('.status');
 
+var NAME_LINK = By.xpath(".//div[contains(@class,'title')]/div/a");
+var MANAGE_DRAFT_LINK = By.xpath(".//div[@inject='player.draftLink']/a");
 
 // IncidentReport
 var INCIDENT_REPORT_SPACER = By.css('.-incidents .-show');
@@ -29,6 +30,7 @@ var INCIDENT_DIVS = By.css('.incidents .incident');
 // Reports
 var CREATE_EVALUATION_REPORT_BTN = By.xpath(".//div[@inject='evaluationReports']/.//button[text()=' Create ']");
 var CREATE_SCOUTING_REPORT_BTN = By.xpath(".//div[@inject='scoutingReports']/.//button[text()=' Create ']");
+var CREATE_INTERVIEW_REPORT_BTN = By.xpath(".//div[@inject='interviewReports']/.//button[text()=' Create ']");
 
 // DatePicker
 var DAYS_PICKER_SWITCH = By.css('.datepicker-days .picker-switch');
@@ -55,6 +57,10 @@ PlayerPage.prototype.waitForPageToLoad = function() {
 
 PlayerPage.prototype.getPlayerName = function() {
   return this.getText(NAME_LINK);
+};
+
+PlayerPage.prototype.clickManageDraftLink = function() {
+  return this.click(MANAGE_DRAFT_LINK);
 };
 
 // Player Profile 
@@ -201,6 +207,9 @@ PlayerPage.prototype.clickCreateScoutingReportBtn = function() {
   return this.click(CREATE_SCOUTING_REPORT_BTN);
 };
 
+PlayerPage.prototype.clickCreateInterviewReportBtn = function() {
+  return this.click(CREATE_INTERVIEW_REPORT_BTN);
+};
 
 // Helper
 PlayerPage.prototype.changeDatePicker = function(year, month, day) {

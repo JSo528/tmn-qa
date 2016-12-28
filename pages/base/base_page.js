@@ -256,7 +256,11 @@ BasePage.prototype.waitUntilStaleness = function(locator, timeout) {
   })
 
   return d.promise;  
-}
+};
+
+BasePage.prototype.locate = function(locator, timeout) {
+  return this.driver.wait(Until.elementLocated(locator), timeout);
+};
 
 /**
  * Combines waiting for the element to be enabled and clicking the element

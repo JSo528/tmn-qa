@@ -41,5 +41,10 @@ ListsPage.prototype.clickTableRow = function(row) {
   return this.click(locator);
 };
 
+ListsPage.prototype.clickTableRowWithListName = function(listName) {
+  var locator = By.xpath(`.//div[@class='tags']/.//table/tbody[@inject='rows']/tr[td/div[text()=' ${listName}']]`);
+  return this.click(locator);
+};
+
 
 module.exports = ListsPage;

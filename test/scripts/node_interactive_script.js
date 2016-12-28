@@ -198,8 +198,10 @@ var TeamsPage = require('../pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('../pages/nfl_scouting/teams/team_page.js');
 var PlayerPage = require('../pages/nfl_scouting/players/player_page.js');
 var ScoutPage = require('../pages/nfl_scouting/scout/scout_page.js');
-var EvaluationReportsPage = require('../pages/nfl_scouting/reports/evaluation_reports_page.js');
-var ScoutingReportsPage = require('../pages/nfl_scouting/reports/scouting_reports_page.js');
+var EvaluationReportPage = require('../pages/nfl_scouting/reports/evaluation_report_page.js');
+var ScoutingReportPage = require('../pages/nfl_scouting/reports/scouting_report_page.js');
+var InterviewReportPage = require('../pages/nfl_scouting/reports/interview_report_page.js');
+var ListPage = require('../pages/nfl_scouting/lists/list_page.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);
@@ -208,9 +210,11 @@ navbar  = new Navbar(driver);
 teamsPage = new TeamsPage(driver);
 teamPage = new TeamPage(driver);
 playerPage = new PlayerPage(driver);
-evaluationReportPage = new EvaluationReportsPage(driver);
-scoutingReportPage = new ScoutingReportsPage(driver);
-scoutPage = new ScoutPage(driver)
+evaluationReportPage = new EvaluationReportPage(driver);
+scoutingReportPage = new ScoutingReportPage(driver);
+interviewReportPage = new InterviewReportPage(driver);
+scoutPage = new ScoutPage(driver);
+listPage = new ListPage(driver);
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
@@ -219,6 +223,15 @@ var url = "https://staging.jags.scouting.trumedianetworks.com/"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-loginPage.visit("https://staging.jags.scouting.trumedianetworks.com/scoutingReport/2224?tenant=jaguars")
+browser.visit('https://staging.jags.scouting.trumedianetworks.com/tag/test?tenant=jaguars')
 
-scoutingReportPage.changeProfileDropdown('position', 'QB');
+driver.manage().window().setSize(1920, 3000);
+
+// var locator = By.xpath(".//div[@inject='content']");
+var locator = By.css(".page");
+var element = driver.findElement(locator);
+
+element.getSize().then(function(size) {
+  console.log("** " + size.height)
+  driver.manage().window().setSize(1920, size.height);
+})

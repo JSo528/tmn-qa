@@ -8,8 +8,8 @@ var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
-var EvaulationReportsPage = require('../../../pages/nfl_scouting/reports/evaluation_reports_page.js');
-var playerPage, evaluationReportsPage;
+var EvaulationReportPage = require('../../../pages/nfl_scouting/reports/evaluation_report_page.js');
+var playerPage, reportPage;
 
 // Update Data
 var originalAttributes = {
@@ -68,7 +68,7 @@ var sectionDataUpdate = {
 test.describe('#Page: EvaulationReports', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    reportPage = new EvaulationReportsPage(driver);
+    reportPage = new EvaulationReportPage(driver);
     browser.visit(url + 'player/31686');
     playerPage.waitForPageToLoad();
     playerPage.clickCreateEvaluationReportBtn();

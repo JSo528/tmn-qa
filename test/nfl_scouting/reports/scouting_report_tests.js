@@ -7,8 +7,8 @@ var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
-var ScoutingReportsPage = require('../../../pages/nfl_scouting/reports/scouting_reports_page.js');
-var playerPage, scoutingReportsPage;
+var ScoutingReportPage = require('../../../pages/nfl_scouting/reports/scouting_report_page.js');
+var playerPage, reportsPage;
 
 // Update Data
 var observationsUpdate = {
@@ -90,7 +90,7 @@ var notesUpdate = {
 test.describe('#Page: ScoutingReports', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    reportPage = new ScoutingReportsPage(driver);
+    reportPage = new ScoutingReportPage(driver);
     browser.visit(url + 'player/31686');
     playerPage.waitForPageToLoad();
     playerPage.clickCreateScoutingReportBtn();
@@ -488,7 +488,7 @@ test.describe('#Page: ScoutingReports', function() {
 
   test.describe("#character/injury", function() {
     test.it('selecting character/injury attributes', function() {
-      test.timeout(120000);
+      this.timeout(120000);
       reportPage.changeCharacterCheckbox('Conc(s)', true);
       reportPage.changeCharacterCheckbox('+Test', true);
       reportPage.changeCharacterCheckbox('+Test(s)', true);

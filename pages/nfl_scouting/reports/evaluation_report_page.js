@@ -29,23 +29,23 @@ var DATEPICKER_MONTHS_TABLE = By.css(".datepicker .datepicker-months");
 /****************************************************************************
 ** Constructor
 *****************************************************************************/
-function EvaluationReportsPage(driver) {
+function EvaluationReportPage(driver) {
   BasePage.call(this, driver);
 };
 
-EvaluationReportsPage.prototype = Object.create(BasePage.prototype);
-EvaluationReportsPage.prototype.constructor = EvaluationReportsPage;
+EvaluationReportPage.prototype = Object.create(BasePage.prototype);
+EvaluationReportPage.prototype.constructor = EvaluationReportPage;
 
 /****************************************************************************
 ** Functions
 *****************************************************************************/
 // profiles
-EvaluationReportsPage.prototype.getProfileStat = function(field) {
+EvaluationReportPage.prototype.getProfileStat = function(field) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/label[text()='${field}']]/.//input`);
   return this.getAttribute(locator, 'value');
 };
 
-EvaluationReportsPage.prototype.changeProfileStat = function(field, value) {
+EvaluationReportPage.prototype.changeProfileStat = function(field, value) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/label[text()='${field}']]/.//input`);
   this.click(locator);
   this.clear(locator); // 1st clear changes it to 0
@@ -55,7 +55,7 @@ EvaluationReportsPage.prototype.changeProfileStat = function(field, value) {
   return this.waitUntilStaleness(SAVE_ICON, 500);
 };
 
-EvaluationReportsPage.prototype.changeProfileReportDate = function(date) {
+EvaluationReportPage.prototype.changeProfileReportDate = function(date) {
   var d = Promise.defer();
   var thiz = this;
   var locator = By.xpath(`.//div[@class='well']/.//div[div/label[text()='Report Date']]/.//input`)
@@ -68,7 +68,7 @@ EvaluationReportsPage.prototype.changeProfileReportDate = function(date) {
   return d.promise; 
 };
 
-EvaluationReportsPage.prototype.changeProfileDraftYear = function(year) {
+EvaluationReportPage.prototype.changeProfileDraftYear = function(year) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/label[text()='Draft Year']]/.//input`)
   this.click(locator);
   var yearLocator = By.xpath(`.//div[@class='datepicker']/div[@class='datepicker-years']/table/tbody/tr/td/span[text()='${year}']`)
@@ -76,27 +76,27 @@ EvaluationReportsPage.prototype.changeProfileDraftYear = function(year) {
   return this.waitUntilStaleness(SAVE_ICON, 500);
 };
 
-EvaluationReportsPage.prototype.changeProfileOverallGrade = function(value) {
+EvaluationReportPage.prototype.changeProfileOverallGrade = function(value) {
   this.click(PROFILE_GRADE_DROPDOWN);
   var optionLocator = By.xpath(`.//div[contains(@class, 'grade')]/ul/li[contains(text(), '${value}')]`);
   return this.click(optionLocator);
 };
 
-EvaluationReportsPage.prototype.getProfileOverallGrade = function() {
+EvaluationReportPage.prototype.getProfileOverallGrade = function() {
   return this.getText(PROFILE_GRADE_DROPDOWN);
 };
 
-EvaluationReportsPage.prototype.changeProfilePosition = function(value) {
+EvaluationReportPage.prototype.changeProfilePosition = function(value) {
   this.click(PROFILE_POSITION_DROPDOWN);
   var optionLocator = By.xpath(`.//div[contains(@class,'player-headline')]/.//ul[@class='dropdown-menu']/li[text()='${value}']`);
   return this.click(optionLocator)
 };
 
-EvaluationReportsPage.prototype.getProfilePosition = function(value) {
+EvaluationReportPage.prototype.getProfilePosition = function(value) {
   return this.getText(PROFILE_POSITION_DROPDOWN);
 };
 
-EvaluationReportsPage.prototype.changeProfileJersey = function(value) {
+EvaluationReportPage.prototype.changeProfileJersey = function(value) {
   this.click(PROFILE_JERSEY_INPUT);
   this.clear(PROFILE_JERSEY_INPUT);
   this.sendKeys(PROFILE_JERSEY_INPUT, value);
@@ -104,24 +104,24 @@ EvaluationReportsPage.prototype.changeProfileJersey = function(value) {
   return this.waitUntilStaleness(SAVE_ICON, 500);
 };
 
-EvaluationReportsPage.prototype.getProfileJersey = function() {
+EvaluationReportPage.prototype.getProfileJersey = function() {
 return this.getAttribute(PROFILE_JERSEY_INPUT, 'value');
 };
 
-EvaluationReportsPage.prototype.clickDeleteBtn = function() {
+EvaluationReportPage.prototype.clickDeleteBtn = function() {
   return this.click(DELETE_BTN);
 };
 
-EvaluationReportsPage.prototype.getDeleteBtnText = function() {
+EvaluationReportPage.prototype.getDeleteBtnText = function() {
   return this.getText(DELETE_BTN);
 };
 
-EvaluationReportsPage.prototype.getDeleteBtnBgColor = function() {
+EvaluationReportPage.prototype.getDeleteBtnBgColor = function() {
   return this.getCssValue(DELETE_BTN, 'background-color');
 };
 
 // sections
-EvaluationReportsPage.prototype.changeSectionGrade = function(section, grade) {
+EvaluationReportPage.prototype.changeSectionGrade = function(section, grade) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' ${section} ']]/.//input`);
   this.click(locator);
   this.sendKeys(locator, Key.BACK_SPACE);
@@ -130,7 +130,7 @@ EvaluationReportsPage.prototype.changeSectionGrade = function(section, grade) {
   return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
-EvaluationReportsPage.prototype.changeSectionText = function(section, text) {
+EvaluationReportPage.prototype.changeSectionText = function(section, text) {
   var labelLocator = By.xpath(`.//div[@class='well'][div/div/div[text()=' ${section} ']]`);
   var locator = By.xpath(`.//div[@class='well'][div/div/div[text()=' ${section} ']]/.//div[contains(@class, '-editor')]`);
   this.click(locator);
@@ -140,13 +140,13 @@ EvaluationReportsPage.prototype.changeSectionText = function(section, text) {
   return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
-EvaluationReportsPage.prototype.toggleHelpJagsCheckbox = function() {
+EvaluationReportPage.prototype.toggleHelpJagsCheckbox = function() {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' Help Jags ']]/.//i`);
   this.click(locator);
   return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
-EvaluationReportsPage.prototype.clickGameReportsSpacer = function() {
+EvaluationReportPage.prototype.clickGameReportsSpacer = function() {
   var d = Promise.defer();
   var thiz = this;
 
@@ -159,23 +159,23 @@ EvaluationReportsPage.prototype.clickGameReportsSpacer = function() {
   return d.promise;
 };
 
-EvaluationReportsPage.prototype.getSectionGrade = function(section) {
+EvaluationReportPage.prototype.getSectionGrade = function(section) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' ${section} ']]/.//input`);
   return this.getAttribute(locator, 'value');
 };
 
-EvaluationReportsPage.prototype.getSectionText = function(section) {
+EvaluationReportPage.prototype.getSectionText = function(section) {
   var locator = By.xpath(`.//div[@class='well'][div/div/div[text()=' ${section} ']]/.//div[contains(@class, '-editor')]`);
   return this.getText(locator);
 };
 
-EvaluationReportsPage.prototype.getHelpJagsCheckbox = function() {
+EvaluationReportPage.prototype.getHelpJagsCheckbox = function() {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' Help Jags ']]/.//i`);
   return this.getText(locator);
 };
 
 // Helper
-EvaluationReportsPage.prototype.changeDatePicker = function(year, month, day) {
+EvaluationReportPage.prototype.changeDatePicker = function(year, month, day) {
   var d = Promise.defer();
   var thiz = this;
   this.isDisplayed(DATEPICKER_DAYS_TABLE, 500).then(function(displayed) {
@@ -196,5 +196,5 @@ EvaluationReportsPage.prototype.changeDatePicker = function(year, month, day) {
   return d.promise;
 };
 
-module.exports = EvaluationReportsPage;
+module.exports = EvaluationReportPage;
 

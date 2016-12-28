@@ -31,35 +31,35 @@ var CHECKBOX_FALSE = 'check_box_outline_blank';
 /****************************************************************************
 ** Constructor
 *****************************************************************************/
-function ScoutingReportsPage(driver) {
+function ScoutingReportPage(driver) {
   BasePage.call(this, driver);
 };
 
-ScoutingReportsPage.prototype = Object.create(BasePage.prototype);
-ScoutingReportsPage.prototype.constructor = ScoutingReportsPage;
+ScoutingReportPage.prototype = Object.create(BasePage.prototype);
+ScoutingReportPage.prototype.constructor = ScoutingReportPage;
 
 
-ScoutingReportsPage.prototype.waitForPageToLoad = function() {
+ScoutingReportPage.prototype.waitForPageToLoad = function() {
   return this.waitForEnabled(By.css('.scouting-report'));
 };
 
-ScoutingReportsPage.prototype.clickSubmitButton = function() {
+ScoutingReportPage.prototype.clickSubmitButton = function() {
   return this.click(SUBMIT_BUTTON);
 };
 
-ScoutingReportsPage.prototype.isSubmitButtonDisplayed = function() {
+ScoutingReportPage.prototype.isSubmitButtonDisplayed = function() {
   return this.isDisplayed(SUBMIT_BUTTON);
 };
 
 /****************************************************************************
 ** Observations
 *****************************************************************************/
-ScoutingReportsPage.prototype.getObservationsDropdown = function(field) {
+ScoutingReportPage.prototype.getObservationsDropdown = function(field) {
   var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[div/label[text()='${field}']]/.//div[contains(@class, 'dropdown-toggle')]`);
   return this.getText(locator);
 };
 
-ScoutingReportsPage.prototype.changeObservationsDropdown = function(field, value) {
+ScoutingReportPage.prototype.changeObservationsDropdown = function(field, value) {
   var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[div/label[text()='${field}']]/.//div[contains(@class,'dropdown-toggle')]`);
   var optionLocator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[div/label[text()='${field}']]/.//ul/li[text()='${value}']`);
 
@@ -68,12 +68,12 @@ ScoutingReportsPage.prototype.changeObservationsDropdown = function(field, value
   return this.waitUntilStaleness(SAVE_ICON, 500);
 };
 
-ScoutingReportsPage.prototype.getObservationsInput = function(field) {
+ScoutingReportPage.prototype.getObservationsInput = function(field) {
   var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[div/label[text()='${field}']]/.//input`);
   return this.getAttribute(locator, 'value');
 };
 
-ScoutingReportsPage.prototype.changeObservationsInput = function(field, value) {
+ScoutingReportPage.prototype.changeObservationsInput = function(field, value) {
   var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[div/label[text()='${field}']]/.//input`);
   // this.click(locator);
   this.clear(locator); // 1st clear changes it to 0
@@ -86,12 +86,12 @@ ScoutingReportsPage.prototype.changeObservationsInput = function(field, value) {
 
 
 // frame, specialTeams, alignment
-ScoutingReportsPage.prototype.getObservationsText = function(field) {
+ScoutingReportPage.prototype.getObservationsText = function(field) {
   var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[@inject='${field}']/div`);
   return this.getText(locator);
 };
 
-ScoutingReportsPage.prototype.changeObservationsText = function(field, text) {
+ScoutingReportPage.prototype.changeObservationsText = function(field, text) {
   var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[@inject='${field}']/div`);
   this.clear(locator);
   this.sendKeys(locator, text);
@@ -101,7 +101,7 @@ ScoutingReportsPage.prototype.changeObservationsText = function(field, text) {
 /****************************************************************************
 ** Profile
 *****************************************************************************/
-ScoutingReportsPage.prototype.getProfileInput = function(field) {
+ScoutingReportPage.prototype.getProfileInput = function(field) {
   var thiz = this;
   var d = Promise.defer();
 
@@ -117,7 +117,7 @@ ScoutingReportsPage.prototype.getProfileInput = function(field) {
   return d.promise;
 };
 
-ScoutingReportsPage.prototype.changeProfileInput = function(field, value) {
+ScoutingReportPage.prototype.changeProfileInput = function(field, value) {
   var thiz = this;
   var d = Promise.defer();
 
@@ -138,7 +138,7 @@ ScoutingReportsPage.prototype.changeProfileInput = function(field, value) {
   return d.promise;
 };
 
-ScoutingReportsPage.prototype.changeProfileDraftYear = function(year) {
+ScoutingReportPage.prototype.changeProfileDraftYear = function(year) {
   var locator = By.xpath(`.//div[contains(@class, 'scouting-report')]/div[1]/.//div[div/label[text()='Draft Year']]/.//input`);
   this.click(locator);
   this.click(locator);
@@ -147,7 +147,7 @@ ScoutingReportsPage.prototype.changeProfileDraftYear = function(year) {
   return this.waitUntilStaleness(SAVE_ICON, 500);
 };
 
-ScoutingReportsPage.prototype.getProfileDropdown = function(field) {
+ScoutingReportPage.prototype.getProfileDropdown = function(field) {
   var thiz = this;
   var d = Promise.defer();
 
@@ -162,7 +162,7 @@ ScoutingReportsPage.prototype.getProfileDropdown = function(field) {
   return d.promise;  
 };
 
-ScoutingReportsPage.prototype.changeProfileDropdown = function(field, value) {
+ScoutingReportPage.prototype.changeProfileDropdown = function(field, value) {
   var thiz = this;
   var d = Promise.defer();
 
@@ -183,12 +183,12 @@ ScoutingReportsPage.prototype.changeProfileDropdown = function(field, value) {
   return d.promise;  
 };
 
-ScoutingReportsPage.prototype.getProfileDate = function(field) {
+ScoutingReportPage.prototype.getProfileDate = function(field) {
   var locator = By.xpath(`.//div[contains(@class, 'scouting-report')]/div[1]/.//div[div/label[text()='${field}']]/.//input`)
   return this.getAttribute(locator, 'value');
 };
 
-ScoutingReportsPage.prototype.changeProfileDate = function(field, date) {
+ScoutingReportPage.prototype.changeProfileDate = function(field, date) {
   var d = Promise.defer();
   var thiz = this;
   var locator = By.xpath(`.//div[contains(@class, 'scouting-report')]/div[1]/.//div[div/label[text()='${field}']]/.//input`)
@@ -201,7 +201,7 @@ ScoutingReportsPage.prototype.changeProfileDate = function(field, date) {
   return d.promise; 
 };
 
-ScoutingReportsPage.prototype.getProfileCheckbox = function(field) {
+ScoutingReportPage.prototype.getProfileCheckbox = function(field) {
   var d = Promise.defer();
 
   var locator = By.xpath(`.//div[contains(@class, 'scouting-report')]/div[1]/.//div[div/label[text()='${field}']]/.//i`)
@@ -216,7 +216,7 @@ ScoutingReportsPage.prototype.getProfileCheckbox = function(field) {
   return d.promise;
 };
 
-ScoutingReportsPage.prototype.changeProfileCheckbox = function(field, selected) {
+ScoutingReportPage.prototype.changeProfileCheckbox = function(field, selected) {
   var d = Promise.defer();
   var thiz = this;
 
@@ -235,7 +235,7 @@ ScoutingReportsPage.prototype.changeProfileCheckbox = function(field, selected) 
 /****************************************************************************
 ** Notes
 *****************************************************************************/
-ScoutingReportsPage.prototype.clickGameReportsSpacer = function() {
+ScoutingReportPage.prototype.clickGameReportsSpacer = function() {
   var d = Promise.defer();
   var thiz = this;
 
@@ -248,12 +248,12 @@ ScoutingReportsPage.prototype.clickGameReportsSpacer = function() {
   return d.promise;
 };
 
-ScoutingReportsPage.prototype.getNotesGrade = function(section) {
+ScoutingReportPage.prototype.getNotesGrade = function(section) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' ${section} ']]/.//input`);
   return this.getAttribute(locator, 'value');
 };
 
-ScoutingReportsPage.prototype.changeNotesGrade = function(section, grade) {
+ScoutingReportPage.prototype.changeNotesGrade = function(section, grade) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' ${section} ']]/.//input`);
   this.click(locator);
   this.sendKeys(locator, Key.BACK_SPACE);
@@ -262,12 +262,12 @@ ScoutingReportsPage.prototype.changeNotesGrade = function(section, grade) {
   return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
-ScoutingReportsPage.prototype.getNotesText = function(section) {
+ScoutingReportPage.prototype.getNotesText = function(section) {
   var locator = By.xpath(`.//div[@class='well'][div/div/div[text()=' ${section} ']]/.//div[contains(@class, '-editor')]`);
   return this.getText(locator);
 };
 
-ScoutingReportsPage.prototype.changeNotesText = function(section, text) {
+ScoutingReportPage.prototype.changeNotesText = function(section, text) {
   var labelLocator = By.xpath(`.//div[@class='well'][div/div/div[text()=' ${section} ']]`);
   var locator = By.xpath(`.//div[@class='well'][div/div/div[text()=' ${section} ']]/.//div[contains(@class, '-editor')]`);
   this.click(locator);
@@ -277,7 +277,7 @@ ScoutingReportsPage.prototype.changeNotesText = function(section, text) {
   return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
-ScoutingReportsPage.prototype.getNotesHelpJagsCheckbox = function() {
+ScoutingReportPage.prototype.getNotesHelpJagsCheckbox = function() {
   var d = Promise.defer();
 
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' Help Jags ']]/.//i`);
@@ -292,7 +292,7 @@ ScoutingReportsPage.prototype.getNotesHelpJagsCheckbox = function() {
   return d.promise;
 };
 
-ScoutingReportsPage.prototype.changeNotesHelpJagsCheckbox = function(selected) {
+ScoutingReportPage.prototype.changeNotesHelpJagsCheckbox = function(selected) {
   var d = Promise.defer();
   var thiz = this;
 
@@ -311,7 +311,7 @@ ScoutingReportsPage.prototype.changeNotesHelpJagsCheckbox = function(selected) {
 /****************************************************************************
 ** Character/Injury
 *****************************************************************************/
-ScoutingReportsPage.prototype.getCharacterCheckbox = function(field) {
+ScoutingReportPage.prototype.getCharacterCheckbox = function(field) {
   var d = Promise.defer();
 
   var locator = By.xpath(`.//div[div[@inject='makeup']]/.//div[div/label[text()='${field}']]/.//i`);
@@ -326,7 +326,7 @@ ScoutingReportsPage.prototype.getCharacterCheckbox = function(field) {
   return d.promise;
 };
 
-ScoutingReportsPage.prototype.changeCharacterCheckbox = function(field, selected) {
+ScoutingReportPage.prototype.changeCharacterCheckbox = function(field, selected) {
   var d = Promise.defer();
   var thiz = this;
 
@@ -345,12 +345,12 @@ ScoutingReportsPage.prototype.changeCharacterCheckbox = function(field, selected
 /****************************************************************************
 ** Metrics
 *****************************************************************************/
-ScoutingReportsPage.prototype.getMetricsInput = function(field) {
+ScoutingReportPage.prototype.getMetricsInput = function(field) {
   var locator = By.xpath(`.//div[contains(@class,'scouting-report')]/div[3]/.//div[div/div[text()='${field}']]/.//input`);
   return this.getAttribute(locator, 'value');
 };
 
-ScoutingReportsPage.prototype.changeMetricsInput = function(field, value) {
+ScoutingReportPage.prototype.changeMetricsInput = function(field, value) {
   var locator = By.xpath(`.//div[contains(@class,'scouting-report')]/div[3]/.//div[div/div[text()='${field}']]/.//input`);
   this.clear(locator); // 1st clear changes it to 0
   this.clear(locator);
@@ -360,7 +360,7 @@ ScoutingReportsPage.prototype.changeMetricsInput = function(field, value) {
 };
 
 
-ScoutingReportsPage.prototype.getMetricsSectionAverage = function(section) {
+ScoutingReportPage.prototype.getMetricsSectionAverage = function(section) {
   var d = Promise.defer();
 
   var locator = By.xpath(`.//div[contains(@class,'scouting-report')]/div[3]/.//div[div[text()=' ${section} ']]/div[2]`);
@@ -372,7 +372,7 @@ ScoutingReportsPage.prototype.getMetricsSectionAverage = function(section) {
 };
 
 // Groups -> Top Starter: topStarterSkills, Starter: starterSkills, Backup: backupSkills
-ScoutingReportsPage.prototype.getGradeGroupSkills = function(group) {
+ScoutingReportPage.prototype.getGradeGroupSkills = function(group) {
   var locator = By.xpath(`.//div[@inject='${group}']/div[@class='row'][2]/div`);
   return this.getTextArray(locator);
 };
@@ -380,7 +380,7 @@ ScoutingReportsPage.prototype.getGradeGroupSkills = function(group) {
 /****************************************************************************
 ** Incident Reports
 *****************************************************************************/
-ScoutingReportsPage.prototype.clickIncidentReportsSpacer = function() {
+ScoutingReportPage.prototype.clickIncidentReportsSpacer = function() {
   var d = Promise.defer();
   var thiz = this;
 
@@ -397,7 +397,7 @@ ScoutingReportsPage.prototype.clickIncidentReportsSpacer = function() {
 /****************************************************************************
 ** Helpers
 *****************************************************************************/
-ScoutingReportsPage.prototype.changeDatePicker = function(year, month, day) {
+ScoutingReportPage.prototype.changeDatePicker = function(year, month, day) {
   var d = Promise.defer();
   var thiz = this;
   this.isDisplayed(DATEPICKER_DAYS_TABLE, 500).then(function(displayed) {
@@ -418,4 +418,4 @@ ScoutingReportsPage.prototype.changeDatePicker = function(year, month, day) {
   return d.promise;
 };
 
-module.exports = ScoutingReportsPage;
+module.exports = ScoutingReportPage;

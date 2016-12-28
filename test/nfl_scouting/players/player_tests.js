@@ -35,7 +35,7 @@ var updatedAttributes = {
 test.describe('#Page: Player', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    browser.visit(url + 'player/31686')
+    browser.visit(url + 'player/31686');
   })
 
   test.it('should be on Dakota Cornwell page', function() {
@@ -156,7 +156,7 @@ test.describe('#Page: Player', function() {
         playerPage.changeProfileInput('Jersey', originalAttributes.jersey);
         playerPage.changeProfileDraftYear(originalAttributes.draftYear);
         playerPage.removeProfileList('test');
-        playerPage.removeProfileList('list1')
+        playerPage.removeProfileList('list1');
       });
     });
   });

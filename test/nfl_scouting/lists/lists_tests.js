@@ -23,8 +23,8 @@ test.describe('#Page: Lists', function() {
   });
 
   test.it('lists table should be initially populated', function() {
-    listsPage.getVisibleListsCount().then(function(teamCount) {
-      assert.isAtLeast(teamCount, 1);
+    listsPage.getVisibleListsCount().then(function(listCount) {
+      assert.isAtLeast(listCount, 1);
     });
   });
 
