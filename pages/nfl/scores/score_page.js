@@ -9,25 +9,16 @@ var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
-// Locators
-var TEAM_NAME = By.css('h1.name');
-
-function TeamPage(driver, section) {
+function ScorePage(driver, section) {
   BasePage.call(this, driver);
 };
 
-TeamPage.prototype = Object.create(BasePage.prototype);
-TeamPage.prototype.constructor = TeamPage;
+ScorePage.prototype = Object.create(BasePage.prototype);
+ScorePage.prototype.constructor = ScorePage;
 
-
-TeamPage.prototype.goToSection = function(section) {
+ScorePage.prototype.goToSection = function(section) {
   var locator = By.xpath(`.//div[@class='navbar-header']/ul/li/a[text()='${section}']`);
   return this.click(locator);
 };
 
-TeamPage.prototype.getTeamName = function() {
-  return this.getText(TEAM_NAME, 30000);
-};
-
-
-module.exports = TeamPage;
+module.exports = ScorePage;

@@ -15,6 +15,9 @@ var SCORES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Scores']
 var GROUPS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Groups']");
 var PERFORMANCE_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Performance']");
 
+var BASEBALL_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='MLB']");
+var SOCCER_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='SOCCER']");
+
 var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavFootballTeamsSubCommon");
 var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavFootballPlayersSubCommon");
 var SCORES_LAST_LOCATOR = By.id("s2id_pageControlFootballYear");
@@ -33,8 +36,7 @@ Navbar.prototype.goToStandingsPage = function() {
 };
 
 Navbar.prototype.goToScoresPage = function() {
-  this.click(SCORES_LINK);
-  return this.driver.wait(Until.elementLocated(SCORES_LAST_LOCATOR));
+  return this.click(SCORES_LINK);
 };
 
 Navbar.prototype.goToTeamsPage = function() {
@@ -54,6 +56,14 @@ Navbar.prototype.goToGroupsPage = function() {
 Navbar.prototype.goToPerformancePage = function() {
   this.click(PERFORMANCE_LINK);
   return this.waitForEnabled(UMPIRES_LAST_LOCATOR, 30000);
+};
+
+Navbar.prototype.goToMLBPage = function() {
+  return this.click(BASEBALL_LINK);
+};
+
+Navbar.prototype.goToSoccerPage = function() {
+  return this.click(SOCCER_LINK);
 };
 
 Navbar.prototype.search = function(searchTerm, selectionNum) {
