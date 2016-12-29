@@ -38,54 +38,100 @@ test.describe('#Page: ManageDraft', function() {
       { field: 'Underclassman', value: true, type: 'checkbox', original: false},
       { field: 'Jag Head', value: true, type: 'checkbox', original: false},
       { field: 'Skull/Crossbones', value: true, type: 'checkbox', original: false},
-
+      { field: 'Alerts', value: 'cmx', type: 'input', original: ''},
     ];
 
     test.it('changing player profile fields', function() {
       profileAttributes.forEach(function(attribute) {
-        if (attribute.type == 'dropdown') {
-          manageDraftPage.changeProfileDropdown(attribute.field, attribute.value);  
-        } else if (attribute.type == 'checkbox') {
-          manageDraftPage.changeProfileCheckbox(attribute.field, attribute.value);  
-        }
+        manageDraftPage.changeProfileField(attribute.type, attribute.field, attribute.value);
       });
       browser.refresh();
     });
 
     profileAttributes.forEach(function(attribute) {
       test.it("changing " + attribute.field + " persists on reload", function() {
-        if (attribute.type == 'dropdown') {
-          manageDraftPage.getProfileDropdown(attribute.field).then(function(value) {
-            assert.equal(value, attribute.value, attribute.field + " field");
-          });
-        } else if (attribute.type == 'checkbox') {
-          manageDraftPage.getProfileCheckbox(attribute.field).then(function(value) {
-            assert.equal(value, attribute.value, attribute.field + " field");
-          });
-        }
+        manageDraftPage.getProfileField(attribute.type, attribute.field).then(function(value) {
+          assert.equal(value, attribute.value, attribute.field + " field");
+        });
       });
     });
 
     test.it('changing back player profile fields', function() {
       profileAttributes.forEach(function(attribute) {
-        if (attribute.type == 'dropdown') {
-          manageDraftPage.changeProfileDropdown(attribute.field, attribute.original);
-        } else if (attribute.type == 'checkbox') {
-          manageDraftPage.changeProfileCheckbox(attribute.field, attribute.original);
-        }
+        manageDraftPage.changeProfileField(attribute.type, attribute.field, attribute.original);
       });
-    });
-
-    test.it('additional test', function() {
-      manageDraftPage.changeProfileDropdown('Draft Position', null);
     });
   });
 
   test.describe('#SectionFields', function() {
+    var sections = [
+      { field: 'Medical Comments', value: 'medical comments test', original: ''},
+      { field: 'Character Comments', value: 'character comments test', original: ''},
+      { field: 'Interview Topics', value: 'interview comments test', original: ''},
+      { field: 'Director Comments', value: 'director comments test', original: ''},
+      { field: 'GM Comments', value: 'gm comments test', original: ''}
+    ];
 
+    test.it('changing player profile fields', function() {
+      sections.forEach(function(section) {
+        manageDraftPage.changeSectionText(section.field, section.value);
+      });
+
+      browser.refresh();
+    });
+
+    sections.forEach(function(section) {
+      test.it('changing ' + section.field + ' persists on reload', function() {
+        manageDraftPage.getSectionText(section.field).then(function(value) {
+          assert.equal(value, section.value, section.field + " field");
+        });
+      });
+    });
+
+    test.it('changing back player profile fields', function() {
+      sections.forEach(function(section) {
+        manageDraftPage.changeSectionText(section.field, section.original);
+      });
+    });
   });
 
-  test.describe('#IncidentReports', function() {
+  test.describe('#incidentReports', function() {
+    test.it('creating an incidence report should persist on reload', function() {
+      var initialCount;
+      manageDraftPage.clickIncidentReportSpacer();
+      manageDraftPage.getIncidentReportCount().then(function(count) {
+        initialCount = count;
+      });
 
+      manageDraftPage.createIncidentReport('W4', {year: 2016, month: 'Jun', day: 6}, 'IR', 'test report manage draft page');
+
+      browser.refresh();
+      manageDraftPage.waitForPageToLoad();
+
+      manageDraftPage.clickIncidentReportSpacer();
+      manageDraftPage.getIncidentReportCount().then(function(count) {
+        assert.equal(count, initialCount+1, '# of incident reports');
+      });
+
+      manageDraftPage.getIncidentReportValue(2,'week').then(function(value) {
+        assert.equal(value, 'W4', 'week value');
+      });
+
+      manageDraftPage.getIncidentReportValue(2,'date').then(function(value) {
+        assert.equal(value, '06/06/2016', 'date value');
+      });
+
+      manageDraftPage.getIncidentReportValue(2,'type').then(function(value) {
+        assert.equal(value, 'IR', 'type value');
+      });
+
+      manageDraftPage.getIncidentReportValue(2,'comment').then(function(value) {
+        assert.equal(value, 'test report manage draft page', 'comment value');
+      });
+    });
+
+    test.it('delete incident report', function() {
+      manageDraftPage.toggleDeleteIncidentReport(2);
+    });
   });
 });
