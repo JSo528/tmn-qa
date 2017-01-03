@@ -53,7 +53,7 @@ app.get('/test-results/', function(req, res) {
 
   TestRun.find()
     .sort({'createdAt': -1})
-    .limit(20)
+    .limit(200)
     .exec(function(err, testRuns) {
       data.testRuns = testRuns.map(function(testRun) {
         delete testRun.errorObjects;
@@ -159,6 +159,20 @@ app.post('/kill-test/:id', function(req, res) {
       })     
     });
   });
+});
+
+app.post('/start-cron', function(req, res) {
+  var cron = require('node-cron');
+  var task = cron.schedule('20,50 * * * *', function() {
+    console.log('** starting cron task')
+    var request = require('request');
+    var queueTestURL = constants.urls.host[app.get('env')]+'run-tests';
+    request.post(queueTestURL, {form: { testNumber: 6 }})
+  });
+
+  task.start();
+
+  res.redirect(303, '/test-results/');
 });
 
 // API

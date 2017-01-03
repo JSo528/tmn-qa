@@ -184,6 +184,11 @@ ManageDraftPage.prototype.clickIncidentReportSpacer = function() {
 ManageDraftPage.prototype.createIncidentReport = function(week, date, type, comment) {
   this.click(CREATE_INCIDENT_REPORT_BTN);
 
+  // comment
+  this.click(INCIDENT_REPORT_COMMENT_INPUT);
+  this.clear(INCIDENT_REPORT_COMMENT_INPUT);
+  this.sendKeys(INCIDENT_REPORT_COMMENT_INPUT, comment);
+
   // week
   this.click(INCIDENT_REPORT_WEEK_INPUT);
   var weekOptionLocator = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[@inject='week']/ul/li[text()='${week}']`);
@@ -198,11 +203,7 @@ ManageDraftPage.prototype.createIncidentReport = function(week, date, type, comm
   var typeOptionLocator = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[@inject='type']/ul/li[text()='${type}']`);
   this.click(typeOptionLocator);
 
-  // comment
-  this.click(INCIDENT_REPORT_COMMENT_INPUT);
-  this.clear(INCIDENT_REPORT_COMMENT_INPUT);
-  this.sendKeys(INCIDENT_REPORT_COMMENT_INPUT, comment);
-  return this.sendKeys(INCIDENT_REPORT_COMMENT_INPUT, Key.TAB);
+  return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
 ManageDraftPage.prototype.getIncidentReportCount = function() {
@@ -222,7 +223,8 @@ ManageDraftPage.prototype.getIncidentReportValue = function(reportNum, field) {
 
 ManageDraftPage.prototype.toggleDeleteIncidentReport = function(reportNum) {
   var locator = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[contains(@class, '-remove-item')]/button`);
-  return this.click(locator)
+  this.click(locator)
+  return this.waitUntilStaleness(SAVE_ICON, 5000);
 };
 
 // Helper
