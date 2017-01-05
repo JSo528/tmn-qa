@@ -85,7 +85,7 @@ test.describe('#Page: EvaulationReports', function() {
         reportPage.changeSectionText('Competes', sectionData.competesText);
         reportPage.changeSectionGrade('Production', sectionData.production);
         reportPage.changeSectionText('Production', sectionData.productionText);
-        reportPage.toggleHelpJagsCheckbox();
+        reportPage.changeHelpJagsCheckbox(sectionData.helpJags);
         reportPage.changeSectionText('Help Jags', sectionData.helpJagsText);
         reportPage.changeSectionText('Summary', sectionData.summaryText);
 
@@ -137,7 +137,7 @@ test.describe('#Page: EvaulationReports', function() {
 
       test.it('help jags checkbox should persist on reload', function() {
         reportPage.getHelpJagsCheckbox().then(function(text) {
-          assert.equal(text, 'check_box', 'Helps Jag Checkbox');
+          assert.equal(text, sectionData.helpJags, 'Helps Jag Checkbox');
         });
       });
 
@@ -163,7 +163,7 @@ test.describe('#Page: EvaulationReports', function() {
         reportPage.changeSectionText('Competes', sectionDataUpdate.competesText);
         reportPage.changeSectionGrade('Production', sectionDataUpdate.production);
         reportPage.changeSectionText('Production', sectionDataUpdate.productionText);
-        reportPage.toggleHelpJagsCheckbox();
+        reportPage.changeHelpJagsCheckbox(sectionDataUpdate.helpJags);
         reportPage.changeSectionText('Help Jags', sectionDataUpdate.helpJagsText);
         reportPage.changeSectionText('Summary', sectionDataUpdate.summaryText);
 
@@ -215,7 +215,7 @@ test.describe('#Page: EvaulationReports', function() {
 
       test.it('help jags checkbox should persist on reload', function() {
         reportPage.getHelpJagsCheckbox().then(function(text) {
-          assert.equal(text, 'check_box_outline_blank', 'Helps Jag Checkbox');
+          assert.equal(text, sectionDataUpdate.helpJags, 'Helps Jag Checkbox');
         });
       });
 
@@ -234,17 +234,18 @@ test.describe('#Page: EvaulationReports', function() {
   });
 
   test.describe("#updating profile", function() {
-    test.before(function() {
+    test.it('changing profile attributes', function() {
       reportPage.changeProfileStat('First Name', updatedAttributes.firstName);
       reportPage.changeProfileStat('Last Name', updatedAttributes.lastName);
-      reportPage.changeProfileDraftYear(updatedAttributes.draftYear);
       reportPage.changeProfileStat('Height', updatedAttributes.height);
       reportPage.changeProfileStat('Weight', updatedAttributes.weight);
       reportPage.changeProfileStat('Speed', updatedAttributes.speed);
       reportPage.changeProfileOverallGrade(updatedAttributes.overallGrade);
-      reportPage.changeProfileReportDate(updatedAttributes.reportDateObject);
       reportPage.changeProfilePosition(updatedAttributes.position);
       reportPage.changeProfileJersey(updatedAttributes.jersey);
+
+      reportPage.changeProfileDraftYear(updatedAttributes.draftYear);
+      reportPage.changeProfileReportDate(updatedAttributes.reportDateObject);
       browser.refresh();
     });
 
@@ -308,7 +309,7 @@ test.describe('#Page: EvaulationReports', function() {
       });
     });    
 
-    test.after(function() {
+    test.it('changing profile attributes back to original', function() {
       reportPage.changeProfileStat('First Name', originalAttributes.firstName);
       reportPage.changeProfileStat('Last Name', originalAttributes.lastName);
       reportPage.changeProfileDraftYear(originalAttributes.draftYear);

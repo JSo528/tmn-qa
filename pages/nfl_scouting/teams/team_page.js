@@ -9,9 +9,9 @@ var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
 
-/****************************************************************************
-** Locators
-*****************************************************************************/
+// Mixins
+var _ = require('underscore');
+var inputs = require('../mixins/inputs.js');
 
 
 /****************************************************************************
@@ -23,6 +23,9 @@ function TeamPage(driver) {
 
 TeamPage.prototype = Object.create(BasePage.prototype);
 TeamPage.prototype.constructor = TeamPage;
+
+// Mixins
+_.extend(TeamPage.prototype, inputs);
 
 /****************************************************************************
 ** Functions
@@ -43,15 +46,15 @@ TeamPage.prototype.clickRemoveSortIcon = function(col) {
   return this.click(locator);
 };
 
-TeamPage.prototype.toggleDropdownFilter = function(filterName, optionName, selected) {
+TeamPage.prototype.changeDropdownFilter = function(filterName, optionName, selected) {
   var locator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]`);
-  this.click(locator);
   var optionLocator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]/.//li[text()='${optionName}']`)
-  return this.click(optionLocator);
+  return this.changeDropdown(locator, optionLocator);
 };
 
-TeamPage.prototype.toggleCheckboxFilter = function(filterName) {
-  var locator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]`);
+TeamPage.prototype.changeCheckboxFilter = function(filterName, selected) {
+  var locator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]/div/div`);
+  return this.changeTriCheckbox(locator, selected);
 };
 
 // table stats
@@ -75,29 +78,25 @@ TeamPage.prototype.clickTableStat = function(row, col) {
   return this.click(locator);
 };
 
-TeamPage.prototype.updateTableStat = function(row, col, value) {
+TeamPage.prototype.changeTableStatInput = function(row, col, value) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div/input`);
-  this.click(locator);
-  this.clear(locator);
-  this.sendKeys(locator, value);
-  return this.sendKeys(locator, Key.ENTER);
+  return this.changeInput(locator, value)
 };
 
-TeamPage.prototype.updateTableStatDropdown = function(row, col, value) {
+TeamPage.prototype.changeTableStatDropdown = function(row, col, value) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
-  this.click(locator);
   var optionLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/.//li[text()='${value}']`)
-  return this.click(optionLocator);
+  return this.changeDropdown(locator, optionLocator);
 };
 
-TeamPage.prototype.getTableCheckboxStat = function(row, col) {
+TeamPage.prototype.getTableStatCheckbox = function(row, col) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
-  return this.getText(locator);
+  return this.getCheckbox(locator);
 };
 
-TeamPage.prototype.clickTableCheckboxStat = function(row, col) {
+TeamPage.prototype.changeTableStatCheckbox = function(row, col, selected) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
-  return this.click(locator);
+  return this.changeCheckbox(locator, selected);
 };
 
 TeamPage.prototype.getTableStats = function(col) {
@@ -117,7 +116,7 @@ TeamPage.prototype.getTableStats = function(col) {
 
 TeamPage.prototype.getTableCheckboxStats = function(col) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr/td[${col}]/div`);
-  return this.getTextArray(locator);
+  return this.getCheckboxArray(locator);
 };
 
 

@@ -246,15 +246,6 @@ var url = "https://staging.jags.scouting.trumedianetworks.com/"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-browser.visit('https://staging.jags.scouting.trumedianetworks.com/tag/test?tenant=jaguars')
+loginPage.visit("https://staging.jags.scouting.trumedianetworks.com/team/41?tenant=jaguars");
 
-driver.manage().window().setSize(1920, 3000);
-
-// var locator = By.xpath(".//div[@inject='content']");
-var locator = By.css(".page");
-var element = driver.findElement(locator);
-
-element.getSize().then(function(size) {
-  console.log("** " + size.height)
-  driver.manage().window().setSize(1920, size.height);
-})
+teamPage.changeCheckboxFilter('Starter', true)

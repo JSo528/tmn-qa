@@ -18,7 +18,8 @@ var originalAttributes = {
   hometown: ' ',
   position: 'QB',
   jersey: 11,
-  draftYear: 2017
+  draftYear: 2017,
+  starter: false
 }
 
 var updatedAttributes = {
@@ -28,7 +29,8 @@ var updatedAttributes = {
   hometown: 'Montgomery, AL',
   position: 'RB',
   jersey: 16,
-  draftYear: 2018
+  draftYear: 2018,
+  starter: true
 }
 
 // Tests
@@ -76,10 +78,10 @@ test.describe('#Page: Player', function() {
 
   test.describe('#updates', function() {
     test.describe('#playerProfile', function() {
-      test.before(function() {
+      test.it('changing profile inputs to new values', function() {
         playerPage.changeProfileInput('First Name', updatedAttributes.firstName);
         playerPage.changeProfileInput('Last Name', updatedAttributes.lastName);
-        playerPage.toggleProfileCheckbox('Starter');
+        playerPage.changeProfileCheckbox('Starter', updatedAttributes.starter);
         playerPage.changeProfileDropdown('Class', updatedAttributes.classAbbr);
         playerPage.addProfileList('test');
         playerPage.addProfileList('list1');
@@ -123,7 +125,7 @@ test.describe('#Page: Player', function() {
 
       test.it('adding list should persist data', function() {
         playerPage.getProfileLists().then(function(lists) {
-          assert.sameMembers(lists, ['test', 'list1'], 'lists');
+          assert.sameMembers(['test', 'list1'], lists, 'lists');
         });
       });
 
@@ -145,10 +147,10 @@ test.describe('#Page: Player', function() {
         });
       });
 
-      test.after(function() {
+      test.it('changing profile attributes back to original values', function() {
         playerPage.changeProfileInput('First Name', originalAttributes.firstName);
         playerPage.changeProfileInput('Last Name', originalAttributes.lastName);
-        playerPage.toggleProfileCheckbox('Starter');
+        playerPage.changeProfileCheckbox('Starter', originalAttributes.starter);
         playerPage.changeProfileDropdown('Class', originalAttributes.classAbbr);
 
         playerPage.changeProfileInput('Hometown', originalAttributes.hometown);
@@ -179,19 +181,19 @@ test.describe('#Page: Player', function() {
         assert.equal(count, initialCount+1, '# of incident reports');
       });
 
-      playerPage.getIncidentReportValue(1,'week').then(function(value) {
+      playerPage.getIncidentReportValue(2,'week').then(function(value) {
         assert.equal(value, 'TC', 'week value');
       });
 
-      playerPage.getIncidentReportValue(1,'date').then(function(value) {
+      playerPage.getIncidentReportValue(2,'date').then(function(value) {
         assert.equal(value, '02/11/2015', 'date value');
       });
 
-      playerPage.getIncidentReportValue(1,'type').then(function(value) {
+      playerPage.getIncidentReportValue(2,'type').then(function(value) {
         assert.equal(value, 'X', 'type value');
       });
 
-      playerPage.getIncidentReportValue(1,'comment').then(function(value) {
+      playerPage.getIncidentReportValue(2,'comment').then(function(value) {
         assert.equal(value, 'test report', 'comment value');
       });
     });

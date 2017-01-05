@@ -181,7 +181,8 @@ test.describe('#Page: ScoutingReports', function() {
   });
 
   test.describe("#profile", function() {
-    test.before(function() {
+    test.it('changing profile inputs', function() {
+      this.timeout(120000)
       reportPage.changeProfileInput('First Name', profileUpdate.firstName);
       reportPage.changeProfileInput('Last Name', profileUpdate.lastName);
       reportPage.changeProfileInput('Hometown', profileUpdate.hometown);
@@ -256,13 +257,13 @@ test.describe('#Page: ScoutingReports', function() {
     });      
 
     test.it('Report Type should persist on reload', function() {
-      reportPage.getProfileDropdown('Report Type').then(function(stat) {
+      reportPage.getProfileDropdown('display.type').then(function(stat) {
         assert.equal(stat, profileUpdate.reportType, 'Profile - Report Type');
       });
     }); 
 
     test.it('Class should persist on reload', function() {
-      reportPage.getProfileDropdown('Class').then(function(stat) {
+      reportPage.getProfileDropdown('player.class').then(function(stat) {
         assert.equal(stat, profileUpdate.classAbbr, 'Profile - Class');
       });
     }); 
@@ -327,7 +328,7 @@ test.describe('#Page: ScoutingReports', function() {
       });
     });           
 
-    test.after(function() {
+    test.it('changing back profile inputs', function() {
       reportPage.changeProfileInput('First Name', profileData.firstName);
       reportPage.changeProfileInput('Last Name', profileData.lastName);
       reportPage.changeProfileInput('Hometown', profileData.hometown);
@@ -888,16 +889,10 @@ test.describe('#Page: ScoutingReports', function() {
     });
   });
 
-  // test.describe("#incidentReports", function() {
-  //   test.before(function() {
-  //     reportPage.clickIncidentReportsSpacer();
-  //   });
-  // });
-
   test.describe("#submitting", function() {
     test.it('clicking save button updates the report type & removes the save button', function() {
       reportPage.clickSubmitButton();
-      reportPage.getProfileDropdown('Report Type').then(function(reportType) {
+      reportPage.getProfileDropdown('display.type').then(function(reportType) {
         assert.equal(reportType, 'Fall (Locked)', 'report type');
       });
 

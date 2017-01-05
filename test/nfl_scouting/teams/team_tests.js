@@ -33,8 +33,8 @@ test.describe('#Page: Team', function() {
       });
     });
 
-    test.it('removing last name sort and selecting speed sort should sort list by speed asc', function() {
-      teamPage.clickRemoveSortIcon(7)
+    test.it('selecting speed sort should sort list by speed asc', function() {
+      teamPage.clickRemoveSortIcon(7);
       teamPage.clickTableHeader(12);
       teamPage.getTableStats(12).then(function(speeds) {
         var sortedArray = extensions.customSort(speeds, 'asc');
@@ -44,33 +44,49 @@ test.describe('#Page: Team', function() {
   });
 
   test.describe('#filters', function() {
+    test.it('selecting starters only, should update player list', function() {
+      teamPage.changeCheckboxFilter('Starter', true);
+      teamPage.getTableCheckboxStats(8).then(function(statuses) {
+        var uniqueStatuses = Array.from(new Set(statuses));
+        assert.sameMembers([true], uniqueStatuses);
+      });
+    });
+
+    test.it('selecting no starters, should update player list', function() {
+      teamPage.changeCheckboxFilter('Starter', false);
+      teamPage.getTableCheckboxStats(8).then(function(statuses) {
+        var uniqueStatuses = Array.from(new Set(statuses));
+        assert.sameMembers([false], uniqueStatuses);
+      });
+    });
+
+    test.it('selecting both starters, should update player list', function() {
+      teamPage.changeCheckboxFilter('Starter', 'both');
+      teamPage.getTableCheckboxStats(8).then(function(statuses) {
+        var uniqueStatuses = Array.from(new Set(statuses));
+        assert.sameMembers([true,false], uniqueStatuses);
+      });
+    });
+
     test.it('removing top draft year, should update player list', function() {
-      teamPage.toggleDropdownFilter('Draft Years', 2017);
+      teamPage.changeDropdownFilter('Draft Years', 2017);
       teamPage.getTableStats(3).then(function(years) {
         assert.notInclude(years, '2017');
       });
     });
 
-    test.it('adding tier B, should update player list', function() {
-      teamPage.toggleDropdownFilter('Tier', 'B');
+    test.it('adding tier C, should update player list', function() {
+      teamPage.changeDropdownFilter('Tier', 'C');
       teamPage.getTableStats(2).then(function(tiers) {
         var uniqueTiers = Array.from(new Set(tiers));
-        assert.sameMembers(uniqueTiers, ['B']);
-      });
-    });
-
-    test.it('selecting starters only, should update player list', function() {
-      teamPage.toggleCheckboxFilter('Starter');
-      teamPage.getTableCheckboxStats(8).then(function(statuses) {
-        var uniqueStatuses = Array.from(new Set(statuses));
-        assert.sameMembers(uniqueStatuses, ['check_box']);
+        assert.sameMembers(['C'], uniqueTiers);
       });
     });
   });
 
   test.describe('#updates', function() {
     test.before(function() {
-      driver.navigate().refresh();
+      browser.refresh();
     });
 
     test.it('Devin Adams should be listed as non-starter', function() {
@@ -82,26 +98,26 @@ test.describe('#Page: Team', function() {
         assert.equal(name, 'Adams', 'row 2 - last name');
       });
 
-      teamPage.getTableCheckboxStat(2,8).then(function(status) {
-        assert.equal(status, 'check_box_outline_blank', 'row 2 - starter status');
+      teamPage.getTableStatCheckbox(2,8).then(function(status) {
+        assert.equal(status, false, 'row 2 - starter status');
       });
     });
 
     test.it('selecting Devin Adams as a stater should list him as a starter', function() {
-      teamPage.clickTableCheckboxStat(2,8);
-      driver.navigate().refresh();
+      teamPage.changeTableStatCheckbox(2,8, true);
+      browser.refresh();
 
-      teamPage.getTableCheckboxStat(2,8).then(function(status) {
-        assert.equal(status, 'check_box', 'row 2 - starter status');
+      teamPage.getTableStatCheckbox(2,8).then(function(status) {
+        assert.equal(status, true, 'row 2 - starter status');
       });
     });
 
     test.it('removing Devin Adams as a stater should list him as a non-starter', function() {
-      teamPage.clickTableCheckboxStat(2,8);
-      driver.navigate().refresh();
+      teamPage.changeTableStatCheckbox(2,8, false);
+      browser.refresh();
 
-      teamPage.getTableCheckboxStat(2,8).then(function(status) {
-        assert.equal(status, 'check_box_outline_blank', 'row 2 - starter status');
+      teamPage.getTableStatCheckbox(2,8).then(function(status) {
+        assert.equal(status, false, 'row 2 - starter status');
       });
     });
 
@@ -112,16 +128,16 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('adding a speed rating to Devin Adams should persist', function() {
-      teamPage.updateTableStat(2,12, '4.90e');
-      driver.navigate().refresh();
+      teamPage.changeTableStatInput(2,12, '4.90e');
+      browser.refresh();
       teamPage.getTableStat(2,12).then(function(speed) {
         assert.equal(speed, '4.90e', 'row 2 - speed rating');
       });
     });
 
     test.it('removing speed rating from Devin Adams should persist', function() {
-      teamPage.updateTableStat(2,12, '');
-      driver.navigate().refresh();
+      teamPage.changeTableStatInput(2,12, '');
+      browser.refresh();
       teamPage.getTableStat(2,12).then(function(speed) {
         assert.equal(speed, '', 'row 2 - speed rating');
       });
@@ -134,14 +150,14 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('changing the tier rating for Devin Adams should persist', function() {
-      teamPage.updateTableStatDropdown(2,2, 'C');
+      teamPage.changeTableStatDropdown(2,2, 'C');
       teamPage.getTableStat(2,2).then(function(speed) {
         assert.equal(speed, 'C', 'row 2 - tier rating');
       });
     });
 
     test.it('removing the tier rating for Devin Adams should persist', function() {
-      teamPage.updateTableStatDropdown(2,2, 'C');
+      teamPage.changeTableStatDropdown(2,2, 'C');
       teamPage.getTableStat(2,2).then(function(speed) {
         assert.equal(speed, '?', 'row 2 - tier rating');
       });

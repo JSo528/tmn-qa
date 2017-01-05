@@ -23,13 +23,13 @@ test.describe('#Page: InterviewReports', function() {
   });
 
   var profileUpdates = [
-    { field: 'First Name', value: 'Dakota-Test', type: 'input', original: 'Dakota'},
-    { field: 'Last Name', value: 'Cornwell-Test', type: 'input', original: 'Cornwell'},
+    { field: 'First Name', value: 'Dakota-Test', type: 'input', original: 'Dakota', parameterField: 'player.firstName'},
+    { field: 'Last Name', value: 'Cornwell-Test', type: 'input', original: 'Cornwell', parameterField: 'player.lastName'},
     { field: 'Report Date', value: {year: 2016, month: 'Nov', day: 9}, expectedValue: '11/09/2016', type: 'date'},
     { field: 'Event', value: 'GI', type: 'dropdown'},
-    { field: 'Phone', value: '555-555-5555', type: 'input', original: '' },
-    { field: 'Email', value: 'dakota@test.com', type: 'input', original: '' },
-    { field: 'Address', value: '123 Fake Street', type: 'input', original: '' },
+    { field: 'Phone', value: '555-555-5555', type: 'input', original: '', parameterField: 'player.phone' },
+    { field: 'Email', value: 'dakota@test.com', type: 'input', original: '', parameterField: 'player.email' },
+    { field: 'Address', value: '123 Fake Street', type: 'input', original: '', parameterField: 'player.address' },
     { field: 'Jags Pos', value: 'WR', type: 'dropdown', parameterField: 'position'},
     { field: 'Jersey', value: '28', type: 'input', parameterField: 'player.number', original: '11' }
   ];

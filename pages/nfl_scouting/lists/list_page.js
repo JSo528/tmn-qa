@@ -13,8 +13,6 @@ var Promise = require('selenium-webdriver').promise;
 *****************************************************************************/
 var BODY_CONTENT = By.css('.tag-profile table');
 var TABLE_TITLE = By.xpath(".//div[@class='tag-profile']/.//div[contains(@class, '-header')]/div");
-// var LISTS_TABLE = By.css('.tags table');
-// var LISTS_ROWS = By.xpath(".//div[@class='tags']/.//table/tbody[@inject='rows']/tr");
 
 /****************************************************************************
 ** Constructor
@@ -51,20 +49,6 @@ ListPage.prototype.clickRemoveSortIcon = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
   return this.click(locator);
 };
-
-// ListPage.prototype.getVisibleListsCount = function() {
-//   return this.getElementCount(LISTS_ROWS);
-// };
-
-// ListPage.prototype.getTableStat = function(row, col) {
-//   var locator = By.xpath(`.//div[@class='tags']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]`);
-//   return this.getText(locator);
-// };
-
-// ListPage.prototype.clickTableRow = function(row) {
-//   var locator = By.xpath(`.//div[@class='tags']/.//table/tbody[@inject='rows']/tr[${row}]/td[1]`);
-//   return this.click(locator);
-// };
 
 ListPage.prototype.playerExistsInTable = function(firstName, lastName) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr[td[3]/div/a[text()='${firstName}']][td[4]/div/a[text()='${lastName}']]`);
