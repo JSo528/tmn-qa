@@ -28,6 +28,12 @@ test.describe('#Page: Lists', function() {
     });
   });
 
+  test.it('lists name should appear', function() {
+    listsPage.getTableStat(1,2).then(function(listName) {
+      assert.isNotNull(listName);
+    });
+  });
+
   test.describe('#clicking', function() {
     test.it('clicking into a list bring user to correct page', function() {
       listsPage.clickTableRow(1);

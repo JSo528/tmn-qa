@@ -21,6 +21,7 @@ var TEAMS_TABLE = By.xpath(".//div[@class='teams']/.//table");
 var LISTS_TABLE = By.xpath(".//div[@class='tags']/.//table");
 var DRAFT_CARDS_CONTAINER = By.xpath(".//div[@class='draft']/.//div[@inject='draftCards']");
 
+var LOGOUT_LINK = By.xpath(".//header/nav/.//div[@class='navbar-right'][1]/ul/li/a");
 
 /****************************************************************************
 ** Constructor
@@ -53,6 +54,10 @@ Navbar.prototype.goToListsPage = function() {
 Navbar.prototype.goToDraftPage = function() {
   this.click(DRAFT_LINK);
   return this.waitUntilStaleness(DRAFT_CARDS_CONTAINER, 10000);
+};
+
+Navbar.prototype.clickLogoutLink = function() {
+  return this.click(LOGOUT_LINK);
 };
 
 module.exports = Navbar;
