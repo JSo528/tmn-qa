@@ -146,12 +146,23 @@ PlayerPage.prototype.clickCreateEvaluationReportBtn = function() {
   return this.click(CREATE_EVALUATION_REPORT_BTN);
 };
 
+PlayerPage.prototype.goToEvaluationReport = function(reportNum) {
+  return this.click(By.xpath(`.//div[@inject='evaluationReports']/.//table/tbody/tr[${reportNum}]`));
+};
+
 PlayerPage.prototype.clickCreateScoutingReportBtn = function() {
   return this.click(CREATE_SCOUTING_REPORT_BTN);
+};
+
+PlayerPage.prototype.goToScoutingReport = function(reportNum) {
+  return this.click(By.xpath(`.//div[@inject='scoutingReports']/.//table/tbody/tr[${reportNum}]`));
 };
 
 PlayerPage.prototype.clickCreateInterviewReportBtn = function() {
   return this.click(CREATE_INTERVIEW_REPORT_BTN);
 };
 
+PlayerPage.prototype.goToInterviewReport = function(reportNum) {
+  return this.click(By.xpath(`.//div[@inject='interviewReports']/.//table/tbody/tr[${reportNum}]`));
+};
 module.exports = PlayerPage;

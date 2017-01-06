@@ -42,6 +42,32 @@ IncidentReports = {
     return this.changeTextField(INCIDENT_REPORT_COMMENT_INPUT, comment);
   },
 
+  changeIncidentReport: function(reportNum, options) {
+    for (var key in options) {
+      switch(key) {
+        case 'week':
+          var locator = By.xpath(`.//div[${reportNum}]/div/div[@class='incident']/.//div[@inject='week']/div`);
+          var weekOptionLocator = By.xpath(`.//div[${reportNum}]/div/div[@class='incident']/.//div[@inject='week']/ul/li[text()='${options[key]}']`);
+          this.changeDropdown(locator, weekOptionLocator);
+          break;
+        case 'date':
+          var locator = By.xpath(`.//div[${reportNum}]/div/div[@class='incident']/.//div[@inject='date']/input`);
+          this.changeDatePicker(locator, options[key].year, options[key].month, options[key].day);
+          break;
+        case 'type':
+          var locator = By.xpath(`.//div[${reportNum}]/div/div[@class='incident']/.//div[@inject='type']/div`);
+          var typeOptionLocator = By.xpath(`.//div[${reportNum}]/div/div[@class='incident']/.//div[@inject='type']/ul/li[text()='${options[key]}']`);
+          this.changeDropdown(locator, typeOptionLocator);
+          break;
+        case 'comment':
+          var locator = By.xpath(`.//div[${reportNum}]/div/div[@class='incident']/.//div[@inject='comment']/div`);
+          this.changeTextField(locator, options[key]);
+          break;
+      }
+    }
+    return this.waitUntilStaleness(SAVE_ICON, 500);
+  },
+
   getIncidentReportCount: function() {
     return this.getElementCount(INCIDENT_DIVS);
   },

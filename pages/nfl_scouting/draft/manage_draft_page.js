@@ -18,6 +18,7 @@ var incidentReports = require('../mixins/incidentReports.js')
 ** Locators
 *****************************************************************************/
 var BODY_CONTENT = By.css('.draft-management');
+var PLAYER_LINK = By.css(".title .link a");
 
 /****************************************************************************
 ** Constructor
@@ -38,6 +39,10 @@ _.extend(ManageDraftPage.prototype, incidentReports);
 *****************************************************************************/
 ManageDraftPage.prototype.waitForPageToLoad = function() {
   return this.waitForEnabled(BODY_CONTENT, 10000);
+};
+
+ManageDraftPage.prototype.clickPlayerLink = function() {
+  return this.click(PLAYER_LINK);
 };
 
 /****************************************************************************

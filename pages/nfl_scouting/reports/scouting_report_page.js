@@ -20,7 +20,7 @@ var incidentReports = require('../mixins/incidentReports.js')
 var SUBMIT_BUTTON = By.xpath(".//button[contains(@class,'-state')]");
 var OBSERVATIONS_TITLE = By.css('.-observations .title');
 var GAME_REPORTS_SPACER = By.css('.-game-reports .bottom-spacer i');
-var INCIDENT_REPORTS_SPACER = By.css('.-incidents .bottom-spacer i');
+var PLAYER_LINK = By.css(".title .link a");
 
 /****************************************************************************
 ** Constructor
@@ -47,6 +47,10 @@ ScoutingReportPage.prototype.clickSubmitButton = function() {
 
 ScoutingReportPage.prototype.isSubmitButtonDisplayed = function() {
   return this.isDisplayed(SUBMIT_BUTTON);
+};
+
+ScoutingReportPage.prototype.clickPlayerLink = function() {
+  return this.click(PLAYER_LINK);
 };
 
 /****************************************************************************

@@ -15,6 +15,11 @@ var inputs = require('../mixins/inputs.js');
 var incidentReports = require('../mixins/incidentReports.js')
 
 /****************************************************************************
+** Locators
+*****************************************************************************/
+var PLAYER_LINK = By.css(".title .link a");
+
+/****************************************************************************
 ** Constructor
 *****************************************************************************/
 function InterviewReportPage(driver) {
@@ -30,6 +35,10 @@ _.extend(InterviewReportPage.prototype, incidentReports);
 
 InterviewReportPage.prototype.waitForPageToLoad = function() {
   return this.waitForEnabled(By.css('.interview-report'));
+};
+
+InterviewReportPage.prototype.clickPlayerLink = function() {
+  return this.click(PLAYER_LINK);
 };
 
 /****************************************************************************

@@ -24,6 +24,8 @@ var PROFILE_POSITION_DROPDOWN = By.xpath(".//div[contains(@class,'player-headlin
 var PROFILE_JERSEY_INPUT = By.xpath(".//div[contains(@class,'player-headline')]/div[@class='form-inline row']/.//input");
 var PROFILE_GRADE_DROPDOWN = By.css(".dropdown.grade");
 
+var PLAYER_LINK = By.css(".title .link a");
+
 /****************************************************************************
 ** Constructor
 *****************************************************************************/
@@ -41,6 +43,11 @@ _.extend(EvaluationReportPage.prototype, incidentReports);
 /****************************************************************************
 ** Functions
 *****************************************************************************/
+
+EvaluationReportPage.prototype.clickPlayerLink = function() {
+  return this.click(PLAYER_LINK);
+};
+
 // profiles
 EvaluationReportPage.prototype.getProfileStat = function(field) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/label[text()='${field}']]/.//input`);
