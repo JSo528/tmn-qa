@@ -82,6 +82,14 @@ test.describe('#Page: Team', function() {
         assert.sameMembers(['C'], uniqueTiers);
       });
     });
+
+    test.it('selecting positions = DL should update player list', function() {
+      teamPage.changeDropdownFilter('Position', 'DL');
+      teamPage.getTableStats(9).then(function(positions) {
+        var uniquePositions = Array.from(new Set(positions));
+        assert.sameMembers(['DL'], uniquePositions);
+      });
+    });
   });
 
   test.describe('#updates', function() {

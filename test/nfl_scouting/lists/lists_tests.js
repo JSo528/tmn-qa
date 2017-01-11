@@ -2,6 +2,7 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/nfl_scouting/navbar.js');
@@ -31,6 +32,24 @@ test.describe('#Page: Lists', function() {
   test.it('lists name should appear', function() {
     listsPage.getTableStat(1,2).then(function(listName) {
       assert.isNotNull(listName);
+    });
+  });
+
+  test.describe('#sorting', function() {
+    test.it('clicking name header should sort lists by name asc', function() {
+      listsPage.clickTableHeader(2);
+      listsPage.getTableStatsForCol(2).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
+      });
+    });
+
+    test.it('clicking arrow next to name header should reverse sort', function() {
+      listsPage.clickSortIcon(2);
+      listsPage.getTableStatsForCol(2).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'desc');
+        assert.deepEqual(stats, sortedArray);
+      });
     });
   });
 

@@ -2,6 +2,7 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/nfl_scouting/navbar.js');
@@ -30,38 +31,17 @@ test.describe('#Page: Teams', function() {
 
   test.describe('#sorting', function() {
     test.it('Teams List should be sorted alphabetically by code initially', function() {
-      var codeA, codeB, codeC;
-
-      teamsPage.getTableStat(1,2).then(function(name) {
-        codeA = name;
-      });
-
-      teamsPage.getTableStat(10,2).then(function(name) {
-        codeB = name;
-      });
-
-      teamsPage.getTableStat(30,2).then(function(name) {
-        codeC = name;
-        assert.isAtMost(codeA, codeB, "row1 code is smaller than row10 code");
-        assert.isAtMost(codeB, codeC, "row10 code is smaller than row30 code");
+      teamsPage.getTableStatsForCol(2).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
       });
     });
 
     test.it('clicking arrow next to code header should reverse the sort', function() {
       teamsPage.clickSortIcon(2);
-
-      teamsPage.getTableStat(1,2).then(function(name) {
-        codeA = name;
-      });
-
-      teamsPage.getTableStat(10,2).then(function(name) {
-        codeB = name;
-      });
-
-      teamsPage.getTableStat(30,2).then(function(name) {
-        codeC = name;
-        assert.isAtLeast(codeA, codeB, "row1 code is smaller than row10 code");
-        assert.isAtLeast(codeB, codeC, "row10 code is smaller than row30 code");
+      teamsPage.getTableStatsForCol(2).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'desc');
+        assert.deepEqual(stats, sortedArray);
       });
     });
 
@@ -69,20 +49,10 @@ test.describe('#Page: Teams', function() {
       teamsPage.clickRemoveSortIcon(2);
       teamsPage.clickTableHeader(3);
 
-      var nameA, nameB, nameC;
-      teamsPage.getTableStat(1,3).then(function(name) {
-        nameA = name;
+      teamsPage.getTableStatsForCol(3).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
       });
-
-      teamsPage.getTableStat(10,3).then(function(name) {
-        nameB = name;
-      });
-
-      teamsPage.getTableStat(30,3).then(function(name) {
-        nameC = name;
-        assert.isAtMost(nameA, nameB, "row1 name is smaller than row10 name");
-        assert.isAtMost(nameB, nameC, "row10 name is smaller than row30 name");
-      });      
     });
   });
 

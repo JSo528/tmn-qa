@@ -40,6 +40,11 @@ TeamsPage.prototype.getTableStat = function(row, col) {
   return this.getText(locator);
 };
 
+TeamsPage.prototype.getTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@class='teams']/.//table/tbody[@inject='rows']/tr/td[${col}]`);
+  return this.getTextArray(locator);
+};
+
 TeamsPage.prototype.clickTableRow = function(row) {
   var locator = By.xpath(`.//div[@class='teams']/.//table/tbody[@inject='rows']/tr[${row}]/td[1]`);
   return this.click(locator);

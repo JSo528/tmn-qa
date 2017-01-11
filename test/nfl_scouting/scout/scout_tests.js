@@ -2,6 +2,7 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/nfl_scouting/navbar.js');
@@ -29,91 +30,65 @@ test.describe('#Page: Scout', function() {
 
   test.describe('#sorting', function() {
     test.it('scouting reports list should be sorted alphabetically by last name asc initially', function() {
-      var lastNameA, lastNameB, lastNameC;
-
-      scoutPage.getTableStat(1,8).then(function(name) {
-        lastNameA = name;
-      });
-
-      scoutPage.getTableStat(10,8).then(function(name) {
-        lastNameB = name;
-      });
-
-      scoutPage.getTableStat(30,8).then(function(name) {
-        lastNameC = name;
-        assert.isAtMost(lastNameA, lastNameB, "row1 last name is smaller than row10 last name");
-        assert.isAtMost(lastNameB, lastNameC, "row10 last name is smaller than row30 last name");
+      scoutPage.getTableStatsForCol(8).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
       });
     });
 
     test.it('clicking arrow next to last name header should reverse the sort', function() {
       scoutPage.clickSortIcon(8);
 
-      scoutPage.getTableStat(1,8).then(function(name) {
-        lastNameA = name;
-      });
-
-      scoutPage.getTableStat(10,8).then(function(name) {
-        lastNameB = name;
-      });
-
-      scoutPage.getTableStat(30,8).then(function(name) {
-        lastNameC = name;
-        assert.isAtLeast(lastNameA, lastNameB, "row1 last name is smaller than row10 last name");
-        assert.isAtLeast(lastNameB, lastNameC, "row10 last name is smaller than row30 last name");
+      scoutPage.getTableStatsForCol(8).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'desc');
+        assert.deepEqual(stats, sortedArray);
       });
     });
 
-    test.it('removing the last name sorter and selecting jags position should sort the list by jags position asc', function() {
+    test.it('selecting jags position should sort the list by final grade asc', function() {
       scoutPage.clickRemoveSortIcon(8);
-      scoutPage.clickTableHeader(11);
+      scoutPage.clickTableHeader(3);
 
-      var posA, posB, posC;
-      scoutPage.getTableStat(1,11).then(function(pos) {
-        posA = pos;
+      scoutPage.getTableStatsForCol(3).then(function(grades) {
+        var sortedArray = extensions.customSort(grades, 'asc');
+        assert.deepEqual(grades, sortedArray);
       });
-
-      scoutPage.getTableStat(10,11).then(function(pos) {
-        posB = pos;
-      });
-
-      scoutPage.getTableStat(30,11).then(function(pos) {
-        posC = pos;
-        assert.isAtMost(posA, posB, "row1 pos is smaller than row10 pos");
-        assert.isAtMost(posB, posC, "row10 pos is smaller than row30 pos");
-      });      
     });
   });
 
   test.describe('#filters', function() {
     test.it('removing "SR" from class year filter should update the list', function() {
       scoutPage.toggleDropdownFilter('Class Years', 'SR');
-      scoutPage.getTableStat(1,5).then(function(stat) {
-        assert.equal(stat, 'JR', '1st row class');
+      scoutPage.getTableStatsForCol(5).then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['JR'], uniqueStats);
       });
     });
 
     test.it('adding "SO" from class year filter should update the list', function() {
       scoutPage.toggleDropdownFilter('Class Years', 'JR');
       scoutPage.toggleDropdownFilter('Class Years', 'SO');
-      scoutPage.getTableStat(1,5).then(function(stat) {
-        assert.equal(stat, 'SO', '1st row class');
+      scoutPage.getTableStatsForCol(5).then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['SO', 'JR'], uniqueStats);
       });
     });
 
-    test.it('removing "DC" from position filter should update the list', function() {
-      scoutPage.toggleDropdownFilter('Jags. Pos.', 'DC');
-      scoutPage.getTableStat(1,11).then(function(stat) {
-        assert.equal(stat, 'DE', '1st row Pos');
-      });
-    }); 
-
     test.it('adding "DC" to position filter should update the list', function() {
       scoutPage.toggleDropdownFilter('Jags. Pos.', 'DC');
-      scoutPage.getTableStat(1,11).then(function(stat) {
-        assert.equal(stat, 'DC', '1st row Pos');
+      scoutPage.getTableStatsForCol(11).then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['DC'], uniqueStats);
       });
     });   
+
+    test.it('adding "CB" from position filter should update the list', function() {
+      scoutPage.toggleDropdownFilter('Jags. Pos.', 'FS');
+      scoutPage.getTableStatsForCol(11).then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['DC', 'FS'], uniqueStats);
+      });
+    });     
   });
 
   test.describe('#links', function() {

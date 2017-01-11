@@ -16,6 +16,30 @@ var INCIDENT_REPORT_COMMENT_INPUT = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_N
 var INCIDENT_DIVS = By.css('.incidents .incident');
 
 IncidentReports = {
+  INCIDENT_REPORTS_WEEK_SORT_KEY: [
+    'OS',
+    'TC',
+    'P1',
+    'P2',
+    'P3',
+    'P4',
+    'W1',
+    'W2',
+    'W3',
+    'W4',
+    'W5',
+    'W6',
+    'W7',
+    'W8',
+    'W9',
+    'W10',
+    'W11',
+    'W12',
+    'W13',
+    'W14',
+    'W15',
+    'W16',
+  ],
   clickIncidentReportSpacer: function() {
     return this.click(INCIDENT_REPORT_SPACER);
   },
@@ -85,6 +109,27 @@ IncidentReports = {
   toggleDeleteIncidentReport: function(reportNum) {
     var locator = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[contains(@class, '-remove-item')]/button`);
     return this.clickAndSave(locator);
+  },
+  clickIncidentReportsTableHeader: function(colNum) {
+    var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[${colNum}]/th`);
+    return this.click(locator);
+  },
+  getIncidentReportsTableValues: function(field) {
+    if (field =='date') {
+      var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[@inject='date']/input`);
+      return this.getInputValueArray(locator, 'Select date/time');
+    } else {
+      var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[@inject='${field}']/div`);
+      return this.getTextArray(locator, 'Select value');
+    }
+  },
+  clickIncidentReportsSortIcon: function(colNum) {
+   var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[${colNum}]/th/i[contains(@class, 'material-icons')]`);
+    return this.click(locator); 
+  },
+  clickIncidentReportsRemoveSortIcon: function(colNum) {
+    var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[${colNum}]/th/i[contains(@class, '-cancel')]`);
+    return this.click(locator);
   }
 }
 

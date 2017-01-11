@@ -349,14 +349,18 @@ BasePage.prototype.getText = function(locator, timeout) {
   return d.promise;
 };
 
-BasePage.prototype.getTextArray = function(locator, timeout) {
+BasePage.prototype.getTextArray = function(locator, placeholder, timeout) {
   var d = Promise.defer();
   var textArray = []
   
   this.driver.findElements(locator).then(function(elements) {
     elements.forEach(function(el) {
       el.getText().then(function(text) {
-        textArray.push(text)
+        if (text == placeholder) {
+          textArray.push('')  
+        } else {
+          textArray.push(text)  
+        }
       })
     })
 
@@ -366,14 +370,18 @@ BasePage.prototype.getTextArray = function(locator, timeout) {
   return d.promise;
 };
 
-BasePage.prototype.getInputValueArray = function(locator, timeout) {
+BasePage.prototype.getInputValueArray = function(locator, placeholder, timeout) {
   var d = Promise.defer();
   var textArray = []
   
   this.driver.findElements(locator).then(function(elements) {
     elements.forEach(function(el) {
       el.getAttribute('value').then(function(text) {
-        textArray.push(text)
+        if (text == placeholder) {
+          textArray.push('')  
+        } else {
+          textArray.push(text)  
+        }
       })
     })
 

@@ -45,6 +45,21 @@ ScoutPage.prototype.getTableStat = function(row, col) {
   return d.promise;
 };
 
+ScoutPage.prototype.getTableStatsForCol = function(col) {
+  var d = Promise.defer();
+  var thiz = this;
+  var inputLocator = By.xpath(`.//div[@class='reports']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/input`);
+  var locator = By.xpath(`.//div[@class='reports']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/*[self::div or self::a or self::input]`);
+  
+  this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
+    d.fulfill(thiz.getInputValueArray(inputLocator));
+  }, function(err) {
+    d.fulfill(thiz.getTextArray(locator));
+  })
+
+  return d.promise;
+};
+
 ScoutPage.prototype.clickTableHeader = function(col) {
   var locator = By.xpath(`.//div[@class='reports']/.//table/thead/tr/th[${col}]`);
   return this.click(locator);

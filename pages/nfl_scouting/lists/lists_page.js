@@ -36,6 +36,21 @@ ListsPage.prototype.getTableStat = function(row, col) {
   return this.getText(locator);
 };
 
+ListsPage.prototype.getTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@class='tags']/.//table/tbody[@inject='rows']/tr/td[${col}]`);
+  return this.getTextArray(locator);
+};
+
+ListsPage.prototype.clickTableHeader = function(col) {
+  var locator = By.xpath(`.//div[@class='tags']/.//table/thead/tr/th[${col}]`);
+  return this.click(locator);
+};
+
+ListsPage.prototype.clickSortIcon = function(col) {
+  var locator = By.xpath(`.//div[@class='tags']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
+  return this.click(locator);
+};
+
 ListsPage.prototype.clickTableRow = function(row) {
   var locator = By.xpath(`.//div[@class='tags']/.//table/tbody[@inject='rows']/tr[${row}]/td[1]`);
   return this.click(locator);

@@ -13,7 +13,6 @@ var Key = require('selenium-webdriver').Key;
 var _ = require('underscore');
 var inputs = require('../mixins/inputs.js');
 
-
 /****************************************************************************
 ** Constructor
 *****************************************************************************/
@@ -118,6 +117,5 @@ TeamPage.prototype.getTableCheckboxStats = function(col) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr/td[${col}]/div`);
   return this.getCheckboxArray(locator);
 };
-
 
 module.exports = TeamPage;

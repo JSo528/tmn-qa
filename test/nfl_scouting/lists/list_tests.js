@@ -2,7 +2,6 @@ var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
-
 var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
@@ -35,7 +34,7 @@ test.describe('#Page: List', function() {
       });
     });
 
-    test.it('player should show up on list', function() {
+    test.it('player should show up on list', function() (){
       navbar.goToListsPage();
       listsPage.clickTableRowWithListName('test');
       listPage.waitForPageToLoad();

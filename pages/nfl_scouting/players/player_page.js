@@ -40,6 +40,11 @@ var CREATE_INTERVIEW_REPORT_BTN = By.xpath(".//div[@inject='interviewReports']/.
 var EVALUATION_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='evaluationReports']/.//table/tbody/tr/td[3]/div/input");
 var SCOUTING_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='scoutingReports']/.//table/tbody/tr/td[4]/div/input");
 var INTERVIEW_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='interviewReports']/.//table/tbody/tr/td[3]/div/input");
+var REPORT_INJECT_VALUES = {
+  'scouting': 'scoutingReports',
+  'evaluation': 'evaluationReports',
+  'interview': 'interviewReports'
+}
 
 /****************************************************************************
 ** Constructor
@@ -182,6 +187,27 @@ PlayerPage.prototype.goToInterviewReport = function(reportNum) {
 
 PlayerPage.prototype.getInterviewReportAuthors = function() {
   return this.getInputValueArray(INTERVIEW_REPORT_AUTHORS_INPUTS);
+};
+
+// sorting
+PlayerPage.prototype.clickReportTableHeader = function(reportName, col) {
+  var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]`);
+  return this.click(locator);
+};
+
+PlayerPage.prototype.getStatsForReportAndCol = function(reportName, col) {
+  var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/tbody/tr/td[${col}]/div/input`);
+  return this.getInputValueArray(locator);
+};
+
+PlayerPage.prototype.clickSortIconForReport = function(reportName, col) {
+  var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
+  return this.click(locator);
+};
+
+PlayerPage.prototype.clickRemoveSortIconForReport = function(reportName, col) {
+  var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
+  return this.click(locator);
 };
 
 module.exports = PlayerPage;

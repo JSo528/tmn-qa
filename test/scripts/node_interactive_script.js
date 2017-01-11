@@ -246,6 +246,6 @@ var url = "https://staging.jags.scouting.trumedianetworks.com/"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-loginPage.visit("https://staging.jags.scouting.trumedianetworks.com/team/41?tenant=jaguars");
-
-teamPage.changeCheckboxFilter('Starter', true)
+playerPage.getScoutingReportAuthors().then(function(text) {
+  console.log(text)
+})
