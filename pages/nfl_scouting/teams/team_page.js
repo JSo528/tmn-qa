@@ -14,6 +14,11 @@ var _ = require('underscore');
 var inputs = require('../mixins/inputs.js');
 
 /****************************************************************************
+** Locators
+*****************************************************************************/
+var BODY_CONTENT = By.css('.roster table');
+
+/****************************************************************************
 ** Constructor
 *****************************************************************************/
 function TeamPage(driver) {
@@ -29,6 +34,10 @@ _.extend(TeamPage.prototype, inputs);
 /****************************************************************************
 ** Functions
 *****************************************************************************/
+TeamPage.prototype.waitForPageToLoad = function() {
+  return this.waitForEnabled(BODY_CONTENT);
+};
+
 // sorting/filtering
 TeamPage.prototype.clickTableHeader = function(col) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/thead/tr/th[${col}]`);
@@ -83,9 +92,27 @@ TeamPage.prototype.changeTableStatInput = function(row, col, value) {
 };
 
 TeamPage.prototype.changeTableStatDropdown = function(row, col, value) {
-  var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
-  var optionLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/.//li[text()='${value}']`)
-  return this.changeDropdown(locator, optionLocator);
+  if (value == '?') {
+    var currentValue;
+    var thiz = this
+    var d = Promise.defer();
+
+    this.getTableStat(row, col).then(function(stat) {
+      currentValue = stat
+    }).then(function() {
+      if (currentValue != 'Select value') {
+        var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
+        var optionLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/.//li[text()='${currentValue}']`)
+        d.fulfill(thiz.changeDropdown(locator, optionLocator));
+      }
+    });
+
+    return d.promise;
+  } else {
+    var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
+    var optionLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/.//li[text()='${value}']`)
+    return this.changeDropdown(locator, optionLocator);  
+  }
 };
 
 TeamPage.prototype.getTableStatCheckbox = function(row, col) {
@@ -96,6 +123,11 @@ TeamPage.prototype.getTableStatCheckbox = function(row, col) {
 TeamPage.prototype.changeTableStatCheckbox = function(row, col, selected) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
   return this.changeCheckbox(locator, selected);
+};
+
+TeamPage.prototype.changeTableStatYear = function(row, col, year) {
+  var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
+  return this.changeDatePicker(locator, year);
 };
 
 TeamPage.prototype.getTableStats = function(col) {
@@ -116,6 +148,33 @@ TeamPage.prototype.getTableStats = function(col) {
 TeamPage.prototype.getTableCheckboxStats = function(col) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr/td[${col}]/div`);
   return this.getCheckboxArray(locator);
+};
+
+/****************************************************************************
+** Aggregate Helpers
+*****************************************************************************/
+TeamPage.prototype.getTableStatField = function(type, row, col) {
+  switch (type) {
+    case 'input':
+    case 'dropdown':
+    case 'date':
+      return this.getTableStat(row, col);
+    case 'checkbox':
+      return this.getTableStatCheckbox(row, col);
+  }
+};
+
+TeamPage.prototype.changeTableStatField = function(type, row, col, value) {
+  switch (type) {
+    case 'input':
+      return this.changeTableStatInput(row, col, value);
+    case 'dropdown':
+      return this.changeTableStatDropdown(row, col, value);
+    case 'checkbox':
+      return this.changeTableStatCheckbox(row, col, value);
+    case 'date':
+      return this.changeTableStatYear(row, col, value);
+  }
 };
 
 module.exports = TeamPage;

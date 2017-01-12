@@ -92,82 +92,50 @@ test.describe('#Page: Team', function() {
     });
   });
 
-  test.describe('#updates', function() {
+  test.describe('#updatingPlayerInfo - Devin Adams', function() {
     test.before(function() {
       browser.refresh();
+      teamPage.waitForPageToLoad();
     });
 
-    test.it('Devin Adams should be listed as non-starter', function() {
-      teamPage.getTableStat(2,6).then(function(name) {
-        assert.equal(name, 'Devin', 'row 2 - first name');
-      });
+    var attributes = [
+      { field: 'Tier', col: 2, type: 'dropdown', originalValue: '?', updatedValue: 'C' },
+      { field: 'Draft Year', col: 3, type: 'date', originalValue: 2018, updatedValue: 2017 },
+      { field: 'Jersey', col: 5, type: 'input', originalValue: 3, updatedValue: 32 },
+      { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },
+      { field: 'Pos', col: 9, type: 'dropdown', originalValue: 'QB', updatedValue: 'RB' },
+      { field: 'Height', col: 10, type: 'input', originalValue: '6020', updatedValue: '6010e' },
+      { field: 'Weight', col: 11, type: 'input', originalValue: '248', updatedValue: '200e' },
+      { field: 'Speed', col: 12, type: 'input', originalValue: '', updatedValue: '4.60e' }
+    ];    
 
-      teamPage.getTableStat(2,7).then(function(name) {
-        assert.equal(name, 'Adams', 'row 2 - last name');
-      });
-
-      teamPage.getTableStatCheckbox(2,8).then(function(status) {
-        assert.equal(status, false, 'row 2 - starter status');
+    attributes.forEach(function(attr) {
+      test.it(attr.field + ' should have correct initial value', function() {
+        teamPage.getTableStatField(attr.type ,2, attr.col).then(function(value) {
+          assert.equal(value, attr.originalValue, attr.field);
+        });
       });
     });
 
-    test.it('selecting Devin Adams as a stater should list him as a starter', function() {
-      teamPage.changeTableStatCheckbox(2,8, true);
+    test.it('updating fields', function() {
+      attributes.forEach(function(attr) {
+        teamPage.changeTableStatField(attr.type, 2, attr.col, attr.updatedValue );
+      });
       browser.refresh();
+      teamPage.waitForPageToLoad();
+    });
 
-      teamPage.getTableStatCheckbox(2,8).then(function(status) {
-        assert.equal(status, true, 'row 2 - starter status');
+    attributes.forEach(function(attr) {
+      test.it('updating ' + attr.field + ' should persist on reload', function() {
+        teamPage.getTableStatField(attr.type ,2, attr.col).then(function(value) {
+          assert.equal(value, attr.updatedValue, attr.field);
+        });
       });
     });
 
-    test.it('removing Devin Adams as a stater should list him as a non-starter', function() {
-      teamPage.changeTableStatCheckbox(2,8, false);
-      browser.refresh();
-
-      teamPage.getTableStatCheckbox(2,8).then(function(status) {
-        assert.equal(status, false, 'row 2 - starter status');
-      });
-    });
-
-    test.it('Devin Adams should not have a speed rating', function() {
-      teamPage.getTableStat(2,12).then(function(speed) {
-        assert.equal(speed, '', 'row 2 - speed rating');
-      });
-    });
-
-    test.it('adding a speed rating to Devin Adams should persist', function() {
-      teamPage.changeTableStatInput(2,12, '4.90e');
-      browser.refresh();
-      teamPage.getTableStat(2,12).then(function(speed) {
-        assert.equal(speed, '4.90e', 'row 2 - speed rating');
-      });
-    });
-
-    test.it('removing speed rating from Devin Adams should persist', function() {
-      teamPage.changeTableStatInput(2,12, '');
-      browser.refresh();
-      teamPage.getTableStat(2,12).then(function(speed) {
-        assert.equal(speed, '', 'row 2 - speed rating');
-      });
-    });
-
-    test.it('Devin Adams should not have a tier rating', function() {
-      teamPage.getTableStat(2,2).then(function(speed) {
-        assert.equal(speed, '?', 'row 2 - tier rating');
-      });
-    });
-
-    test.it('changing the tier rating for Devin Adams should persist', function() {
-      teamPage.changeTableStatDropdown(2,2, 'C');
-      teamPage.getTableStat(2,2).then(function(speed) {
-        assert.equal(speed, 'C', 'row 2 - tier rating');
-      });
-    });
-
-    test.it('removing the tier rating for Devin Adams should persist', function() {
-      teamPage.changeTableStatDropdown(2,2, 'C');
-      teamPage.getTableStat(2,2).then(function(speed) {
-        assert.equal(speed, '?', 'row 2 - tier rating');
+    test.it('reverting fields', function() {
+      attributes.forEach(function(attr) {
+        teamPage.changeTableStatField(attr.type, 2, attr.col, attr.originalValue );
       });
     });
   });

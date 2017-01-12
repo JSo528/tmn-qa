@@ -163,4 +163,55 @@ InterviewReportPage.prototype.changePresentationCheckbox = function(field, selec
   return this.changeCheckbox(locator, selected);
 };
 
+/****************************************************************************
+** Aggregate Helpers
+*****************************************************************************/
+InterviewReportPage.prototype.getProfileField = function(type, field) {
+  switch (type) {
+    case 'date':
+      return this.getProfileDate(field);
+    case 'dropdown':
+      return this.getProfileDropdown(field);
+    case 'input':
+      return this.getProfileInput(field);
+  }
+};
+
+InterviewReportPage.prototype.changeProfileField = function(type, field, value) {
+  switch (type) {
+    case 'date':
+      return this.changeProfileDate(field, value);
+    case 'dropdown':
+      return this.changeProfileDropdown(field, value);
+    case 'input':
+      return this.changeProfileInput(field, value);
+  }
+};
+
+InterviewReportPage.prototype.getSectionField = function(type, field) {
+  switch (type) {
+    case 'text':
+      return this.getSectionText(field);
+    case 'checkbox':
+      return this.getPersonalStatusCheckbox(field);
+    case 'numChildren':
+      return this.getNumChildrenInput();
+    case 'learnSystem':
+      return this.getLearnSystemCheckbox();
+  }
+};
+
+InterviewReportPage.prototype.changeSectionField = function(type, field, value) {
+  switch (type) {
+    case 'text':
+      return this.changeSectionText(field, value);
+    case 'checkbox':
+      return this.changePersonalStatusCheckbox(field, value);
+    case 'numChildren':
+      return this.changeNumChildrenInput(value);
+    case 'learnSystem':
+      return this.changeLearnSystemCheckbox(value);
+  }
+};
+
 module.exports = InterviewReportPage;

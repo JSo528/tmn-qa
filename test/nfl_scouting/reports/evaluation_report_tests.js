@@ -11,59 +11,6 @@ var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
 var EvaulationReportPage = require('../../../pages/nfl_scouting/reports/evaluation_report_page.js');
 var playerPage, reportPage;
 
-// Update Data
-var originalAttributes = {
-  firstName: 'Dakota',
-  lastName: 'Cornwell',
-  position: 'QB',
-  jersey: 11,
-  draftYear: 2017,
-  height: '6010',
-  weight: '240',
-  speed: '5',
-  overallGrade: ''
-};
-
-var updatedAttributes = {
-  firstName: 'Dakota-Test',
-  lastName: 'Cornwell-Test',
-  height: '6040',
-  weight: '260',
-  speed: '6',
-  position: 'RB',
-  jersey: 16,
-  draftYear: 2018,
-  overallGrade: '8.0',
-  reportDateObject: {year: 2012, month: 'Jun', day: 15},
-  reportDate: '06/15/2012'
-};
-
-var sectionData = {
-  gameReportsText: 'game report test',
-  athleticAbility: 5,
-  athleticAbilityText: 'athletic ability test',
-  competes: 8,
-  competesText: 'competes test',
-  production: 9,
-  productionText: 'production test',
-  helpJags: true,
-  helpJagsText: 'helps jags test',
-  summaryText: 'summary test',
-};
-
-var sectionDataUpdate = {
-  gameReportsText: 'game report test update',
-  athleticAbility: 3,
-  athleticAbilityText: 'athletic ability test update',
-  competes: 6,
-  competesText: 'competes test update',
-  production: 4,
-  productionText: 'production test update',
-  helpJags: false,
-  helpJagsText: 'helps jags test update',
-  summaryText: 'summary test update'
-};
-
 // Tests
 test.describe('#Page: EvaulationReports', function() {
   test.before(function() {
@@ -75,251 +22,108 @@ test.describe('#Page: EvaulationReports', function() {
   });
 
   test.describe("#reportSections", function() {
-    test.describe('#initialInput', function() {
-      test.before(function() {
-        reportPage.clickGameReportsSpacer();
-        reportPage.changeSectionText('Game Reports', sectionData.gameReportsText);
-        reportPage.changeSectionGrade('Athletic Ability', sectionData.athleticAbility);
-        reportPage.changeSectionText('Athletic Ability', sectionData.athleticAbilityText);
-        reportPage.changeSectionGrade('Competes', sectionData.competes);
-        reportPage.changeSectionText('Competes', sectionData.competesText);
-        reportPage.changeSectionGrade('Production', sectionData.production);
-        reportPage.changeSectionText('Production', sectionData.productionText);
-        reportPage.changeHelpJagsCheckbox(sectionData.helpJags);
-        reportPage.changeSectionText('Help Jags', sectionData.helpJagsText);
-        reportPage.changeSectionText('Summary', sectionData.summaryText);
+    var sections = [
+      { field: 'Game Reports', type: 'text', initialValue: 'game report test', updatedValue: 'game report test update' },
+      { field: 'Athletic Ability', type: 'grade', initialValue: 5, updatedValue: 3 },
+      { field: 'Athletic Ability', type: 'text', initialValue: 'athletic ability test', updatedValue: 'athletic ability test update' },
+      { field: 'Competes', type: 'grade', initialValue: 8, updatedValue: 6 },
+      { field: 'Competes', type: 'text', initialValue: 'competes test', updatedValue: 'competes test update' },
+      { field: 'Production', type: 'grade', initialValue: 9, updatedValue: 4 },
+      { field: 'Production', type: 'text', initialValue: 'production test', updatedValue: 'production test update' },
+      { field: 'Help Jags', type: 'checkbox', initialValue: true, updatedValue: false },
+      { field: 'Help Jags', type: 'text', initialValue: 'helps jags test', updatedValue: 'help jags test update' },
+      { field: 'Summary', type: 'text', initialValue: 'summary test', updatedValue: 'summary test update' }
+    ];
 
-        browser.refresh();
+    test.it("setting fields (if this test fails, itll cause a cascading effect for the other tests in this section)", function() {
+      reportPage.clickGameReportsSpacer();
+      sections.forEach(function(sect) {
+        reportPage.changeSectionField(sect.type, sect.field, sect.initialValue );
       });
+      browser.refresh();
+      reportPage.clickGameReportsSpacer();
+    });
 
-      test.it('game reports text should persist on reload', function() {
-        reportPage.clickGameReportsSpacer();
-        reportPage.getSectionText('Game Reports').then(function(text) {
-          assert.equal(text, sectionData.gameReportsText, 'game reports text');
+    sections.forEach(function(sect) {
+      test.it(`setting  ${sect.field} (${sect.type}) should persist on reload`, function() {
+        reportPage.getSectionField(sect.type, sect.field).then(function(value) {
+          assert.equal(value, sect.initialValue, sect.field);
         });
       });
+    });
 
-      test.it('athletic ability grade should persist on reload', function() {
-        reportPage.getSectionGrade('Athletic Ability').then(function(grade) {
-          assert.equal(grade, sectionData.athleticAbility, 'athletic ability grade');
+    test.it('updating fields (if this test fails, itll cause a cascading effect for the other tests in this section)', function() {
+      sections.forEach(function(sect) {
+        reportPage.changeSectionField(sect.type, sect.field, sect.updatedValue );
+      });
+      browser.refresh();
+      reportPage.clickGameReportsSpacer();
+    });
+
+    sections.forEach(function(sect) {
+      test.it(`updating  ${sect.field} (${sect.type}) should persist on reload`, function() {
+        reportPage.getSectionField(sect.type, sect.field).then(function(value) {
+          assert.equal(value, sect.updatedValue, sect.field);
         });
       });
-
-      test.it('athletic ability text should persist on reload', function() {
-        reportPage.getSectionText('Athletic Ability').then(function(text) {
-          assert.equal(text, sectionData.athleticAbilityText, 'athletic ability text');
-        });
-      });
-
-      test.it('competes grade should persist on reload', function() {
-        reportPage.getSectionGrade('Competes').then(function(grade) {
-          assert.equal(grade, sectionData.competes, 'Competes grade');
-        });
-      });
-
-      test.it('competes text should persist on reload', function() {      
-        reportPage.getSectionText('Competes').then(function(text) {
-          assert.equal(text, sectionData.competesText, 'Competes text');
-        });
-      });
-
-      test.it('production grade should persist on reload', function() {      
-        reportPage.getSectionGrade('Production').then(function(grade) {
-          assert.equal(grade, sectionData.production, 'Production grade');
-        });
-      });
-
-      test.it('production text should persist on reload', function() {
-        reportPage.getSectionText('Production').then(function(text) {
-          assert.equal(text, sectionData.productionText, 'Production text');
-        });
-      });
-
-      test.it('help jags checkbox should persist on reload', function() {
-        reportPage.getHelpJagsCheckbox().then(function(text) {
-          assert.equal(text, sectionData.helpJags, 'Helps Jag Checkbox');
-        });
-      });
-
-      test.it('help jags text should persist on reload', function() {
-        reportPage.getSectionText('Help Jags').then(function(text) {
-          assert.equal(text, sectionData.helpJagsText, 'Help Jags text');
-        });      
-      });
-
-      test.it('summary text should persist on reload', function() {
-        reportPage.getSectionText('Summary').then(function(text) {
-          assert.equal(text, sectionData.summaryText, 'Summary text');
-        });            
-      });  
-    });   
-
-    test.describe('#updatingInput', function() {
-      test.before(function() {
-        reportPage.changeSectionText('Game Reports', sectionDataUpdate.gameReportsText);
-        reportPage.changeSectionGrade('Athletic Ability', sectionDataUpdate.athleticAbility);
-        reportPage.changeSectionText('Athletic Ability', sectionDataUpdate.athleticAbilityText);
-        reportPage.changeSectionGrade('Competes', sectionDataUpdate.competes);
-        reportPage.changeSectionText('Competes', sectionDataUpdate.competesText);
-        reportPage.changeSectionGrade('Production', sectionDataUpdate.production);
-        reportPage.changeSectionText('Production', sectionDataUpdate.productionText);
-        reportPage.changeHelpJagsCheckbox(sectionDataUpdate.helpJags);
-        reportPage.changeSectionText('Help Jags', sectionDataUpdate.helpJagsText);
-        reportPage.changeSectionText('Summary', sectionDataUpdate.summaryText);
-
-        browser.refresh();
-      });
-
-      test.it('game reports text should persist on reload', function() {
-        reportPage.clickGameReportsSpacer();
-        reportPage.getSectionText('Game Reports').then(function(text) {
-          assert.equal(text, sectionDataUpdate.gameReportsText, 'game reports text');
-        });
-      });
-
-      test.it('athletic ability grade should persist on reload', function() {
-        reportPage.getSectionGrade('Athletic Ability').then(function(grade) {
-          assert.equal(grade, sectionDataUpdate.athleticAbility, 'athletic ability grade');
-        });
-      });
-
-      test.it('athletic ability text should persist on reload', function() {
-        reportPage.getSectionText('Athletic Ability').then(function(text) {
-          assert.equal(text, sectionDataUpdate.athleticAbilityText, 'athletic ability text');
-        });
-      });
-
-      test.it('competes grade should persist on reload', function() {
-        reportPage.getSectionGrade('Competes').then(function(grade) {
-          assert.equal(grade, sectionDataUpdate.competes, 'Competes grade');
-        });
-      });
-
-      test.it('competes text should persist on reload', function() {      
-        reportPage.getSectionText('Competes').then(function(text) {
-          assert.equal(text, sectionDataUpdate.competesText, 'Competes text');
-        });
-      });
-
-      test.it('production grade should persist on reload', function() {      
-        reportPage.getSectionGrade('Production').then(function(grade) {
-          assert.equal(grade, sectionDataUpdate.production, 'Production grade');
-        });
-      });
-
-      test.it('production text should persist on reload', function() {
-        reportPage.getSectionText('Production').then(function(text) {
-          assert.equal(text, sectionDataUpdate.productionText, 'Production text');
-        });
-      });
-
-      test.it('help jags checkbox should persist on reload', function() {
-        reportPage.getHelpJagsCheckbox().then(function(text) {
-          assert.equal(text, sectionDataUpdate.helpJags, 'Helps Jag Checkbox');
-        });
-      });
-
-      test.it('help jags text should persist on reload', function() {
-        reportPage.getSectionText('Help Jags').then(function(text) {
-          assert.equal(text, sectionDataUpdate.helpJagsText, 'Help Jags text');
-        });      
-      });
-
-      test.it('summary text should persist on reload', function() {
-        reportPage.getSectionText('Summary').then(function(text) {
-          assert.equal(text, sectionDataUpdate.summaryText, 'Summary text');
-        });            
-      });  
-    });   
+    });
   });
 
   test.describe("#updating profile", function() {
-    test.it('changing profile attributes', function() {
-      reportPage.changeProfileStat('First Name', updatedAttributes.firstName);
-      reportPage.changeProfileStat('Last Name', updatedAttributes.lastName);
-      reportPage.changeProfileStat('Height', updatedAttributes.height);
-      reportPage.changeProfileStat('Weight', updatedAttributes.weight);
-      reportPage.changeProfileStat('Speed', updatedAttributes.speed);
-      reportPage.changeProfileOverallGrade(updatedAttributes.overallGrade);
-      reportPage.changeProfilePosition(updatedAttributes.position);
-      reportPage.changeProfileJersey(updatedAttributes.jersey);
+    var attributes = [
+      { field: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
+      { field: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
+      { field: 'Jersey', type: 'jersey', originalValue: 11, updatedValue: 16 },
+      { field: 'Draft Year', type: 'draftYear', originalValue: 2017, updatedValue: 2018 },
+      { field: 'Position', type: 'position', originalValue: 'QB', updatedValue: 'RB' },
+      { field: 'Height', type: 'input', originalValue: 5090, updatedValue: 6010 },
+      { field: 'Weight', type: 'input', originalValue: 170, updatedValue: 220 },
+      { field: 'Speed', type: 'input', originalValue: 5, updatedValue: 6 },
+      // { field: 'Overall Grade', type: 'grade', originalValue: '', updatedValue: '8.0' },
+    ];
 
-      reportPage.changeProfileDraftYear(updatedAttributes.draftYear);
-      reportPage.changeProfileReportDate(updatedAttributes.reportDateObject);
+    attributes.forEach(function(attr) {
+      test.it(attr.field + ' should have correct initial value', function() {
+        reportPage.getProfileField(attr.type, attr.field).then(function(value) {
+          assert.equal(value, attr.originalValue, attr.field);
+        });
+      });
+    });
+
+    test.it("updating fields (if this test fails, itll cause a cascading effect for the other tests in this section", function() {
+      attributes.forEach(function(attr) {
+        reportPage.changeProfileField(attr.type, attr.field, attr.updatedValue );
+      });
+      reportPage.changeProfileReportDate({year: 2012, month: 'Jun', day: 15});
+      reportPage.changeProfileOverallGrade('8.0');
       browser.refresh();
     });
 
-    test.it('changing first name should persist on reload', function() {
-      reportPage.getProfileStat('First Name').then(function(stat) {
-        assert.equal(stat, updatedAttributes.firstName, 'Profile first name');
+    attributes.forEach(function(attr) {
+      test.it('updating ' + attr.field + ' should persist on reload', function() {
+        reportPage.getProfileField(attr.type, attr.field).then(function(value) {
+          assert.equal(value, attr.updatedValue, attr.field);
+        });
       });
     });
 
-    test.it('changing last name should persist on reload', function() {
-      reportPage.getProfileStat('Last Name').then(function(stat) {
-        assert.equal(stat, updatedAttributes.lastName, 'Profile last name');
+    test.it('changing report date should persist on reload', function() {
+      reportPage.getProfileStat('Report Date').then(function(stat) {
+        assert.equal(stat, '06/15/2012', 'Profile report date');
       });
-    });
-
-    test.it('changing draft year should persist on reload', function() {
-      reportPage.getProfileStat('Draft Year').then(function(stat) {
-        assert.equal(stat, updatedAttributes.draftYear, 'Profile draft year');
-      });
-    });
-
-    test.it('changing height should persist on reload', function() {
-      reportPage.getProfileStat('Height').then(function(stat) {
-        assert.equal(stat, updatedAttributes.height, 'Profile height');
-      });
-    });
-
-    test.it('changing weight should persist on reload', function() {
-      reportPage.getProfileStat('Weight').then(function(stat) {
-        assert.equal(stat, updatedAttributes.weight, 'Profile weight');
-      });
-    });
-
-    test.it('changing speed should persist on reload', function() {
-      reportPage.getProfileStat('Speed').then(function(stat) {
-        assert.equal(stat, updatedAttributes.speed, 'Profile speed');
-      });      
     });
 
     test.it('changing overall grade should persist on reload', function() {
       reportPage.getProfileOverallGrade().then(function(stat) {
         assert.equal(stat, "8.0 1ˢᵗ Year Starter", 'Profile overall grade');
       });      
-    });    
+    });      
 
-    test.it('changing report date should persist on reload', function() {
-      reportPage.getProfileStat('Report Date').then(function(stat) {
-        assert.equal(stat, updatedAttributes.reportDate, 'Profile report date');
+    test.it('reverting fields', function() {
+      attributes.forEach(function(attr) {
+        reportPage.changeProfileField(attr.type, attr.field, attr.originalValue );
       });
-    });
-
-    test.it('changing position should persist on reload', function() {
-      reportPage.getProfilePosition('Position').then(function(stat) {
-        assert.equal(stat, updatedAttributes.position, 'Profile position');
-      });
-    });
-
-    test.it('changing jersey should persist on reload', function() {
-      reportPage.getProfileJersey().then(function(stat) {
-        assert.equal(stat, updatedAttributes.jersey, 'Profile jersey');
-      });
-    });    
-
-    test.it('changing profile attributes back to original', function() {
-      reportPage.changeProfileStat('First Name', originalAttributes.firstName);
-      reportPage.changeProfileStat('Last Name', originalAttributes.lastName);
-      reportPage.changeProfileDraftYear(originalAttributes.draftYear);
-      reportPage.changeProfileStat('Height', originalAttributes.height);
-      reportPage.changeProfileStat('Weight', originalAttributes.weight);
-      reportPage.changeProfileStat('Speed', originalAttributes.speed);
       reportPage.changeProfileOverallGrade('8.0');
-      reportPage.changeProfilePosition(originalAttributes.position);
-      reportPage.changeProfileJersey(originalAttributes.jersey);
-
     });
   });
 

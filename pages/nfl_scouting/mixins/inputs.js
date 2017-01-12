@@ -46,7 +46,12 @@ Inputs = {
     this.waitForDisplayed(locator, 500).then(function() {      
       d.fulfill(thiz.getAttribute(locator, 'value'));  
     }, function(err) {
-      d.fulfill(thiz.getAttribute(secondaryLocator, 'value'));  
+      if (secondaryLocator) {
+        d.fulfill(thiz.getAttribute(secondaryLocator, 'value'));    
+      } else {
+        d.fulfill(thiz.getAttribute(locator, 'value'));  
+      } 
+      
     });
 
     return d.promise;
@@ -59,7 +64,7 @@ Inputs = {
     this.waitForEnabled(locator, 500).then(function() {
       foundLocator = locator;
     }, function(err) {
-      foundLocator = secondaryLocator;
+      foundLocator = secondaryLocator ? secondaryLocator : locator;
     }).then(function() {
       thiz.clear(foundLocator); // 1st clear changes it to 0
       thiz.clear(foundLocator);
@@ -77,7 +82,11 @@ Inputs = {
     this.waitForDisplayed(locator, 500).then(function() {      
       d.fulfill(thiz.getText(locator));
     }, function(err) {
-      d.fulfill(thiz.getText(secondaryLocator));  
+      if (secondaryLocator) {
+        d.fulfill(thiz.getText(secondaryLocator));  
+      } else {
+        d.fulfill(thiz.getText(locator));  
+      }
     });
 
     return d.promise;
@@ -91,8 +100,8 @@ Inputs = {
       foundLocator = locator;
       foundOptionLocator = optionLocator;
     }, function(err) {
-      foundLocator = secondaryLocator;
-      foundOptionLocator = secondaryOptionLocator;
+      foundLocator = secondaryLocator ? secondaryLocator : locator;
+      foundOptionLocator = secondaryOptionLocator ? secondaryOptionLocator : optionLocator;
     }).then(function() {
       thiz.click(foundLocator);
       thiz.click(foundOptionLocator);
@@ -193,12 +202,22 @@ Inputs = {
         };
       });
     }).then(function() {
-      var yearLocator = By.xpath(`.//div[@class='datepicker-years']/table/tbody/tr/td/span[text()='${year}']`);
-      thiz.click(yearLocator, 500);
-      var monthLocator = By.xpath(`.//div[@class='datepicker-months']/table/tbody/tr/td/span[text()='${month}']`);
-      thiz.click(monthLocator, 500);
-      var dayLocator  = By.xpath(`.//div[@class='datepicker-days']/table/tbody/tr/td[not(contains(@class,'old'))][text()='${day}']`);
-      d.fulfill(thiz.click(dayLocator, 500));
+      if (year) {
+        var yearLocator = By.xpath(`.//div[@class='datepicker-years']/table/tbody/tr/td/span[text()='${year}']`);
+        thiz.click(yearLocator, 500);
+      }
+      
+      if (month) {
+        var monthLocator = By.xpath(`.//div[@class='datepicker-months']/table/tbody/tr/td/span[text()='${month}']`);
+        thiz.click(monthLocator, 500);  
+      }
+      
+      if (day) {
+        var dayLocator  = By.xpath(`.//div[@class='datepicker-days']/table/tbody/tr/td[not(contains(@class,'old'))][text()='${day}']`);
+        thiz.click(dayLocator, 500);
+      }
+    }).then(function() {
+      d.fulfill(true);
     });  
 
     return d.promise;

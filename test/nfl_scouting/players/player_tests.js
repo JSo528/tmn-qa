@@ -10,29 +10,6 @@ var Navbar = require('../../../pages/nfl_scouting/navbar.js');
 var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
 var navbar, playerPage;
 
-// Update Data
-var originalAttributes = {
-  firstName: 'Dakota',
-  lastName: 'Cornwell',
-  classAbbr: 'SR',
-  hometown: ' ',
-  position: 'QB',
-  jersey: 11,
-  draftYear: 2017,
-  starter: false
-}
-
-var updatedAttributes = {
-  firstName: 'Dakota-Test',
-  lastName: 'Cornwell-Test',
-  classAbbr: 'JR',
-  hometown: 'Montgomery, AL',
-  position: 'RB',
-  jersey: 16,
-  draftYear: 2018,
-  starter: true
-}
-
 // Tests
 test.describe('#Page: Player', function() {
   test.before(function() {
@@ -76,90 +53,57 @@ test.describe('#Page: Player', function() {
   //   });
   // });
 
-  test.describe('#updates', function() {
-    test.describe('#playerProfile', function() {
-      test.it('changing profile inputs to new values', function() {
-        playerPage.changeProfileInput('First Name', updatedAttributes.firstName);
-        playerPage.changeProfileInput('Last Name', updatedAttributes.lastName);
-        playerPage.changeProfileCheckbox('Starter', updatedAttributes.starter);
-        playerPage.changeProfileDropdown('Class', updatedAttributes.classAbbr);
-        playerPage.addProfileList('test');
-        playerPage.addProfileList('list1');
+  test.describe('#updatesProfile', function() {
+    var attributes = [
+      { field: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
+      { field: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
+      { field: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
+      { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Montgomery, AL' },
+      { field: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },
+      { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
+      { field: 'Starter', type: 'checkbox', originalValue: false, updatedValue: true },
+      { field: 'Pos', type: 'dropdown', originalValue: 'QB', updatedValue: 'RB' }
+    ];
 
-        playerPage.changeProfileInput('Hometown', updatedAttributes.hometown);
-        playerPage.changeProfileDropdown('Pos', updatedAttributes.position);
-        playerPage.changeProfileInput('Jersey', updatedAttributes.jersey);
-        playerPage.changeProfileDraftYear(updatedAttributes.draftYear);
-
-        browser.refresh();
-        playerPage.waitForPageToLoad();
-      })
-
-      test.it('updated name fields should be persisted', function() {
-        playerPage.getProfileInput('First Name').then(function(name) {
-          assert.equal(name, updatedAttributes.firstName, 'first name');
-        });
-
-        playerPage.getProfileInput('Last Name').then(function(name) {
-          assert.equal(name, updatedAttributes.lastName, 'last name');
+    attributes.forEach(function(attr) {
+      test.it(attr.field + ' should have correct initial value', function() {
+        playerPage.getProfileField(attr.type, attr.field).then(function(value) {
+          assert.equal(value, attr.originalValue, attr.field);
         });
       });
+    });
 
-      test.it('toggling starter should persist data', function() {
-        playerPage.getProfileCheckbox('Starter').then(function(status) {
-          assert.equal(status, 'check_box', 'starter status');
-        });  
+    test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
+      attributes.forEach(function(attr) {
+        playerPage.changeProfileField(attr.type, attr.field, attr.updatedValue );
       });
+      playerPage.addProfileList('test');
+      playerPage.addProfileList('list1');
 
-      test.it('changing draft year should persist data', function() {
-        playerPage.getProfileInput('Draft Year').then(function(draftYear) {
-          assert.equal(draftYear, updatedAttributes.draftYear, 'draft year');
+      browser.refresh();
+      playerPage.waitForPageToLoad();
+    });
+
+    attributes.forEach(function(attr) {
+      test.it('updating ' + attr.field + ' should persist on reload', function() {
+        playerPage.getProfileField(attr.type, attr.field).then(function(value) {
+          assert.equal(value, attr.updatedValue, attr.field);
         });
       });
+    });
 
-      test.it('changing class should persist data', function() {
-        playerPage.getProfileDropdown('Class').then(function(classAbbr) {
-          assert.equal(classAbbr, updatedAttributes.classAbbr, 'class');
-        });
+    test.it('adding lists should persist on reload', function() {
+      playerPage.getProfileLists().then(function(lists) {
+        assert.sameMembers(['test', 'list1'], lists, 'lists');
       });
+    });
 
-      test.it('adding list should persist data', function() {
-        playerPage.getProfileLists().then(function(lists) {
-          assert.sameMembers(['test', 'list1'], lists, 'lists');
-        });
+    test.it('reverting fields', function() {
+      attributes.forEach(function(attr) {
+        playerPage.changeProfileField(attr.type, attr.field, attr.originalValue );
       });
-
-      test.it('changing hometown should persist data', function() {
-        playerPage.getProfileInput('Hometown').then(function(hometown) {
-          assert.equal(hometown, updatedAttributes.hometown, 'hometown');
-        });
-      });
-
-      test.it('changing position should persist data', function() {
-        playerPage.getProfileDropdown('Pos').then(function(pos) {
-          assert.equal(pos, updatedAttributes.position, 'position');
-        });
-      });
-
-      test.it('changing jersey # should persist data', function() {
-        playerPage.getProfileInput('Jersey').then(function(jersey) {
-          assert.equal(jersey, updatedAttributes.jersey, 'jersey');
-        });
-      });
-
-      test.it('changing profile attributes back to original values', function() {
-        playerPage.changeProfileInput('First Name', originalAttributes.firstName);
-        playerPage.changeProfileInput('Last Name', originalAttributes.lastName);
-        playerPage.changeProfileCheckbox('Starter', originalAttributes.starter);
-        playerPage.changeProfileDropdown('Class', originalAttributes.classAbbr);
-
-        playerPage.changeProfileInput('Hometown', originalAttributes.hometown);
-        playerPage.changeProfileDropdown('Pos', originalAttributes.position);
-        playerPage.changeProfileInput('Jersey', originalAttributes.jersey);
-        playerPage.changeProfileDraftYear(originalAttributes.draftYear);
-        playerPage.removeProfileList('test');
-        playerPage.removeProfileList('list1');
-      });
+      playerPage.removeProfileList('test');
+      playerPage.removeProfileList('list1');
     });
   });
 

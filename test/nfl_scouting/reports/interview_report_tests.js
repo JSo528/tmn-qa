@@ -21,80 +21,54 @@ test.describe('#Page: InterviewReports', function() {
     playerPage.clickCreateInterviewReportBtn();
     reportPage.waitForPageToLoad();
   });
-
-  var profileUpdates = [
-    { field: 'First Name', value: 'Dakota-Test', type: 'input', original: 'Dakota', parameterField: 'player.firstName'},
-    { field: 'Last Name', value: 'Cornwell-Test', type: 'input', original: 'Cornwell', parameterField: 'player.lastName'},
-    { field: 'Report Date', value: {year: 2016, month: 'Nov', day: 9}, expectedValue: '11/09/2016', type: 'date'},
-    { field: 'Event', value: 'GI', type: 'dropdown'},
-    { field: 'Phone', value: '555-555-5555', type: 'input', original: '', parameterField: 'player.phone' },
-    { field: 'Email', value: 'dakota@test.com', type: 'input', original: '', parameterField: 'player.email' },
-    { field: 'Address', value: '123 Fake Street', type: 'input', original: '', parameterField: 'player.address' },
-    { field: 'Jags Pos', value: 'WR', type: 'dropdown', parameterField: 'position'},
-    { field: 'Jersey', value: '28', type: 'input', parameterField: 'player.number', original: '11' }
-  ];
   
   test.describe("#profile", function() {
-    test.it('updating fields', function() {
-    
-      profileUpdates.forEach(function(attribute) {
-        var field = attribute.parameterField || attribute.field;
-        switch( attribute.type ) {
-          case 'input':
-            reportPage.changeProfileInput(field, attribute.value)
-            break;
-          case 'date':
-            reportPage.changeProfileDate(field, attribute.value)
-            break;
-          case 'dropdown':
-            reportPage.changeProfileDropdown(field, attribute.value)
-            break;
-        }
-      })
+    var profileAttributes = [
+      { field: 'player.firstName', title: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
+      { field: 'player.lastName', title: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
+      { field: 'Report Date', type: 'date', updatedValue: '11/09/2016', updatedValueInput: {year: 2016, month: 'Nov', day: 9} },
+      { field: 'Event', type: 'dropdown', updatedValue: 'GI'},
+      { field: 'player.phone', title: 'Phone', type: 'input', originalValue: '', updatedValue: '555-555-5555' },
+      { field: 'player.email', title: 'Email', type: 'input', originalValue: '', updatedValue: 'dakota@test.com' },
+      { field: 'player.address', title: 'Address', type: 'input', originalValue: '', updatedValue: '123 Fake Street' },
+      { field: 'position', title: 'Jags Pos', type: 'dropdown', updatedValue: 'WR' },
+      { field: 'player.number', title: 'Jersey', type: 'input', originalValue: '11', updatedValue: '28' }
+    ];
 
-      browser.refresh();
+    profileAttributes.forEach(function(attr) {
+      if (attr.originalValue  != undefined) {
+        var title = attr.title || attr.field;
+        test.it(title+ ' should have correct initial value', function() {
+          reportPage.getProfileField(attr.type, attr.field).then(function(value) {
+            assert.equal(value, attr.originalValue, title);
+          });
+        });
+      }
     });
 
-    profileUpdates.forEach(function(attribute) {
-      var field = attribute.parameterField || attribute.field;
-      var expectedValue = attribute.expectedValue || attribute.value;
+    test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
+      profileAttributes.forEach(function(attr) {
+        var input = attr.updatedValueInput || attr.updatedValue
+        reportPage.changeProfileField(attr.type, attr.field, input );
+      });
+      browser.refresh();
+      reportPage.waitForPageToLoad();
+    });
 
-      test.it('updating ' + attribute.field + ' should persist on reload', function() {
-        switch( attribute.type ) {
-          case 'input':
-            reportPage.getProfileInput(field).then(function(value) {
-              assert.equal(value, expectedValue, attribute.field);
-            });
-            break;
-          case 'date':
-            reportPage.getProfileDate(field).then(function(value) {
-              assert.equal(value, expectedValue, attribute.field);
-            });
-            break;
-          case 'dropdown':
-            reportPage.getProfileDropdown(field).then(function(value) {
-              assert.equal(value, expectedValue, attribute.field);
-            });
-            break;
-        }
+    profileAttributes.forEach(function(attr) {
+      var title = attr.title || attr.field;
+      test.it('updating ' + title + ' should persist on reload', function() {
+        reportPage.getProfileField(attr.type, attr.field).then(function(value) {
+          assert.equal(value, attr.updatedValue, title);
+        });
       });
     });
 
-    test.it('reverting profile fields back to original', function() {
-      profileUpdates.forEach(function(attribute) {
-        if (attribute.original != undefined) {
-          var field = attribute.parameterField || attribute.field;
-          switch( attribute.type ) {
-            case 'input':
-              reportPage.changeProfileInput(field, attribute.original)
-              break;
-            case 'date':
-              reportPage.changeProfileDate(field, attribute.original)
-              break;
-            case 'dropdown':
-              reportPage.changeProfileDropdown(field, attribute.original)
-              break;
-          }
+    test.it('reverting fields', function() {
+      profileAttributes.forEach(function(attr) {
+        if (attr.originalValue != undefined) {
+          var input = attr.originalValueInput || attr.originalValue;
+         reportPage.changeProfileField(attr.type, attr.field, input );
         }
       });
     });
@@ -188,65 +162,31 @@ test.describe('#Page: InterviewReports', function() {
   });
 
   test.describe('#SectionFields', function() {
-    test.it('updating section fields', function() {
-      reportPage.changeSectionText("Family Structure", 'family structure test');
-      reportPage.changeSectionText("Personal Status", 'personal status test');
-      reportPage.changeSectionText("Comments", 'comments test');
-      reportPage.changeSectionText("Can Player Learn Team System?", 'team system test');
-      reportPage.changePersonalStatusCheckbox('Married', true);
-      reportPage.changePersonalStatusCheckbox('Children', true);
-      reportPage.changeNumChildrenInput(3);
-      reportPage.changeLearnSystemCheckbox(true)
+    var sectionAttributes = [
+      { field: 'Family Structure', type: 'text', value: 'family structure test' },
+      { field: 'Personal Status', type: 'text', value: 'personal status test' },
+      { field: 'Comments', type: 'text', value: 'comments test' },
+      { field: 'Can Player Learn Team System?', type: 'text', value: 'team system test' },
+      { field: 'Married', type: 'checkbox', value: true },
+      { field: 'Children', type: 'checkbox', value: true },
+      { field: 'Number Children', type: 'numChildren', value: 3 },
+      { field: 'Learn System Checkbox', type: 'learnSystem', value: true }
+    ];
 
+    test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
+      sectionAttributes.forEach(function(attr) {
+        reportPage.changeSectionField(attr.type, attr.field, attr.value );
+      });
       browser.refresh();
+      reportPage.waitForPageToLoad();
     });
 
-    test.it('Family Structure text persists on reload', function() {
-      reportPage.getSectionText('Family Structure').then(function(value) {
-        assert.equal(value, 'family structure test', 'Family Structure text');
+    sectionAttributes.forEach(function(attr) {
+      test.it("updating " + attr.field + " should persist on reload", function() {
+        reportPage.getSectionField(attr.type, attr.field).then(function(value) {
+          assert.equal(value, attr.value, attr.field);
+        });
       });
-    });
-
-    test.it('Personal Status text persists on reload', function() {
-      reportPage.getSectionText('Personal Status').then(function(value) {
-        assert.equal(value, 'personal status test', 'Personal Status text');
-      });
-    });
-
-    test.it('Comments text persists on reload', function() {
-      reportPage.getSectionText('Comments').then(function(value) {
-        assert.equal(value, 'comments test', 'Comments text');
-      });
-    });
-
-    test.it('Can Player Learn Team System? text persists on reload', function() {
-      reportPage.getSectionText('Can Player Learn Team System?').then(function(value) {
-        assert.equal(value, 'team system test', 'Can Player Learn Team System? text');
-      });
-    });
-
-    test.it('Married checkbox persists on reload', function() {
-      reportPage.getPersonalStatusCheckbox('Married').then(function(value) {
-        assert.equal(value, true, 'Married checkbox');
-      });
-    });
-
-    test.it('Children checkbox persists on reload', function() {
-      reportPage.getPersonalStatusCheckbox('Children').then(function(value) {
-        assert.equal(value, true, 'Children checkbox');
-      });
-    });
-
-    test.it('Can Player Learn System? checkbox persists on reload', function() {
-      reportPage.getLearnSystemCheckbox().then(function(value) {
-        assert.equal(value, true, 'Can Player Learn System? checkbox');
-      });
-    });
-
-    test.it('Num children input persists on reload', function() {
-      reportPage.getNumChildrenInput().then(function(value) {
-        assert.equal(value, 3, 'Num children input');
-      });
-    })
+    });    
   });
 });

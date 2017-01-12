@@ -34,7 +34,7 @@ test.describe('#Page: List', function() {
       });
     });
 
-    test.it('player should show up on list', function() (){
+    test.it('player should show up on list', function() {
       navbar.goToListsPage();
       listsPage.clickTableRowWithListName('test');
       listPage.waitForPageToLoad();
@@ -72,7 +72,7 @@ test.describe('#Page: List', function() {
       });
     });
 
-    test.it('sorting by draft year asc, sorts the table accordingly', function() {
+    test.it('sorting by first name asc, sorts the table accordingly', function() {
       listPage.clickRemoveSortIcon(2);
       listPage.clickTableHeader(3);
 
@@ -91,6 +91,53 @@ test.describe('#Page: List', function() {
       });
     });
   });
+  
+  test.describe('#updatingPlayerInfo: Dakota Cornwell', function() {
+    test.before(function() {
+      browser.refresh();
+      listPage.waitForPageToLoad();
+    });
+
+    var attributes = [
+      { field: 'Draft Year', col: 2, type: 'date', originalValue: 2017, updatedValue: 2018 },
+      { field: 'Jersey', col: 5, type: 'input', originalValue: 11, updatedValue: 32 },
+      { field: 'Pos', col: 6, type: 'dropdown', originalValue: 'QB', updatedValue: 'CB' },
+      { field: 'Height', col: 7, type: 'input', originalValue: '5090', updatedValue: '6010' },
+      { field: 'Weight', col: 8, type: 'input', originalValue: '170', updatedValue: '200' },
+      { field: 'Speed', col: 9, type: 'input', originalValue: '4.70', updatedValue: '4.60' },
+      { field: 'Unenrolled', col: 11, type: 'checkbox', originalValue: false, updatedValue: true }
+    ];
+
+    attributes.forEach(function(attr) {
+      test.it(attr.field + ' should have correct initial value', function() {
+        listPage.getTableStatField(attr.type , 3, attr.col).then(function(value) {
+          assert.equal(value, attr.originalValue, attr.field);
+        });
+      });
+    });
+
+    test.it("updating fields (if this test fails, itll cause a cascading effect for the other tests in this section", function() {
+      attributes.forEach(function(attr) {
+        listPage.changeTableStatField(attr.type, 3, attr.col, attr.updatedValue );
+      });
+      browser.refresh();
+      listPage.waitForPageToLoad();
+    });
+
+    attributes.forEach(function(attr) {
+      test.it('updating ' + attr.field + ' should persist on reload', function() {
+        listPage.getTableStatField(attr.type ,3, attr.col).then(function(value) {
+          assert.equal(value, attr.updatedValue, attr.field);
+        });
+      });
+    });
+
+    test.it('reverting fields', function() {
+      attributes.forEach(function(attr) {
+        listPage.changeTableStatField(attr.type, 3, attr.col, attr.originalValue );
+      });
+    });
+  });
 
   test.describe('#removingPlayer', function() {
     test.it('removing list from player', function() {
@@ -98,7 +145,7 @@ test.describe('#Page: List', function() {
       playerPage.removeProfileList('test');
     });
 
-    test.it('player should show up on list', function() {
+    test.it('player should not show up on list', function() {
       navbar.goToListsPage();
       listsPage.clickTableRowWithListName('test');
       listPage.waitForPageToLoad();

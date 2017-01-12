@@ -152,5 +152,59 @@ EvaluationReportPage.prototype.getHelpJagsCheckbox = function() {
   return this.getCheckbox(locator);
 };
 
+/****************************************************************************
+** Aggregate Helpers
+*****************************************************************************/
+EvaluationReportPage.prototype.getSectionField = function(type, field) {
+  switch (type) {
+    case 'text':
+      return this.getSectionText(field);
+    case 'grade':
+      return this.getSectionGrade(field);
+    case 'checkbox':
+      return this.getHelpJagsCheckbox();
+  }
+};
+
+EvaluationReportPage.prototype.changeSectionField = function(type, field, value) {
+  switch (type) {
+    case 'text':
+      return this.changeSectionText(field, value);
+    case 'grade':
+      return this.changeSectionGrade(field, value);
+    case 'checkbox':
+      return this.changeHelpJagsCheckbox(value);
+  }
+};
+
+EvaluationReportPage.prototype.getProfileField = function(type, field) {
+  switch (type) {
+    case 'input':
+    case 'draftYear':
+      return this.getProfileStat(field);
+    case 'grade':
+      return this.getProfileOverallGrade();
+    case 'position':
+      return this.getProfilePosition(field);
+    case 'jersey':
+      return this.getProfileJersey();
+  }
+};
+
+EvaluationReportPage.prototype.changeProfileField = function(type, field, value) {
+  switch (type) {
+    case 'input':
+      return this.changeProfileStat(field, value);
+    case 'grade':
+      return this.changeProfileOverallGrade(value);
+    case 'position':
+      return this.changeProfilePosition(value);
+    case 'jersey':
+      return this.changeProfileJersey(value); 
+    case 'draftYear':
+      return this.changeProfileDraftYear(value)
+  }
+};
+
 module.exports = EvaluationReportPage;
 

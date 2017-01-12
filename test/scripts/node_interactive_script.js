@@ -246,6 +246,6 @@ var url = "https://staging.jags.scouting.trumedianetworks.com/"
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-playerPage.getScoutingReportAuthors().then(function(text) {
-  console.log(text)
-})
+browser.visit("https://staging.jags.scouting.trumedianetworks.com/scoutingReport/2354?tenant=jaguars")
+
+scoutingReportPage.changeProfileField('checkbox', 'JUCO', true );

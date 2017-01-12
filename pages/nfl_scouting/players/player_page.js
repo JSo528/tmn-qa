@@ -93,7 +93,7 @@ PlayerPage.prototype.changeProfileCheckbox = function(field, selected) {
 
 PlayerPage.prototype.getProfileCheckbox = function(field) {
   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div`)
-  return this.getText(locator);
+  return this.getCheckbox(locator);
 };
 
 PlayerPage.prototype.changeProfileDropdown = function(field, value) {
@@ -188,6 +188,35 @@ PlayerPage.prototype.goToInterviewReport = function(reportNum) {
 PlayerPage.prototype.getInterviewReportAuthors = function() {
   return this.getInputValueArray(INTERVIEW_REPORT_AUTHORS_INPUTS);
 };
+
+/****************************************************************************
+** Aggregate Helpers
+*****************************************************************************/
+PlayerPage.prototype.getProfileField = function(type, field) {
+  switch (type) {
+    case 'input':
+    case 'date':
+      return this.getProfileInput(field);
+    case 'dropdown':
+      return this.getProfileDropdown(field);
+    case 'checkbox':
+      return this.getProfileCheckbox(field);
+  }
+};
+
+PlayerPage.prototype.changeProfileField = function(type, field, value) {
+  switch (type) {
+    case 'input':
+      return this.changeProfileInput(field, value);
+    case 'dropdown':
+      return this.changeProfileDropdown(field, value);
+    case 'checkbox':
+      return this.changeProfileCheckbox(field, value);
+    case 'date':
+      return this.changeProfileDraftYear(value);
+  }
+};
+
 
 // sorting
 PlayerPage.prototype.clickReportTableHeader = function(reportName, col) {

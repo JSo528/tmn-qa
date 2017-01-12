@@ -234,4 +234,77 @@ ScoutingReportPage.prototype.getGradeGroupSkills = function(group) {
   return this.getTextArray(locator);
 };
 
+/****************************************************************************
+** Aggregate Helpers
+*****************************************************************************/
+ScoutingReportPage.prototype.getObservationField = function(type, field) {
+  switch (type) {
+    case 'text':
+      return this.getObservationsText(field);
+    case 'dropdown':
+      return this.getObservationsDropdown(field);
+    case 'input':
+      return this.getObservationsInput(field);
+  }
+};
+
+ScoutingReportPage.prototype.changeObservationField = function(type, field, value) {
+  switch (type) {
+    case 'text':
+      return this.changeObservationsText(field, value);
+    case 'dropdown':
+      return this.changeObservationsDropdown(field, value);
+    case 'input':
+      return this.changeObservationsInput(field, value);
+  }
+};
+
+ScoutingReportPage.prototype.getProfileField = function(type, field) {
+  switch (type) {
+    case 'checkbox':
+      return this.getProfileCheckbox(field);
+    case 'date':
+      return this.getProfileDate(field);
+    case 'dropdown':
+      return this.getProfileDropdown(field);
+    case 'input':
+      return this.getProfileInput(field);
+  }
+};
+
+ScoutingReportPage.prototype.changeProfileField = function(type, field, value) {
+  switch (type) {
+    case 'checkbox':
+      return this.changeProfileCheckbox(field, value);
+    case 'date':
+      return this.changeProfileDate(field, value);
+    case 'dropdown':
+      return this.changeProfileDropdown(field, value);
+    case 'input':
+      return this.changeProfileInput(field, value);
+  }
+};
+
+ScoutingReportPage.prototype.getNotesField = function(type, field) {
+  switch (type) {
+    case 'text':
+      return this.getNotesText(field);
+    case 'grade':
+      return this.getNotesGrade(field);
+    case 'jagsCheckbox':
+      return this.getNotesHelpJagsCheckbox();
+  }
+};
+
+ScoutingReportPage.prototype.changeNotesField = function(type, field, value) {
+  switch (type) {
+    case 'text':
+      return this.changeNotesText(field, value);
+    case 'grade':
+      return this.changeNotesGrade(field, value);
+    case 'jagsCheckbox':
+      return this.changeNotesHelpJagsCheckbox(value);
+  }
+};
+
 module.exports = ScoutingReportPage;
