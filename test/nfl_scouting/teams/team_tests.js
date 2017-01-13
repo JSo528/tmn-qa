@@ -92,7 +92,7 @@ test.describe('#Page: Team', function() {
     });
   });
 
-  test.describe('#updatingPlayerInfo - Devin Adams', function() {
+  test.describe('#updatingPlayerInfo - Gage Batten (4508)', function() {
     test.before(function() {
       browser.refresh();
       teamPage.waitForPageToLoad();
@@ -100,18 +100,18 @@ test.describe('#Page: Team', function() {
 
     var attributes = [
       { field: 'Tier', col: 2, type: 'dropdown', originalValue: '?', updatedValue: 'C' },
-      { field: 'Draft Year', col: 3, type: 'date', originalValue: 2018, updatedValue: 2017 },
-      { field: 'Jersey', col: 5, type: 'input', originalValue: 3, updatedValue: 32 },
+      { field: 'Draft Year', col: 3, type: 'date', originalValue: 2017, updatedValue: 2018 },
+      { field: 'Jersey', col: 5, type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'Pos', col: 9, type: 'dropdown', originalValue: 'QB', updatedValue: 'RB' },
-      { field: 'Height', col: 10, type: 'input', originalValue: '6020', updatedValue: '6010e' },
-      { field: 'Weight', col: 11, type: 'input', originalValue: '248', updatedValue: '200e' },
+      { field: 'Height', col: 10, type: 'input', originalValue: '6000', updatedValue: '6010e' },
+      { field: 'Weight', col: 11, type: 'input', originalValue: '235', updatedValue: '200e' },
       { field: 'Speed', col: 12, type: 'input', originalValue: '', updatedValue: '4.60e' }
     ];    
 
     attributes.forEach(function(attr) {
       test.it(attr.field + ' should have correct initial value', function() {
-        teamPage.getTableStatField(attr.type ,2, attr.col).then(function(value) {
+        teamPage.getTableStatField(attr.type, 2, attr.col).then(function(value) {
           assert.equal(value, attr.originalValue, attr.field);
         });
       });

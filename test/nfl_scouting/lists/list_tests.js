@@ -19,36 +19,15 @@ test.describe('#Page: List', function() {
     listsPage = new ListsPage(driver);
     playerPage = new PlayerPage(driver);
   });
-
-  test.describe('#addingPlayer', function() {
-    test.it('adding list to player', function() {
-      browser.visit(url + 'player/31686');
-      playerPage.addProfileList('test');
-
-      playerPage.getProfileInput('First Name').then(function(name) {
-        firstName = name;
-      });
-
-      playerPage.getProfileInput('Last Name').then(function(name) {
-        lastName = name;
-      });
-    });
-
-    test.it('player should show up on list', function() {
-      navbar.goToListsPage();
-      listsPage.clickTableRowWithListName('test');
-      listPage.waitForPageToLoad();
-
-      listPage.playerExistsInTable(firstName, lastName).then(function(exists) {
-        assert.equal(exists, true);
-      });
-    });
-  });
-
+  
   test.describe('#table', function() {
     test.it('table title is labeled correctly', function() {
+      navbar.goToListsPage();
+      listsPage.clickTableRowWithListName('list1');
+      listPage.waitForPageToLoad();
+
       listPage.getTableTitle().then(function(title) {
-        assert.equal(title, 'TEST:\nPLAYERS', 'table title');
+        assert.equal(title, 'LIST1:\nPLAYERS', 'table title');
       });
     });
   });
@@ -91,6 +70,31 @@ test.describe('#Page: List', function() {
       });
     });
   });
+
+  test.describe('#addingPlayer', function() {
+    test.it('adding list to player', function() {
+      browser.visit(url + 'player/31686');
+      playerPage.addProfileList('test');
+
+      playerPage.getProfileInput('First Name').then(function(name) {
+        firstName = name;
+      });
+
+      playerPage.getProfileInput('Last Name').then(function(name) {
+        lastName = name;
+      });
+    });
+
+    test.it('player should show up on list', function() {
+      navbar.goToListsPage();
+      listsPage.clickTableRowWithListName('test');
+      listPage.waitForPageToLoad();
+
+      listPage.playerExistsInTable(firstName, lastName).then(function(exists) {
+        assert.equal(exists, true);
+      });
+    });
+  });
   
   test.describe('#updatingPlayerInfo: Dakota Cornwell', function() {
     test.before(function() {
@@ -110,7 +114,7 @@ test.describe('#Page: List', function() {
 
     attributes.forEach(function(attr) {
       test.it(attr.field + ' should have correct initial value', function() {
-        listPage.getTableStatField(attr.type , 3, attr.col).then(function(value) {
+        listPage.getTableStatField(attr.type, 1, attr.col).then(function(value) {
           assert.equal(value, attr.originalValue, attr.field);
         });
       });
@@ -118,7 +122,7 @@ test.describe('#Page: List', function() {
 
     test.it("updating fields (if this test fails, itll cause a cascading effect for the other tests in this section", function() {
       attributes.forEach(function(attr) {
-        listPage.changeTableStatField(attr.type, 3, attr.col, attr.updatedValue );
+        listPage.changeTableStatField(attr.type, 1, attr.col, attr.updatedValue );
       });
       browser.refresh();
       listPage.waitForPageToLoad();
@@ -126,7 +130,7 @@ test.describe('#Page: List', function() {
 
     attributes.forEach(function(attr) {
       test.it('updating ' + attr.field + ' should persist on reload', function() {
-        listPage.getTableStatField(attr.type ,3, attr.col).then(function(value) {
+        listPage.getTableStatField(attr.type, 1, attr.col).then(function(value) {
           assert.equal(value, attr.updatedValue, attr.field);
         });
       });
@@ -134,7 +138,7 @@ test.describe('#Page: List', function() {
 
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
-        listPage.changeTableStatField(attr.type, 3, attr.col, attr.originalValue );
+        listPage.changeTableStatField(attr.type, 1, attr.col, attr.originalValue );
       });
     });
   });

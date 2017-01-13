@@ -260,7 +260,8 @@ test.describe('#Page: ScoutingReports', function() {
     ]; 
 
     test.describe("#position: QB", function() {
-      test.before(function() {
+      test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
+        this.timeout(120000);
         metricInputs.forEach(function(attribute) {
           reportPage.changeMetricsInput(attribute.title, attribute.value);
         });
@@ -287,7 +288,7 @@ test.describe('#Page: ScoutingReports', function() {
       gradeGroupSkills.forEach(function(group) {
         test.it(group.title + ' skills should show correct skills', function() {
           reportPage.getGradeGroupSkills(group.inject).then(function(skills) {
-            assert.sameMembers(skills, group.value, group.title + ' skills');
+            assert.sameMembers(group.value, skills, group.title + ' skills');
           });
         });
       });

@@ -17,10 +17,11 @@ var incidentReports = require('../mixins/incidentReports.js');
 /****************************************************************************
 ** Locators
 *****************************************************************************/
-var BODY_CONTENT = By.css('.player-profile table');
+var LAST_LOCATOR = By.xpath(".//div[@inject='evaluationReports']/.//table");
 
 var NAME_LINK = By.xpath(".//div[contains(@class,'title')]/div/a");
 var MANAGE_DRAFT_LINK = By.xpath(".//div[@inject='player.draftLink']/a");
+var MEASURABLES_LINK = By.xpath(".//div[@inject='player.measurablesLink']/a");
 
 // IncidentReport
 var NEW_INCIDENT_REPORT_DIV_NUM = 2
@@ -64,7 +65,7 @@ _.extend(PlayerPage.prototype, incidentReports);
 ** Functions
 *****************************************************************************/
 PlayerPage.prototype.waitForPageToLoad = function() {
-  return this.waitForEnabled(BODY_CONTENT, 10000);
+  return this.waitUntilStaleness(LAST_LOCATOR, 10000);
 };
 
 PlayerPage.prototype.getPlayerName = function() {
@@ -73,6 +74,10 @@ PlayerPage.prototype.getPlayerName = function() {
 
 PlayerPage.prototype.clickManageDraftLink = function() {
   return this.click(MANAGE_DRAFT_LINK);
+};
+
+PlayerPage.prototype.clickMeasurablesLink = function() {
+  return this.click(MEASURABLES_LINK);
 };
 
 // Player Profile 
@@ -109,8 +114,7 @@ PlayerPage.prototype.getProfileDropdown = function(field) {
 
 PlayerPage.prototype.changeProfileDraftYear = function(year) {
   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='Draft Year']]/div/div/input`)
-  var yearLocator = By.xpath(`.//div[@class='datepicker']/div[@class='datepicker-years']/table/tbody/tr/td/span[text()='${year}']`)
-  return this.changeDropdown(locator, yearLocator);
+  return this.changeDatePicker(locator, year);
 };
 
 PlayerPage.prototype.getProfileLists = function() {
@@ -130,8 +134,7 @@ PlayerPage.prototype.removeProfileList = function(list) {
 
 PlayerPage.prototype.changeProfileDOB = function(date) {
   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='DOB']]/.//input`)
-  this.click(locator);
-  return this.changeDatePicker(date.year, date.month, date.day);
+  return this.changeDatePicker(locator, date.year, date.month, date.day);
 };
 
 PlayerPage.prototype.getProfileDOB = function() {
@@ -221,7 +224,8 @@ PlayerPage.prototype.changeProfileField = function(type, field, value) {
 // sorting
 PlayerPage.prototype.clickReportTableHeader = function(reportName, col) {
   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.driver.sleep(500); // keeps getting stalness error otherwise
 };
 
 PlayerPage.prototype.getStatsForReportAndCol = function(reportName, col) {
@@ -231,7 +235,8 @@ PlayerPage.prototype.getStatsForReportAndCol = function(reportName, col) {
 
 PlayerPage.prototype.clickSortIconForReport = function(reportName, col) {
   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.driver.sleep(500); // keeps getting stalness error otherwise
 };
 
 PlayerPage.prototype.clickRemoveSortIconForReport = function(reportName, col) {

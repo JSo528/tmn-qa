@@ -104,6 +104,9 @@ test.describe('#Page: Player', function() {
       });
       playerPage.removeProfileList('test');
       playerPage.removeProfileList('list1');
+
+      browser.refresh();
+      playerPage.waitForPageToLoad();
     });
   });
 
@@ -144,6 +147,12 @@ test.describe('#Page: Player', function() {
   });
 
   test.describe('#sorting', function() {
+    test.before(function() {
+      browser.refresh();
+      playerPage.waitForPageToLoad();
+      playerPage.clickIncidentReportSpacer();
+    });
+
     test.describe('#scoutingReports', function() {
       test.it('sorting by report date asc', function() {
         playerPage.clickReportTableHeader('scouting', 2);
