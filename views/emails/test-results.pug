@@ -1,0 +1,42 @@
+case testRun.status 
+  when 'finished'
+    - var tableStyle = "background-color: #DFF0D8; border-radius:5px; border: 1px solid #517043; padding: 20px;"
+  when 'error'
+  when 'killed'
+    - var tableStyle = "background-color: #F2DEDE; border-radius:5px; border: 1px solid #704545; padding: 20px;"
+  default
+    - var tableStyle = "background-color: #fafafa; border-radius:5px; border: 1px solid black; padding: 20px;"
+
+body
+
+table(cellpadding="0" cellspacing="0" border="0")
+  tr
+    td(valign="top")
+      p(style="font-size: 18px; padding-top: 10px;")= testRun.failedCount + " Failed Tests"
+  tr
+    td(valign="top")
+      table(cellpadding="0" cellspacing="0" style=tableStyle align="center")
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Status
+          td(valign="top" style="padding-bottom: 10px;")= testRun.status
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Test
+          td(valign="top" style="padding-bottom: 10px;")= testRun.testName
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Port
+          td(valign="top" style="padding-bottom: 10px;")= testRun.portNumber
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Passed
+          td(valign="top" style="padding-bottom: 10px;")= testRun.passedCount
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Failed
+          td(valign="top" style="padding-bottom: 10px;")= testRun.failedCount
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Start
+          td(valign="top" style="padding-bottom: 10px;")= testRun.startedAt
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Finish
+          td(valign="top" style="padding-bottom: 10px;")= testRun.endedAt
+        tr
+          td(valign="top" style="font-weight:bold;padding-right: 20px;padding-bottom: 10px;") Link
+          td(valign="top" style="padding-bottom: 10px;")= "http://ec2-54-172-26-71.compute-1.amazonaws.com:3000/test-results/" + testRun.id

@@ -93,7 +93,6 @@ app.get('/test-results/:id', function(req, res) {
 });
 
 app.post('/run-tests', function(req, res) {
-  
   if (req.body.testFiles == 'custom') {
     var fileWhitelist = req.body.fileWhitelist
   }
@@ -196,12 +195,56 @@ app.get('/api/test-runs/:id', function(req, res) {
       })
 
       res.json({
-        sucess: true,
+        success: true,
         data: testRun
       });    
     }
   });
 });
+
+app.post('/api/run-test', function(req, res) {
+  if (req.body.fileWhitelist) {
+    var fileWhitelist = req.body.fileWhitelist
+  }
+
+  var testRun = new TestRun({
+    testNumber: req.body.testNumber,
+    portNumber: req.body.portNumber,
+    createdAt: new Date().getTime(),
+    fileWhitelist: fileWhitelist,
+    status: 'queued',
+    email: req.body.email
+  });
+  
+  testRun.save(function(err, tr) {
+    TestRun.runNextTest(app.get('env'), function(foundTestRun) {
+      res.json({
+        success: true,
+        data: testRun
+      });    
+    });
+  });
+});
+
+app.get('/api/email-test-results', function(req, res) {
+  var emailService = require('./lib/email.js')(credentials);
+  var html = "<p>Test</p>"
+  TestRun.findById(req.body.testRunID, function(err, testRun) {
+    testRun.testName = scripts[testRun.testNumber].name
+    
+    res.render('emails/test-results', { layout: null, testRun: testRun }, function(err, html) {
+      if (err) console.log('error in email template: ' + err);
+      emailService.send(testRun.email,
+        'QA Test Results',
+        html);
+    });
+  }); 
+
+  res.json({
+    success: true
+  })
+});
+
 
 app.use(function(req, res) {
   res.type('text/plain');

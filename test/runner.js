@@ -1,5 +1,8 @@
 'use strict';
 
+var express = require('express');
+var app = express();
+var request = require('request');
 var fs = require('fs');
 var TestRun = require('../models/test_run.js');
 var constants = require('../lib/constants.js');
@@ -58,6 +61,18 @@ module.exports = function(testRun, env) {
       testRun = testRunObject;
       if (testRun.endedAt == undefined && testRun.status == "ongoing") {
         testRun.update({endedAt: new Date().getTime(), status: "error"}).exec();
+      }
+
+      if (testRun.email) {
+        var emailTestResults = constants.urls.host[app.get('env')]+'api/email-test-results';
+        var data = {
+          form: {
+            testRunID: testRun.id
+          }
+        }
+        request.get(emailTestResults, data, function() {
+          console.log('** SENT EMAIL');
+        });
       }
     });
   });

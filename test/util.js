@@ -123,9 +123,10 @@ exports.generateTests = function(title, testFiles, startUrl) {
 
           // check to see if there are any more tests in the queue 
           var queueNextTestURL = constants.urls.host[app.get('env')]+'run-next-test';
-          request.post(queueNextTestURL, function (error, response, body) {
-            d.fulfill(true);
-          })
+          request.post(queueNextTestURL, function() {
+            console.log('** QUEUE NEXT TEST');
+            d.fulfill(true);    
+          });
         });
       })
       

@@ -12,7 +12,8 @@ var testRunSchema = mongoose.Schema({
   expectedValue: String,
   actualValue: String,
   errorObjects: {type: Array, default: []},
-  fileWhitelist: {type: Array, default: null}
+  fileWhitelist: {type: Array, default: null},
+  email: String
 });
 
 testRunSchema.statics.runNextTest = function(env, cb) {
