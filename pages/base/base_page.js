@@ -458,4 +458,30 @@ BasePage.prototype.getParameterByName = function(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
+BasePage.prototype.readAndDeleteCSV = function(path) {
+  var d = Promise.defer();
+  var csv = require("fast-csv");
+  var fs = require('fs-extra');
+  var fileContents = "";
+
+  try {
+    fs.readFileSync(path);
+    csv.fromPath(path).on("data", function(data) {
+      fileContents += data;
+      fileContents += '/n';
+    }).on("end", function() {
+      fs.remove('../Downloads/', function (err) {
+        if (err) return console.error(err);
+      })
+
+      d.fulfill(fileContents);
+    })
+  } catch (err) {
+    console.log("ERROR: " + err);
+    d.fulfill(null);
+  }  
+
+  return d.promise;
+};
+
 module.exports = BasePage;

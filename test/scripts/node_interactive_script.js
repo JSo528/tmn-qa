@@ -179,28 +179,6 @@ scorePitchByPitch.getVideoPlaylistText(1,1).then(function(text) {
 
 
 /****************************************************************************
-** NFL ESPN
-*****************************************************************************/
-var webdriver = require('selenium-webdriver');
-driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
-var credentials = require('../lib/credentials.js');
-var By = webdriver.By;
-var Until = webdriver.until;
-var Key = require('selenium-webdriver').Key;
-var extensions = require('../lib/extensions.js');
-
-// Page Objects
-var Browser = require('../pages/base/browser.js');
-var LoginPage = require('./pages/login_page.js');
-var Navbar = require('../pages/nfl/navbar.js');
-var StandingsPage = require('../pages/nfl/standings_page.js');
-var TeamsPage = require('../pages/nfl/teams/teams_page.js');
-var TeamPage = require('../pages/nfl/teams/team_page.js');
-var PlayersPage = require('../pages/nfl/players/players_page.js');
-var PlayerPage = require('../pages/nfl/players/player_page.js');
-
-
-/****************************************************************************
 ** NFL Scouting
 *****************************************************************************/
 var webdriver = require('selenium-webdriver');
@@ -249,3 +227,43 @@ loginPage.login(credentials.testUser.email, credentials.testUser.password);
 browser.visit("https://staging.jags.scouting.trumedianetworks.com/scoutingReport/2354?tenant=jaguars")
 
 scoutingReportPage.changeProfileField('checkbox', 'JUCO', true );
+
+/****************************************************************************
+** NFL ESPN
+*****************************************************************************/
+var webdriver = require('selenium-webdriver');
+driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
+var credentials = require('../lib/credentials.js');
+var By = webdriver.By;
+var Until = webdriver.until;
+var Key = require('selenium-webdriver').Key;
+var extensions = require('../lib/extensions.js');
+
+// Page Objects
+var Browser = require('../pages/base/browser.js');
+var LoginPage = require('./pages/login_page.js');
+var Navbar = require('../pages/nfl/navbar.js');
+var StandingsPage = require('../pages/nfl/standings_page.js');
+var TeamsPage = require('../pages/nfl/teams/teams_page.js');
+var TeamPage = require('../pages/nfl/teams/team_page.js');
+var PlayersPage = require('../pages/nfl/players/players_page.js');
+var PlayerPage = require('../pages/nfl/players/player_page.js');
+var Filters = require('../pages/nfl/filters.js');
+
+// Instance Objects
+loginPage = new LoginPage(driver);
+browser = new Browser(driver);
+navbar  = new Navbar(driver);
+teamsPage = new TeamsPage(driver);
+filters = new Filters(driver);
+
+// Constants
+var url = "https://49ers.analytics.trumedianetworks.com"
+
+// Script
+loginPage.visit(url);
+loginPage.login(credentials.testUser.email, credentials.testUser.password);
+
+navbar.goToTeamsPage();
+
+filters.changeValuesForSeasonWeekDropdownFilter(2015, 'W1', 2015, 'W8', true);

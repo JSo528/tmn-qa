@@ -397,7 +397,7 @@ test.describe('#Teams Page', function() {
     });
 
     test.describe('#SubSection: Occurrences & Streaks', function() {
-      test.it('clicking the occurences & streaks link goes to the correct URL', function() {
+      test.it('clicking the occurrences & streaks link goes to the correct URL', function() {
         teamsPage.goToSubSection('occurrencesAndStreaks');
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2015);
