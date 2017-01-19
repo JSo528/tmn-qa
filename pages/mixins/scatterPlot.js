@@ -19,6 +19,7 @@ ScatterPlot = {
   X_AXIS_FILTER_EXPANDER_BTN: By.xpath(".//div[@id='xAxisFilters']/div/div/div/a/i[contains(@class,'filter-set-expand')]"),
   Y_AXIS_FILTER_EXPANDER_BTN: By.xpath(".//div[@id='yAxisFilters']/div/div/div/a/i[contains(@class,'filter-set-expand')]"),
   SCATTER_PLOT_LOGO_ICON: By.css('svg.svgchart > g.root > g.data > g > image'),
+  DISPLAY_TREND_LINE_CHECKBOX: By.xpath(".//span[@class='checkbox']/label/input[@class='toggle']"),
   
   /****************************************************************************
   ** Functions
@@ -58,6 +59,25 @@ ScatterPlot = {
   },
   getPlotLogoIconCount: function() {
     return this.getElementCount(this.SCATTER_PLOT_LOGO_ICON);
+  },
+  toggleDisplayTrendLine: function(select) {
+    var d = Promise.defer();
+    var thiz = this;
+    
+    var element = this.driver.findElement(this.DISPLAY_TREND_LINE_CHECKBOX);
+    element.isSelected().then(function(selected) {
+      if (selected != select) {
+        d.fulfill(thiz.click(thiz.DISPLAY_TREND_LINE_CHECKBOX));
+      } else {
+        d.fulfill(false);
+      }
+    });
+    return d.promise;
+  },
+  isTrendLineVisible: function() {
+    var locator = By.css("g line[stroke='#ff0000']");
+    return this.isDisplayed(locator, 2000);
+
   }
 }
 

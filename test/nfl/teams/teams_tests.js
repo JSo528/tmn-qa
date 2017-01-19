@@ -20,541 +20,541 @@ test.describe('#Page: Teams', function() {
     navbar.goToTeamsPage();
   });
 
-  test.describe('#Section: Stats', function() {
-    test.describe("#table", function() {
-      test.it('should initially be sorted by win% desc', function() {
-        teamsPage.getStatsTableStats(8).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
+  // test.describe('#Section: Stats', function() {
+  //   test.describe("#table", function() {
+  //     test.it('should initially be sorted by win% desc', function() {
+  //       teamsPage.getStatsTableStats(8).then(function(stats) {
+  //         var sortedArray = extensions.customSort(stats, 'desc');
+  //         assert.deepEqual(stats, sortedArray);
+  //       });
+  //     });
 
-      test.it('sorting by yds desc should display teams in correct order', function() {
-        teamsPage.clickStatsTableHeader(12);
-        teamsPage.getStatsTableStats(12).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
+  //     test.it('sorting by yds desc should display teams in correct order', function() {
+  //       teamsPage.clickStatsTableHeader(12);
+  //       teamsPage.getStatsTableStats(12).then(function(stats) {
+  //         var sortedArray = extensions.customSort(stats, 'desc');
+  //         assert.deepEqual(stats, sortedArray);
+  //       });
+  //     });
 
-      test.it('sorting by yds asc should display teams in correct order', function() {
-        teamsPage.clickStatsTableHeader(12);
-        teamsPage.getStatsTableStats(12).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
+  //     test.it('sorting by yds asc should display teams in correct order', function() {
+  //       teamsPage.clickStatsTableHeader(12);
+  //       teamsPage.getStatsTableStats(12).then(function(stats) {
+  //         var sortedArray = extensions.customSort(stats, 'asc');
+  //         assert.deepEqual(stats, sortedArray);
+  //       });
+  //     });
+  //   });
 
-    test.describe("#filters", function() {
-      test.it('changing filter - (Season/Week: 2016 W1 to 2016 W9), shows correct stats', function() {
-        filters.changeValuesForSeasonWeekDropdownFilter(2016, 'W1', 2016, 'W9', true);
+  //   test.describe("#filters", function() {
+  //     test.it('changing filter - (Season/Week: 2016 W1 to 2016 W9), shows correct stats', function() {
+  //       filters.changeValuesForSeasonWeekDropdownFilter(2016, 'W1', 2016, 'W9', true);
 
-        teamsPage.getStatsTableStat(1,3).then(function(stat) {
-          assert.equal(stat, ' Vikings (5-3)', '1st row - Team');
-        });
+  //       teamsPage.getStatsTableStat(1,3).then(function(stat) {
+  //         assert.equal(stat, ' Vikings (5-3)', '1st row - Team');
+  //       });
 
-        teamsPage.getStatsTableStat(1,9).then(function(stat) {
-          assert.equal(stat, 155, '1st row - PS');
-        });
-      });
+  //       teamsPage.getStatsTableStat(1,9).then(function(stat) {
+  //         assert.equal(stat, 155, '1st row - PS');
+  //       });
+  //     });
 
-      test.it('adding filter - (Distance To First: 1 to 5), shows correct stats ', function() {
-        filters.changeValuesForRangeSidebarFilter('Distance To First:', 1, 5);
+  //     test.it('adding filter - (Distance To First: 1 to 5), shows correct stats ', function() {
+  //       filters.changeValuesForRangeSidebarFilter('Distance To First:', 1, 5);
 
-        teamsPage.getStatsTableStat(1,12).then(function(stat) {
-          assert.equal(stat, 372, '1st row - Yds');
-        });
+  //       teamsPage.getStatsTableStat(1,12).then(function(stat) {
+  //         assert.equal(stat, 372, '1st row - Yds');
+  //       });
 
-        teamsPage.getStatsTableStat(1,14).then(function(stat) {
-          assert.equal(stat, 1, '1st row - TO');
-        });
-      });
+  //       teamsPage.getStatsTableStat(1,14).then(function(stat) {
+  //         assert.equal(stat, 1, '1st row - TO');
+  //       });
+  //     });
 
-      test.it('adding filter - (Down: Third), shows correct stats ', function() {
-        filters.toggleSidebarFilter('Down:', 'Third', true);
+  //     test.it('adding filter - (Down: Third), shows correct stats ', function() {
+  //       filters.toggleSidebarFilter('Down:', 'Third', true);
 
-        teamsPage.getStatsTableStat(1,10).then(function(stat) {
-          assert.equal(stat, 24, '1st row - PA');
-        });
-      });
+  //       teamsPage.getStatsTableStat(1,10).then(function(stat) {
+  //         assert.equal(stat, 24, '1st row - PA');
+  //       });
+  //     });
 
-      test.it('adding filter - (Timeouts Left: 0 to 1), shows correct stats ', function() {
-        filters.changeValuesForRangeSidebarFilter('Timeouts Left:', 0, 1);
-        teamsPage.getStatsTableStat(1,13).then(function(stat) {
-          assert.equal(stat, 6, '1st row - OpYds');
-        });
-      });
-    });
+  //     test.it('adding filter - (Timeouts Left: 0 to 1), shows correct stats ', function() {
+  //       filters.changeValuesForRangeSidebarFilter('Timeouts Left:', 0, 1);
+  //       teamsPage.getStatsTableStat(1,13).then(function(stat) {
+  //         assert.equal(stat, 6, '1st row - OpYds');
+  //       });
+  //     });
+  //   });
 
-    test.describe("#videoPlaylist", function() {
-      test.it('clicking a table stat should open Pop up Play by Play modal', function() {
-        teamsPage.clickStatsTableStat(1,12);
-        teamsPage.getPossessionHeaderText(1).then(function(text) {
-          assert.equal(text, ' Buccaneers Ball Starting At 3:34 At The DEN 50');
-        });
-      });
+  //   test.describe("#videoPlaylist", function() {
+  //     test.it('clicking a table stat should open Pop up Play by Play modal', function() {
+  //       teamsPage.clickStatsTableStat(1,12);
+  //       teamsPage.getPossessionHeaderText(1).then(function(text) {
+  //         assert.equal(text, ' Buccaneers Ball Starting At 3:34 At The DEN 50');
+  //       });
+  //     });
 
-      test.it('1st play in Play by Play modal should have the correct down info', function() {
-        teamsPage.getPossessionPlayText(1,2).then(function(text) {
-          assert.equal(text, 'DEN 26');
-        });
-      });
+  //     test.it('1st play in Play by Play modal should have the correct down info', function() {
+  //       teamsPage.getPossessionPlayText(1,2).then(function(text) {
+  //         assert.equal(text, 'DEN 26');
+  //       });
+  //     });
 
-      test.it('1st play in Flat View section should have the correct PlayYardsGain stat', function() {
-        teamsPage.clickFlatViewTab();
-        teamsPage.getFlatViewPlayText(1,5).then(function(stat) {
-          assert.equal(stat, -4);
-        });
-      });
+  //     test.it('1st play in Flat View section should have the correct PlayYardsGain stat', function() {
+  //       teamsPage.clickFlatViewTab();
+  //       teamsPage.getFlatViewPlayText(1,5).then(function(stat) {
+  //         assert.equal(stat, -4);
+  //       });
+  //     });
 
-      test.it('clicking video icon should open up video modal', function() {
-        teamsPage.clickByPossessionTab();
-        teamsPage.clickByPossessionPlayVideoIcon(1);
-        teamsPage.getVideoPlaylistText(1,1).then(function(text) {
-          assert.equal(text, "3rd & 1 DEN 26");
-        });
-      });
+  //     test.it('clicking video icon should open up video modal', function() {
+  //       teamsPage.clickByPossessionTab();
+  //       teamsPage.clickByPossessionPlayVideoIcon(1);
+  //       teamsPage.getVideoPlaylistText(1,1).then(function(text) {
+  //         assert.equal(text, "3rd & 1 DEN 26");
+  //       });
+  //     });
 
-      test.it('closing modals', function() {
-        teamsPage.closeVideoPlaylistModal();
-        teamsPage.closePlayByPlayModal();
-      });
-    });
+  //     test.it('closing modals', function() {
+  //       teamsPage.closeVideoPlaylistModal();
+  //       teamsPage.closePlayByPlayModal();
+  //     });
+  //   });
   
-    test.describe("#pinning/isoMode", function() {
-      test.it('clicking the pin icon for the Bucaneers should add them to the pinned table', function() {
-        teamsPage.clickTablePin(1);
+  //   test.describe("#pinning/isoMode", function() {
+  //     test.it('clicking the pin icon for the Bucaneers should add them to the pinned table', function() {
+  //       teamsPage.clickTablePin(1);
 
-        teamsPage.getIsoTableStat(1,3).then(function(stat) {
-          assert.equal(stat, ' Buccaneers (1-3)');
-        });
-      });
+  //       teamsPage.getIsoTableStat(1,3).then(function(stat) {
+  //         assert.equal(stat, ' Buccaneers (1-3)');
+  //       });
+  //     });
 
-      test.it('selecting Eagles from search should add team to table', function() {
-        teamsPage.clickIsoBtn("on");
-        teamsPage.addToIsoTable('Philadelphia Eagles', 1)
+  //     test.it('selecting Eagles from search should add team to table', function() {
+  //       teamsPage.clickIsoBtn("on");
+  //       teamsPage.addToIsoTable('Philadelphia Eagles', 1)
 
-        teamsPage.getStatsTableStat(2,3).then(function(stat) {
-          assert.equal(stat, ' Eagles (0-3)', '2nd row team name');
-        })
-      });
+  //       teamsPage.getStatsTableStat(2,3).then(function(stat) {
+  //         assert.equal(stat, ' Eagles (0-3)', '2nd row team name');
+  //       })
+  //     });
 
-      test.it('pinned total should show the correct sum', function() {
-        teamsPage.getPinnedTotalTableStat(9).then(function(stat) {
-          assert.equal(stat, 3, 'pinned total - PS');
-        });
-      });
+  //     test.it('pinned total should show the correct sum', function() {
+  //       teamsPage.getPinnedTotalTableStat(9).then(function(stat) {
+  //         assert.equal(stat, 3, 'pinned total - PS');
+  //       });
+  //     });
 
-      test.it('turning off isolation mode should show teams in iso table', function() {
-        teamsPage.clickIsoBtn("off");
-        teamsPage.getIsoTableStat(1,3).then(function(stat) {
-          assert.equal(stat, ' Buccaneers (1-3)', '1st row team name');
-        });
-      });
-    });
+  //     test.it('turning off isolation mode should show teams in iso table', function() {
+  //       teamsPage.clickIsoBtn("off");
+  //       teamsPage.getIsoTableStat(1,3).then(function(stat) {
+  //         assert.equal(stat, ' Buccaneers (1-3)', '1st row team name');
+  //       });
+  //     });
+  //   });
 
-    test.describe("#chart/edit columns", function() {
-      // histograms
-      test.it('clicking show histogram link should open histogram modal', function() {
-        teamsPage.clickChartColumnsBtn();
-        teamsPage.openHistogram(16); 
-        teamsPage.isModalDisplayed().then(function(isDisplayed) {
-          assert.equal(isDisplayed, true);
-        }); 
-      });
+  //   test.describe("#chart/edit columns", function() {
+  //     // histograms
+  //     test.it('clicking show histogram link should open histogram modal', function() {
+  //       teamsPage.clickChartColumnsBtn();
+  //       teamsPage.openHistogram(16); 
+  //       teamsPage.isModalDisplayed().then(function(isDisplayed) {
+  //         assert.equal(isDisplayed, true);
+  //       }); 
+  //     });
 
-      test.it('hovering over bar should show stats for teams', function() {
-        teamsPage.hoverOverHistogramStack(1)
-        teamsPage.getTooltipText().then(function(text) {
-          assert.equal(text, 'Buccaneers: -1\nPackers: -1\nBengals: -1\nRedskins: -1\nPanthers: -1', 'tooltip for 1st bar');
+  //     test.it('hovering over bar should show stats for teams', function() {
+  //       teamsPage.hoverOverHistogramStack(1)
+  //       teamsPage.getTooltipText().then(function(text) {
+  //         assert.equal(text, 'Buccaneers: -1\nPackers: -1\nBengals: -1\nRedskins: -1\nPanthers: -1', 'tooltip for 1st bar');
 
-        });
-      });
+  //       });
+  //     });
 
-      test.it('pinned teams should be represented by circles', function() {
-        teamsPage.getHistogramCircleCount().then(function(count) {
-          assert.equal(count, 2, '# of circles on histogram')
-        })
-      })
+  //     test.it('pinned teams should be represented by circles', function() {
+  //       teamsPage.getHistogramCircleCount().then(function(count) {
+  //         assert.equal(count, 2, '# of circles on histogram')
+  //       })
+  //     })
 
-      test.it("selecting 'Display pins as bars' should add team to the histogram", function() {
-        teamsPage.toggleHistogramDisplayPinsAsBars();
-        teamsPage.getHistogramBarCount().then(function(count) {
-          assert.equal(count, 6, '# of bars on histogram');
-        });
-      });
+  //     test.it("selecting 'Display pins as bars' should add team to the histogram", function() {
+  //       teamsPage.toggleHistogramDisplayPinsAsBars();
+  //       teamsPage.getHistogramBarCount().then(function(count) {
+  //         assert.equal(count, 6, '# of bars on histogram');
+  //       });
+  //     });
 
-      test.it("changing Bin Count should update the histogram", function() {
-        teamsPage.changeHistogramBinCount(3);
-        teamsPage.getHistogramBarCount().then(function(count) {
-          assert.equal(count, 6, '# of bars on histogram');
-        });
-      })     
+  //     test.it("changing Bin Count should update the histogram", function() {
+  //       teamsPage.changeHistogramBinCount(3);
+  //       teamsPage.getHistogramBarCount().then(function(count) {
+  //         assert.equal(count, 6, '# of bars on histogram');
+  //       });
+  //     })     
 
-      test.it('clicking close histogram button should close histogram modal', function() {
-        teamsPage.closeModal();
-        teamsPage.isModalDisplayed().then(function(isDisplayed) {
-          assert.equal(isDisplayed, false);
-        }); 
-      })                 
+  //     test.it('clicking close histogram button should close histogram modal', function() {
+  //       teamsPage.closeModal();
+  //       teamsPage.isModalDisplayed().then(function(isDisplayed) {
+  //         assert.equal(isDisplayed, false);
+  //       }); 
+  //     })                 
 
-      // scatter plots          
-      test.it('clicking add scatter plot link for 2 different categories should open up scatter chart modal', function() {
-        teamsPage.openScatterChart(10,11);
+  //     // scatter plots          
+  //     test.it('clicking add scatter plot link for 2 different categories should open up scatter chart modal', function() {
+  //       teamsPage.openScatterChart(10,11);
 
-        teamsPage.isModalDisplayed().then(function(isDisplayed) {
-          assert.equal(isDisplayed, true);
-        }); 
-      });
+  //       teamsPage.isModalDisplayed().then(function(isDisplayed) {
+  //         assert.equal(isDisplayed, true);
+  //       }); 
+  //     });
 
-      test.it('clicking close button should close scatter chart modal', function() {
-        teamsPage.closeModal();
-        teamsPage.isModalDisplayed().then(function(isDisplayed) {
-          assert.equal(isDisplayed, false);
-        }); 
-      });
+  //     test.it('clicking close button should close scatter chart modal', function() {
+  //       teamsPage.closeModal();
+  //       teamsPage.isModalDisplayed().then(function(isDisplayed) {
+  //         assert.equal(isDisplayed, false);
+  //       }); 
+  //     });
 
-      test.it('clearing pins', function() {
-        teamsPage.clearTablePins();
-      });   
-    });
+  //     test.it('clearing pins', function() {
+  //       teamsPage.clearTablePins();
+  //     });   
+  //   });
 
-    test.describe("#groupBy", function() {
-      test.it('remove filters', function() {
-        filters.closeDropdownFilter('Distance To First');
-        filters.closeDropdownFilter('Down');
-        filters.closeDropdownFilter('Timeouts Left');
-      });
+  //   test.describe("#groupBy", function() {
+  //     test.it('remove filters', function() {
+  //       filters.closeDropdownFilter('Distance To First');
+  //       filters.closeDropdownFilter('Down');
+  //       filters.closeDropdownFilter('Timeouts Left');
+  //     });
 
-      test.it('selecting "By Season" shows the correct headers', function() {
-        teamsPage.changeGroupBy("By Season");
-        teamsPage.getStatsTableHeader(4).then(function(header) {
-          assert.equal(header, "Season");
-        });
+  //     test.it('selecting "By Season" shows the correct headers', function() {
+  //       teamsPage.changeGroupBy("By Season");
+  //       teamsPage.getStatsTableHeader(4).then(function(header) {
+  //         assert.equal(header, "Season");
+  //       });
 
-        teamsPage.getStatsTableStat(1,10).then(function(stat) {
-          assert.equal(stat, 155, 'Team 1 - PS');
-        });
-      });
+  //       teamsPage.getStatsTableStat(1,10).then(function(stat) {
+  //         assert.equal(stat, 155, 'Team 1 - PS');
+  //       });
+  //     });
 
-      test.it('selecting "By Game" shows the correct headers', function() {
-        teamsPage.changeGroupBy("By Game");
-        teamsPage.getStatsTableHeader(4).then(function(header) {
-          assert.equal(header, "Opponent");
-        });          
+  //     test.it('selecting "By Game" shows the correct headers', function() {
+  //       teamsPage.changeGroupBy("By Game");
+  //       teamsPage.getStatsTableHeader(4).then(function(header) {
+  //         assert.equal(header, "Opponent");
+  //       });          
 
-        teamsPage.getStatsTableStat(1,12).then(function(stat) {
-          assert.equal(stat, 7, 'Game 1 - PS');
-        });
-      });        
+  //       teamsPage.getStatsTableStat(1,12).then(function(stat) {
+  //         assert.equal(stat, 7, 'Game 1 - PS');
+  //       });
+  //     });        
 
-      test.it('selecting "By Game Result" shows the correct headers', function() {
-        teamsPage.changeGroupBy("By Game Result");
-        teamsPage.getStatsTableHeader(4).then(function(header) {
-          assert.equal(header, "GameResult");
-        });    
+  //     test.it('selecting "By Game Result" shows the correct headers', function() {
+  //       teamsPage.changeGroupBy("By Game Result");
+  //       teamsPage.getStatsTableHeader(4).then(function(header) {
+  //         assert.equal(header, "GameResult");
+  //       });    
 
-        teamsPage.getStatsTableStat(1,13).then(function(stat) {
-          assert.equal(stat, 257, 'Game 1 - Yds');
-        });                
-      });  
+  //       teamsPage.getStatsTableStat(1,13).then(function(stat) {
+  //         assert.equal(stat, 257, 'Game 1 - Yds');
+  //       });                
+  //     });  
 
-      test.it('selecting "Total"', function() {
-        teamsPage.changeGroupBy("Totals");
-      });      
-    });
+  //     test.it('selecting "Total"', function() {
+  //       teamsPage.changeGroupBy("Totals");
+  //     });      
+  //   });
 
-    test.describe("#statsView", function() {
-      var topColor = "rgba(255, 76, 76, 1)";
-      var statViews = [
-        { type: 'Rank', topStat: 32, color: true, col: 11 },            
-        { type: 'Percentile', topStat: "0.0%", color: true, col: 11 },
-        { type: 'Z-Score', topStat: -1.658, col: 11 },
-        { type: 'Stat Grade', topStat: 20, col: 11 },
-        { type: 'Stat (Rank)', topStat: "2390 (32)", color: true, col: 11 },
-        { type: 'Stat (Percentile)', topStat: "2390 (0%)", color: true, col: 11 },
-        { type: 'Stat (Z-Score)', topStat: "2390 (-1.66)", col: 11 },
-        { type: 'Stat (Stat Grade)', topStat: "2390 (20)", col: 11 },
-        { type: 'Per Game', topStat: 298.75, col: 12 },
-        { type: 'Per Team Game', topStat: 298.75, col: 12 },
-        { type: 'Opponent Stats', topStat: 3795, col: 12 },
-        { type: 'Opponent Rank', topStat: 32, col: 12, color: true },
-        { type: 'Opponent Stats (Rank)', topStat: "3795 (32)", col: 12, color: true },
-        { type: 'Opponent Per Game', topStat: 428.00, col: 12 },
-        { type: 'Stats', topStat: 2390, col: 12 }
-      ];
-      statViews.forEach(function(statView) {
-        test.it("selecting (stats view: " + statView.type + ") shows the correct stat value", function() {
-          teamsPage.changeStatsView(statView.type);  
-          teamsPage.getStatsTableStat(1,statView.col).then(function(stat) {
-            assert.equal(stat, statView.topStat);
-          });
-        });
+  //   test.describe("#statsView", function() {
+  //     var topColor = "rgba(255, 76, 76, 1)";
+  //     var statViews = [
+  //       { type: 'Rank', topStat: 32, color: true, col: 11 },            
+  //       { type: 'Percentile', topStat: "0.0%", color: true, col: 11 },
+  //       { type: 'Z-Score', topStat: -1.658, col: 11 },
+  //       { type: 'Stat Grade', topStat: 20, col: 11 },
+  //       { type: 'Stat (Rank)', topStat: "2390 (32)", color: true, col: 11 },
+  //       { type: 'Stat (Percentile)', topStat: "2390 (0%)", color: true, col: 11 },
+  //       { type: 'Stat (Z-Score)', topStat: "2390 (-1.66)", col: 11 },
+  //       { type: 'Stat (Stat Grade)', topStat: "2390 (20)", col: 11 },
+  //       { type: 'Per Game', topStat: 298.75, col: 12 },
+  //       { type: 'Per Team Game', topStat: 298.75, col: 12 },
+  //       { type: 'Opponent Stats', topStat: 3795, col: 12 },
+  //       { type: 'Opponent Rank', topStat: 32, col: 12, color: true },
+  //       { type: 'Opponent Stats (Rank)', topStat: "3795 (32)", col: 12, color: true },
+  //       { type: 'Opponent Per Game', topStat: 428.00, col: 12 },
+  //       { type: 'Stats', topStat: 2390, col: 12 }
+  //     ];
+  //     statViews.forEach(function(statView) {
+  //       test.it("selecting (stats view: " + statView.type + ") shows the correct stat value", function() {
+  //         teamsPage.changeStatsView(statView.type);  
+  //         teamsPage.getStatsTableStat(1,statView.col).then(function(stat) {
+  //           assert.equal(stat, statView.topStat);
+  //         });
+  //       });
 
-        if (statView.color) {
-          test.it("selecting " + statView.type + " shows the top value the right color", function() {
-            teamsPage.getStatsTableBgColor(1,statView.col).then(function(color) {
-              assert.equal(color, topColor);
-            });
-          });
-        }
-      });
-    });
+  //       if (statView.color) {
+  //         test.it("selecting " + statView.type + " shows the top value the right color", function() {
+  //           teamsPage.getStatsTableBgColor(1,statView.col).then(function(color) {
+  //             assert.equal(color, topColor);
+  //           });
+  //         });
+  //       }
+  //     });
+  //   });
 
-    test.describe("#reports", function() {
-      var reports = [
-        { type: 'Team Offense', topStat: 374.4, statType: "Yd/G", colNum: 4 },  
-        { type: 'Team Defense', topStat: 297.0, statType: "Yd/G", colNum: 4 },  
-        { type: 'Team Turnovers', topStat: 13, statType: "TOMgn", colNum: 7 },  
-        { type: 'Team Drives', topStat: 32, statType: "OffTD", colNum: 8 },  
-        { type: 'Team Drive Rates', topStat: 2.90, statType: "Pts/D", colNum: 6 },  
-        { type: 'Opponent Drive Rates', topStat: 1.29, statType: "Pts/D", colNum: 6 },  
-        { type: 'Team Offensive Rates', topStat: 6.77, statType: "Yd/Ply", colNum: 4 },  
-        { type: 'Defensive Rates', topStat: 4.63, statType: "Yd/Ply", colNum: 4 },  
-        { type: 'Team Offensive Conversions', topStat: '53.0%', statType: "3rdCv%", colNum: 11 },  
-        { type: 'Defensive Conversions', topStat: '31.1%', statType: "3rdCv%", colNum: 11 },  
-        { type: 'Team Special Teams Summary', topStat: '100.0%', statType: "FG%", colNum: 7 },  
-        { type: 'Team Penalties', topStat: 40, statType: "Pen", colNum: 5 },  
-        { type: 'Offensive Plays', topStat: 32, statType: "OffTD", colNum: 5 },  
-        { type: 'Defensive Plays', topStat: 12, statType: "OffTD", colNum: 5 },  
-        { type: 'QB Stats', topStat: 119.0, statType: "PsrRt", colNum: 16 },  
-        { type: 'Opponent QB Stats', topStat: 67.2, statType: "PsrRt", colNum: 16 },  
-        { type: 'Passing Rates', topStat: 119.0, statType: "PsrRt", colNum: 6 },  
-        { type: 'Opponent Passing Rates', topStat: 67.2, statType: "PsrRt", colNum: 6 },  
-        { type: 'Rushing', topStat: 1395, statType: "RnYds", colNum: 5 },  
-        { type: 'Opponent Rushing', topStat: 606, statType: "RnYds", colNum: 5 },  
-        { type: 'Receptions', topStat: 2980, statType: "RecYds", colNum: 6 },  
-        { type: 'Opponent Receptions', topStat: 1627, statType: "RecYds", colNum: 6 },  
-        { type: 'From Scrimmage', topStat: 3863, statType: "Yds", colNum: 6 },  
-        { type: 'Rushing Receiving', topStat: 3863, statType: "Yds", colNum: 6 },  
-        { type: 'Opponent Rushing Receiving', topStat: 2376, statType: "Yds", colNum: 6 },  
-        { type: 'Touchdowns', topStat: 35, statType: "TD", colNum: 5 },  
-        { type: 'Opponent Touchdowns', topStat: 13, statType: "TD", colNum: 5 },  
-        { type: 'Defensive Stats', topStat: 544, statType: "DfTkl", colNum: 5 },  
-        { type: 'FG / XP / 2Pt', topStat: 20, statType: "FG", colNum: 5 },  
-        { type: 'Two Point Conversions', topStat: '100.0%', statType: "2PtCv%", colNum: 8 }, 
-        { type: 'Third Down Conversions', topStat: '53.0%', statType: "3rdCv%", colNum: 7 }, 
-        { type: 'Red Zone Drives', topStat: '76.7%', statType: "RZTD%", colNum: 12 }, 
-        { type: 'Team Differentials', topStat: 85, statType: "PtsMgn", colNum: 5 }, 
-        { type: 'Kickoffs', topStat: 77.3, statType: "OpKRSP", colNum: 8 }, 
-        { type: 'Punts', topStat: 48, statType: "P", colNum: 5 }, 
-        { type: 'Returns', topStat: 545, statType: "K-Ryd", colNum: 6 }, 
-        { type: 'Opponent Returns', topStat: 118, statType: "K-Ryd", colNum: 6 }, 
-        { type: 'Team Offense Rank', topStat: 374.4, statType: "Yd/G", colNum: 4 }, 
-        { type: 'Team Record', topStat: 0.875, statType: "Win%", colNum: 8 },  
-      ];
+  //   test.describe("#reports", function() {
+  //     var reports = [
+  //       { type: 'Team Offense', topStat: 374.4, statType: "Yd/G", colNum: 4 },  
+  //       { type: 'Team Defense', topStat: 297.0, statType: "Yd/G", colNum: 4 },  
+  //       { type: 'Team Turnovers', topStat: 13, statType: "TOMgn", colNum: 7 },  
+  //       { type: 'Team Drives', topStat: 32, statType: "OffTD", colNum: 8 },  
+  //       { type: 'Team Drive Rates', topStat: 2.90, statType: "Pts/D", colNum: 6 },  
+  //       { type: 'Opponent Drive Rates', topStat: 1.29, statType: "Pts/D", colNum: 6 },  
+  //       { type: 'Team Offensive Rates', topStat: 6.77, statType: "Yd/Ply", colNum: 4 },  
+  //       { type: 'Defensive Rates', topStat: 4.63, statType: "Yd/Ply", colNum: 4 },  
+  //       { type: 'Team Offensive Conversions', topStat: '53.0%', statType: "3rdCv%", colNum: 11 },  
+  //       { type: 'Defensive Conversions', topStat: '31.1%', statType: "3rdCv%", colNum: 11 },  
+  //       { type: 'Team Special Teams Summary', topStat: '100.0%', statType: "FG%", colNum: 7 },  
+  //       { type: 'Team Penalties', topStat: 40, statType: "Pen", colNum: 5 },  
+  //       { type: 'Offensive Plays', topStat: 32, statType: "OffTD", colNum: 5 },  
+  //       { type: 'Defensive Plays', topStat: 12, statType: "OffTD", colNum: 5 },  
+  //       { type: 'QB Stats', topStat: 119.0, statType: "PsrRt", colNum: 16 },  
+  //       { type: 'Opponent QB Stats', topStat: 67.2, statType: "PsrRt", colNum: 16 },  
+  //       { type: 'Passing Rates', topStat: 119.0, statType: "PsrRt", colNum: 6 },  
+  //       { type: 'Opponent Passing Rates', topStat: 67.2, statType: "PsrRt", colNum: 6 },  
+  //       { type: 'Rushing', topStat: 1395, statType: "RnYds", colNum: 5 },  
+  //       { type: 'Opponent Rushing', topStat: 606, statType: "RnYds", colNum: 5 },  
+  //       { type: 'Receptions', topStat: 2980, statType: "RecYds", colNum: 6 },  
+  //       { type: 'Opponent Receptions', topStat: 1627, statType: "RecYds", colNum: 6 },  
+  //       { type: 'From Scrimmage', topStat: 3863, statType: "Yds", colNum: 6 },  
+  //       { type: 'Rushing Receiving', topStat: 3863, statType: "Yds", colNum: 6 },  
+  //       { type: 'Opponent Rushing Receiving', topStat: 2376, statType: "Yds", colNum: 6 },  
+  //       { type: 'Touchdowns', topStat: 35, statType: "TD", colNum: 5 },  
+  //       { type: 'Opponent Touchdowns', topStat: 13, statType: "TD", colNum: 5 },  
+  //       { type: 'Defensive Stats', topStat: 544, statType: "DfTkl", colNum: 5 },  
+  //       { type: 'FG / XP / 2Pt', topStat: 20, statType: "FG", colNum: 5 },  
+  //       { type: 'Two Point Conversions', topStat: '100.0%', statType: "2PtCv%", colNum: 8 }, 
+  //       { type: 'Third Down Conversions', topStat: '53.0%', statType: "3rdCv%", colNum: 7 }, 
+  //       { type: 'Red Zone Drives', topStat: '76.7%', statType: "RZTD%", colNum: 12 }, 
+  //       { type: 'Team Differentials', topStat: 85, statType: "PtsMgn", colNum: 5 }, 
+  //       { type: 'Kickoffs', topStat: 77.3, statType: "OpKRSP", colNum: 8 }, 
+  //       { type: 'Punts', topStat: 48, statType: "P", colNum: 5 }, 
+  //       { type: 'Returns', topStat: 545, statType: "K-Ryd", colNum: 6 }, 
+  //       { type: 'Opponent Returns', topStat: 118, statType: "K-Ryd", colNum: 6 }, 
+  //       { type: 'Team Offense Rank', topStat: 374.4, statType: "Yd/G", colNum: 4 }, 
+  //       { type: 'Team Record', topStat: 0.875, statType: "Win%", colNum: 8 },  
+  //     ];
 
-      reports.forEach(function(report) {
-        test.it("selecting (report: " + report.type + ") shows the correct stat value for " + report.statType, function() {
-          teamsPage.changeReport(report.type);  
-          teamsPage.getStatsTableStat(1,report.colNum).then(function(stat) {
-            assert.equal(stat, report.topStat);
-          });
-        });
-      });
-    });
+  //     reports.forEach(function(report) {
+  //       test.it("selecting (report: " + report.type + ") shows the correct stat value for " + report.statType, function() {
+  //         teamsPage.changeReport(report.type);  
+  //         teamsPage.getStatsTableStat(1,report.colNum).then(function(stat) {
+  //           assert.equal(stat, report.topStat);
+  //         });
+  //       });
+  //     });
+  //   });
 
-    test.describe("#exports", function() {
-      test.it('clicking export button should download csv file', function() {
-        teamsPage.clickStatsExportLink();
-        teamsPage.readAndDeleteExportCSV.then(function(data) {
-          assert.equal(data, exportFileContents);
-        });
-      });
-    });
-  });
+  //   test.describe("#exports", function() {
+  //     test.it('clicking export button should download csv file', function() {
+  //       teamsPage.clickStatsExportLink();
+  //       teamsPage.readAndDeleteExportCSV.then(function(data) {
+  //         assert.equal(data, exportFileContents);
+  //       });
+  //     });
+  //   });
+  // });
 
-  test.describe('#Section: Comps', function() {
-    test.it('clicking Comps link goes to correct page', function() {
-      teamsPage.goToSection('Comps');
-      driver.getCurrentUrl().then(function(url) {
-        assert.match(url, /teams\-comps/);
-      });
-    });
+  // test.describe('#Section: Comps', function() {
+  //   test.it('clicking Comps link goes to correct page', function() {
+  //     teamsPage.goToSection('Comps');
+  //     driver.getCurrentUrl().then(function(url) {
+  //       assert.match(url, /teams\-comps/);
+  //     });
+  //   });
 
-    test.it('adding team 1, adds team to comp container', function() {
-      teamsPage.selectForCompSearch(1, 'Atlanta Falcons');
-      teamsPage.getCompTableStat(1,1,1).then(function(stat) { 
-        assert.equal(stat, 'Matt Ryan');
-      });
-    });
+  //   test.it('adding team 1, adds team to comp container', function() {
+  //     teamsPage.selectForCompSearch(1, 'Atlanta Falcons');
+  //     teamsPage.getCompTableStat(1,1,1).then(function(stat) { 
+  //       assert.equal(stat, 'Matt Ryan');
+  //     });
+  //   });
 
-    test.it('adding team 2, adds team to comp container', function() {
-      teamsPage.selectForCompSearch(2, 'Miami Dolphins');
-      teamsPage.getCompTableStat(2,1,1).then(function(stat) { 
-        assert.equal(stat, 'Ryan Tannehill');
-      });
-    });
+  //   test.it('adding team 2, adds team to comp container', function() {
+  //     teamsPage.selectForCompSearch(2, 'Miami Dolphins');
+  //     teamsPage.getCompTableStat(2,1,1).then(function(stat) { 
+  //       assert.equal(stat, 'Ryan Tannehill');
+  //     });
+  //   });
 
-    test.it('adding team 3, adds team to comp container', function() {
-      teamsPage.selectForCompSearch(3, 'Seattle Seahawks');
-      teamsPage.getCompTableStat(3,1,1).then(function(stat) { 
-        assert.equal(stat, 'Russell Wilson');
-      });
-    });
+  //   test.it('adding team 3, adds team to comp container', function() {
+  //     teamsPage.selectForCompSearch(3, 'Seattle Seahawks');
+  //     teamsPage.getCompTableStat(3,1,1).then(function(stat) { 
+  //       assert.equal(stat, 'Russell Wilson');
+  //     });
+  //   });
 
-    // TODO - not sure what this page is actually supposed to look like since its broken
-    test.it('changing comp type to Team Summary updates the page', function() {
-      teamsPage.changeCompType('Team Summary');
-      teamsPage.getCompTableStat(1,1,1).then(function(stat) { 
-        assert.equal(stat, 'Matt Ryan');
-      });
-    });
-  });
+  //   // TODO - not sure what this page is actually supposed to look like since its broken
+  //   test.it('changing comp type to Team Summary updates the page', function() {
+  //     teamsPage.changeCompType('Team Summary');
+  //     teamsPage.getCompTableStat(1,1,1).then(function(stat) { 
+  //       assert.equal(stat, 'Matt Ryan');
+  //     });
+  //   });
+  // });
 
-  test.describe('#Section: Occurrences & Streaks', function() {
-    test.it('clicking Occurrences & Streaks link goes to correct page', function() {
-      teamsPage.goToSection('Occurrences & Streaks');
-      driver.getCurrentUrl().then(function(url) {
-        assert.match(url, /teams\-streaks/);
-      });
-    });
+  // test.describe('#Section: Occurrences & Streaks', function() {
+  //   test.it('clicking Occurrences & Streaks link goes to correct page', function() {
+  //     teamsPage.goToSection('Occurrences & Streaks');
+  //     driver.getCurrentUrl().then(function(url) {
+  //       assert.match(url, /teams\-streaks/);
+  //     });
+  //   });
 
-    test.it('table should be populated on load', function() {
-      teamsPage.getStreaksTableStat(1,5).then(function(stat) {
-        assert.isNotNull(stat);
-      });
-    });  
+  //   test.it('table should be populated on load', function() {
+  //     teamsPage.getStreaksTableStat(1,5).then(function(stat) {
+  //       assert.isNotNull(stat);
+  //     });
+  //   });  
 
-    test.it('table should have proper headers on load', function() {
-      teamsPage.getStreaksTableHeader(1).then(function(header) {
-        assert.equal(header, "Count");
-      });
+  //   test.it('table should have proper headers on load', function() {
+  //     teamsPage.getStreaksTableHeader(1).then(function(header) {
+  //       assert.equal(header, "Count");
+  //     });
 
-      teamsPage.getStreaksTableHeader(2).then(function(header) {
-        assert.equal(header, "Team");
-      });        
+  //     teamsPage.getStreaksTableHeader(2).then(function(header) {
+  //       assert.equal(header, "Team");
+  //     });        
 
-      teamsPage.getStreaksTableHeader(3).then(function(header) {
-        assert.equal(header, "StartDate");
-      });        
+  //     teamsPage.getStreaksTableHeader(3).then(function(header) {
+  //       assert.equal(header, "StartDate");
+  //     });        
 
-      teamsPage.getStreaksTableHeader(4).then(function(header) {
-        assert.equal(header, "EndDate");
-      });        
+  //     teamsPage.getStreaksTableHeader(4).then(function(header) {
+  //       assert.equal(header, "EndDate");
+  //     });        
 
-      teamsPage.getStreaksTableHeader(5).then(function(header) {
-        assert.equal(header, "W");
-      });        
-    });    
+  //     teamsPage.getStreaksTableHeader(5).then(function(header) {
+  //       assert.equal(header, "W");
+  //     });        
+  //   });    
 
-      test.it('changing the main constraint should update the table headers', function() {
-        teamsPage.changeMainConstraint("Streaks Of", "At Least", 1, "Rushing TD", "In a Game", "Within a Season");
-        teamsPage.getStreaksTableHeader(3).then(function(header) {
-          assert.equal(header, "StartDate");
-        });
+  //     test.it('changing the main constraint should update the table headers', function() {
+  //       teamsPage.changeMainConstraint("Streaks Of", "At Least", 1, "Rushing TD", "In a Game", "Within a Season");
+  //       teamsPage.getStreaksTableHeader(3).then(function(header) {
+  //         assert.equal(header, "StartDate");
+  //       });
 
-        teamsPage.getStreaksTableHeader(4).then(function(header) {
-          assert.equal(header, "EndDate");
-        });
+  //       teamsPage.getStreaksTableHeader(4).then(function(header) {
+  //         assert.equal(header, "EndDate");
+  //       });
 
-        teamsPage.getStreaksTableHeader(5).then(function(header) {
-          assert.equal(header, "RnTD");
-        });
-      });
+  //       teamsPage.getStreaksTableHeader(5).then(function(header) {
+  //         assert.equal(header, "RnTD");
+  //       });
+  //     });
 
-      test.it('changing the main constraint should update the table stats', function() {
-        teamsPage.getStreaksTableStat(1,1).then(function(count) {
-          assert.equal(count, 7, ' Team 1 - Count');
-        });
+  //     test.it('changing the main constraint should update the table stats', function() {
+  //       teamsPage.getStreaksTableStat(1,1).then(function(count) {
+  //         assert.equal(count, 7, ' Team 1 - Count');
+  //       });
 
-        teamsPage.getStreaksTableStat(1,2).then(function(team) {
-          assert.equal(team, " TEN*", 'Team 1');
-        });
+  //       teamsPage.getStreaksTableStat(1,2).then(function(team) {
+  //         assert.equal(team, " TEN*", 'Team 1');
+  //       });
 
-        teamsPage.getStreaksTableStat(1,5).then(function(stat) {
-          assert.equal(stat, 10, 'Team 1 - RnTD');
-        });         
-      });          
-  });
+  //       teamsPage.getStreaksTableStat(1,5).then(function(stat) {
+  //         assert.equal(stat, 10, 'Team 1 - RnTD');
+  //       });         
+  //     });          
+  // });
 
-  test.describe('#Section: Play By Play', function() {
-    test.it('clicking Play By Play link goes to correct page', function() {
-      teamsPage.goToSection('Play By Play');
-      driver.getCurrentUrl().then(function(url) {
-        assert.match(url, /teams\-play\-by\-play/);
-      });
-    });
+  // test.describe('#Section: Play By Play', function() {
+  //   test.it('clicking Play By Play link goes to correct page', function() {
+  //     teamsPage.goToSection('Play By Play');
+  //     driver.getCurrentUrl().then(function(url) {
+  //       assert.match(url, /teams\-play\-by\-play/);
+  //     });
+  //   });
 
-    // reports
-    var reports = [
-      { type: 'Team Offense', stat: 357.4, statType: "Yd/G", colNum: 2 },  
-      { type: 'Team Defense', stat: 357.4, statType: "Yd/G", colNum: 2 },  
-      { type: 'Team Turnovers', stat: 349, statType: "TO", colNum: 3 },  
-      { type: 'Team Drives', stat: 17121, statType: "OpPly", colNum: 3 },  
-      { type: 'Team Drive Rates', stat: 1.92, statType: "Pts/D", colNum: 4 },  
-      { type: 'Opponent Drive Rates', stat: 1.92, statType: "Pts/D", colNum: 4 },  
-      { type: 'Team Offensive Rates', stat: 5.55, statType: "Yd/Ply", colNum: 2 },  
-      { type: 'Defensive Rates', stat: 5.55, statType: "Yd/Ply", colNum: 2 },
-      { type: 'Team Offensive Conversions', stat: '39.8%', statType: "3rdCv%", colNum: 9 },  
-      { type: 'Defensive Conversions', stat: '39.8%', statType: "3rdCv%", colNum: 9 },  
-      { type: 'Team Special Teams Summary', stat: '83.3%', statType: "FG%", colNum: 5 },  
-      { type: 'Team Penalties', stat: 1887, statType: "Pen", colNum: 3 },  
-      { type: 'Offensive Plays', stat: 644, statType: "OffTD", colNum: 3 },  
-      { type: 'Defensive Plays', stat: 644, statType: "OffTD", colNum: 3 },  
-      { type: 'QB Stats', stat: '63.4%', statType: "Comp%", colNum: 8 },  
-      { type: 'Opponent QB Stats', stat: '63.4%', statType: "Comp%", colNum: 8 },  
-      { type: 'Passing Rates', stat: 90.8, statType: "PsrRt", colNum: 4 },  
-      { type: 'Opponent Passing Rates', stat: 90.8, statType: "PsrRt", colNum: 4 },  
-      { type: 'Rushing', stat: 28666, statType: "RnYds", colNum: 3 },  
-      { type: 'Opponent Rushing', stat: 28666, statType: "RnYds", colNum: 3 },  
-      { type: 'Receptions', stat: 70082, statType: "RecYds", colNum: 4 },  
-      { type: 'Opponent Receptions', stat: 70082, statType: "RecYds", colNum: 4 },  
-      { type: 'From Scrimmage', stat: 643, statType: "ScrTD", colNum: 3 },  
-      { type: 'Rushing Receiving', stat: 95063, statType: "Yds", colNum: 4 },  
-      { type: 'Opponent Rushing Receiving', stat: 95063, statType: "Yds", colNum: 4 },  
-      { type: 'Touchdowns', stat: 688, statType: "TD", colNum: 3 },  
-      { type: 'Opponent Touchdowns', stat: 688, statType: "TD", colNum: 3 },  
-      { type: 'Defensive Stats', stat: 15018, statType: "DfTkl", colNum: 3 },  
-      { type: 'FG / XP / 2Pt', stat: 450, statType: "FG", colNum: 3 },  
-      { type: 'Two Point Conversions', stat: '7.2%', statType: "2Pta/Td%", colNum: 3 }, 
-      { type: 'Third Down Conversions', stat: 1399, statType: "3rdCv", colNum: 3 }, 
-      { type: 'Red Zone Drives', stat: 869, statType: "RZZ", colNum: 4 }, 
-      { type: 'Team Differentials', stat: 0, statType: "PtsMgn", colNum: 3 }, 
-      { type: 'Kickoffs', stat: 1387, statType: "KO", colNum: 3 }, 
-      { type: 'Punts', stat: 1206, statType: "P", colNum: 3 }, 
-      { type: 'Returns', stat: 11120, statType: "K-Ryd", colNum: 4 }, 
-      { type: 'Opponent Returns', stat: 11120, statType: "K-Ryd", colNum: 4 }, 
-      { type: 'Team Offense Rank', stat: 357.4, statType: "Yd/G", colNum: 2 }, 
-      { type: 'Team Record', stat: 131, statType: "W", colNum: 3 },  
-    ];    
+  //   // reports
+  //   var reports = [
+  //     { type: 'Team Offense', stat: 357.4, statType: "Yd/G", colNum: 2 },  
+  //     { type: 'Team Defense', stat: 357.4, statType: "Yd/G", colNum: 2 },  
+  //     { type: 'Team Turnovers', stat: 349, statType: "TO", colNum: 3 },  
+  //     { type: 'Team Drives', stat: 17121, statType: "OpPly", colNum: 3 },  
+  //     { type: 'Team Drive Rates', stat: 1.92, statType: "Pts/D", colNum: 4 },  
+  //     { type: 'Opponent Drive Rates', stat: 1.92, statType: "Pts/D", colNum: 4 },  
+  //     { type: 'Team Offensive Rates', stat: 5.55, statType: "Yd/Ply", colNum: 2 },  
+  //     { type: 'Defensive Rates', stat: 5.55, statType: "Yd/Ply", colNum: 2 },
+  //     { type: 'Team Offensive Conversions', stat: '39.8%', statType: "3rdCv%", colNum: 9 },  
+  //     { type: 'Defensive Conversions', stat: '39.8%', statType: "3rdCv%", colNum: 9 },  
+  //     { type: 'Team Special Teams Summary', stat: '83.3%', statType: "FG%", colNum: 5 },  
+  //     { type: 'Team Penalties', stat: 1887, statType: "Pen", colNum: 3 },  
+  //     { type: 'Offensive Plays', stat: 644, statType: "OffTD", colNum: 3 },  
+  //     { type: 'Defensive Plays', stat: 644, statType: "OffTD", colNum: 3 },  
+  //     { type: 'QB Stats', stat: '63.4%', statType: "Comp%", colNum: 8 },  
+  //     { type: 'Opponent QB Stats', stat: '63.4%', statType: "Comp%", colNum: 8 },  
+  //     { type: 'Passing Rates', stat: 90.8, statType: "PsrRt", colNum: 4 },  
+  //     { type: 'Opponent Passing Rates', stat: 90.8, statType: "PsrRt", colNum: 4 },  
+  //     { type: 'Rushing', stat: 28666, statType: "RnYds", colNum: 3 },  
+  //     { type: 'Opponent Rushing', stat: 28666, statType: "RnYds", colNum: 3 },  
+  //     { type: 'Receptions', stat: 70082, statType: "RecYds", colNum: 4 },  
+  //     { type: 'Opponent Receptions', stat: 70082, statType: "RecYds", colNum: 4 },  
+  //     { type: 'From Scrimmage', stat: 643, statType: "ScrTD", colNum: 3 },  
+  //     { type: 'Rushing Receiving', stat: 95063, statType: "Yds", colNum: 4 },  
+  //     { type: 'Opponent Rushing Receiving', stat: 95063, statType: "Yds", colNum: 4 },  
+  //     { type: 'Touchdowns', stat: 688, statType: "TD", colNum: 3 },  
+  //     { type: 'Opponent Touchdowns', stat: 688, statType: "TD", colNum: 3 },  
+  //     { type: 'Defensive Stats', stat: 15018, statType: "DfTkl", colNum: 3 },  
+  //     { type: 'FG / XP / 2Pt', stat: 450, statType: "FG", colNum: 3 },  
+  //     { type: 'Two Point Conversions', stat: '7.2%', statType: "2Pta/Td%", colNum: 3 }, 
+  //     { type: 'Third Down Conversions', stat: 1399, statType: "3rdCv", colNum: 3 }, 
+  //     { type: 'Red Zone Drives', stat: 869, statType: "RZZ", colNum: 4 }, 
+  //     { type: 'Team Differentials', stat: 0, statType: "PtsMgn", colNum: 3 }, 
+  //     { type: 'Kickoffs', stat: 1387, statType: "KO", colNum: 3 }, 
+  //     { type: 'Punts', stat: 1206, statType: "P", colNum: 3 }, 
+  //     { type: 'Returns', stat: 11120, statType: "K-Ryd", colNum: 4 }, 
+  //     { type: 'Opponent Returns', stat: 11120, statType: "K-Ryd", colNum: 4 }, 
+  //     { type: 'Team Offense Rank', stat: 357.4, statType: "Yd/G", colNum: 2 }, 
+  //     { type: 'Team Record', stat: 131, statType: "W", colNum: 3 },  
+  //   ];    
 
-    reports.forEach(function(report) {
-      test.it("selecting (report: " + report.type + ") shows the correct stat value for " + report.statType, function() {
-        teamsPage.changeReport(report.type);  
-        teamsPage.getPlayByPlayTableStat(report.colNum).then(function(stat) {
-          assert.equal(stat, report.stat);
-        });
-      });
-    });
+  //   reports.forEach(function(report) {
+  //     test.it("selecting (report: " + report.type + ") shows the correct stat value for " + report.statType, function() {
+  //       teamsPage.changeReport(report.type);  
+  //       teamsPage.getPlayByPlayTableStat(report.colNum).then(function(stat) {
+  //         assert.equal(stat, report.stat);
+  //       });
+  //     });
+  //   });
     
-    // play by play
-    test.it('shows the correct possession header', function() {
-      teamsPage.getPossessionHeaderText(1).then(function(stat) {
-        assert.equal(stat, ' Seahawks Ball Starting At 15:00 At The SEA 25');
-      });
-    });
+  //   // play by play
+  //   test.it('shows the correct possession header', function() {
+  //     teamsPage.getPossessionHeaderText(1).then(function(stat) {
+  //       assert.equal(stat, ' Seahawks Ball Starting At 15:00 At The SEA 25');
+  //     });
+  //   });
 
-    test.it('switching to flat view shows the correct play', function() {
-      teamsPage.clickFlatViewTab();
-      teamsPage.getPlayByPlayFlatViewTableStat(2,1).then(function(stat) {
-        assert.equal(stat, '1st & 10');
-      });
+  //   test.it('switching to flat view shows the correct play', function() {
+  //     teamsPage.clickFlatViewTab();
+  //     teamsPage.getPlayByPlayFlatViewTableStat(2,1).then(function(stat) {
+  //       assert.equal(stat, '1st & 10');
+  //     });
 
-    });
+  //   });
 
-    test.it('opening the video modal shows the correct video', function() {
-      teamsPage.clickPlayByPlayFlatViewPlayVideoIcon(5);
-      teamsPage.getVideoPlaylistText(1,2).then(function(stat) {
-        assert.equal(stat, 'PUNT');
-      });
-    });
+  //   test.it('opening the video modal shows the correct video', function() {
+  //     teamsPage.clickPlayByPlayFlatViewPlayVideoIcon(5);
+  //     teamsPage.getVideoPlaylistText(1,2).then(function(stat) {
+  //       assert.equal(stat, 'PUNT');
+  //     });
+  //   });
 
-    test.it('closing video modal', function() {
-      teamsPage.closeVideoPlaylistModal();
-    });
-  });
+  //   test.it('closing video modal', function() {
+  //     teamsPage.closeVideoPlaylistModal();
+  //   });
+  // });
 
   test.describe('#Section: Scatter Plot', function() {
     test.it('clicking Scatter Plot link goes to correct page', function() {
@@ -629,7 +629,10 @@ test.describe('#Page: Teams', function() {
     }); 
 
     test.it('clicking add a trend line should display a trendline on the chart', function() {
-      // TODO - looks like its broken right now?
+      teamsPage.toggleDisplayTrendLine(true);
+      teamsPage.isTrendLineVisible().then(function(visible) {
+        assert.equal(visible, true);
+      });
     }); 
   });
 });
