@@ -18,5 +18,15 @@ test.describe('#Page: Measurables', function() {
     playerPage.clickMeasurablesLink();
   })
 
-  
+  test.describe('#creating', function() {
+
+  });
+
+  test.describe('#updating', function() {
+
+  });
+
+  test.describe('#sorting', function() {
+
+  });
 });

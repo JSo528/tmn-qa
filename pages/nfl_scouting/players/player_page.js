@@ -118,7 +118,7 @@ PlayerPage.prototype.changeProfileDraftYear = function(year) {
 };
 
 PlayerPage.prototype.getProfileLists = function() {
-  var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//span[contains(@class, 'tag')]/span`);
+  var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//span/span`);
   return this.getTextArray(locator);
 };
 
@@ -128,7 +128,8 @@ PlayerPage.prototype.addProfileList = function(list) {
 };
 
 PlayerPage.prototype.removeProfileList = function(list) {
-  var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//span[contains(@class, 'tag')][span[text()='${list}']]/i`);
+  var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//span[span[text()='${list}']]/i`);
+
   return this.click(locator);
 };
 

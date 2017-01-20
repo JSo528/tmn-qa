@@ -35,8 +35,6 @@ block content
         td.start-time(data-time= testRun.startedAt)
         td.end-time(data-time= testRun.endedAt)
 
-  p *Displaying Last 200 Tests
-
   script.
     $('.start-time').each(function(idx, el) {
       var startTime = $(el).data('time');

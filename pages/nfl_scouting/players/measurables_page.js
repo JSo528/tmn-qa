@@ -16,7 +16,7 @@ var inputs = require('../mixins/inputs.js');
 /****************************************************************************
 ** Locators
 *****************************************************************************/
-
+var CREATE_BUTTON = By.xpath(".//tbody[@class='-controls controls']/.//button[contains(@class,'-create')]");
 
 /****************************************************************************
 ** Constructor
@@ -34,6 +34,14 @@ _.extend(MeasurablesPage.prototype, inputs);
 /****************************************************************************
 ** Functions
 *****************************************************************************/
+MeasurablesPage.prototype.clickCreateButton = function() {
+  return this.click(CREATE_BUTTON);
+};
+
+MeasurablesPage.prototype.changeInput = function(rowNum, field, value) {
+  return this.click(CREATE_BUTTON);
+};
+
 // MeasurablesPage.prototype.waitForPageToLoad = function() {
 //   return this.waitForEnabled(BODY_CONTENT, 10000);
 // };

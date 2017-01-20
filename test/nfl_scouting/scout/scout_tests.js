@@ -66,7 +66,6 @@ test.describe('#Page: Scout', function() {
     });
 
     test.it('adding "SO" from class year filter should update the list', function() {
-      scoutPage.toggleDropdownFilter('Class Years', 'JR');
       scoutPage.toggleDropdownFilter('Class Years', 'SO');
       scoutPage.getTableStatsForCol(5).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));

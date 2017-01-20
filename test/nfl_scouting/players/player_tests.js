@@ -60,7 +60,7 @@ test.describe('#Page: Player', function() {
       { field: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
       { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Montgomery, AL' },
       { field: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },
-      { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
+      // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Starter', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'Pos', type: 'dropdown', originalValue: 'QB', updatedValue: 'RB' }
     ];

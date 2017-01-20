@@ -265,5 +265,8 @@ loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
 navbar.goToTeamsPage();
-
-filters.changeValuesForSeasonWeekDropdownFilter(2015, 'W1', 2015, 'W8', true);
+teamsPage.goToSection('Scatter Plot')
+teamsPage.toggleDisplayTrendLine(true);
+teamsPage.isTrendLineVisible().then(function(visible) {
+  console.log(visible)
+})
