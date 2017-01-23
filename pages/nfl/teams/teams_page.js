@@ -123,9 +123,8 @@ TeamsPage.prototype.clickStatsExportLink = function() {
   return this.driver.sleep(5000);
 };
 
-
 TeamsPage.prototype.readAndDeleteExportCSV = function() {
-  return this.readAndDeleteCSV('../Downloads/export.csv')
+  return this.readAndDeleteCSV('../Downloads/export.csv');
 };
 
 /****************************************************************************

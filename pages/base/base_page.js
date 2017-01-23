@@ -470,11 +470,12 @@ BasePage.prototype.readAndDeleteCSV = function(path) {
       fileContents += data;
       fileContents += '/n';
     }).on("end", function() {
-      fs.remove('../Downloads/', function (err) {
-        if (err) return console.error(err);
-      })
-
-      d.fulfill(fileContents);
+      fs.remove(path, function (err) {
+        if (err) {
+          console.error(err);
+        } 
+        d.fulfill(fileContents);
+      });
     })
   } catch (err) {
     console.log("ERROR: " + err);

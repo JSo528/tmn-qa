@@ -36,6 +36,10 @@ VideoPlaylist = {
   clickFlatViewTab: function() {
     return this.click(this.FLAT_VIEW_TAB);  
   },
+
+  isFlatViewTabVisible: function() {
+    return this.isDisplayed(this.FLAT_VIEW_TAB, 500);
+  },
   
   // Playlist ByPossession Table/Modal
   getPossessionHeaderText: function(posNum) {
