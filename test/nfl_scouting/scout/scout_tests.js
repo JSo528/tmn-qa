@@ -7,12 +7,14 @@ var extensions = require('../../../lib/extensions.js');
 // Page Objects
 var Navbar = require('../../../pages/nfl_scouting/navbar.js');
 var ScoutPage = require('../../../pages/nfl_scouting/scout/scout_page.js');
-var navbar, scoutPage;
+var Filters = require('../../../pages/nfl_scouting/filters.js');
+var navbar, scoutPage, filters;
 
 test.describe('#Page: Scout', function() {
   test.before(function() {
     scoutPage = new ScoutPage(driver);
     navbar = new Navbar(driver);
+    filters = new Filters(driver);
     navbar.goToScoutPage();
   })
 
@@ -45,7 +47,7 @@ test.describe('#Page: Scout', function() {
       });
     });
 
-    test.it('selecting jags position should sort the list by final grade asc', function() {
+    test.it('selecting final grade header should sort the list by final grade asc', function() {
       scoutPage.clickRemoveSortIcon(8);
       scoutPage.clickTableHeader(3);
 
@@ -58,7 +60,7 @@ test.describe('#Page: Scout', function() {
 
   test.describe('#filters', function() {
     test.it('removing "SR" from class year filter should update the list', function() {
-      scoutPage.toggleDropdownFilter('Class Years', 'SR');
+      filters.changeDropdownFilter('Class Years', 'SR');
       scoutPage.getTableStatsForCol(5).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['JR'], uniqueStats);
@@ -66,7 +68,7 @@ test.describe('#Page: Scout', function() {
     });
 
     test.it('adding "SO" from class year filter should update the list', function() {
-      scoutPage.toggleDropdownFilter('Class Years', 'SO');
+      filters.changeDropdownFilter('Class Years', 'SO');
       scoutPage.getTableStatsForCol(5).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['SO', 'JR'], uniqueStats);
@@ -74,7 +76,7 @@ test.describe('#Page: Scout', function() {
     });
 
     test.it('adding "DC" to position filter should update the list', function() {
-      scoutPage.toggleDropdownFilter('Jags. Pos.', 'DC');
+      filters.changeDropdownFilter('Jags. Pos.', 'DC');
       scoutPage.getTableStatsForCol(11).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['DC'], uniqueStats);
@@ -82,7 +84,7 @@ test.describe('#Page: Scout', function() {
     });   
 
     test.it('adding "CB" from position filter should update the list', function() {
-      scoutPage.toggleDropdownFilter('Jags. Pos.', 'FS');
+      filters.changeDropdownFilter('Jags. Pos.', 'FS');
       scoutPage.getTableStatsForCol(11).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['DC', 'FS'], uniqueStats);

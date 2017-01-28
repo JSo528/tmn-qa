@@ -79,12 +79,12 @@ ScoutingReportPage.prototype.changeObservationsInput = function(field, value) {
 
 // frame, specialTeams, alignment
 ScoutingReportPage.prototype.getObservationsText = function(field) {
-  var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[@inject='${field}']/div`);
+  var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[@inject='${field}']/div[@class='-editor control']`);
   return this.getTextField(locator);
 };
 
 ScoutingReportPage.prototype.changeObservationsText = function(field, text) {
-  var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[@inject='${field}']/div`);
+  var locator = By.xpath(`.//div[contains(@class,'-observations')]/.//div[@inject='${field}']/div[@class='-editor control']`);
   return this.changeTextField(locator, text);
 };
 

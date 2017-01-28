@@ -14,7 +14,7 @@ var CHECKBOX_BOTH = '--';
 var CHECKBOX_INT = {
   'check_box': 0,
   'check_box_outline_blank': 1,
-  '[N/A]': 2
+  'Select value': 2
 }
 var CHECKBOX_SELECTION = {
   true: 0,
@@ -25,7 +25,7 @@ var CHECKBOX_SELECTION = {
 var CHECKBOX_CONVERSION = {
   'check_box': true,
   'check_box_outline_blank': false,
-  '[N/A]': 'both'
+  'Select value': 'both'
 }
 
 // DatePicker

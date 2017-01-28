@@ -75,13 +75,6 @@ ScoutPage.prototype.clickRemoveSortIcon = function(col) {
   return this.click(locator);
 };
 
-ScoutPage.prototype.toggleDropdownFilter = function(filterName, optionName, selected) {
-  var locator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]`);
-  this.click(locator);
-  var optionLocator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]/.//li[text()='${optionName}']`)
-  return this.click(optionLocator);
-};
-
 ScoutPage.prototype.clickTableStat = function(row, col) {
   var locator = By.xpath(`.//div[@class='reports']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div/a`);
   return this.click(locator);

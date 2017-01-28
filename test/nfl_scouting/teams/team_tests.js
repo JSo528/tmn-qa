@@ -9,11 +9,13 @@ var extensions = require('../../../lib/extensions.js');
 var Navbar = require('../../../pages/nfl_scouting/navbar.js');
 var TeamsPage = require('../../../pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('../../../pages/nfl_scouting/teams/team_page.js');
-var navbar, teamsPage, teamPage;
+var Filters = require('../../../pages/nfl_scouting/filters.js');
+var navbar, teamsPage, teamPage, filters;
 
 test.describe('#Page: Team', function() {
   test.before(function() {
     teamPage = new TeamPage(driver);
+    filters = new Filters(driver);
     browser.visit(url+'team/41');
   });
 
@@ -45,7 +47,7 @@ test.describe('#Page: Team', function() {
 
   test.describe('#filters', function() {
     test.it('selecting starters only, should update player list', function() {
-      teamPage.changeCheckboxFilter('Starter', true);
+      filters.changeCheckboxFilter('Is Starter', true);
       teamPage.getTableCheckboxStats(8).then(function(statuses) {
         var uniqueStatuses = Array.from(new Set(statuses));
         assert.sameMembers([true], uniqueStatuses);
@@ -53,7 +55,7 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('selecting no starters, should update player list', function() {
-      teamPage.changeCheckboxFilter('Starter', false);
+      filters.changeCheckboxFilter('Is Starter', false);
       teamPage.getTableCheckboxStats(8).then(function(statuses) {
         var uniqueStatuses = Array.from(new Set(statuses));
         assert.sameMembers([false], uniqueStatuses);
@@ -61,7 +63,7 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('selecting both starters, should update player list', function() {
-      teamPage.changeCheckboxFilter('Starter', 'both');
+      filters.changeCheckboxFilter('Is Starter', 'both');
       teamPage.getTableCheckboxStats(8).then(function(statuses) {
         var uniqueStatuses = Array.from(new Set(statuses));
         assert.sameMembers([true,false], uniqueStatuses);
@@ -69,14 +71,14 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('removing top draft year, should update player list', function() {
-      teamPage.changeDropdownFilter('Draft Years', 2017);
+      filters.changeDropdownFilter('For Draft Years', 2017);
       teamPage.getTableStats(3).then(function(years) {
         assert.notInclude(years, '2017');
       });
     });
 
     test.it('adding tier C, should update player list', function() {
-      teamPage.changeDropdownFilter('Tier', 'C');
+      filters.changeDropdownFilter('For Tier', 'C');
       teamPage.getTableStats(2).then(function(tiers) {
         var uniqueTiers = Array.from(new Set(tiers));
         assert.sameMembers(['C'], uniqueTiers);
@@ -84,7 +86,7 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('selecting positions = DL should update player list', function() {
-      teamPage.changeDropdownFilter('Position', 'DL');
+      filters.changeDropdownFilter('At Position', 'DL');
       teamPage.getTableStats(9).then(function(positions) {
         var uniquePositions = Array.from(new Set(positions));
         assert.sameMembers(['DL'], uniquePositions);

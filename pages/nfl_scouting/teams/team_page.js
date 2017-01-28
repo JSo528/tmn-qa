@@ -54,17 +54,6 @@ TeamPage.prototype.clickRemoveSortIcon = function(col) {
   return this.click(locator);
 };
 
-TeamPage.prototype.changeDropdownFilter = function(filterName, optionName, selected) {
-  var locator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]`);
-  var optionLocator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]/.//li[text()='${optionName}']`)
-  return this.changeDropdown(locator, optionLocator);
-};
-
-TeamPage.prototype.changeCheckboxFilter = function(filterName, selected) {
-  var locator = By.xpath(`.//div[@class='filter'][div[contains(text(),'${filterName}')]]/div/div`);
-  return this.changeTriCheckbox(locator, selected);
-};
-
 // table stats
 TeamPage.prototype.getTableStat = function(row, col) {
   var d = Promise.defer();

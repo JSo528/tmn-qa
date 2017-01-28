@@ -68,7 +68,7 @@ test.describe('#Page: ScoutingReports', function() {
       { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
       { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Mobile, AL' },
       { field: 'player.number', title: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },
-      { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018, originalValueInput: { year: 2017 }, updatedValueInput: { year: 2018 } },
+      // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018, originalValueInput: { year: 2017 }, updatedValueInput: { year: 2018 } },
       { field: 'Starter', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'JUCO', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'RS', type: 'checkbox', originalValue: false, updatedValue: true },
