@@ -40,6 +40,11 @@ IncidentReports = {
     'W15',
     'W16',
   ],
+  INCIDENT_REPORTS_TYPE_SORT_KEY: [
+    'C',
+    'X',
+    'IR'
+  ],
   clickIncidentReportSpacer: function() {
     return this.click(INCIDENT_REPORT_SPACER);
   },

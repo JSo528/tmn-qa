@@ -57,7 +57,10 @@ app.get('/test-results/', function(req, res) {
     .exec(function(err, testRuns) {
       data.testRuns = testRuns.map(function(testRun) {
         delete testRun.errorObjects;
-        testRun.testName = scripts[testRun.testNumber].name;
+        if (scripts[testRun.testNumber]) {
+          testRun.testName = scripts[testRun.testNumber].name;  
+        }
+          
         return testRun;
       });
 

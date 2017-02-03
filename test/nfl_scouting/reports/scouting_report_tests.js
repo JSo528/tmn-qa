@@ -347,7 +347,7 @@ test.describe('#Page: ScoutingReports', function() {
       {
         position: 'K', // P
         inputs: [
-          { title: 'RightLeft', value: 4 },
+          { title: 'Right Left', value: 4 },
           { title: 'Leg Speed', value: 8 },
           { title: 'Leg Strength', value: 3 },
           { title: 'Accuracy Short', value: 6 },

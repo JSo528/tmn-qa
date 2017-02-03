@@ -313,7 +313,7 @@ test.describe('#Page: Players', function() {
         { type: 'Kickoffs', topStat: 89.0, statType: "OpKRSP", colNum: 8 }, 
         { type: 'Punts', topStat: 96, statType: "P", colNum: 5 }, 
         { type: 'Returns', topStat: 1077, statType: "K-Ryd", colNum: 6 }, 
-            { type: 'QB Stats', topStat: 110.1, statType: "PsrRt", colNum: 17 },  
+        { type: 'QB Stats', topStat: 110.1, statType: "PsrRt", colNum: 17 },  
       ];
 
       reports.forEach(function(report) {

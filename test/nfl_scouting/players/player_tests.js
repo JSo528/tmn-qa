@@ -317,7 +317,7 @@ test.describe('#Page: Player', function() {
         playerPage.clickIncidentReportsRemoveSortIcon(2);
         playerPage.clickIncidentReportsTableHeader(3);
         playerPage.getIncidentReportsTableValues('type').then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
+          var sortedArray = extensions.customSort(stats, 'asc', playerPage.INCIDENT_REPORTS_TYPE_SORT_KEY);
           assert.deepEqual(stats, sortedArray);
         });
       });
@@ -325,7 +325,7 @@ test.describe('#Page: Player', function() {
       test.it('sorting by type desc', function() {
         playerPage.clickIncidentReportsSortIcon(3);
         playerPage.getIncidentReportsTableValues('type').then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
+          var sortedArray = extensions.customSort(stats, 'desc', playerPage.INCIDENT_REPORTS_TYPE_SORT_KEY);
           assert.deepEqual(stats, sortedArray);
         });
       });
