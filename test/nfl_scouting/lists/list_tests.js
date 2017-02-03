@@ -56,7 +56,7 @@ test.describe('#Page: List', function() {
       listPage.clickTableHeader(3);
 
       listPage.getTableStats(3).then(function(names) {
-        var sortedArray = extensions.customSort(names, 'asc');
+        var sortedArray = extensions.customSortStrings(names, 'asc', true);
         assert.deepEqual(names, sortedArray);
       });
     });
@@ -65,7 +65,7 @@ test.describe('#Page: List', function() {
       listPage.clickSortIcon(3);
 
       listPage.getTableStats(3).then(function(names) {
-        var sortedArray = extensions.customSort(names, 'desc');
+        var sortedArray = extensions.customSortStrings(names, 'desc', true);
         assert.deepEqual(names, sortedArray);
       });
     });
@@ -103,7 +103,7 @@ test.describe('#Page: List', function() {
     });
 
     var attributes = [
-      { field: 'Draft Year', col: 2, type: 'date', originalValue: 2017, updatedValue: 2018 },
+      // { field: 'Draft Year', col: 2, type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Jersey', col: 5, type: 'input', originalValue: 11, updatedValue: 32 },
       { field: 'Pos', col: 6, type: 'dropdown', originalValue: 'QB', updatedValue: 'CB' },
       { field: 'Height', col: 7, type: 'input', originalValue: '5090', updatedValue: '6010' },

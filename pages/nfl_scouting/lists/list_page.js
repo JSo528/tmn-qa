@@ -44,17 +44,20 @@ ListPage.prototype.getTableTitle = function() {
 
 ListPage.prototype.clickTableHeader = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.waitUntilStaleness(BODY_CONTENT);
 };
 
 ListPage.prototype.clickSortIcon = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')][1]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.waitUntilStaleness(BODY_CONTENT);
 };
 
 ListPage.prototype.clickRemoveSortIcon = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.waitUntilStaleness(BODY_CONTENT);
 };
 
 ListPage.prototype.playerExistsInTable = function(firstName, lastName) {

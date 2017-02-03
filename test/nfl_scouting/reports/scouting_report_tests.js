@@ -355,7 +355,7 @@ test.describe('#Page: ScoutingReports', function() {
           { title: 'Rise', value: 7 },
           { title: 'In Elements', value: 9 },
           { title: 'Pressure Kicks', value: 1 },
-          { title: 'Kickoffs', value: 5 },
+          { title: 'Kickoff', value: 5 },
           { title: 'Coverage', value: 8 },
         ], 
         sectionAvg: 5.3
