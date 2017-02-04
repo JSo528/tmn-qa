@@ -16,7 +16,7 @@ var INCIDENT_REPORT_COMMENT_INPUT = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_N
 var INCIDENT_DIVS = By.css('.incidents .incident');
 
 IncidentReports = {
-  INCIDENT_REPORTS_WEEK_SORT_KEY: [
+  INCIDENT_REPORTS_WEEK_ENUMERATION: [
     'OS',
     'TC',
     'P1',
@@ -40,7 +40,7 @@ IncidentReports = {
     'W15',
     'W16',
   ],
-  INCIDENT_REPORTS_TYPE_SORT_KEY: [
+  INCIDENT_REPORTS_TYPE_ENUMERATION: [
     'C',
     'X',
     'IR'

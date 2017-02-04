@@ -56,7 +56,7 @@ test.describe('#Page: List', function() {
       listPage.clickTableHeader(3);
 
       listPage.getTableStats(3).then(function(names) {
-        var sortedArray = extensions.customSortStrings(names, 'asc', true);
+        var sortedArray = extensions.customSortStringsInsensitive(names, 'asc');
         assert.deepEqual(names, sortedArray);
       });
     });
@@ -65,7 +65,7 @@ test.describe('#Page: List', function() {
       listPage.clickSortIcon(3);
 
       listPage.getTableStats(3).then(function(names) {
-        var sortedArray = extensions.customSortStrings(names, 'desc', true);
+        var sortedArray = extensions.customSortStringsInsensitive(names, 'desc');
         assert.deepEqual(names, sortedArray);
       });
     });

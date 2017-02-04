@@ -14,11 +14,12 @@ var SCOUT_LINK = By.xpath(".//header/nav/.//li/a[text()='Scout']");
 var TEAMS_LINK = By.xpath(".//header/nav/.//li/a[text()='Teams']");
 var LISTS_LINK = By.xpath(".//header/nav/.//li/a[text()='Lists']");
 var DRAFT_LINK = By.xpath(".//header/nav/.//li/a[text()='Draft']")
-
+var PLAYERS_LINK = By.xpath(".//header/nav/.//li/a[text()='Players']")
 
 var SCOUT_TABLE = By.xpath(".//div[@class='reports']/.//table");
 var TEAMS_TABLE = By.xpath(".//div[@class='teams']/.//table");
 var LISTS_TABLE = By.xpath(".//div[@class='tags']/.//table");
+var PLAYERS_TABLE = By.xpath(".//div[@class='search']/.//div[@class='scroll-wrap-x']/table");
 var DRAFT_CARDS_CONTAINER = By.xpath(".//div[@class='draft']/.//div[@inject='draftCards']");
 
 var LOGOUT_LINK = By.xpath(".//header/nav/.//div[@class='navbar-right'][1]/ul/li/a");
@@ -54,6 +55,11 @@ Navbar.prototype.goToListsPage = function() {
 Navbar.prototype.goToDraftPage = function() {
   this.click(DRAFT_LINK);
   return this.waitUntilStaleness(DRAFT_CARDS_CONTAINER, 10000);
+};
+
+Navbar.prototype.goToPlayersPage = function() {
+  this.click(PLAYERS_LINK);
+  return this.waitUntilStaleness(PLAYERS_TABLE, 10000);
 };
 
 Navbar.prototype.clickLogoutLink = function() {

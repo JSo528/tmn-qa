@@ -283,7 +283,7 @@ test.describe('#Page: Player', function() {
       test.it('sorting by week asc', function() {
         playerPage.clickIncidentReportsTableHeader(1);
         playerPage.getIncidentReportsTableValues('week').then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc', playerPage.INCIDENT_REPORTS_WEEK_SORT_KEY);
+          var sortedArray = extensions.customSortEnumerated(stats, 'asc', playerPage.INCIDENT_REPORTS_WEEK_ENUMERATION);
           assert.deepEqual(stats, sortedArray);
         });
       });
@@ -291,7 +291,7 @@ test.describe('#Page: Player', function() {
       test.it('sorting by week desc', function() {
         playerPage.clickIncidentReportsSortIcon(1);
         playerPage.getIncidentReportsTableValues('week').then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc', playerPage.INCIDENT_REPORTS_WEEK_SORT_KEY);
+          var sortedArray = extensions.customSortEnumerated(stats, 'desc', playerPage.INCIDENT_REPORTS_WEEK_ENUMERATION);
           assert.deepEqual(stats, sortedArray);
         });
       });
@@ -317,7 +317,7 @@ test.describe('#Page: Player', function() {
         playerPage.clickIncidentReportsRemoveSortIcon(2);
         playerPage.clickIncidentReportsTableHeader(3);
         playerPage.getIncidentReportsTableValues('type').then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc', playerPage.INCIDENT_REPORTS_TYPE_SORT_KEY);
+          var sortedArray = extensions.customSortEnumerated(stats, 'asc', playerPage.INCIDENT_REPORTS_TYPE_ENUMERATION);
           assert.deepEqual(stats, sortedArray);
         });
       });
@@ -325,7 +325,7 @@ test.describe('#Page: Player', function() {
       test.it('sorting by type desc', function() {
         playerPage.clickIncidentReportsSortIcon(3);
         playerPage.getIncidentReportsTableValues('type').then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc', playerPage.INCIDENT_REPORTS_TYPE_SORT_KEY);
+          var sortedArray = extensions.customSortEnumerated(stats, 'desc', playerPage.INCIDENT_REPORTS_TYPE_ENUMERATION);
           assert.deepEqual(stats, sortedArray);
         });
       });
