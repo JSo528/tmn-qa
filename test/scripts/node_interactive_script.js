@@ -196,6 +196,7 @@ var Navbar = require('../pages/nfl_scouting/navbar.js');
 var TeamsPage = require('../pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('../pages/nfl_scouting/teams/team_page.js');
 var PlayerPage = require('../pages/nfl_scouting/players/player_page.js');
+var PlayersPage = require('../pages/nfl_scouting/players/players_page.js');
 var ScoutPage = require('../pages/nfl_scouting/scout/scout_page.js');
 var EvaluationReportPage = require('../pages/nfl_scouting/reports/evaluation_report_page.js');
 var ScoutingReportPage = require('../pages/nfl_scouting/reports/scouting_report_page.js');
@@ -216,6 +217,7 @@ interviewReportPage = new InterviewReportPage(driver);
 scoutPage = new ScoutPage(driver);
 listPage = new ListPage(driver);
 manageDraftPage = new ManageDraftPage(driver);
+playersPage = new PlayersPage(driver);
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"

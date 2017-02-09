@@ -94,7 +94,7 @@ IncidentReports = {
           break;
       }
     }
-    return this.waitUntilStaleness(SAVE_ICON, 500);
+    return this.waitUntilStaleness(SAVE_ICON, 5000);
   },
 
   getIncidentReportCount: function() {

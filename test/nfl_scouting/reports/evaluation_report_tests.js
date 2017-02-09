@@ -74,7 +74,7 @@ test.describe('#Page: EvaulationReports', function() {
       { field: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
       { field: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
       { field: 'Jersey', type: 'jersey', originalValue: 11, updatedValue: 16 },
-      { field: 'Draft Year', type: 'draftYear', originalValue: 2017, updatedValue: 2018 },
+      // { field: 'Draft Year', type: 'draftYear', originalValue: 2017, updatedValue: 2018 },
       { field: 'Position', type: 'position', originalValue: 'QB', updatedValue: 'RB' },
       { field: 'Height', type: 'input', originalValue: 5090, updatedValue: 6010 },
       { field: 'Weight', type: 'input', originalValue: 170, updatedValue: 220 },

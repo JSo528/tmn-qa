@@ -86,7 +86,7 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('selecting positions = DL should update player list', function() {
-      filters.changeDropdownFilter('At Position', 'DL');
+      filters.changeDropdownFilter('At Positions', 'DL');
       teamPage.getTableStats(9).then(function(positions) {
         var uniquePositions = Array.from(new Set(positions));
         assert.sameMembers(['DL'], uniquePositions);

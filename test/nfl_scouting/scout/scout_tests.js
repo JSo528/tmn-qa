@@ -60,7 +60,7 @@ test.describe('#Page: Scout', function() {
 
   test.describe('#filters', function() {
     test.it('removing "SR" from class year filter should update the list', function() {
-      filters.changeDropdownFilter('Class Years', 'SR');
+      filters.changeDropdownFilter('For Class Years', 'SR');
       scoutPage.getTableStatsForCol(5).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['JR'], uniqueStats);
@@ -68,7 +68,7 @@ test.describe('#Page: Scout', function() {
     });
 
     test.it('adding "SO" from class year filter should update the list', function() {
-      filters.changeDropdownFilter('Class Years', 'SO');
+      filters.changeDropdownFilter('For Class Years', 'SO');
       scoutPage.getTableStatsForCol(5).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['SO', 'JR'], uniqueStats);
