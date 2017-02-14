@@ -6,7 +6,7 @@ var Key = require('selenium-webdriver').Key;
 // SaveIcon
 var SAVE_ICON = By.css('.status');
   
-var NEW_INCIDENT_REPORT_DIV_NUM = 2
+var NEW_INCIDENT_REPORT_DIV_NUM = 1
 var INCIDENT_REPORT_SPACER = By.css('.-incidents .-show');
 var CREATE_INCIDENT_REPORT_BTN = By.css('.-incidents .-create');
 var INCIDENT_REPORT_WEEK_INPUT = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[@inject='week']/div`);

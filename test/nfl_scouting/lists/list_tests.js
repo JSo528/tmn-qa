@@ -10,7 +10,7 @@ var ListPage = require('../../../pages/nfl_scouting/lists/list_page.js');
 var ListsPage = require('../../../pages/nfl_scouting/lists/lists_page.js');
 var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
 var navbar, listsPage, listPage, playerPage;
-var firstName, lastName;
+var playerRowNum = 1;
 
 test.describe('#Page: List', function() {
   test.before(function() {
@@ -23,11 +23,11 @@ test.describe('#Page: List', function() {
   test.describe('#table', function() {
     test.it('table title is labeled correctly', function() {
       navbar.goToListsPage();
-      listsPage.clickTableRowWithListName('list1');
+      listsPage.clickTableRowWithListName('PA');
       listPage.waitForPageToLoad();
 
       listPage.getTableTitle().then(function(title) {
-        assert.equal(title, 'LIST1:\nPLAYERS', 'table title');
+        assert.equal(title, 'PA:\nPLAYERS', 'table title');
       });
     });
   });
@@ -73,64 +73,72 @@ test.describe('#Page: List', function() {
 
   test.describe('#addingPlayer', function() {
     test.it('adding list to player', function() {
-      browser.visit(url + 'player/31686');
-      playerPage.addProfileList('test');
-
-      playerPage.getProfileInput('First Name').then(function(name) {
-        firstName = name;
-      });
-
-      playerPage.getProfileInput('Last Name').then(function(name) {
-        lastName = name;
-      });
+      browser.visit(url + 'player/31682');
+      playerPage.addProfileList('GI');
     });
 
     test.it('player should show up on list', function() {
       navbar.goToListsPage();
-      listsPage.clickTableRowWithListName('test');
+      listsPage.clickTableRowWithListName('GI');
       listPage.waitForPageToLoad();
 
-      listPage.playerExistsInTable(firstName, lastName).then(function(exists) {
+      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
         assert.equal(exists, true);
       });
     });
   });
-  
-  test.describe('#updatingPlayerInfo: Dakota Cornwell', function() {
-    test.before(function() {
-      browser.refresh();
-      listPage.waitForPageToLoad();
+
+  test.describe('#removingPlayer', function() {
+    test.it('removing list from player', function() {
+      browser.visit(url + 'player/31682');
+      playerPage.removeProfileList('GI');
     });
 
+    test.it('player should not show up on list', function() {
+      navbar.goToListsPage();
+      listsPage.clickTableRowWithListName('GI');
+      listPage.waitForPageToLoad();
+
+      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
+        assert.equal(exists, false);
+      });
+    });
+  });  
+  
+  test.describe('#updatingFields', function() {
     var attributes = [
-      // { field: 'Draft Year', col: 2, type: 'date', originalValue: 2017, updatedValue: 2018 },
-      { field: 'Jersey', col: 5, type: 'input', originalValue: 11, updatedValue: 32 },
-      { field: 'Pos', col: 6, type: 'dropdown', originalValue: 'QB', updatedValue: 'CB' },
-      { field: 'Height', col: 7, type: 'input', originalValue: '5090', updatedValue: '6010' },
-      { field: 'Weight', col: 8, type: 'input', originalValue: '170', updatedValue: '200' },
-      { field: 'Speed', col: 9, type: 'input', originalValue: '4.70', updatedValue: '4.60' },
-      { field: 'Unenrolled', col: 11, type: 'checkbox', originalValue: false, updatedValue: true }
+      { field: 'Jersey', col: 5, type: 'input', updatedValue: 10 },
+      { field: 'Pos', col: 6, type: 'dropdown', updatedValue: 'RB', placeholder: 'Select value' },
+      { field: 'Height', col: 7, type: 'input', updatedValue: '6020i' },
+      { field: 'Weight', col: 8, type: 'input', updatedValue: '220e' },
+      { field: 'Speed', col: 9, type: 'input', updatedValue: '5.20e' },
+      { field: 'Unenrolled', col: 11, type: 'checkbox', updatedValue: true }
     ];
 
-    attributes.forEach(function(attr) {
-      test.it(attr.field + ' should have correct initial value', function() {
-        listPage.getTableStatField(attr.type, 1, attr.col).then(function(value) {
-          assert.equal(value, attr.originalValue, attr.field);
+    test.it('get original values', function() {
+      navbar.goToListsPage();
+      listsPage.clickTableRowWithListName('GI');
+      listPage.waitForPageToLoad();
+      listPage.clickTableHeader('4')
+      attributes.forEach(function(attr, idx) {
+        listPage.getTableStatField(attr.type, playerRowNum, attr.col).then(function(stat) {
+          attributes[idx].originalValue = stat;
         });
       });
     });
 
-    test.it("updating fields (if this test fails, itll cause a cascading effect for the other tests in this section", function() {
+    test.it('updating fields', function() {
       attributes.forEach(function(attr) {
-        listPage.changeTableStatField(attr.type, 1, attr.col, attr.updatedValue );
+        listPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.updatedValue );
       });
       browser.refresh();
       listPage.waitForPageToLoad();
+      listPage.clickTableHeader('4')
     });
 
     attributes.forEach(function(attr) {
       test.it('updating ' + attr.field + ' should persist on reload', function() {
-        listPage.getTableStatField(attr.type, 1, attr.col).then(function(value) {
+        listPage.getTableStatField(attr.type, playerRowNum, attr.col).then(function(value) {
           assert.equal(value, attr.updatedValue, attr.field);
         });
       });
@@ -138,24 +146,7 @@ test.describe('#Page: List', function() {
 
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
-        listPage.changeTableStatField(attr.type, 1, attr.col, attr.originalValue );
-      });
-    });
-  });
-
-  test.describe('#removingPlayer', function() {
-    test.it('removing list from player', function() {
-      browser.visit(url + 'player/31686');
-      playerPage.removeProfileList('test');
-    });
-
-    test.it('player should not show up on list', function() {
-      navbar.goToListsPage();
-      listsPage.clickTableRowWithListName('test');
-      listPage.waitForPageToLoad();
-
-      listPage.playerExistsInTable(firstName, lastName).then(function(exists) {
-        assert.equal(exists, false);
+        listPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.originalValue );
       });
     });
   });

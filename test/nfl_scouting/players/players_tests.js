@@ -153,7 +153,7 @@ test.describe('#Page: Players', function() {
         playersPage.clickNextButton();
         playersPage.getTableStat(1,3).then(function(stat) {
           firstPlayerSecondPage = stat;
-          assert.isAtLeast(firstPlayerSecondPage, lastPlayerFirstPage, 'last name of 1st row player on 2nd page > last name of 25th row player on 1st page');
+          assert.isAtLeast(firstPlayerSecondPage.toLowerCase(), lastPlayerFirstPage.toLowerCase(), 'last name of 1st row player on 2nd page > last name of 25th row player on 1st page');
         });
       });
 
@@ -172,10 +172,10 @@ test.describe('#Page: Players', function() {
       { name: 'For Draft Years', values: ['2018', '2020'], columnName: 'Draft Year' },
       { name: 'For Tier', values: ['A'], columnName: 'Tier' },
       { name: 'Draft Position', values: ['LEO'], columnName: 'Draft Position' },
-      { name: 'Bowl Game', values: ['EW'], columnName: 'Bowl Game' },
-      { name: 'Feb. Grade', values: ['8.0'], columnName: 'Feb. Grade' },
-      { name: 'Dec. Grade', values: ['7.0'], columnName: 'Dec. Grade' },
-      { name: 'Final. Grade', values: ['7.5'], columnName: 'Final. Grade' },
+      { name: 'Bowl Game', values: ['SR'], columnName: 'Bowl Game' },
+      { name: 'Feb. Grade', values: ['7.5'], columnName: 'Feb. Grade' },
+      { name: 'Dec. Grade', values: ['8.0'], columnName: 'Dec. Grade' },
+      { name: 'Final. Grade', values: ['2.2'], columnName: 'Final. Grade' },
     ];
 
     var checkboxFilters = [
@@ -269,27 +269,27 @@ test.describe('#Page: Players', function() {
       });      
     });
 
-    test.it('adding filter: On Player Lists (NFLPA)', function() {
+    test.it('adding filter: On Player Lists (TEST)', function() {
       browser.refresh();
       playersPage.addFilter('On Player Lists');
-      filters.setResourceSetFilter('On Player Lists', ['NFLPA']);
+      filters.setResourceSetFilter('On Player Lists', ['TEST']);
 
       playersPage.waitForPageToLoad();
 
       playersPage.getTableStatsFor('Last Name').then(function(stats) {
-        assert.sameMembers(['ADAMS', 'ANDERSON'], stats);
+        assert.sameMembers(['VICKERS', 'VULCANO'], stats);
       });
     });
 
     test.it('adding filter: Alerts (a)', function() {
       browser.refresh();
       playersPage.addFilter('Alerts');
-      filters.setDropdownFilter('Alerts', ['a']);
+      filters.setDropdownFilter('Alerts', ['u']);
 
       playersPage.waitForPageToLoad();
 
       playersPage.getTableStatsFor('Last Name').then(function(stats) {
-        assert.sameMembers(['Barnes', 'ANDERSON'], stats);
+        assert.sameMembers(['DANIELS', 'EVANS', 'VICKERS'], stats);
       });
     });
 
@@ -352,7 +352,7 @@ test.describe('#Page: Players', function() {
     });
 
     test.it('csv file should have the correct data', function() {
-      var exportFileContents = ',,,qb,HIUN,,,/n,Aaron,Jarell,wr,MSSO,6050,203,/n,Aaron,Montel,qb,CASJ,6052i,201,/n,Aaron,Austin,wr,CAUN,6040,210,/n56,AARON,DMITRE,dt,OHAS,6024e,400e,5.20e/n65,AARON,EVAN,ot,SDNO,6050e,290e,5.30e/n23,AARON,DWAYNE,oh,OHMT,5070e,185e,4.60e/n12,AARON,JARELL,wo,MSSO,6040e,195e,4.60e/n82,AASEN,GRANT,pt,GATC,6000e,200e,5.15e/n1,ABAD,MANUEL,dc,FLTC,5112v,182v,4.49v/n32,Abanikanda,Michael,rb,NYBU,5080,185,/n34,ABARE,GREG,te,NYRE,6030e,215e,5.10e/n96,ABBAS,BRANDON,pk,IACO,6010e,215e,5.05e/n,Abbington,Chase,rb,MOSE,6020,215,/n39,Abbington,Chase,rb,MOUN,6020,215,/n,Abbott,Aaron,db,MIEA,6010,206,/n,Abbott,Marcus,de,TXLA,6030,271,/n,Abbott,Britton,qb,OKST,6020,246,/n,Abbott,Cody,ol,IDST,6030,276,/n47,Abbott,Blake,fb,OKTU,5110,227,/n69,ABBOTT,CODY,og,IDST,6020e,270e,5.40e/n,Abby,Jerimiah,ol,LASO,6040,328,/n3,ABDELMOTY,SAMER,fs,PACA,5110e,180e,4.80e/n45,Abdesmad,Mehdi,dl,MABC,6070,286,/n29,Abdul-Akbar,Tariq,db,VARI,5090,158,/n,Abdul-Aziz,Jamil,ol,LAST,6020,270,/n,Abdul-Aziz,Jibrail,ol,LAST,6020,289,/n,Abdullah,Naji,de,VAUN,6050,235,/n,Abdullah,Khalid,rb,VAJM,5100,220,/n32,ABDULLAH,KHALID,oh,VAJM,5096v,214v,4.80v/n44,ABDUL-RAZZAY,AKHMAD,de,KSWA,6017v,237v,4.85e/n7,Abdul-Saboor,Mikal,rb,VAWM,5100,210,/n46,Abdur-Rahman,Jihad,dl,DEST,6040,270,/n4,ABDUR-RAHMAN,SHAWAHL,oh,NYIT,5030e,160e,5.00e/n34,Abdur-Ra\'oof,Talib,db,NJRU,6000,205,/n,Abee,David,rb,ALSM,6020,176,/n,Abel,Hunter,dt,CAUN,6010,265,/n,Abelite,Alexander,lb,CTYA,6020,220,/n,Abell,Porter,wr,VARI,6010,190,/n,Abeln,Alec,ol,MOUN,6030,305,/n57,Abeln,Alec,ol,MOUN,6030,290,/n71,Abera,Nehemia,dl,CALA,6020,230,/n,Abercrombie,Christion,lb,ILUN,6010,220,/n,Abercrombie,Osharmar,rb,SCCC,5090,205,/n92,ABERCROMBIE,BENJI,de,PAME,6020e,230e,5.10e/n,Abercrumbia,Zach,dt,TXRI,6020,290,/n19,Abernathy,Ralph,rb,TNUN,5070,160,/n,Abernathy,Micah,db,TNUN,6000,195,/n37,Abernathy,Eric,db,TNMS,5090,180,/n,Abey,Zach,qb,MDNA,6020,218,/n';
+      var exportFileContents = ",Aaron,Montel,qb,CASJ,6050,201,/n17,Aaron,Austin,wr,CAUN,6040,210,/n,Aaron,Jarell,wr,MSSO,6050,203,4.60e/n56,AARON,DMITRE,dt,OHAS,6024e,400e,5.20e/n65,AARON,EVAN,ot,SDNO,6050e,290e,5.30e/n23,AARON,DWAYNE,oh,OHMT,5070e,185e,4.60e/n82,AASEN,GRANT,pt,GATC,6000e,200e,5.15e/n1,ABAD,MANUEL,dc,FLTC,5112v,182v,4.49v/n32,Abanikanda,Michael,rb,NYBU,5080,185,/n34,ABARE,GREG,te,NYRE,6030e,215e,5.10e/n96,ABBAS,BRANDON,pk,IACO,6010e,215e,5.05e/n,Abbington,Chase,rb,MOSE,6020,215,/n39,Abbington,Chase,rb,MOUN,6020,215,/n,Abbott,Aaron,db,MIEA,6010,206,/n,Abbott,Marcus,de,TXLA,6030,271,/n,Abbott,Britton,qb,OKST,6020,246,/n47,Abbott,Blake,fb,OKTU,5110,227,/n,Abbott,Cody,ol,IDST,6030,276,5.40e/n,Abby,Jerimiah,ol,LASO,6040,328,/n3,ABDELMOTY,SAMER,fs,PACA,5110e,180e,4.80e/n45,Abdesmad,Mehdi,dl,MABC,6070,286,/n29,Abdul-Akbar,Tariq,db,VARI,5090,158,/n,Abdul-Aziz,Jamil,ol,LAST,6020,270,/n,Abdul-Aziz,Jibrail,ol,LAST,6020,289,/n,Abdullah,Naji,de,VAUN,6050,235,/n32,ABDULLAH,KHALID,oh,VAJM,5096v,214v,4.80v/n44,ABDUL-RAZZAY,AKHMAD,de,KSWA,6017v,237v,4.85e/n7,Abdul-Saboor,Mikal,rb,VAWM,5100,210,/n46,Abdur-Rahman,Jihad,dl,DEST,6040,270,/n4,ABDUR-RAHMAN,SHAWAHL,oh,NYIT,5030e,160e,5.00e/n34,Abdur-Ra'oof,Talib,db,NJRU,6000,205,/n,Abee,David,rb,ALSM,6020,176,/n,Abel,Hunter,dt,CAUN,6010,265,/n,Abelite,Alexander,lb,CTYA,6020,220,/n,Abell,Porter,wr,VARI,6010,190,/n57,Abeln,Alec,ol,MOUN,6030,290,/n71,Abera,Nehemia,dl,CALA,6020,230,/n,Abercrombie,Osharmar,rb,SCCC,5090,205,/n,Abercrombie,Christion,lb,ILUN,6010,220,/n92,ABERCROMBIE,BENJI,de,PAME,6020e,230e,5.10e/n,Abercrumbia,Zach,dt,TXRI,6020,290,/n,Abernathy,Micah,db,TNUN,6000,195,/n37,Abernathy,Eric,db,TNMS,5090,180,/n,Abey,Zach,qb,MDNA,6020,218,/n,Abisoye,Adesola,db,GAKS,5100,183,/n,Able,Kameron,lb,KYMO,6020,228,/n5,Able,Noah,cb,SCWO,5100,169,/n42,ABLE,KAMERON,ob,KYMO,6000e,215e,5.00e/n2,Abnar,D.J.,rb,VALB,5100,185,/n,Abner,Olan,db,NYST,5100,190,/n";
       return playersPage.readAndDeleteExportCSV().then(function(data) {
         assert.equal(data, exportFileContents);
       });

@@ -203,6 +203,7 @@ var ScoutingReportPage = require('../pages/nfl_scouting/reports/scouting_report_
 var InterviewReportPage = require('../pages/nfl_scouting/reports/interview_report_page.js');
 var ListPage = require('../pages/nfl_scouting/lists/list_page.js');
 var ManageDraftPage = require('../pages/nfl_scouting/draft/manage_draft_page.js');
+var Filters = require('../pages/nfl_scouting/filters.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);
@@ -218,6 +219,7 @@ scoutPage = new ScoutPage(driver);
 listPage = new ListPage(driver);
 manageDraftPage = new ManageDraftPage(driver);
 playersPage = new PlayersPage(driver);
+filters = new Filters(driver);
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"

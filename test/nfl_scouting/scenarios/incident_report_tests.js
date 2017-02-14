@@ -31,6 +31,16 @@ test.describe('#Scenario: IncidentReport Editing', function() {
       browser.visit(url + 'player/31680');
     });
 
+    test.it('create incident report if none', function() {
+      playerPage.clickIncidentReportSpacer();
+
+      playerPage.getIncidentReportCount().then(function(count) {
+        if (count == 0) {
+          playerPage.createIncidentReport('OS', {year: 2015, month: 'Aug', day: 19}, 'C', 'create report');
+        };
+      });
+    });
+
     test.it('edit incident report comment from scouting page', function() {
       playerPage.goToScoutingReport(1);
       scoutingReportPage.waitForPageToLoad();

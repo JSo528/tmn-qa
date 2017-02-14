@@ -15,7 +15,7 @@ test.describe('#Page: ScoutingReports', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
     reportPage = new ScoutingReportPage(driver);
-    browser.visit(url + 'player/31686');
+    browser.visit(url + 'player/31682');
     playerPage.waitForPageToLoad();
     playerPage.clickCreateScoutingReportBtn();
     reportPage.waitForPageToLoad();
@@ -63,8 +63,8 @@ test.describe('#Page: ScoutingReports', function() {
 
   test.describe("#profile", function() {
     var attributes = [
-      { field: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test2' },
-      { field: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test2' },
+      { field: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test2' },
+      { field: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test2' },
       { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
       { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Mobile, AL' },
       { field: 'player.number', title: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },

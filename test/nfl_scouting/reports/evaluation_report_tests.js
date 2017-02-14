@@ -16,7 +16,7 @@ test.describe('#Page: EvaulationReports', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
     reportPage = new EvaulationReportPage(driver);
-    browser.visit(url + 'player/31686');
+    browser.visit(url + 'player/31682');
     playerPage.waitForPageToLoad();
     playerPage.clickCreateEvaluationReportBtn();
   });
@@ -71,13 +71,13 @@ test.describe('#Page: EvaulationReports', function() {
 
   test.describe("#updating profile", function() {
     var attributes = [
-      { field: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
-      { field: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
+      { field: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test' },
+      { field: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test' },
       { field: 'Jersey', type: 'jersey', originalValue: 11, updatedValue: 16 },
       // { field: 'Draft Year', type: 'draftYear', originalValue: 2017, updatedValue: 2018 },
       { field: 'Position', type: 'position', originalValue: 'QB', updatedValue: 'RB' },
-      { field: 'Height', type: 'input', originalValue: 5090, updatedValue: 6010 },
-      { field: 'Weight', type: 'input', originalValue: 170, updatedValue: 220 },
+      { field: 'Height', type: 'input', originalValue: 6000, updatedValue: 6010 },
+      { field: 'Weight', type: 'input', originalValue: 200, updatedValue: 220 },
       { field: 'Speed', type: 'input', originalValue: 5, updatedValue: 6 },
       // { field: 'Overall Grade', type: 'grade', originalValue: '', updatedValue: '8.0' },
     ];

@@ -11,6 +11,7 @@ var TeamsPage = require('../../../pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('../../../pages/nfl_scouting/teams/team_page.js');
 var Filters = require('../../../pages/nfl_scouting/filters.js');
 var navbar, teamsPage, teamPage, filters;
+var playerRowNum = 3;
 
 test.describe('#Page: Team', function() {
   test.before(function() {
@@ -86,10 +87,10 @@ test.describe('#Page: Team', function() {
     });
 
     test.it('selecting positions = DL should update player list', function() {
-      filters.changeDropdownFilter('At Positions', 'DL');
+      filters.changeDropdownFilter('At Positions', 'FS');
       teamPage.getTableStats(9).then(function(positions) {
         var uniquePositions = Array.from(new Set(positions));
-        assert.sameMembers(['DL'], uniquePositions);
+        assert.sameMembers(['FS'], uniquePositions);
       });
     });
   });
@@ -105,7 +106,7 @@ test.describe('#Page: Team', function() {
       // { field: 'Draft Year', col: 3, type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Jersey', col: 5, type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },
-      { field: 'Pos', col: 9, type: 'dropdown', originalValue: 'QB', updatedValue: 'RB' },
+      { field: 'Pos', col: 9, type: 'dropdown', originalValue: 'FB', updatedValue: 'RB' },
       { field: 'Height', col: 10, type: 'input', originalValue: '6000', updatedValue: '6010e' },
       { field: 'Weight', col: 11, type: 'input', originalValue: '235', updatedValue: '200e' },
       { field: 'Speed', col: 12, type: 'input', originalValue: '', updatedValue: '4.60e' }
@@ -113,7 +114,7 @@ test.describe('#Page: Team', function() {
 
     attributes.forEach(function(attr) {
       test.it(attr.field + ' should have correct initial value', function() {
-        teamPage.getTableStatField(attr.type, 2, attr.col).then(function(value) {
+        teamPage.getTableStatField(attr.type, playerRowNum, attr.col).then(function(value) {
           assert.equal(value, attr.originalValue, attr.field);
         });
       });
@@ -121,7 +122,7 @@ test.describe('#Page: Team', function() {
 
     test.it('updating fields', function() {
       attributes.forEach(function(attr) {
-        teamPage.changeTableStatField(attr.type, 2, attr.col, attr.updatedValue );
+        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.updatedValue );
       });
       browser.refresh();
       teamPage.waitForPageToLoad();
@@ -129,7 +130,7 @@ test.describe('#Page: Team', function() {
 
     attributes.forEach(function(attr) {
       test.it('updating ' + attr.field + ' should persist on reload', function() {
-        teamPage.getTableStatField(attr.type ,2, attr.col).then(function(value) {
+        teamPage.getTableStatField(attr.type, playerRowNum, attr.col).then(function(value) {
           assert.equal(value, attr.updatedValue, attr.field);
         });
       });
@@ -137,7 +138,7 @@ test.describe('#Page: Team', function() {
 
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
-        teamPage.changeTableStatField(attr.type, 2, attr.col, attr.originalValue );
+        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.originalValue );
       });
     });
   });

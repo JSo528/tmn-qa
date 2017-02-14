@@ -14,7 +14,7 @@ var playerPage, measurablesPage;
 test.describe('#Page: Measurables', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    browser.visit(url + 'player/31686');
+    browser.visit(url + 'player/31682');
     playerPage.clickMeasurablesLink();
   })
 

@@ -35,6 +35,7 @@ _.extend(ListPage.prototype, inputs);
 ** Functions
 *****************************************************************************/
 ListPage.prototype.waitForPageToLoad = function() {
+  this.waitUntilStaleness(BODY_CONTENT);
   return this.waitForEnabled(BODY_CONTENT);
 };
 

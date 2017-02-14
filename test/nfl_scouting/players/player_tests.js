@@ -14,7 +14,7 @@ var navbar, playerPage;
 test.describe('#Page: Player', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    browser.visit(url + 'player/31686');
+    browser.visit(url + 'player/31682');
   })
 
   test.it('should be on Dakota Cornwell page', function() {
@@ -55,8 +55,8 @@ test.describe('#Page: Player', function() {
 
   test.describe('#updatesProfile', function() {
     var attributes = [
-      { field: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
-      { field: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
+      { field: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test' },
+      { field: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test' },
       { field: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
       { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Montgomery, AL' },
       { field: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },
@@ -77,8 +77,8 @@ test.describe('#Page: Player', function() {
       attributes.forEach(function(attr) {
         playerPage.changeProfileField(attr.type, attr.field, attr.updatedValue );
       });
-      playerPage.addProfileList('test');
-      playerPage.addProfileList('list1');
+      playerPage.addProfileList('TEST');
+      playerPage.addProfileList('GI');
 
       browser.refresh();
       playerPage.waitForPageToLoad();
@@ -94,7 +94,7 @@ test.describe('#Page: Player', function() {
 
     test.it('adding lists should persist on reload', function() {
       playerPage.getProfileLists().then(function(lists) {
-        assert.sameMembers(['test', 'list1'], lists, 'lists');
+        assert.sameMembers(['TEST', 'GI'], lists, 'lists');
       });
     });
 
@@ -102,8 +102,8 @@ test.describe('#Page: Player', function() {
       attributes.forEach(function(attr) {
         playerPage.changeProfileField(attr.type, attr.field, attr.originalValue );
       });
-      playerPage.removeProfileList('test');
-      playerPage.removeProfileList('list1');
+      playerPage.removeProfileList('TEST');
+      playerPage.removeProfileList('GI');
 
       browser.refresh();
       playerPage.waitForPageToLoad();
@@ -128,19 +128,19 @@ test.describe('#Page: Player', function() {
         assert.equal(count, initialCount+1, '# of incident reports');
       });
 
-      playerPage.getIncidentReportValue(2,'week').then(function(value) {
+      playerPage.getIncidentReportValue(1,'week').then(function(value) {
         assert.equal(value, 'TC', 'week value');
       });
 
-      playerPage.getIncidentReportValue(2,'date').then(function(value) {
+      playerPage.getIncidentReportValue(1,'date').then(function(value) {
         assert.equal(value, '02/11/2015', 'date value');
       });
 
-      playerPage.getIncidentReportValue(2,'type').then(function(value) {
+      playerPage.getIncidentReportValue(1,'type').then(function(value) {
         assert.equal(value, 'X', 'type value');
       });
 
-      playerPage.getIncidentReportValue(2,'comment').then(function(value) {
+      playerPage.getIncidentReportValue(1,'comment').then(function(value) {
         assert.equal(value, 'test report', 'comment value');
       });
     });

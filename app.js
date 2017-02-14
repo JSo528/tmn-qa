@@ -3,7 +3,13 @@
 var express = require('express');
 var app = express();
 app.set('view engine', 'pug');
-var port = process.env.PORT || 3000;
+
+if (app.get('env') == 'development') {
+  var port = 3001;
+} else {
+  var port = process.env.PORT || 3000;  
+}
+
 
 // Modules
 var constants = require('./lib/constants.js');

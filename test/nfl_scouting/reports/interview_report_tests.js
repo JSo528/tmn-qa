@@ -16,7 +16,7 @@ test.describe('#Page: InterviewReports', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
     reportPage = new InterviewReportPage(driver);
-    browser.visit(url + 'player/31686');
+    browser.visit(url + 'player/31682');
     playerPage.waitForPageToLoad();
     playerPage.clickCreateInterviewReportBtn();
     reportPage.waitForPageToLoad();
@@ -24,8 +24,8 @@ test.describe('#Page: InterviewReports', function() {
   
   test.describe("#profile", function() {
     var profileAttributes = [
-      { field: 'player.firstName', title: 'First Name', type: 'input', originalValue: 'Dakota', updatedValue: 'Dakota-Test' },
-      { field: 'player.lastName', title: 'Last Name', type: 'input', originalValue: 'Cornwell', updatedValue: 'Cornwell-Test' },
+      { field: 'player.firstName', title: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test' },
+      { field: 'player.lastName', title: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test' },
       { field: 'Report Date', type: 'date', updatedValue: '11/09/2016', updatedValueInput: {year: 2016, month: 'Nov', day: 9} },
       { field: 'Event', type: 'dropdown', updatedValue: 'GI'},
       { field: 'player.phone', title: 'Phone', type: 'input', originalValue: '', updatedValue: '555-555-5555' },

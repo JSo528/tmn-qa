@@ -79,19 +79,19 @@ PlayersPage.prototype.waitForPageToLoad = function() {
 ** Sorting
 *****************************************************************************/
 PlayersPage.prototype.clickTableHeader = function(col) {
-  var locator = By.xpath(`.//div[@class='search']/.//table/thead/tr/th[${col}]`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/thead/tr/th[${col}]`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
 
 PlayersPage.prototype.clickSortIcon = function(col) {
-  var locator = By.xpath(`.//div[@class='search']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
 
 PlayersPage.prototype.clickRemoveSortIcon = function(col) {
-  var locator = By.xpath(`.//div[@class='search']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
@@ -102,8 +102,8 @@ PlayersPage.prototype.clickRemoveSortIcon = function(col) {
 PlayersPage.prototype.getTableStats = function(col) {
   var d = Promise.defer();
   var thiz = this;
-  var inputLocator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/input`);
-  var locator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/*[self::div or self::a or self::input]`);
+  var inputLocator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/input`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/*[self::div or self::a or self::input]`);
   
   this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
     d.fulfill(thiz.getInputValueArray(inputLocator));
@@ -117,8 +117,8 @@ PlayersPage.prototype.getTableStats = function(col) {
 PlayersPage.prototype.getTableStatsFor = function(name) {
   var d = Promise.defer();
   var thiz = this;
-  var inputLocator = By.xpath(`.//div[@class='search']/.//table/tbody/tr/td[count(//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/div/input`);
-  var locator = By.xpath(`.//div[@class='search']/.//table/tbody/tr/td[count(//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/${TABLE_LOCATOR_SUFFIX[name]}`);
+  var inputLocator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody/tr[not(contains(@class,'hidden'))]/td[count(//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/div/input`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody/tr[not(contains(@class,'hidden'))]/td[count(//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/${TABLE_LOCATOR_SUFFIX[name]}`);
   
   this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
     d.fulfill(thiz.getInputValueArray(inputLocator));
@@ -133,8 +133,8 @@ PlayersPage.prototype.getTableStatsFor = function(name) {
 PlayersPage.prototype.getTableStat = function(row, col, placeholder) {
   var d = Promise.defer();
   var thiz = this;
-  var inputLocator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
-  var locator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/*[self::div or self::a or self::input]`);
+  var inputLocator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/*[self::div or self::a or self::input]`);
   
   this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
     thiz.driver.findElement(inputLocator).getAttribute('value').then(function(stat) {
@@ -160,12 +160,12 @@ PlayersPage.prototype.getTableStat = function(row, col, placeholder) {
 };
 
 PlayersPage.prototype.clickTableStat = function(row, col) {
-  var locator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div/*[self::div or self::a or self::input]`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div/*[self::div or self::a or self::input]`);
   return this.click(locator);
 };
 
 PlayersPage.prototype.changeTableStatInput = function(row, col, value) {
-  var locator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
+  var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
   return this.changeInput(locator, value)
 };
 
@@ -179,16 +179,16 @@ PlayersPage.prototype.changeTableStatDropdown = function(row, col, value) {
       currentValue = stat
     }).then(function() {
       if (currentValue != 'Select value') {
-        var locator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
-        var optionLocator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${currentValue}']`)
+        var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
+        var optionLocator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${currentValue}']`)
         d.fulfill(thiz.changeDropdown(locator, optionLocator));
       }
     });
 
     return d.promise;
   } else {
-    var locator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
-    var optionLocator = By.xpath(`.//div[@class='search']/.//table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${value}']`)
+    var locator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
+    var optionLocator = By.xpath(`.//div[@class='search']/.//div[@class='scroll-wrap-x']/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${value}']`)
     return this.changeDropdown(locator, optionLocator);  
   }
 };

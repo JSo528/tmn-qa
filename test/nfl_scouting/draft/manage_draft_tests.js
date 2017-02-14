@@ -12,12 +12,12 @@ test.describe('#Page: ManageDraft', function() {
   test.it('clicking manage draft link', function() {
     manageDraftPage = new ManageDraftPage(driver);
     playerPage = new PlayerPage(driver);
-    browser.visit(url + 'player/31686');
+    browser.visit(url + 'player/31682');
     playerPage.clickManageDraftLink();
     manageDraftPage.waitForPageToLoad();
 
     driver.getCurrentUrl().then(function(url) {
-      assert.match(url, /player\/31686\/draft/, 'page URL');
+      assert.match(url, /player\/31682\/draft/, 'page URL');
     });
   });
 
@@ -113,19 +113,19 @@ test.describe('#Page: ManageDraft', function() {
         assert.equal(count, initialCount+1, '# of incident reports');
       });
 
-      manageDraftPage.getIncidentReportValue(2,'week').then(function(value) {
+      manageDraftPage.getIncidentReportValue(1,'week').then(function(value) {
         assert.equal(value, 'W4', 'week value');
       });
 
-      manageDraftPage.getIncidentReportValue(2,'date').then(function(value) {
+      manageDraftPage.getIncidentReportValue(1,'date').then(function(value) {
         assert.equal(value, '06/06/2016', 'date value');
       });
 
-      manageDraftPage.getIncidentReportValue(2,'type').then(function(value) {
+      manageDraftPage.getIncidentReportValue(1,'type').then(function(value) {
         assert.equal(value, 'IR', 'type value');
       });
 
-      manageDraftPage.getIncidentReportValue(2,'comment').then(function(value) {
+      manageDraftPage.getIncidentReportValue(1,'comment').then(function(value) {
         assert.equal(value, 'test report manage draft page', 'comment value');
       });
     });
