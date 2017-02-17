@@ -30,35 +30,23 @@ test.describe('#Page: Scout', function() {
     });
   });
 
-  test.describe('#sorting', function() {
-    test.it('scouting reports list should be sorted alphabetically by last name asc initially', function() {
-      scoutPage.getTableStatsForCol(8).then(function(stats) {
-        var sortedArray = extensions.customSort(stats, 'asc');
-        assert.deepEqual(stats, sortedArray);
-      });
-    });
-
-    test.it('clicking arrow next to last name header should reverse the sort', function() {
-      scoutPage.clickSortIcon(8);
-
-      scoutPage.getTableStatsForCol(8).then(function(stats) {
-        var sortedArray = extensions.customSort(stats, 'desc');
-        assert.deepEqual(stats, sortedArray);
-      });
-    });
-
-    test.it('selecting final grade header should sort the list by final grade asc', function() {
-      scoutPage.clickRemoveSortIcon(8);
-      scoutPage.clickTableHeader(3);
-
-      scoutPage.getTableStatsForCol(3).then(function(grades) {
-        var sortedArray = extensions.customSort(grades, 'asc');
-        assert.deepEqual(grades, sortedArray);
-      });
-    });
-  });
-
   test.describe('#filters', function() {
+    test.it('adding "QB" to position filter should update the list', function() {
+      filters.changeDropdownFilter('Jags. Pos.', 'QB');
+      scoutPage.getTableStatsForCol(11).then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['QB'], uniqueStats);
+      });
+    });   
+
+    test.it('adding "RB" from position filter should update the list', function() {
+      filters.changeDropdownFilter('Jags. Pos.', 'RB');
+      scoutPage.getTableStatsForCol(11).then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['QB', 'RB'], uniqueStats);
+      });
+    });  
+
     test.it('removing "SR" from class year filter should update the list', function() {
       filters.changeDropdownFilter('For Class Years', 'SR');
       scoutPage.getTableStatsForCol(5).then(function(stats) {
@@ -75,22 +63,73 @@ test.describe('#Page: Scout', function() {
       });
     });
 
-    test.it('adding "DC" to position filter should update the list', function() {
-      filters.changeDropdownFilter('Jags. Pos.', 'DC');
-      scoutPage.getTableStatsForCol(11).then(function(stats) {
+    test.it('adding "FR" from class year filter should update the list', function() {
+      filters.changeDropdownFilter('For Class Years', 'FR');
+      scoutPage.getTableStatsForCol(5).then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
-        assert.sameMembers(['DC'], uniqueStats);
+        assert.sameMembers(['FR', 'SO', 'JR'], uniqueStats);
       });
     });   
-
-    test.it('adding "CB" from position filter should update the list', function() {
-      filters.changeDropdownFilter('Jags. Pos.', 'FS');
-      scoutPage.getTableStatsForCol(11).then(function(stats) {
-        var uniqueStats = Array.from(new Set(stats));
-        assert.sameMembers(['DC', 'FS'], uniqueStats);
-      });
-    });     
   });
+
+  test.describe('#sorting', function() {
+    var columns = [
+      { colNum: 2, colName: 'Team Code' },
+      { colNum: 3, colName: 'Tier', sortType: 'enumerated', sortEnumeration: ['A', 'B', 'C', 'D', '?'] },
+      { colNum: 4, colName: 'Draft Year', sortType: 'number' },
+      { colNum: 5, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },
+      { colNum: 6, colName: 'Jersey', sortType: 'number' },
+      { colNum: 7, colName: 'First Name' },
+      { colNum: 9, colName: 'Starter', sortType: 'boolean' },
+      { colNum: 10, colName: 'Pos' },
+      { colNum: 11, colName: 'Jags. Pos.' },
+      { colNum: 12, colName: 'Height', sortType: 'number' },
+      { colNum: 13, colName: 'Weight', sortType: 'number' },
+      { colNum: 14, colName: 'Speed', sortType: 'number' },
+      { colNum: 15, colName: 'Final Grade', sortType: 'number' },
+      { colNum: 16, colName: 'T', sortType: 'boolean' },
+    ];
+
+    test.it('scouting reports list should be sorted alphabetically by last name asc initially', function() {
+      scoutPage.getTableStatsForCol(8).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
+      });
+    });
+
+    test.it('clicking arrow next to last name header should reverse the sort', function() {
+      scoutPage.clickSortIcon(8);
+
+      scoutPage.getTableStatsForCol(8).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'desc');
+        assert.deepEqual(stats, sortedArray);
+      });
+    });
+
+    var lastColNum = 8;
+    columns.forEach(function(column) {
+      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+        scoutPage.clickRemoveSortIcon(lastColNum);
+        lastColNum = column.colNum;
+        scoutPage.clickTableHeader(column.colNum);
+
+        scoutPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
+        scoutPage.clickSortIcon(column.colNum);
+
+        scoutPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+    });
+  });
+
 
   test.describe('#links', function() {
     test.it('clicking into a player goes to the correct page', function() {
