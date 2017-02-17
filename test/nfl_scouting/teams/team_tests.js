@@ -107,9 +107,9 @@ test.describe('#Page: Team', function() {
       { field: 'Jersey', col: 5, type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'Pos', col: 9, type: 'dropdown', originalValue: 'FB', updatedValue: 'RB' },
-      { field: 'Height', col: 10, type: 'input', originalValue: '6000', updatedValue: '6010e' },
-      { field: 'Weight', col: 11, type: 'input', originalValue: '235', updatedValue: '200e' },
-      { field: 'Speed', col: 12, type: 'input', originalValue: '', updatedValue: '4.60e' }
+      { field: 'Height', col: 11, type: 'input', originalValue: '6000', updatedValue: '6010e' },
+      { field: 'Weight', col: 12, type: 'input', originalValue: '235', updatedValue: '200e' },
+      { field: 'Speed', col: 13, type: 'input', originalValue: '', updatedValue: '4.60e' }
     ];    
 
     attributes.forEach(function(attr) {

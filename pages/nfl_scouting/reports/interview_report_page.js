@@ -59,7 +59,7 @@ InterviewReportPage.prototype.changeProfileInput = function(field, value) {
 InterviewReportPage.prototype.getProfileDropdown = function(field) {
   var locator = By.xpath(`.//div[contains(@class, 'interview-report')]/div[1]/.//div[div/label[text()='${field}']]/.//div[contains(@class,'dropdown')]`);
   var secondaryLocator = By.xpath(`.//div[contains(@class, 'interview-report')]/div[1]/.//div[@inject='${field}']/.//div[contains(@class,'dropdown')]`);
-  return this.getDropdown(locator, secondaryLocator);
+  return this.getDropdown(locator, secondaryLocator, 'Jags. Pos.');
 };
 
 InterviewReportPage.prototype.changeProfileDropdown = function(field, value) {

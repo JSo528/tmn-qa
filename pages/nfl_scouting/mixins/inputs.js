@@ -75,18 +75,18 @@ Inputs = {
 
     return d.promise;
   },
-  getDropdown: function(locator, secondaryLocator) {
+  getDropdown: function(primaryLocator, secondaryLocator, placeholder) {
     var thiz = this;
     var d = Promise.defer();
     
-    this.waitForDisplayed(locator, 500).then(function() {      
-      d.fulfill(thiz.getText(locator));
+    this.waitForDisplayed(primaryLocator, 500).then(function() {      
+      return primaryLocator;
     }, function(err) {
-      if (secondaryLocator) {
-        d.fulfill(thiz.getText(secondaryLocator));  
-      } else {
-        d.fulfill(thiz.getText(locator));  
-      }
+      return (secondaryLocator) ? secondaryLocator : primaryLocator;
+    }).then(function(locator) {
+      thiz.getText(locator).then(function(value) {
+        d.fulfill(value == placeholder ? '' : value);
+      });  
     });
 
     return d.promise;

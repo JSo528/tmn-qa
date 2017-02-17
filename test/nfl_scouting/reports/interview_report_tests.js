@@ -28,11 +28,11 @@ test.describe('#Page: InterviewReports', function() {
       { field: 'player.lastName', title: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test' },
       { field: 'Report Date', type: 'date', updatedValue: '11/09/2016', updatedValueInput: {year: 2016, month: 'Nov', day: 9} },
       { field: 'Event', type: 'dropdown', updatedValue: 'GI'},
-      { field: 'player.phone', title: 'Phone', type: 'input', originalValue: '', updatedValue: '555-555-5555' },
+      { field: 'phoneField', title: 'Phone', type: 'input', originalValue: '', updatedValue: '555-555-5555' },
       { field: 'player.email', title: 'Email', type: 'input', originalValue: '', updatedValue: 'dakota@test.com' },
       { field: 'player.address', title: 'Address', type: 'input', originalValue: '', updatedValue: '123 Fake Street' },
-      { field: 'position', title: 'Jags Pos', type: 'dropdown', updatedValue: 'WR' },
-      { field: 'player.number', title: 'Jersey', type: 'input', originalValue: '11', updatedValue: '28' }
+      { field: 'player.agent', title: 'Agent', type: 'input', originalValue: '', updatedValue: 'Test Agent' },
+      { field: 'position', title: 'Jags. Pos.', type: 'dropdown', originalValue: '', updatedValue: 'QB' },
     ];
 
     profileAttributes.forEach(function(attr) {
