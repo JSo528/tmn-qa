@@ -22,6 +22,7 @@ var LAST_LOCATOR = By.xpath(".//div[@inject='evaluationReports']/.//table");
 var NAME_LINK = By.xpath(".//div[contains(@class,'title')]/div/a");
 var MANAGE_DRAFT_LINK = By.xpath(".//div[@inject='player.draftLink']/a");
 var MEASURABLES_LINK = By.xpath(".//div[@inject='player.measurablesLink']/a");
+var DELETE_BTN = By.xpath(".//button[@inject='player.deleted']");
 
 // IncidentReport
 var NEW_INCIDENT_REPORT_DIV_NUM = 2
@@ -143,6 +144,10 @@ PlayerPage.prototype.getProfileDOB = function() {
   return this.getAttribute(locator, 'value');
 };
 
+PlayerPage.prototype.clickDeleteBtn = function() {
+  return this.click(DELETE_BTN);
+};
+
 // Statistics
 PlayerPage.prototype.getStatTableHeader = function(col) {
   var locator = By.xpath(`.//div[@inject='stats']/.//table/thead/tr/th[${col}]`);
@@ -226,7 +231,8 @@ PlayerPage.prototype.changeProfileField = function(type, field, value) {
 PlayerPage.prototype.clickReportTableHeader = function(reportName, col) {
   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]`);
   this.click(locator);
-  return this.driver.sleep(500); // keeps getting stalness error otherwise
+  var tableLocator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//div[contains(@class, 'table-wrap')]/table`);
+  return this.waitUntilStaleness(tableLocator, 5000);
 };
 
 PlayerPage.prototype.getStatsForReportAndCol = function(reportName, col) {
@@ -237,12 +243,15 @@ PlayerPage.prototype.getStatsForReportAndCol = function(reportName, col) {
 PlayerPage.prototype.clickSortIconForReport = function(reportName, col) {
   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
   this.click(locator);
-  return this.driver.sleep(500); // keeps getting stalness error otherwise
+  var tableLocator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//div[contains(@class, 'table-wrap')]/table`);
+  return this.waitUntilStaleness(tableLocator, 5000);
 };
 
 PlayerPage.prototype.clickRemoveSortIconForReport = function(reportName, col) {
   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
-  return this.click(locator);
+  this.click(locator);
+  var tableLocator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//div[contains(@class, 'table-wrap')]/table`);
+  return this.waitUntilStaleness(tableLocator, 5000);
 };
 
 module.exports = PlayerPage;

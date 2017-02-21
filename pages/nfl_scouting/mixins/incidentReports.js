@@ -14,6 +14,7 @@ var INCIDENT_REPORT_DATE_INPUT = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}
 var INCIDENT_REPORT_TYPE_INPUT = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[@inject='type']/div`);
 var INCIDENT_REPORT_COMMENT_INPUT = By.xpath(`.//div[${NEW_INCIDENT_REPORT_DIV_NUM}]/div/div[@class='incident']/.//div[@inject='comment']/div`);
 var INCIDENT_DIVS = By.css('.incidents .incident');
+var INCIDENT_REPORT_TABLE = By.css('.incident-table');
 
 IncidentReports = {
   INCIDENT_REPORTS_WEEK_ENUMERATION: [
@@ -39,11 +40,13 @@ IncidentReports = {
     'W14',
     'W15',
     'W16',
+    ''
   ],
   INCIDENT_REPORTS_TYPE_ENUMERATION: [
     'C',
     'X',
-    'IR'
+    'IR',
+    ''
   ],
   clickIncidentReportSpacer: function() {
     return this.click(INCIDENT_REPORT_SPACER);
@@ -117,7 +120,8 @@ IncidentReports = {
   },
   clickIncidentReportsTableHeader: function(colNum) {
     var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[${colNum}]/th`);
-    return this.click(locator);
+    this.click(locator);
+    return this.waitUntilStaleness(INCIDENT_REPORT_TABLE, 5000);
   },
   getIncidentReportsTableValues: function(field) {
     if (field =='date') {
@@ -130,11 +134,13 @@ IncidentReports = {
   },
   clickIncidentReportsSortIcon: function(colNum) {
    var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[${colNum}]/th/i[contains(@class, 'material-icons')]`);
-    return this.click(locator); 
+    this.click(locator); 
+    return this.waitUntilStaleness(INCIDENT_REPORT_TABLE, 5000);
   },
   clickIncidentReportsRemoveSortIcon: function(colNum) {
     var locator = By.xpath(`.//div[contains(@class,'-incidents')]/.//div[${colNum}]/th/i[contains(@class, '-cancel')]`);
-    return this.click(locator);
+    this.click(locator);
+    return this.waitUntilStaleness(INCIDENT_REPORT_TABLE, 5000);
   }
 }
 

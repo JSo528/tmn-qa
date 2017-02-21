@@ -79,7 +79,7 @@ test.describe('#Page: Scout', function() {
       { colNum: 4, colName: 'Draft Year', sortType: 'number' },
       { colNum: 5, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },
       { colNum: 6, colName: 'Jersey', sortType: 'number' },
-      { colNum: 7, colName: 'First Name' },
+      { colNum: 7, colName: 'First Name', sortType: 'string' },
       { colNum: 9, colName: 'Starter', sortType: 'boolean' },
       { colNum: 10, colName: 'Pos' },
       { colNum: 11, colName: 'Jags. Pos.' },
@@ -114,6 +114,7 @@ test.describe('#Page: Scout', function() {
         scoutPage.clickTableHeader(column.colNum);
 
         scoutPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
           var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
           assert.deepEqual(stats, sortedArray);
         });
@@ -123,6 +124,7 @@ test.describe('#Page: Scout', function() {
         scoutPage.clickSortIcon(column.colNum);
 
         scoutPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
           var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
           assert.deepEqual(stats, sortedArray);
         });

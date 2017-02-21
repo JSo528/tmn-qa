@@ -56,10 +56,10 @@ InterviewReportPage.prototype.changeProfileInput = function(field, value) {
   return this.changeInput(locator, value, secondaryLocator);
 };
 
-InterviewReportPage.prototype.getProfileDropdown = function(field) {
+InterviewReportPage.prototype.getProfileDropdown = function(field, placeholder) {
   var locator = By.xpath(`.//div[contains(@class, 'interview-report')]/div[1]/.//div[div/label[text()='${field}']]/.//div[contains(@class,'dropdown')]`);
   var secondaryLocator = By.xpath(`.//div[contains(@class, 'interview-report')]/div[1]/.//div[@inject='${field}']/.//div[contains(@class,'dropdown')]`);
-  return this.getDropdown(locator, secondaryLocator, 'Jags. Pos.');
+  return this.getDropdown(locator, secondaryLocator, placeholder);
 };
 
 InterviewReportPage.prototype.changeProfileDropdown = function(field, value) {
@@ -166,14 +166,14 @@ InterviewReportPage.prototype.changePresentationCheckbox = function(field, selec
 /****************************************************************************
 ** Aggregate Helpers
 *****************************************************************************/
-InterviewReportPage.prototype.getProfileField = function(type, field) {
+InterviewReportPage.prototype.getProfileField = function(type, field, placeholder) {
   switch (type) {
     case 'date':
-      return this.getProfileDate(field);
+      return this.getProfileDate(field, placeholder);
     case 'dropdown':
-      return this.getProfileDropdown(field);
+      return this.getProfileDropdown(field, placeholder);
     case 'input':
-      return this.getProfileInput(field);
+      return this.getProfileInput(field, placeholder);
   }
 };
 

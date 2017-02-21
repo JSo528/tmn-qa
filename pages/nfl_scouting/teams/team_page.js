@@ -119,7 +119,7 @@ TeamPage.prototype.changeTableStatYear = function(row, col, year) {
   return this.changeDatePicker(locator, year);
 };
 
-TeamPage.prototype.getTableStats = function(col) {
+TeamPage.prototype.getTableStatsForCol = function(col) {
   var d = Promise.defer();
   var thiz = this;
   var inputLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/input`);

@@ -32,14 +32,14 @@ test.describe('#Page: InterviewReports', function() {
       { field: 'player.email', title: 'Email', type: 'input', originalValue: '', updatedValue: 'dakota@test.com' },
       { field: 'player.address', title: 'Address', type: 'input', originalValue: '', updatedValue: '123 Fake Street' },
       { field: 'player.agent', title: 'Agent', type: 'input', originalValue: '', updatedValue: 'Test Agent' },
-      { field: 'position', title: 'Jags. Pos.', type: 'dropdown', originalValue: '', updatedValue: 'QB' },
+      { field: 'player.draft.position', title: 'Draft Position', type: 'dropdown', originalValue: '', updatedValue: 'QB', placeholder: 'Select value' },
     ];
 
     profileAttributes.forEach(function(attr) {
       if (attr.originalValue  != undefined) {
         var title = attr.title || attr.field;
         test.it(title+ ' should have correct initial value', function() {
-          reportPage.getProfileField(attr.type, attr.field).then(function(value) {
+          reportPage.getProfileField(attr.type, attr.field, attr.placeholder).then(function(value) {
             assert.equal(value, attr.originalValue, title);
           });
         });
@@ -58,7 +58,7 @@ test.describe('#Page: InterviewReports', function() {
     profileAttributes.forEach(function(attr) {
       var title = attr.title || attr.field;
       test.it('updating ' + title + ' should persist on reload', function() {
-        reportPage.getProfileField(attr.type, attr.field).then(function(value) {
+        reportPage.getProfileField(attr.type, attr.field, attr.placeholder).then(function(value) {
           assert.equal(value, attr.updatedValue, title);
         });
       });

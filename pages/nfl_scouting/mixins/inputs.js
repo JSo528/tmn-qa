@@ -223,11 +223,24 @@ Inputs = {
     return d.promise;
   },
   changeInputSuggestion: function(locator, value) {
+    var d = Promise.defer();
+    var thiz = this;
+
     this.clear(locator); // 1st clear changes it to 0
     this.clear(locator);
     this.sendKeys(locator, value);
-    this.click(By.xpath(`.//div[contains(@class,'tt-menu')]/.//div[contains(@class, 'tt-suggestion')]/strong[text()='${value}']`));
-    return this.waitUntilStaleness(SAVE_ICON, 500);
+    var suggestionLocator = By.xpath(`.//div[contains(@class,'tt-menu')]/.//div[contains(@class, 'tt-suggestion')]/strong[text()='${value}']`);
+    this.isDisplayed(suggestionLocator, 1000).then(function(displayed) {
+      if (displayed) {
+        thiz.click(suggestionLocator);
+      } else {
+        thiz.sendKeys(locator, Key.ENTER);
+      }
+    }).then(function() {
+      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));
+    })
+    
+    return d.promise;
   },
   clickAndSave: function(locator) {
     this.click(locator)

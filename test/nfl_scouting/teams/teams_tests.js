@@ -54,6 +54,14 @@ test.describe('#Page: Teams', function() {
         assert.deepEqual(stats, sortedArray);
       });
     });
+
+    test.it('clicking arrow next to name header should reverse the sort', function() {
+      teamsPage.clickSortIcon(3);
+      teamsPage.getTableStatsForCol(3).then(function(stats) {
+        var sortedArray = extensions.customSort(stats, 'desc');
+        assert.deepEqual(stats, sortedArray);
+      });
+    });
   });
 
   test.describe('#clicking', function() {

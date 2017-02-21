@@ -14,12 +14,188 @@ var navbar, playerPage;
 test.describe('#Page: Player', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    browser.visit(url + 'player/31682');
+    browser.visit(url + 'player/31685');
   })
 
-  test.it('should be on Dakota Cornwell page', function() {
-    playerPage.getPlayerName().then(function(name) {
-      assert.equal(name, 'CORNWELL, DAKOTA');
+  test.describe('#sorting', function() {
+    test.before(function() {
+      playerPage.waitForPageToLoad();
+      playerPage.clickIncidentReportSpacer();
+    });
+
+    test.describe('#scoutingReports', function() {
+      test.it('should be sorted by report report date asc initially', function() {
+        playerPage.getStatsForReportAndCol('scouting', 2).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by report date desc', function() {
+        playerPage.clickSortIconForReport('scouting', 2);
+        playerPage.getStatsForReportAndCol('scouting', 2).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by report type asc', function() {
+        playerPage.clickRemoveSortIconForReport('scouting', 2);
+        playerPage.clickReportTableHeader('scouting', 3);
+        playerPage.getStatsForReportAndCol('scouting', 3).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by report type desc', function() {
+        playerPage.clickSortIconForReport('scouting', 3);
+        playerPage.getStatsForReportAndCol('scouting', 3).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by author asc', function() {
+        playerPage.clickRemoveSortIconForReport('scouting', 3);
+        playerPage.clickReportTableHeader('scouting', 4);
+        playerPage.getStatsForReportAndCol('scouting', 4).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by author desc', function() {
+        playerPage.clickSortIconForReport('scouting', 4);
+        playerPage.getStatsForReportAndCol('scouting', 4).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+    });
+
+    test.describe('#interviewReports', function() {
+      test.it('should be sorted by report date asc initially', function() {
+        playerPage.getStatsForReportAndCol('interview', 2).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by report date desc', function() {
+        playerPage.clickSortIconForReport('interview', 2);
+        playerPage.getStatsForReportAndCol('interview', 2).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by author asc', function() {
+        playerPage.clickRemoveSortIconForReport('interview', 2);
+        playerPage.clickReportTableHeader('interview', 3);
+        playerPage.getStatsForReportAndCol('interview', 3).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by author desc', function() {
+        playerPage.clickSortIconForReport('interview', 3);
+        playerPage.getStatsForReportAndCol('interview', 3).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+    });
+
+    test.describe('#evaluationReports', function() {
+      test.it('should be sorted by report date asc initially', function() {
+        playerPage.getStatsForReportAndCol('evaluation', 2).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by report date desc', function() {
+        playerPage.clickSortIconForReport('evaluation', 2);
+        playerPage.getStatsForReportAndCol('evaluation', 2).then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by author asc', function() {
+        playerPage.clickRemoveSortIconForReport('evaluation', 2);
+        playerPage.clickReportTableHeader('evaluation', 3);
+        playerPage.getStatsForReportAndCol('evaluation', 3).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by author desc', function() {
+        playerPage.clickSortIconForReport('evaluation', 3);
+        playerPage.getStatsForReportAndCol('evaluation', 3).then(function(stats) {
+          var sortedArray = extensions.customSort(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+    });
+
+    test.describe('#statistics', function() {
+
+    });
+
+    test.describe('#incidentReports', function() {
+      test.it('sorting by week asc', function() {
+        playerPage.clickIncidentReportsTableHeader(1);
+        playerPage.getIncidentReportsTableValues('week').then(function(stats) {
+          var sortedArray = extensions.customSortEnumerated(stats, 'asc', playerPage.INCIDENT_REPORTS_WEEK_ENUMERATION);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by week desc', function() {
+        playerPage.clickIncidentReportsSortIcon(1);
+        playerPage.getIncidentReportsTableValues('week').then(function(stats) {
+          var sortedArray = extensions.customSortEnumerated(stats, 'desc', playerPage.INCIDENT_REPORTS_WEEK_ENUMERATION);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by date asc', function() {
+        playerPage.clickIncidentReportsRemoveSortIcon(1);
+        playerPage.clickIncidentReportsTableHeader(2);
+        playerPage.getIncidentReportsTableValues('date').then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by date desc', function() {
+        playerPage.clickIncidentReportsSortIcon(2);
+        playerPage.getIncidentReportsTableValues('date').then(function(stats) {
+          var sortedArray = extensions.customSortDates(stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by type asc', function() {
+        playerPage.clickIncidentReportsRemoveSortIcon(2);
+        playerPage.clickIncidentReportsTableHeader(3);
+        playerPage.getIncidentReportsTableValues('type').then(function(stats) {
+          var sortedArray = extensions.customSortEnumerated(stats, 'asc', playerPage.INCIDENT_REPORTS_TYPE_ENUMERATION);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+
+      test.it('sorting by type desc', function() {
+        playerPage.clickIncidentReportsSortIcon(3);
+        playerPage.getIncidentReportsTableValues('type').then(function(stats) {
+          var sortedArray = extensions.customSortEnumerated(stats, 'desc', playerPage.INCIDENT_REPORTS_TYPE_ENUMERATION);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
     });
   });
 
@@ -30,7 +206,7 @@ test.describe('#Page: Player', function() {
   //     });
 
   //     playerPage.getStatTableHeader(4).then(function(header) {
-  //       assert.equal(header, 'DSk', '4th Col header');
+  //       assert.equal(header, 'QBStart', '4th Col header');
   //     });
 
   //     playerPage.getStatTableHeader(8).then(function(header) {
@@ -54,6 +230,11 @@ test.describe('#Page: Player', function() {
   // });
 
   test.describe('#updatesProfile', function() {
+    test.before(function() {
+      playerPage = new PlayerPage(driver);
+      browser.visit(url + 'player/31682');
+    });
+
     var attributes = [
       { field: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test' },
       { field: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test' },
@@ -142,192 +323,6 @@ test.describe('#Page: Player', function() {
 
       playerPage.getIncidentReportValue(1,'comment').then(function(value) {
         assert.equal(value, 'test report', 'comment value');
-      });
-    });
-  });
-
-  test.describe('#sorting', function() {
-    test.before(function() {
-      browser.refresh();
-      playerPage.waitForPageToLoad();
-      playerPage.clickIncidentReportSpacer();
-    });
-
-    test.describe('#scoutingReports', function() {
-      test.it('sorting by report date asc', function() {
-        playerPage.clickReportTableHeader('scouting', 2);
-        playerPage.getStatsForReportAndCol('scouting', 2).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by report date desc', function() {
-        playerPage.clickSortIconForReport('scouting', 2);
-        playerPage.getStatsForReportAndCol('scouting', 2).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by report type asc', function() {
-        playerPage.clickRemoveSortIconForReport('scouting', 2);
-        playerPage.clickReportTableHeader('scouting', 3);
-        playerPage.getStatsForReportAndCol('scouting', 3).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by report type desc', function() {
-        playerPage.clickSortIconForReport('scouting', 3);
-        playerPage.getStatsForReportAndCol('scouting', 3).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by author asc', function() {
-        playerPage.clickRemoveSortIconForReport('scouting', 3);
-        playerPage.clickReportTableHeader('scouting', 4);
-        playerPage.getStatsForReportAndCol('scouting', 4).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by author desc', function() {
-        playerPage.clickSortIconForReport('scouting', 4);
-        playerPage.getStatsForReportAndCol('scouting', 4).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
-
-    test.describe('#interviewReports', function() {
-      test.it('sorting by report date asc', function() {
-        playerPage.clickReportTableHeader('interview', 2);
-        playerPage.getStatsForReportAndCol('interview', 2).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by report date desc', function() {
-        playerPage.clickSortIconForReport('interview', 2);
-        playerPage.getStatsForReportAndCol('interview', 2).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by author asc', function() {
-        playerPage.clickRemoveSortIconForReport('interview', 2);
-        playerPage.clickReportTableHeader('interview', 3);
-        playerPage.getStatsForReportAndCol('interview', 3).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by author desc', function() {
-        playerPage.clickSortIconForReport('interview', 3);
-        playerPage.getStatsForReportAndCol('interview', 3).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
-
-    test.describe('#evaluationReports', function() {
-      test.it('sorting by report date asc', function() {
-        playerPage.clickReportTableHeader('evaluation', 2);
-        playerPage.getStatsForReportAndCol('evaluation', 2).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by report date desc', function() {
-        playerPage.clickSortIconForReport('evaluation', 2);
-        playerPage.getStatsForReportAndCol('evaluation', 2).then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by author asc', function() {
-        playerPage.clickRemoveSortIconForReport('evaluation', 2);
-        playerPage.clickReportTableHeader('evaluation', 3);
-        playerPage.getStatsForReportAndCol('evaluation', 3).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by author desc', function() {
-        playerPage.clickSortIconForReport('evaluation', 3);
-        playerPage.getStatsForReportAndCol('evaluation', 3).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
-
-    test.describe('#statistics', function() {
-
-    });
-
-    test.describe('#incidentReports', function() {
-      test.it('sorting by week asc', function() {
-        playerPage.clickIncidentReportsTableHeader(1);
-        playerPage.getIncidentReportsTableValues('week').then(function(stats) {
-          var sortedArray = extensions.customSortEnumerated(stats, 'asc', playerPage.INCIDENT_REPORTS_WEEK_ENUMERATION);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by week desc', function() {
-        playerPage.clickIncidentReportsSortIcon(1);
-        playerPage.getIncidentReportsTableValues('week').then(function(stats) {
-          var sortedArray = extensions.customSortEnumerated(stats, 'desc', playerPage.INCIDENT_REPORTS_WEEK_ENUMERATION);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by date asc', function() {
-        playerPage.clickIncidentReportsRemoveSortIcon(1);
-        playerPage.clickIncidentReportsTableHeader(2);
-        playerPage.getIncidentReportsTableValues('date').then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by date desc', function() {
-        playerPage.clickIncidentReportsSortIcon(2);
-        playerPage.getIncidentReportsTableValues('date').then(function(stats) {
-          var sortedArray = extensions.customSortDates(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by type asc', function() {
-        playerPage.clickIncidentReportsRemoveSortIcon(2);
-        playerPage.clickIncidentReportsTableHeader(3);
-        playerPage.getIncidentReportsTableValues('type').then(function(stats) {
-          var sortedArray = extensions.customSortEnumerated(stats, 'asc', playerPage.INCIDENT_REPORTS_TYPE_ENUMERATION);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('sorting by type desc', function() {
-        playerPage.clickIncidentReportsSortIcon(3);
-        playerPage.getIncidentReportsTableValues('type').then(function(stats) {
-          var sortedArray = extensions.customSortEnumerated(stats, 'desc', playerPage.INCIDENT_REPORTS_TYPE_ENUMERATION);
-          assert.deepEqual(stats, sortedArray);
-        });
       });
     });
   });

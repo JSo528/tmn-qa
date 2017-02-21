@@ -32,41 +32,42 @@ test.describe('#Page: List', function() {
     });
   });
 
-  test.describe('#sorting', function() {
-    test.it('sorting by draft year asc, sorts the table accordingly', function() {
-      listPage.clickTableHeader(2);
+ test.describe('#sorting', function() {
+    var columns = [
+      { colNum: 2, colName: 'Draft Year', sortType: 'number' },
+      { colNum: 3, colName: 'First Name', sortType: 'stringInsensitive' },
+      { colNum: 4, colName: 'Last Name', sortType: 'stringInsensitive' },
+      { colNum: 5, colName: 'Jersey', sortType: 'number' },
+      { colNum: 6, colName: 'Pos' },
+      { colNum: 7, colName: 'Height', sortType: 'number' },
+      { colNum: 8, colName: 'Weight', sortType: 'number' },
+      { colNum: 9, colName: 'Speed', sortType: 'number' },
+      { colNum: 10, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },    
+      { colNum: 11, colName: 'Unenrolled', sortType: 'boolean' },
+    ];
 
-      listPage.getTableStats(2).then(function(draftYears) {
-        var sortedArray = extensions.customSort(draftYears, 'asc');
-        assert.deepEqual(draftYears, sortedArray);
+    var lastColNum;
+    columns.forEach(function(column) {
+      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+        if (lastColNum) listPage.clickRemoveSortIcon(lastColNum);
+        lastColNum = column.colNum;
+        listPage.clickTableHeader(column.colNum);
+
+        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
       });
-    });
 
-    test.it('sorting by draft year desc, sorts the table accordingly', function() {
-      listPage.clickSortIcon(2);
+      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
+        listPage.clickSortIcon(column.colNum);
 
-      listPage.getTableStats(2).then(function(draftYears) {
-        var sortedArray = extensions.customSort(draftYears, 'desc');
-        assert.deepEqual(draftYears, sortedArray);
-      });
-    });
-
-    test.it('sorting by first name asc, sorts the table accordingly', function() {
-      listPage.clickRemoveSortIcon(2);
-      listPage.clickTableHeader(3);
-
-      listPage.getTableStats(3).then(function(names) {
-        var sortedArray = extensions.customSortStringsInsensitive(names, 'asc');
-        assert.deepEqual(names, sortedArray);
-      });
-    });
-
-    test.it('sorting by first name desc, sorts the table accordingly', function() {
-      listPage.clickSortIcon(3);
-
-      listPage.getTableStats(3).then(function(names) {
-        var sortedArray = extensions.customSortStringsInsensitive(names, 'desc');
-        assert.deepEqual(names, sortedArray);
+        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
       });
     });
   });

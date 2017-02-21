@@ -21,29 +21,62 @@ test.describe('#Page: Team', function() {
   });
 
   test.describe('#sorting', function() {
-    test.it('roster list should be sorted alphabetically by last name asc initially', function() {
-      teamPage.getTableStats(7).then(function(lastNames) {
-        var sortedArray = extensions.customSort(lastNames, 'asc');
-        assert.deepEqual(lastNames, sortedArray);
+    var columns = [
+      { colNum: 2, colName: 'Tier', sortType: 'enumerated', sortEnumeration: ['A', 'B', 'C', 'D', '?'] },
+      { colNum: 3, colName: 'Draft Year', sortType: 'number' }, 
+      { colNum: 4, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },
+      { colNum: 5, colName: 'Jersey', sortType: 'number' },
+      { colNum: 6, colName: 'First Name', sortType: 'string' },
+      { colNum: 8, colName: 'Starter', sortType: 'boolean' },
+      { colNum: 9, colName: 'Pos', placeholder: 'Select value' },
+      { colNum: 10, colName: 'Jags. Pos.', placeholder: 'Jags. Pos.'  },
+      { colNum: 11, colName: 'Height', sortType: 'number' },
+      { colNum: 12, colName: 'Weight', sortType: 'number' },
+      { colNum: 13, colName: 'Speed', sortType: 'number' },
+    ];
+
+    test.it('team list should be sorted alphabetically by last name asc initially', function() {
+      teamPage.getTableStatsForCol(7).then(function(stats) {
+        stats = extensions.normalizeArray(stats, 'string');
+        var sortedArray = extensions.customSort(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
       });
     });
 
-    test.it('reversing the sort should sort the list by last name desc', function() {
-      teamPage.clickTableHeader(7);
-      teamPage.getTableStats(7).then(function(lastNames) {
-        var sortedArray = extensions.customSort(lastNames, 'desc');
-        assert.deepEqual(lastNames, sortedArray);
+    test.it('clicking arrow next to last name header should reverse the sort', function() {
+      teamPage.clickSortIcon(7);
+
+      teamPage.getTableStatsForCol(7).then(function(stats) {
+        stats = extensions.normalizeArray(stats, 'string');
+        var sortedArray = extensions.customSort(stats, 'desc');
+        assert.deepEqual(stats, sortedArray);
       });
     });
 
-    test.it('selecting speed sort should sort list by speed asc', function() {
-      teamPage.clickRemoveSortIcon(7);
-      teamPage.clickTableHeader(12);
-      teamPage.getTableStats(12).then(function(speeds) {
-        var sortedArray = extensions.customSort(speeds, 'asc');
-        assert.deepEqual(speeds, sortedArray);
+    var lastColNum = 7;
+    columns.forEach(function(column) {
+      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+        teamPage.clickRemoveSortIcon(lastColNum);
+        lastColNum = column.colNum;
+        teamPage.clickTableHeader(column.colNum);
+
+        teamPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
       });
-    });    
+
+      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
+        teamPage.clickSortIcon(column.colNum);
+
+        teamPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
+      });
+    });
   });
 
   test.describe('#filters', function() {
@@ -73,14 +106,14 @@ test.describe('#Page: Team', function() {
 
     test.it('removing top draft year, should update player list', function() {
       filters.changeDropdownFilter('For Draft Years', 2017);
-      teamPage.getTableStats(3).then(function(years) {
+      teamPage.getTableStatsForCol(3).then(function(years) {
         assert.notInclude(years, '2017');
       });
     });
 
     test.it('adding tier C, should update player list', function() {
       filters.changeDropdownFilter('For Tier', 'C');
-      teamPage.getTableStats(2).then(function(tiers) {
+      teamPage.getTableStatsForCol(2).then(function(tiers) {
         var uniqueTiers = Array.from(new Set(tiers));
         assert.sameMembers(['C'], uniqueTiers);
       });
@@ -88,7 +121,7 @@ test.describe('#Page: Team', function() {
 
     test.it('selecting positions = DL should update player list', function() {
       filters.changeDropdownFilter('At Positions', 'FS');
-      teamPage.getTableStats(9).then(function(positions) {
+      teamPage.getTableStatsForCol(9).then(function(positions) {
         var uniquePositions = Array.from(new Set(positions));
         assert.sameMembers(['FS'], uniquePositions);
       });

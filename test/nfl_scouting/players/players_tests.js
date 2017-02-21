@@ -26,73 +26,66 @@ test.describe('#Page: Players', function() {
 
   test.describe('#table', function() {
     test.describe('#sorting', function() {
-      test.it('table should be sorted alphabetically by last name asc initially', function() {
-        playersPage.getTableStats(3).then(function(lastNames) {
-          var sortedArray = extensions.customSort(lastNames, 'asc');
-          assert.deepEqual(lastNames, sortedArray);
+      var columns = [
+        { colNum: 2, colName: 'Jersey', sortType: 'number' },
+        { colNum: 4, colName: 'First Name', sortType: 'stringInsensitive' },
+        { colNum: 5, colName: 'Pos', placeholder: 'Select value' },
+        { colNum: 6, colName: 'Team Code' },
+        { colNum: 7, colName: 'Height', sortType: 'number' },
+        { colNum: 8, colName: 'Weight', sortType: 'number' },
+        { colNum: 9, colName: 'Speed', sortType: 'number' },
+        { colNum: 10, colName: 'Agent', sortType: 'string' }
+      ];
+
+      test.it('adding filter for tier A', function() {
+        playersPage.addFilter('For Tier');
+        filters.setDropdownFilter('For Tier', ['A']);
+      });
+
+      test.it('players list should be sorted alphabetically by last name asc initially', function() {
+        playersPage.getTableStatsForCol(3).then(function(stats) {
+          stats = extensions.normalizeArray(stats, 'stringInsensitive');
+          var sortedArray = extensions.customSortByType('stringInsensitive', stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
         });
       });
 
-      test.it('reversing the sort should sort the table by last name desc', function() {
-        playersPage.clickTableHeader(3);
-        playersPage.getTableStats(3).then(function(lastNames) {
-          var sortedArray = extensions.customSort(lastNames, 'desc');
-          assert.deepEqual(lastNames, sortedArray);
+      test.it('clicking arrow next to last name header should reverse the sort', function() {
+        playersPage.clickSortIcon(3);
+
+        playersPage.getTableStatsForCol(3).then(function(stats) {
+          stats = extensions.normalizeArray(stats, 'stringInsensitive');
+          var sortedArray = extensions.customSortByType('stringInsensitive', stats, 'desc');
+          assert.deepEqual(stats, sortedArray);
         });
       });
 
-      test.it('selecting jersey sort should sort list by jersey asc', function() {
-        playersPage.clickRemoveSortIcon(3);
-        playersPage.clickTableHeader(2);
-        playersPage.getTableStats(2).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });  
+      var lastColNum = 3;
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          playersPage.clickRemoveSortIcon(lastColNum);
+          lastColNum = column.colNum;
+          playersPage.clickTableHeader(column.colNum);
 
-      test.it('reversing the sort should sort list by jersey desc', function() {
-        playersPage.clickTableHeader(2);
-        playersPage.getTableStats(2).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
+          playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+            assert.deepEqual(stats, sortedArray);
+          });
         });
-      });  
 
-      test.it('selecting height sort should sort list by height asc', function() {
-        playersPage.clickRemoveSortIcon(2);
-        playersPage.clickTableHeader(7);
-        playersPage.getTableStats(7).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
+        test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
+          playersPage.clickSortIcon(column.colNum);
+
+          playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+            assert.deepEqual(stats, sortedArray);
+          });
         });
-      });  
-
-      test.it('reversing the sort should sort list by height desc', function() {
-        playersPage.clickTableHeader(7);
-        playersPage.getTableStats(7).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });  
-
-      test.it('selecting speed sort should sort list by speed asc', function() {
-        playersPage.clickRemoveSortIcon(7);
-        playersPage.clickTableHeader(9);
-        playersPage.getTableStats(9).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });  
-
-      test.it('reversing the sort should sort list by speed desc', function() {
-        playersPage.clickTableHeader(9);
-        playersPage.getTableStats(9).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });        
-    });
-
+      });
+    });    
+   
     test.describe('#updatingFields', function() {
       var attributes = [
         { field: 'Jersey', col: 2, type: 'input', updatedValue: 10 },
@@ -302,7 +295,7 @@ test.describe('#Page: Players', function() {
       playersPage.waitForPageToLoad();
 
       playersPage.getTableStatsFor('Last Name').then(function(stats) {
-        assert.includeMembers(stats, ['Barton', 'Borrayo']);
+        assert.includeMembers(stats, ['Young']);
       });
     });
 
@@ -347,12 +340,16 @@ test.describe('#Page: Players', function() {
   test.describe('#exportCsv', function() {
     test.it('clicking export csv exports csv file', function() {
       browser.refresh();
+      playersPage.addFilter('On Player Lists');
+      filters.setResourceSetFilter('On Player Lists', ['GI']);
+
       playersPage.waitForPageToLoad();
+
       playersPage.clickExportButton();
     });
 
     test.it('csv file should have the correct data', function() {
-      var exportFileContents = ",Aaron,Montel,qb,CASJ,6050,201,/n17,Aaron,Austin,wr,CAUN,6040,210,/n,Aaron,Jarell,wr,MSSO,6050,203,4.60e/n56,AARON,DMITRE,dt,OHAS,6024e,400e,5.20e/n65,AARON,EVAN,ot,SDNO,6050e,290e,5.30e/n23,AARON,DWAYNE,oh,OHMT,5070e,185e,4.60e/n82,AASEN,GRANT,pt,GATC,6000e,200e,5.15e/n1,ABAD,MANUEL,dc,FLTC,5112v,182v,4.49v/n32,Abanikanda,Michael,rb,NYBU,5080,185,/n34,ABARE,GREG,te,NYRE,6030e,215e,5.10e/n96,ABBAS,BRANDON,pk,IACO,6010e,215e,5.05e/n,Abbington,Chase,rb,MOSE,6020,215,/n39,Abbington,Chase,rb,MOUN,6020,215,/n,Abbott,Aaron,db,MIEA,6010,206,/n,Abbott,Marcus,de,TXLA,6030,271,/n,Abbott,Britton,qb,OKST,6020,246,/n47,Abbott,Blake,fb,OKTU,5110,227,/n,Abbott,Cody,ol,IDST,6030,276,5.40e/n,Abby,Jerimiah,ol,LASO,6040,328,/n3,ABDELMOTY,SAMER,fs,PACA,5110e,180e,4.80e/n45,Abdesmad,Mehdi,dl,MABC,6070,286,/n29,Abdul-Akbar,Tariq,db,VARI,5090,158,/n,Abdul-Aziz,Jamil,ol,LAST,6020,270,/n,Abdul-Aziz,Jibrail,ol,LAST,6020,289,/n,Abdullah,Naji,de,VAUN,6050,235,/n32,ABDULLAH,KHALID,oh,VAJM,5096v,214v,4.80v/n44,ABDUL-RAZZAY,AKHMAD,de,KSWA,6017v,237v,4.85e/n7,Abdul-Saboor,Mikal,rb,VAWM,5100,210,/n46,Abdur-Rahman,Jihad,dl,DEST,6040,270,/n4,ABDUR-RAHMAN,SHAWAHL,oh,NYIT,5030e,160e,5.00e/n34,Abdur-Ra'oof,Talib,db,NJRU,6000,205,/n,Abee,David,rb,ALSM,6020,176,/n,Abel,Hunter,dt,CAUN,6010,265,/n,Abelite,Alexander,lb,CTYA,6020,220,/n,Abell,Porter,wr,VARI,6010,190,/n57,Abeln,Alec,ol,MOUN,6030,290,/n71,Abera,Nehemia,dl,CALA,6020,230,/n,Abercrombie,Osharmar,rb,SCCC,5090,205,/n,Abercrombie,Christion,lb,ILUN,6010,220,/n92,ABERCROMBIE,BENJI,de,PAME,6020e,230e,5.10e/n,Abercrumbia,Zach,dt,TXRI,6020,290,/n,Abernathy,Micah,db,TNUN,6000,195,/n37,Abernathy,Eric,db,TNMS,5090,180,/n,Abey,Zach,qb,MDNA,6020,218,/n,Abisoye,Adesola,db,GAKS,5100,183,/n,Able,Kameron,lb,KYMO,6020,228,/n5,Able,Noah,cb,SCWO,5100,169,/n42,ABLE,KAMERON,ob,KYMO,6000e,215e,5.00e/n2,Abnar,D.J.,rb,VALB,5100,185,/n,Abner,Olan,db,NYST,5100,190,/n";
+      var exportFileContents = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent/n21,ANDREWS,DAN,oh,NYBP,5110v,198v,4.70v,/n15,ANTOINE,GLEN,dt,IDUN,6030e,320e,5.30e,/n10,APODACA,AUSTIN,qb,NMUN,6030,212,5.10e,/n8,ARMAH,ALEXANDER,de,GAWG,6003v,247v,4.80e,/n15,BAILEY,AARON,qb,IANO,6005v,230v,4.55e,/n,BAIN,ROB,dl,ILUN,6030,295,,/n5,BELLO,B.J.,lb,ILST,6030,225,,/n32,BERRY,KOURTNEY,mlb,ALST,5104e,210e,4.85e,/n71,BOLAND,MICHAEL,ol,MAUN,6060,318,5.45e,/n28,BOUAGNON,JOEL,oh,ILNO,6010v,226v,4.60e,/n10,BOWMAN,JORDAN,fs,PACS,5110v,205v,4.64v,/n36,BREIDA,MATTHEW,oh,GASO,5087v,180v,4.50e,/n57,BROOKS,CORIN,ol,TXPB,,,,/n9,BROWN,GARRY,wo,PACS,5112v,195v,4.50e,/n6,BUCHANAN,RAYMOND,dc,IANO,5101v,175v,4.55e,/n69,BUTLER,ADAM,dl,TNVA,6050,295,5.15e,/n76,CALLENDER,NICK,ol,COST,6060,325,5.25e,/n21,CASHER,CHRIS,de,ALFA,6040e,250e,4.80e,/n87,CELLA,CONNOR,te,TXRI,6030,255,5.00e,/n83,CHURCH,JAMES,wo,VANO,6000e,200e,4.80e,/n9,CHURCH,DEVIN,oh,ILEA,5071v,198v,4.55e,/n31,CIOFFI,ANTHONY,ss,NJRU,5113v,201v,4.75e,/n79,CLARK,JEMAR,ol,ARST,6060,306,5.30e,/n11,COATE,SETH,wo,INSF,6026v,205v,4.60v,/n29,COLLINS,JARED,db,ARUN,5110,173,4.55e,/n45,CONDIT,TYLER,lb,CTNH,,,,/n2,CONQUE,ZACHARY,qb,TXSF,6050v,235v,4.90e,/n57,COWARD,RASHAAD,dt,VAOD,6054v,310v,5.25e,/n27,CROSSAN,DALTON,rb,NHUN,5110,204,4.55e,/n9,CURTIS,AYRN,dc,MINW,6004e,195e,4.65e,/n40,DAVIS,P.J.,wb,GATC,5110,231,,/n1,DAWSON,SHELDON,db,TNMR,5110,180,4.55e,/n11,DELOATCH,ROMOND,te,PATE,6040,220,4.70e,/n94,DEMOSTHENE,RUBEN,lb,OKSN,,,,/n46,DERRICOTT,D\'VONTA,ob,ARTC,5112v,225v,4.75e,/n42,DICKERSON,ROBERT,dc,KSTH,5101v,172v,4.77v,/n5,DOBARD,STANDISH,te,FLMI,6040v,268v,4.95e,/n10,DUKE,AUSTIN,wo,NCCR,5087v,159v,4.75e,/n8,DVORAK,JUSTIN,qb,COMI,5110e,195e,5.00e,/n,EASTON,DALTON,qb,RIBT,6000,192,5.00e,/n83,ESTES,MICHAEL,te,NCGW,6041v,228v,4.83v,/n9,EVANS,DANE,qb,OKTU,6010,210,5.00e,/n,FERGUSON,TYLER,qb,KYWE,6040,225,4.95e,/n20,FLANDERS,JAMES,rb,OKTU,5100,203,4.70e,/n40,FLOWERS,DARION,dc,TXSH,5101v,183v,4.70e,/n75,FLYNN,JOHN,og,MTST,6056v,310v,5.35e,/n,FOLGER,CHARLES,dl,TNUN,6040,265,5.00e,/n9,FORD,DEMETRIS,de,ARTC,5110e,230e,5.00e,/n13,FOREMAN,TONY,dc,TNUN,5096v,189v,4.55e,/n22,FRAZIER,KING,oh,NDST,5111v,218v,4.70e,/n18,FREEMAN,AUSTIN,te,CASJ,6024v,235v,4.75e,/n47,GALAMBOS,MATTHEW,ib,PAPT,6012v,241v,4.85e,/n,GETER,CHAD,lb,NCGW,6020,253,4.97v,/n5,GIBSON,JOHN,db,MOUN,6000,195,4.50e,/n8,GRAHAM,TYSON,db,SDVE,6020,210,4.65e,/n88,GRANT,ZACH,wo,ILUN,5110e,190e,4.65e,/n40,GREGORY,THOMAS,pt,NCEA,6032v,207v,4.95e,/n14,HAINES,DYLAN,s,TXUN,6010,200,4.65e,/n5,HEIMAN,CODY,ib,KSWA,6013v,238v,4.75e,/n88,HOLLISTER,JACOB,te,WYUN,6030e,230e,4.80e,/n11,HOLLOMAN,THOMAS,ob,SCUN,6025v,233v,4.75e,/n7,HOLMAN,ALLEN,lb,PASH,,,,/n28,HOLMES,DAQUAN,fs,MAAI,5104v,180v,4.54v,/n42,HOLSHOE,NICK,ss,MICO,6000e,205e,4.65e,/n7,HORTON,JUSTIN,ob,FLJA,6015v,235v,4.58v,/n13,HOUSTON,BARTLETT,qb,WIUN,6031v,234v,4.95e,/n3,HUDSON,TERRELL,fs,OHAS,5113v,210v,4.70e,/n81,IRWIN,SEAN,te,COUN,6030,250,4.95e,/n93,JAMES,DREW,dt,NMST,6004v,304v,5.35e,/n88,JAMES,NICHOLAS,nt,MSST,6044v,316v,5.25e,/n7,JENKINS,ELIJAH,qb,ALJA,6007v,206v,4.85e,/n7,JETTE,ALEXANDER,wo,RIBR,6003v,187v,4.60e,/n2,JOHNSON,JORDAN,rb,NYBU,6010,220,4.60e,/n3,JONES,ADAM,s,LANW,6020,204,4.65e,/n4,JONES,RICKY,wr,INUN,5100,185,4.55e,/n12,JONES,JARNOR,dc,IAST,6031v,205v,4.70e,/n21,JUDD,AKEEM,oh,MSUN,5107v,228v,4.60e,/n72,KING,JASON,g,INPU,6040,310,5.35e,/n9,KOO,YOUNGHOE,pk,GASO,5091v,182v,5.00e,/n54,KUBLANOW,BRANDON,oc,GAUN,6017v,301v,5.30e,/n80,KUKWA,ANTHONY,te,OHLE,6021v,239v,4.72v,/n43,KUNTZ,CHRISTIAN,lb,PADU,6020,228,,/n61,LARRIEUX,VOGHENS,lt,SCCC,6050,300,5.40e,/n,LAUDERDALE,ANDREW,ol,NHUN,6060,291,5.40e,/n78,LECHLER,LANDON,ot,NDST,6075v,302v,5.25e,/n27,LOTT,TAVIAN,dc,TNEA,5090e,170e,4.70e,/n,LYONS,ALEX,lb,TXRI,6010,230,4.90e,/n97,MADUNEZIM,BRIAN,dl,TXEP,6030,275,5.10e,/n8,MAGEO,ROMMEL,mlb,MSUN,6020,233,4.75e,/n8,MANNS,NYME,wo,MDBO,6020v,205v,4.60e,/n83,MAULHARDT,JACOB,wo,WYUN,6053v,229v,4.55e,/n45,MCCLOSKEY,TYLER,te,TXHO,6020,245,4.95e,/n1,MCGILL,DAVON,ib,WVCO,6010e,210e,5.00e,/n75,MCGOWAN,BENNY,g,MIST,6030,333,5.40e,/n76,MELTON,RYAN,ot,TXSW,6050,329,5.40e,/n53,MIANO,PAULIN,de,VAVU,6042v,266v,4.95v,/n64,MILLER,MICHAEL,ot,KSWA,6043v,293v,5.25e,/n1,MITCHELL,BRADLEY,oh,OHMT,5046v,170v,4.60e,/n5,MIXSON,TWARN,wo,VAHI,5092v,166v,4.59v,/n5,MOORE,RONNIE,wo,OHBG,5090v,169v,4.50e,/n80,MORGAN,DREW,wo,ARUN,5114v,190v,4.55e,/n17,MORLEY,CHRISTOPHER,ss,TNMS,5104v,190v,4.60e,/n6,MULUMBA TSHIMANGA,CHRISTOPHE,ib,MEUN,6001v,237v,4.95e,/n92,MYERS,MIKAL,nt,CTUN,6002v,328v,5.30e,/n52,NEAL,TYRONE,ib,ALAU,6004e,235e,4.80e,/n19,NEAL,DAVONTE\',dc,AZUN,5091v,172v,4.60e,/n69,NELSON,DERRICK,ol,NJRU,6030,295,5.40e,/n19,NELSON,JACK,qb,MNWI,6036v,236v,4.87v,/n15,NORRIS,NICHOLAS,wo,KYWE,5067v,170v,4.55e,/n14,NORVELL,TRENTON,qb,ILWE,6050,225,4.95e,/n,OBAJIMI,EMMANUEL,wr,ALSM,6010,200,,/n95,O\'BRIEN,DANIEL,dt,TNUN,6016v,305v,5.20e,/n7,O\'CONNOR,TYLER,qb,MIST,6010e,220e,4.95e,/n93,ODOM,CHRIS,de,ARST,6020e,250e,5.00e,/n90,OGBONDA,SHALOM,dt,FLAT,6040,295,5.20e,/n24,O\'ROY,JAVANTE,dc,TXSW,6000e,180e,4.75e,/n92,OWINO,DESMOND,de,ALJA,6031v,270v,4.95e,/n1,PACE,DAQUAN,dc,MIEA,5085v,169v,4.65e,/n53,PINNIX-ODRICK,JULIAN,dl,NJRU,6050,274,5.15e,/n9,PIPKINS,ONDRE,nt,TXTC,6030,325,5.30e,/n90,PITTMAN,SE\'VON,de,OHAK,6031v,261v,4.90e,/n5,POOLE,CEDRIC,ss,ALMI,5096v,198v,4.77v,/n68,PULLINS,ANTHONY,oc,TXSF,6010v,290v,5.40e,/n17,PUYOL,BOBBY,pk,CTUN,5100,183,5.00e,/n48,REED,DEZMIN,ob,NCAP,6002v,225v,5.00e,/n9,REID,RYAN,cb,TXBA,5110,190,4.50e,/n9,RICHARDSON,HORACE,db,TXMU,6010,212,4.80e,/n31,RIVERS,DAVID,dc,OHYO,6007v,188v,4.50e,/n94,ROBERSON,WAYLON,nt,ARST,6010e,335e,5.40e,/n,ROBINSON,SPEARMAN,wr,NCWE,6040,215,,/n23,ROGERS,DEJUAN,ss,OHTO,5114v,189v,4.61v,/n91,RYDER,JAKE,pk,MDTO,5110e,175e,5.10e,/n9,SAINT FLEUR,JOBY,de,OKNW,6043v,245v,5.03v,/n4,SANDERS,KENDALL,wr,ARST,6000,187,,/n21,SANDERS,AARON,wo,VAMI,6005v,194v,4.68v,/n44,SAYLES,CASEY,dt,OHUN,6035v,286v,5.10e,/n79,SEATON,BRADLEY,ot,PAVI,6086v,314v,5.30e,/n25,SINGLETON,TERRENCE,dc,TXPV,5100e,185e,4.70e,/n32,SMITH,TYVIS,rb,IANO,6010,226,4.55e,/n92,SMITH,TIMOTHY,de,ILSF,6013v,228v,4.95v,/n25,SMITH,MARQUIS,olb,GASA,6030v,241v,5.03v,/n52,SOTO,SHAKIR,dt,PAPT,6025v,272v,5.20e,/n,SPELMAN,MARK,ol,ILST,6030,290,5.30e,/n69,SPOONER,QADR,og,CNMG,,,,/n73,STEYN,CALVIN,ot,UTWB,6033v,328v,5.40e,/n11,SUMMERS,JAMES,wr,NCEA,6030,218,4.55e,/n25,SUMMERS,CHRISTIAN,wo,MDTO,6023v,211v,4.60e,/n18,SWOOPES,TYRONE,qb,TXUN,6034e,230e,4.80e,/n17,TABBS,VICTOR,te,NCEC,,,,/n,TAGALOA,FREDDIE,ol,AZUN,6080,314,5.35e,/n,TAYLOR,CHRIS,g,LATU,6030,325,,/n50,VEREEN,COREY,de,TNUN,6020v,251v,4.85e,/n79,WARE,JYLAN,lt,ALST,6080,309,,/n82,WARRUM,ANTHONY,wo,ILST,6004v,185v,4.55e,/n22,WASHINGTON,DERON,fs,KSPS,6004x,211x,4.55x,/n23,WILLIAMS,SAM,ss,TXBP,6000e,185e,4.80e,/n4,WILLIAMS,MONDO,dc,NCAP,5090v,167v,4.60e,/n17,WILTZ,JOMAL,dc,IAST,5091v,175v,4.41v,/n,WINDHAM,GREG,qb,OHUN,6010,215,5.00e,/n82,WOLITARSKY,DREW,wr,MNUN,6030,220,4.50e,/n74,ZANDI,MASON,lt,SCUN,6090,315,5.35e,/n54,ZERBLIS,FREDERICK,og,COST,6020v,303v,5.30e,/n';
       return playersPage.readAndDeleteExportCSV().then(function(data) {
         assert.equal(data, exportFileContents);
       });

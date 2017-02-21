@@ -38,7 +38,6 @@ test.describe('#Page: Lists', function() {
   test.describe('#sorting', function() {
     test.it('sorting by name asc should sort lists accordingly', function() {
       listsPage.clickTableHeader(2);
-      driver.sleep(1000); // doesn't wait for the table to update for some reason
       listsPage.getTableStatsForCol(2).then(function(stats) {
         var sortedArray = extensions.customSort(stats, 'asc');
         assert.deepEqual(stats, sortedArray);
@@ -47,7 +46,6 @@ test.describe('#Page: Lists', function() {
 
     test.it('sorting by name desc should sort lists accordingly', function() {
       listsPage.clickSortIcon(2);
-      driver.sleep(1000); // doesn't wait for the table to update for some reason
       listsPage.getTableStatsForCol(2).then(function(stats) {
         var sortedArray = extensions.customSort(stats, 'desc');
         assert.deepEqual(stats, sortedArray);

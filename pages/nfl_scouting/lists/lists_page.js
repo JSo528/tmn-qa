@@ -43,12 +43,14 @@ ListsPage.prototype.getTableStatsForCol = function(col) {
 
 ListsPage.prototype.clickTableHeader = function(col) {
   var locator = By.xpath(`.//div[@class='tags']/.//table/thead/tr/th[${col}]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.waitUntilStaleness(LISTS_TABLE, 5000);
 };
 
 ListsPage.prototype.clickSortIcon = function(col) {
   var locator = By.xpath(`.//div[@class='tags']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
-  return this.click(locator);
+  this.click(locator);
+  return this.waitUntilStaleness(LISTS_TABLE, 5000);
 };
 
 ListsPage.prototype.clickTableRow = function(row) {

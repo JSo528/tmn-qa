@@ -69,7 +69,7 @@ ListPage.prototype.playerExistsInTable = function(firstName, lastName) {
 /****************************************************************************
 ** Table Stats
 *****************************************************************************/
-ListPage.prototype.getTableStats = function(col) {
+ListPage.prototype.getTableStatsForCol = function(col) {
   var d = Promise.defer();
   var thiz = this;
   var inputLocator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/input`);
