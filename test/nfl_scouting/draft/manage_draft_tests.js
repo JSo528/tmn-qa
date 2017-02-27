@@ -41,10 +41,13 @@ test.describe('#Page: ManageDraft', function() {
       { field: 'Alerts', value: 'cmx', type: 'input', original: ''},
     ];
 
-    test.it('changing player profile fields', function() {
-      profileAttributes.forEach(function(attribute) {
+    profileAttributes.forEach(function(attribute) {
+      test.it('changing player profile field: ' + attribute.field, function() {
         manageDraftPage.changeProfileField(attribute.type, attribute.field, attribute.value);
       });
+    });
+
+    test.it('refreshing the page after changing attribtues', function() {
       browser.refresh();
     });
 
@@ -56,8 +59,8 @@ test.describe('#Page: ManageDraft', function() {
       });
     });
 
-    test.it('changing back player profile fields', function() {
-      profileAttributes.forEach(function(attribute) {
+    profileAttributes.forEach(function(attribute) {
+      test.it('changing back player profile field: ' + attribute.field, function() {
         manageDraftPage.changeProfileField(attribute.type, attribute.field, attribute.original);
       });
     });

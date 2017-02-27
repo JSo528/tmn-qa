@@ -36,7 +36,7 @@ _.extend(ListPage.prototype, inputs);
 *****************************************************************************/
 ListPage.prototype.waitForPageToLoad = function() {
   this.waitUntilStaleness(BODY_CONTENT);
-  return this.waitForEnabled(BODY_CONTENT);
+  return this.waitForEnabled(BODY_CONTENT, 20000);
 };
 
 ListPage.prototype.getTableTitle = function() {
@@ -46,19 +46,19 @@ ListPage.prototype.getTableTitle = function() {
 ListPage.prototype.clickTableHeader = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]`);
   this.click(locator);
-  return this.waitUntilStaleness(BODY_CONTENT);
+  return this.waitUntilStaleness(BODY_CONTENT, 10000);
 };
 
 ListPage.prototype.clickSortIcon = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')][1]`);
   this.click(locator);
-  return this.waitUntilStaleness(BODY_CONTENT);
+  return this.waitUntilStaleness(BODY_CONTENT, 10000);
 };
 
 ListPage.prototype.clickRemoveSortIcon = function(col) {
   var locator = By.xpath(`.//div[@class='tag-profile']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
   this.click(locator);
-  return this.waitUntilStaleness(BODY_CONTENT);
+  return this.waitUntilStaleness(BODY_CONTENT, 10000);
 };
 
 ListPage.prototype.playerExistsInTable = function(firstName, lastName) {

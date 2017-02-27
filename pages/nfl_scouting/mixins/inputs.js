@@ -35,6 +35,21 @@ var MONTHS_PICKER_SWITCH = By.css('.datepicker-months .picker-switch');
 var DATEPICKER_DAYS_TABLE = By.css(".datepicker .datepicker-days");
 var DATEPICKER_MONTHS_TABLE = By.css(".datepicker .datepicker-months");
 
+var MONTH_ABBR = {
+  "01": 'Jan',
+  "02": 'Feb',
+  "03": 'Mar',
+  "04": 'Apr',
+  "05": 'May',
+  "06": 'Jun',
+  "07": 'Jul',
+  "08": 'Aug',
+  "09": 'Sep',
+  "10": 'Oct',
+  "11": 'Nov',
+  "12": 'Dec'
+}
+
 Inputs = {
   /****************************************************************************
   ** Functions
@@ -69,7 +84,8 @@ Inputs = {
       thiz.clear(foundLocator); // 1st clear changes it to 0
       thiz.clear(foundLocator);
       thiz.sendKeys(foundLocator, value);
-      thiz.sendKeys(foundLocator, Key.ENTER);
+      thiz.sendKeys(foundLocator, Key.TAB);
+      thiz.sendKeys(foundLocator, Key.ESCAPE);
       return thiz.waitUntilStaleness(SAVE_ICON, 500);
     });
 
@@ -177,6 +193,12 @@ Inputs = {
     this.sendKeys(locator, text);
     this.sendKeys(locator, Key.TAB);
     return this.waitUntilStaleness(SAVE_ICON, 500);
+  },
+  changeDatePickerFromString: function(locator, dateString) {
+    var day = parseInt(dateString.split("/")[1]).toString();
+    var month = MONTH_ABBR[dateString.split("/")[0]];
+    var year = dateString.split("/")[2];
+    this.changeDatePicker(locator, year, month, day);
   },
   changeDatePicker: function(locator, year, month, day) {
     var d = Promise.defer();

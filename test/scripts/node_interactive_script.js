@@ -183,27 +183,27 @@ scorePitchByPitch.getVideoPlaylistText(1,1).then(function(text) {
 *****************************************************************************/
 var webdriver = require('selenium-webdriver');
 driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
-var credentials = require('../lib/credentials.js');
+var credentials = require('./lib/credentials.js');
 var By = webdriver.By;
 var Until = webdriver.until;
 var Key = require('selenium-webdriver').Key;
-var extensions = require('../lib/extensions.js');
+var extensions = require('./lib/extensions.js');
 
 // Page Objects
-var Browser = require('../pages/base/browser.js');
+var Browser = require('./pages/base/browser.js');
 var LoginPage = require('./pages/login_page.js');
-var Navbar = require('../pages/nfl_scouting/navbar.js');
-var TeamsPage = require('../pages/nfl_scouting/teams/teams_page.js');
-var TeamPage = require('../pages/nfl_scouting/teams/team_page.js');
-var PlayerPage = require('../pages/nfl_scouting/players/player_page.js');
-var PlayersPage = require('../pages/nfl_scouting/players/players_page.js');
-var ScoutPage = require('../pages/nfl_scouting/scout/scout_page.js');
-var EvaluationReportPage = require('../pages/nfl_scouting/reports/evaluation_report_page.js');
-var ScoutingReportPage = require('../pages/nfl_scouting/reports/scouting_report_page.js');
-var InterviewReportPage = require('../pages/nfl_scouting/reports/interview_report_page.js');
-var ListPage = require('../pages/nfl_scouting/lists/list_page.js');
-var ManageDraftPage = require('../pages/nfl_scouting/draft/manage_draft_page.js');
-var Filters = require('../pages/nfl_scouting/filters.js');
+var Navbar = require('./pages/nfl_scouting/navbar.js');
+var TeamsPage = require('./pages/nfl_scouting/teams/teams_page.js');
+var TeamPage = require('./pages/nfl_scouting/teams/team_page.js');
+var PlayerPage = require('./pages/nfl_scouting/players/player_page.js');
+var PlayersPage = require('./pages/nfl_scouting/players/players_page.js');
+var ScoutPage = require('./pages/nfl_scouting/scout/scout_page.js');
+var EvaluationReportPage = require('./pages/nfl_scouting/reports/evaluation_report_page.js');
+var ScoutingReportPage = require('./pages/nfl_scouting/reports/scouting_report_page.js');
+var InterviewReportPage = require('./pages/nfl_scouting/reports/interview_report_page.js');
+var ListPage = require('./pages/nfl_scouting/lists/list_page.js');
+var ManageDraftPage = require('./pages/nfl_scouting/draft/manage_draft_page.js');
+var Filters = require('./pages/nfl_scouting/filters.js');
 
 // Instance Objects
 loginPage = new LoginPage(driver);

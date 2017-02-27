@@ -129,6 +129,7 @@ test.describe('#Page: List', function() {
     });
 
     test.it('updating fields', function() {
+      this.timeout(120000);
       attributes.forEach(function(attr) {
         listPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.updatedValue );
       });

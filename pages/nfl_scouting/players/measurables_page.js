@@ -16,7 +16,31 @@ var inputs = require('../mixins/inputs.js');
 /****************************************************************************
 ** Locators
 *****************************************************************************/
+var LAST_LOCATOR = By.xpath(".//div[@inject='measurables']/.//table")
 var CREATE_BUTTON = By.xpath(".//tbody[@class='-controls controls']/.//button[contains(@class,'-create')]");
+var COLUMN_NUMS = {
+  event: 2,
+  date: 3,
+  fieldCondition: 4,
+  fieldType: 5,
+  height: 6,
+  weight: 7,
+  hand: 8,
+  arm: 9,
+  wing: 10,
+  m40_1: 11,
+  m40_2: 12,
+  m10_1: 13,
+  m10_2: 14,
+  m20_1: 15,
+  m20_2: 16,
+  verticalJump: 17,
+  broadJump: 18,
+  benchPress: 19,
+  shuttles20: 20,
+  shuttles60: 21,
+  shuttles3: 22
+};
 
 /****************************************************************************
 ** Constructor
@@ -34,192 +58,79 @@ _.extend(MeasurablesPage.prototype, inputs);
 /****************************************************************************
 ** Functions
 *****************************************************************************/
+MeasurablesPage.prototype.waitForPageToLoad = function() {
+  return this.waitForEnabled(LAST_LOCATOR, 5000);
+};
+
 MeasurablesPage.prototype.clickCreateButton = function() {
   return this.click(CREATE_BUTTON);
 };
 
-MeasurablesPage.prototype.changeInput = function(rowNum, field, value) {
-  return this.click(CREATE_BUTTON);
+MeasurablesPage.prototype.changeInputField = function(rowNum, field, value) {
+  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  return this.changeInput(locator, value);
 };
 
-// MeasurablesPage.prototype.waitForPageToLoad = function() {
-//   return this.waitForEnabled(BODY_CONTENT, 10000);
-// };
+MeasurablesPage.prototype.changeDateField = function(rowNum, field, dateString) {
+  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
+  return this.changeDatePickerFromString(locator, dateString);
+};
 
-// MeasurablesPage.prototype.getPlayerName = function() {
-//   return this.getText(NAME_LINK);
-// };
+MeasurablesPage.prototype.getInputField = function(rowNum, field) {
+  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  return this.getText(locator);
+};
 
-// MeasurablesPage.prototype.clickManageDraftLink = function() {
-//   return this.click(MANAGE_DRAFT_LINK);
-// };
+MeasurablesPage.prototype.getDateField = function(rowNum, field) {
+  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
+  return this.getInput(locator);
+};
 
-// MeasurablesPage.prototype.clickMeasurablesLink = function() {
-//   return this.click(MEASURABLES_LINK);
-// };
+MeasurablesPage.prototype.errorMessageDisplayed = function(rowNum, field) {
+  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div/div[@class='message']`);
+  return this.isDisplayed(locator);
+};
 
-// // Player Profile 
-// MeasurablesPage.prototype.changeProfileInput = function(field, value) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div/input`)
-//   return this.changeInput(locator, value);
-// };
+MeasurablesPage.prototype.getRowNumForValue = function(field, value) {
+  var d = Promise.defer();
 
-// MeasurablesPage.prototype.getProfileInput = function(field) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div/input`)
-//   return this.getInput(locator);
-// };
+  var locator = By.xpath(`.//table/tbody[1]/tr/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  var foundIndex;
 
-// MeasurablesPage.prototype.changeProfileCheckbox = function(field, selected) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div`)
-//   return this.changeCheckbox(locator, selected);
-// };
+  this.driver.findElements(locator).then(function(elements) {
+    elements.forEach(function(el, index) {
+      el.getText().then(function(text) {
+        if (text == value) {
+          foundIndex = index;
+        }
+      });
+    });
+  }).then(function() {
+    d.fulfill((foundIndex != undefined) ? foundIndex + 1 : null);
+  })
 
-// MeasurablesPage.prototype.getProfileCheckbox = function(field) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div`)
-//   return this.getCheckbox(locator);
-// };
+  return d.promise;
+};
 
-// MeasurablesPage.prototype.changeProfileDropdown = function(field, value) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div/div`);
-//   var optionLocator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div/ul/li[text()='${value}']`);
-//   return this.changeDropdown(locator, optionLocator);
-// };
+/****************************************************************************
+** Aggregate Helpers
+*****************************************************************************/
+MeasurablesPage.prototype.changeStatField = function(type, rowNum, field, value) {
+  switch (type) {
+    case 'date':
+      return this.changeDateField(rowNum, field, value);
+    default:
+      return this.changeInputField(rowNum, field, value);
+  }
+};
 
-// MeasurablesPage.prototype.getProfileDropdown = function(field) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div/div`);
-//   return this.getDropdown(locator);
-// };
-
-// MeasurablesPage.prototype.changeProfileDraftYear = function(year) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='Draft Year']]/div/div/input`)
-//   var yearLocator = By.xpath(`.//div[@class='datepicker']/div[@class='datepicker-years']/table/tbody/tr/td/span[text()='${year}']`)
-//   return this.changeDropdown(locator, yearLocator);
-// };
-
-// MeasurablesPage.prototype.getProfileLists = function() {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//span[contains(@class, 'tag')]/span`);
-//   return this.getTextArray(locator);
-// };
-
-// MeasurablesPage.prototype.addProfileList = function(list) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//input[2]`)
-//   return this.changeInputSuggestion(locator, list);
-// };
-
-// MeasurablesPage.prototype.removeProfileList = function(list) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()=' Lists ']]/.//span[contains(@class, 'tag')][span[text()='${list}']]/i`);
-//   return this.click(locator);
-// };
-
-// MeasurablesPage.prototype.changeProfileDOB = function(date) {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='DOB']]/.//input`)
-//   this.click(locator);
-//   return this.changeDatePicker(date.year, date.month, date.day);
-// };
-
-// MeasurablesPage.prototype.getProfileDOB = function() {
-//   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='DOB']]/.//input`)
-//   return this.getAttribute(locator, 'value');
-// };
-
-// // Statistics
-// MeasurablesPage.prototype.getStatTableHeader = function(col) {
-//   var locator = By.xpath(`.//div[@inject='stats']/.//table/thead/tr/th[${col}]`);
-//   return this.getText(locator);
-// };
-
-// MeasurablesPage.prototype.getStatTableValue = function(row, col) {
-//   var locator = By.xpath(`.//div[@inject='stats']/.//table/tbody/tr[${row}]/td[${col}]/div/input`);
-//   return this.driver.findElement(locator).getAttribute('value');
-// };
-
-// /****************************************************************************
-// ** Reports
-// *****************************************************************************/
-// MeasurablesPage.prototype.clickCreateEvaluationReportBtn = function() {
-//   return this.click(CREATE_EVALUATION_REPORT_BTN);
-// };
-
-// MeasurablesPage.prototype.goToEvaluationReport = function(reportNum) {
-//   return this.click(By.xpath(`.//div[@inject='evaluationReports']/.//table/tbody/tr[${reportNum}]`));
-// };
-
-// MeasurablesPage.prototype.getEvaluationReportAuthors = function() {
-//   return this.getInputValueArray(EVALUATION_REPORT_AUTHORS_INPUTS);
-// };
-
-// MeasurablesPage.prototype.clickCreateScoutingReportBtn = function() {
-//   return this.click(CREATE_SCOUTING_REPORT_BTN);
-// };
-
-// MeasurablesPage.prototype.goToScoutingReport = function(reportNum) {
-//   return this.click(By.xpath(`.//div[@inject='scoutingReports']/.//table/tbody/tr[${reportNum}]`));
-// };
-
-// MeasurablesPage.prototype.getScoutingReportAuthors = function() {
-//   return this.getInputValueArray(SCOUTING_REPORT_AUTHORS_INPUTS);
-// };
-
-// MeasurablesPage.prototype.clickCreateInterviewReportBtn = function() {
-//   return this.click(CREATE_INTERVIEW_REPORT_BTN);
-// };
-
-// MeasurablesPage.prototype.goToInterviewReport = function(reportNum) {
-//   return this.click(By.xpath(`.//div[@inject='interviewReports']/.//table/tbody/tr[${reportNum}]`));
-// };
-
-// MeasurablesPage.prototype.getInterviewReportAuthors = function() {
-//   return this.getInputValueArray(INTERVIEW_REPORT_AUTHORS_INPUTS);
-// };
-
-// /****************************************************************************
-// ** Aggregate Helpers
-// *****************************************************************************/
-// MeasurablesPage.prototype.getProfileField = function(type, field) {
-//   switch (type) {
-//     case 'input':
-//     case 'date':
-//       return this.getProfileInput(field);
-//     case 'dropdown':
-//       return this.getProfileDropdown(field);
-//     case 'checkbox':
-//       return this.getProfileCheckbox(field);
-//   }
-// };
-
-// MeasurablesPage.prototype.changeProfileField = function(type, field, value) {
-//   switch (type) {
-//     case 'input':
-//       return this.changeProfileInput(field, value);
-//     case 'dropdown':
-//       return this.changeProfileDropdown(field, value);
-//     case 'checkbox':
-//       return this.changeProfileCheckbox(field, value);
-//     case 'date':
-//       return this.changeProfileDraftYear(value);
-//   }
-// };
-
-
-// // sorting
-// MeasurablesPage.prototype.clickReportTableHeader = function(reportName, col) {
-//   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]`);
-//   return this.click(locator);
-// };
-
-// MeasurablesPage.prototype.getStatsForReportAndCol = function(reportName, col) {
-//   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/tbody/tr/td[${col}]/div/input`);
-//   return this.getInputValueArray(locator);
-// };
-
-// MeasurablesPage.prototype.clickSortIconForReport = function(reportName, col) {
-//   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, 'material-icons')]`);
-//   return this.click(locator);
-// };
-
-// MeasurablesPage.prototype.clickRemoveSortIconForReport = function(reportName, col) {
-//   var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
-//   return this.click(locator);
-// };
+MeasurablesPage.prototype.getStatField = function(type, rowNum, field) {
+  switch (type) {
+    case 'date':
+      return this.getDateField(rowNum, field);
+    default:
+      return this.getInputField(rowNum, field);
+  }
+};
 
 module.exports = MeasurablesPage;

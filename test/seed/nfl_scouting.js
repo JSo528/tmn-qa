@@ -128,7 +128,10 @@ test.describe('#Seed', function() {
   test.it('adding data players_tests', function() {
     this.timeout(600000);
 
+    // Delete Miles Young
     browser.visit(url+'player/31681');
     playerPage.clickDeleteBtn();
+
+    // Add alerts for Vickers
   });
 });
