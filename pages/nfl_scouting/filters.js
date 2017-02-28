@@ -102,5 +102,22 @@ Filters.prototype.changeRangeFilter = function(filterName, minValue, maxValue) {
   return this.changeInput(maxLocator, maxValue);
 };
 
+Filters.prototype.changeFilterLogic = function(filterName, logic) {
+    var d = Promise.defer();
+    var logicLocator = By.xpath(`.//div[@class='filter'][div[text()=' ${filterName} ']]/span[contains(@class,'-logic')]`);
+
+    this.getText(logicLocator).then(function(text) {
+      if (text != logic) {
+        this.click(logicLocator);
+      }
+      d.fulfill(true);
+    }.bind(this));
+    return d.promise;
+};
+
+Filters.prototype.removeFilter = function(filterName) {
+  var locator = By.xpath(`.//div[@class='filter'][div[text()=' ${filterName} ']]/i[contains(@class,'-remove')]`)
+  return this.click(locator);
+};
 
 module.exports = Filters;

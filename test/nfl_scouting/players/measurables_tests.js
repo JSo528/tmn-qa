@@ -109,7 +109,33 @@ test.describe('#Page: Measurables', function() {
   });
 
   test.describe('#liveRow', function() {
+    var attributes = [
+      { field: 'event', value: 'IND' },
+      { field: 'date', type: 'date', value: '2/15/2017' },
+      { field: 'fieldCondition', value: 'FO2 V' },
+      { field: 'height', value: '6040' },
+      { field: 'weight', value: '320' },
+      { field: 'hand', value: '11' },
+      { field: 'arm', value: '12 1/2' },
+      { field: 'wing', value: '20 1/2' },
+      { field: 'm40_1', value: '4.3' },
+      { field: 'm10_1', value: '1.2' },
+      { field: 'm20_1', value: '2.4' },
+      { field: 'verticalJump', value: '4020' },
+      { field: 'broadJump', value: "7'09" },
+      { field: 'benchPress', value: '32' },
+      { field: 'shuttles20', value: '8.0' },
+      { field: 'shuttles60', value: '19.5' },
+      { field: 'shuttles3', value: '5.0' },
+    ];
 
+    attributes.forEach(function(attribute) {
+      test.it('liveRow value for' + attribute.field + ' should be correct', function() {
+        measurablesPage.getLiveRowField(attribute.type, attribute.field).then(function(stat) {
+          assert.equal(stat, attribute.value);
+        });
+      });
+    });    
   });
 
   test.describe('#sorting', function() {

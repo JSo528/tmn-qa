@@ -166,9 +166,9 @@ test.describe('#Page: Players', function() {
       { name: 'For Tier', values: ['A'], columnName: 'Tier' },
       { name: 'Draft Position', values: ['LEO'], columnName: 'Draft Position' },
       { name: 'Bowl Game', values: ['SR'], columnName: 'Bowl Game' },
-      { name: 'Feb. Grade', values: ['7.5'], columnName: 'Feb. Grade' },
-      { name: 'Dec. Grade', values: ['8.0'], columnName: 'Dec. Grade' },
-      { name: 'Final. Grade', values: ['2.2'], columnName: 'Final. Grade' },
+      { name: 'Feb. Grade', values: ['7.5'], columnName: 'Feb. Grade', parsedValues: ['og75'] },
+      { name: 'Dec. Grade', values: ['8.0'], columnName: 'Dec. Grade', parsedValues: ['og80'] },
+      { name: 'Final. Grade', values: ['2.2'], columnName: 'Final. Grade', parsedValues: ['og22'] },
     ];
 
     var checkboxFilters = [
@@ -203,8 +203,8 @@ test.describe('#Page: Players', function() {
         playersPage.waitForPageToLoad();
         playersPage.getTableStatsFor(filter.columnName).then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
-
-          assert.sameMembers(filter.values, uniqueStats);
+          var values = filter.parsedValues || filter.values;
+          assert.sameMembers(values, uniqueStats);
         });
       });
     });
@@ -299,12 +299,27 @@ test.describe('#Page: Players', function() {
       });
     });
 
+    test.it('adding filter: Jersey', function() {
+      ;    browser.refresh();
+      playersPage.addFilter('Jersey');
+      // TODO - no way to set jersey == 33
+
+      playersPage.waitForPageToLoad();
+      playersPage.getTableStatsFor('Jersey').then(function(stats) {
+        var uniqueStats = Array.from(new Set(stats));
+        assert.sameMembers(['33'], uniqueStats);
+      });
+    })
+
     test.describe('#compoundFilterTest', function() {
-      test.it('adding filter: Is Starter', function() {
+      test.it('filters: Is Starter (AND),  For Class Years (AND)', function() {
         browser.refresh();
         playersPage.toggleColumn('Starter', true);
         playersPage.addFilter('Is Starter');
         filters.changeCheckboxFilter('Is Starter', true);
+
+        playersPage.addFilter('For Class Years');
+        filters.setDropdownFilter('For Class Years', ['SO']);
 
         playersPage.waitForPageToLoad();
 
@@ -312,26 +327,31 @@ test.describe('#Page: Players', function() {
           var uniqueStats = Array.from(new Set(stats));
           assert.sameMembers(['check_box'], uniqueStats);
         });
-      });
-
-      test.it('adding filter: For Class Years', function() {
-        playersPage.addFilter('For Class Years');
-        filters.setDropdownFilter('For Class Years', ['SO']);
-        playersPage.waitForPageToLoad();
 
         playersPage.getTableStatsFor('Last Name').then(function(stats) {
           assert.includeMembers(stats, ['Adams', 'Butler']);
         });
       });
+      
+      test.it('filters: Is Starter (OR), For Tier (OR)', function() {
+        filters.removeFilter('For Class Years');
+        playersPage.toggleColumn('Tier', true);
 
-      test.it('adding filter: Jersey', function() {
-        playersPage.addFilter('Jersey');
-        // TODO - no way to set jersey == 33
-
+        filters.changeFilterLogic('Is Starter', 'or');
+        playersPage.addFilter('For Tier');
+        filters.setDropdownFilter('For Tier', ['A']);
+        filters.changeFilterLogic('For Tier', 'or');
+        
         playersPage.waitForPageToLoad();
-        playersPage.getTableStatsFor('Jersey').then(function(stats) {
+
+        playersPage.getTableStatsFor('Starter').then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
-          assert.sameMembers(['33'], uniqueStats);
+          assert.sameMembers(['check_box', 'check_box_outline_blank'], uniqueStats);
+        });
+
+        playersPage.getTableStatsFor('Tier').then(function(stats) {
+          var uniqueStats = Array.from(new Set(stats));
+          assert.sameMembers(['A', 'B', 'C', 'D', ''], uniqueStats);
         });
       });
     });
@@ -344,7 +364,6 @@ test.describe('#Page: Players', function() {
       filters.setResourceSetFilter('On Player Lists', ['GI']);
 
       playersPage.waitForPageToLoad();
-
       playersPage.clickExportButton();
     });
 

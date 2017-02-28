@@ -112,6 +112,16 @@ MeasurablesPage.prototype.getRowNumForValue = function(field, value) {
   return d.promise;
 };
 
+MeasurablesPage.prototype.getLiveRowDateField = function() {
+  var locator = By.xpath(`.//tbody[@id='liveRow']/tr/td[${COLUMN_NUMS['date']}]/div`);
+  return this.getText(locator);
+}
+
+MeasurablesPage.prototype.getLiveRowInputField = function(field) {
+  var locator = By.xpath(`.//tbody[@id='liveRow']/tr/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  return this.getText(locator);
+}
+
 /****************************************************************************
 ** Aggregate Helpers
 *****************************************************************************/
@@ -130,6 +140,15 @@ MeasurablesPage.prototype.getStatField = function(type, rowNum, field) {
       return this.getDateField(rowNum, field);
     default:
       return this.getInputField(rowNum, field);
+  }
+};
+
+MeasurablesPage.prototype.getLiveRowField = function(type, field) {
+  switch (type) {
+    case 'date':
+      return this.getLiveRowDateField();
+    default:
+      return this.getLiveRowInputField(field);
   }
 };
 
