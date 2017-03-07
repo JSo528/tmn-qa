@@ -99,7 +99,7 @@ test.describe('#Page: Measurables', function() {
 
     attributes.forEach(function(attribute) {
       if (attribute.invalidValue) {
-        test.it('invalid value for' + attribute.field + ' does not persist on page reload', function() {
+        test.it('invalid value for ' + attribute.field + ' does not persist on page reload', function() {
           measurablesPage.getStatField(attribute.type, newRowNum, attribute.field).then(function(stat) {
             assert.equal(stat, attribute.inputValue);
           });
@@ -130,7 +130,7 @@ test.describe('#Page: Measurables', function() {
     ];
 
     attributes.forEach(function(attribute) {
-      test.it('liveRow value for' + attribute.field + ' should be correct', function() {
+      test.it('liveRow value for ' + attribute.field + ' should be correct', function() {
         measurablesPage.getLiveRowField(attribute.type, attribute.field).then(function(stat) {
           assert.equal(stat, attribute.value);
         });

@@ -11,7 +11,7 @@ var TeamsPage = require('../../../pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('../../../pages/nfl_scouting/teams/team_page.js');
 var Filters = require('../../../pages/nfl_scouting/filters.js');
 var navbar, teamsPage, teamPage, filters;
-var playerRowNum = 3;
+var playerRowNum = 2;
 
 test.describe('#Page: Team', function() {
   test.before(function() {
@@ -104,10 +104,10 @@ test.describe('#Page: Team', function() {
       });
     });
 
-    test.it('removing top draft year, should update player list', function() {
-      filters.changeDropdownFilter('For Draft Years', 2017);
+    test.it('adding draft year: 2018, should update player list', function() {
+      filters.changeDropdownFilter('For Draft Years', 2018);
       teamPage.getTableStatsForCol(3).then(function(years) {
-        assert.notInclude(years, '2017');
+        assert.sameMembers(years, ['2017', '2018']);
       });
     });
 
@@ -135,7 +135,7 @@ test.describe('#Page: Team', function() {
     });
 
     var attributes = [
-      { field: 'Tier', col: 2, type: 'dropdown', originalValue: '?', updatedValue: 'C' },
+      { field: 'Tier', col: 2, type: 'dropdown', originalValue: 'Select value', updatedValue: 'C' },
       // { field: 'Draft Year', col: 3, type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Jersey', col: 5, type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },

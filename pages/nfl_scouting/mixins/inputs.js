@@ -120,7 +120,13 @@ Inputs = {
       foundOptionLocator = secondaryOptionLocator ? secondaryOptionLocator : optionLocator;
     }).then(function() {
       thiz.click(foundLocator);
-      thiz.click(foundOptionLocator);
+
+      thiz.waitForEnabled(foundOptionLocator, 500).then(function() {      
+        thiz.click(foundOptionLocator);
+      }, function() {
+        thiz.click(foundLocator);
+      });
+
       d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));
     });
 

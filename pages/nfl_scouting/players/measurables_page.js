@@ -16,13 +16,33 @@ var inputs = require('../mixins/inputs.js');
 /****************************************************************************
 ** Locators
 *****************************************************************************/
-var LAST_LOCATOR = By.xpath(".//div[@inject='measurables']/.//table")
+var LAST_LOCATOR = By.xpath(".//div[@inject='measurables']/.//table/tbody[@inject='rows']");
 var CREATE_BUTTON = By.xpath(".//tbody[@class='-controls controls']/.//button[contains(@class,'-create')]");
 var COLUMN_NUMS = {
   event: 2,
   date: 3,
   fieldCondition: 4,
   fieldType: 5,
+  height: 7,
+  weight: 8,
+  hand: 9,
+  arm: 10,
+  wing: 11,
+  m40_1: 12,
+  m40_2: 13,
+  m10_1: 14,
+  m10_2: 15,
+  m20_1: 16,
+  m20_2: 17,
+  verticalJump: 18,
+  broadJump: 19,
+  benchPress: 20,
+  shuttles20: 21,
+  shuttles60: 22,
+  shuttles3: 23
+};
+
+var LIVE_ROW_COLUMN_NUMS = {
   height: 6,
   weight: 7,
   hand: 8,
@@ -59,7 +79,7 @@ _.extend(MeasurablesPage.prototype, inputs);
 ** Functions
 *****************************************************************************/
 MeasurablesPage.prototype.waitForPageToLoad = function() {
-  return this.waitForEnabled(LAST_LOCATOR, 5000);
+  return this.waitForEnabled(LAST_LOCATOR, 10000);
 };
 
 MeasurablesPage.prototype.clickCreateButton = function() {
@@ -67,34 +87,34 @@ MeasurablesPage.prototype.clickCreateButton = function() {
 };
 
 MeasurablesPage.prototype.changeInputField = function(rowNum, field, value) {
-  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
   return this.changeInput(locator, value);
 };
 
 MeasurablesPage.prototype.changeDateField = function(rowNum, field, dateString) {
-  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
   return this.changeDatePickerFromString(locator, dateString);
 };
 
 MeasurablesPage.prototype.getInputField = function(rowNum, field) {
-  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
   return this.getText(locator);
 };
 
 MeasurablesPage.prototype.getDateField = function(rowNum, field) {
-  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
   return this.getInput(locator);
 };
 
 MeasurablesPage.prototype.errorMessageDisplayed = function(rowNum, field) {
-  var locator = By.xpath(`.//table/tbody[1]/tr[${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div/div[@class='message']`);
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div/div[@class='message']`);
   return this.isDisplayed(locator);
 };
 
 MeasurablesPage.prototype.getRowNumForValue = function(field, value) {
   var d = Promise.defer();
 
-  var locator = By.xpath(`.//table/tbody[1]/tr/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
   var foundIndex;
 
   this.driver.findElements(locator).then(function(elements) {
@@ -118,7 +138,8 @@ MeasurablesPage.prototype.getLiveRowDateField = function() {
 }
 
 MeasurablesPage.prototype.getLiveRowInputField = function(field) {
-  var locator = By.xpath(`.//tbody[@id='liveRow']/tr/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
+  var colNum = LIVE_ROW_COLUMN_NUMS[field] || COLUMN_NUMS[field];
+  var locator = By.xpath(`.//tbody[@id='liveRow']/tr/td[${colNum}]/div/div[contains(@class, 'control')]`);
   return this.getText(locator);
 }
 
