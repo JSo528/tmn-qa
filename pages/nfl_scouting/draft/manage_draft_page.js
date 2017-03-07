@@ -66,17 +66,17 @@ ManageDraftPage.prototype.getProfileDropdown = function(field) {
 ManageDraftPage.prototype.changeProfileDropdown = function(field, value) {
   var d = Promise.defer();
   var thiz = this;
-
   var locator = By.xpath(`.//div[contains(@class, 'draft-management')]/.//div[div/label[text()='${field}']]/.//div[contains(@class,'dropdown-toggle')]`);
-
   this.getProfileDropdown(field).then(function(currentValue) {
     if (!value && currentValue) {
       var optionLocator = By.xpath(`.//div[contains(@class, 'draft-management')]/.//div[div/label[text()='${field}']]/.//ul/li[text()='${currentValue}']`);
+      d.fulfill(thiz.changeDropdown(locator, optionLocator));
     } else if (currentValue != value) {
       var optionLocator = By.xpath(`.//div[contains(@class, 'draft-management')]/.//div[div/label[text()='${field}']]/.//ul/li[text()='${value}']`);
-    } 
-
-    d.fulfill(thiz.changeDropdown(locator, optionLocator));
+      d.fulfill(thiz.changeDropdown(locator, optionLocator));
+    } else {
+      d.fulfill(true);
+    }
   })
 
   return d.promise;
