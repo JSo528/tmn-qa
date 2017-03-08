@@ -35,8 +35,8 @@ _.extend(ListPage.prototype, inputs);
 ** Functions
 *****************************************************************************/
 ListPage.prototype.waitForPageToLoad = function() {
-  this.waitUntilStaleness(BODY_CONTENT);
-  return this.waitForEnabled(BODY_CONTENT, 20000);
+  this.waitUntilStaleness(BODY_CONTENT, 5000);
+  return this.waitForEnabled(BODY_CONTENT, 10000);
 };
 
 ListPage.prototype.getTableTitle = function() {
