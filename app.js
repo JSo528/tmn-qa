@@ -155,7 +155,9 @@ app.post('/run-next-test', function(req, res) {
 app.post('/kill-test/:id', function(req, res) {
   TestRun.findById(req.params.id, function(err, testRun) {
     testRun.update({status: 'killed', endedAt: new Date().getTime()}).exec(function(err, testRun) {
-      util.killChromeInstances();
+      if (app.get('env') != 'development') {
+        util.killChromeInstances();
+      }
       
       TestRun.runNextTest(app.get('env'), function() {
         req.session.flash = {

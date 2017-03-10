@@ -125,6 +125,26 @@ ListPage.prototype.changeTableStatYear = function(row, col, year) {
   return this.changeDatePicker(locator, year);
 };
 
+ListPage.prototype.getRowNumForPlayer = function(firstName, lastName) {
+  var d = Promise.defer();
+
+  var rowLocator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr`);
+  this.getElementCount(rowLocator).then(function(count) {
+    var numArray = Array(count).fill().map((x,i)=>i+1);
+
+    numArray.map(function(i) {
+      var locator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr[${i}][td[3]/div/a[text()='${firstName}']][td[4]/div/a[text()='${lastName}']]`);
+      this.isDisplayed(locator, 100).then(function(displayed) {
+        if (displayed) {
+          d.fulfill(i);
+        }
+      })
+    }.bind(this));
+  }.bind(this));  
+
+  return d.promise;
+};
+
 /****************************************************************************
 ** Aggregate Helpers
 *****************************************************************************/
