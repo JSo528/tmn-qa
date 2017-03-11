@@ -165,9 +165,9 @@ test.describe('#Page: Players', function() {
       { name: 'For Tier', values: ['A'], columnName: 'Tier' },
       { name: 'Draft Position', values: ['LEO'], columnName: 'Draft Position' },
       { name: 'Bowl Game', values: ['SR'], columnName: 'Bowl Game' },
-      { name: 'Feb. Grade', values: ['7.5'], columnName: 'Feb. Grade', parsedValues: ['og75'] },
-      { name: 'Dec. Grade', values: ['8.0'], columnName: 'Dec. Grade', parsedValues: ['og80'] },
-      { name: 'Final. Grade', values: ['2.2'], columnName: 'Final. Grade', parsedValues: ['og22'] },
+      { name: 'Feb. Grade', values: ['7.5'], columnName: 'Feb. Grade', parsedValues: ['7.5'] },
+      { name: 'Dec. Grade', values: ['8.0'], columnName: 'Dec. Grade', parsedValues: ['8.0'] },
+      { name: 'Final. Grade', values: ['2.2'], columnName: 'Final. Grade', parsedValues: ['2.2'] },
     ];
 
     var checkboxFilters = [
