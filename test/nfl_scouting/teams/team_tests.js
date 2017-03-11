@@ -135,7 +135,7 @@ test.describe('#Page: Team', function() {
     });
 
     var attributes = [
-      { field: 'Tier', col: 2, type: 'dropdown', originalValue: '?', updatedValue: 'C' },
+      { field: 'Tier', col: 2, type: 'dropdown', originalValue: '?', updatedValue: 'C', placeholder: '?' },
       // { field: 'Draft Year', col: 3, type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Jersey', col: 5, type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },
@@ -155,7 +155,7 @@ test.describe('#Page: Team', function() {
 
     test.it('updating fields', function() {
       attributes.forEach(function(attr) {
-        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.updatedValue );
+        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.updatedValue, attr.placeholder );
       });
       browser.refresh();
       teamPage.waitForPageToLoad();
@@ -171,7 +171,7 @@ test.describe('#Page: Team', function() {
 
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
-        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.originalValue );
+        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.originalValue, attr.placeholder );
       });
     });
   });

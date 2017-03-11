@@ -104,7 +104,7 @@ ListPage.prototype.changeTableStatInput = function(row, col, value) {
   return this.changeInput(locator, value)
 };
 
-ListPage.prototype.changeTableStatDropdown = function(row, col, value) {
+ListPage.prototype.changeTableStatDropdown = function(row, col, value, placeholder) {
   var d = Promise.defer();
   var currentValue;
   var thiz = this
@@ -112,7 +112,7 @@ ListPage.prototype.changeTableStatDropdown = function(row, col, value) {
   this.getTableStat(row, col).then(function(stat) {
     currentValue = stat
   }).then(function() {
-    if (value) {
+    if (value != currentValue) {
       if (value != currentValue) {
         var locator = By.xpath(`.//div[@class='tag-profile']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
         var optionLocator = By.xpath(`.//div[@class='tag-profile']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${value}']`)
@@ -121,7 +121,7 @@ ListPage.prototype.changeTableStatDropdown = function(row, col, value) {
         d.fulfill(true)
       }
     } else {
-      if (currentValue != 'Select value') {
+      if (currentValue != placeholder) {
         var locator = By.xpath(`.//div[@class='tag-profile']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
         var optionLocator = By.xpath(`.//div[@class='tag-profile']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${currentValue}']`)
         d.fulfill(thiz.changeDropdown(locator, optionLocator));
@@ -181,16 +181,16 @@ ListPage.prototype.getTableStatField = function(type, row, col) {
   }
 };
 
-ListPage.prototype.changeTableStatField = function(type, row, col, value) {
+ListPage.prototype.changeTableStatField = function(type, row, col, value, placeholder) {
   switch (type) {
     case 'input':
-      return this.changeTableStatInput(row, col, value);
+      return this.changeTableStatInput(row, col, value, placeholder);
     case 'dropdown':
-      return this.changeTableStatDropdown(row, col, value);
+      return this.changeTableStatDropdown(row, col, value, placeholder);
     case 'checkbox':
-      return this.changeTableStatCheckbox(row, col, value);
+      return this.changeTableStatCheckbox(row, col, value, placeholder);
     case 'date':
-      return this.changeTableStatYear(row, col, value);
+      return this.changeTableStatYear(row, col, value, placeholder);
   }
 };
 

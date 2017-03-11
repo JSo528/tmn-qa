@@ -111,7 +111,6 @@ test.describe('#Page: Players', function() {
         });
         browser.refresh();
         playersPage.waitForPageToLoad();
-        playersPage.clickTableHeader(4)
       });
 
       attributes.forEach(function(attr) {
