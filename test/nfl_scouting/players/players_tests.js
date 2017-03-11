@@ -98,7 +98,6 @@ test.describe('#Page: Players', function() {
       test.it('get original values', function() {
         browser.refresh();
         playersPage.waitForPageToLoad();
-        playersPage.clickTableHeader(4)
         attributes.forEach(function(attr, idx) {
           playersPage.getTableStat(2,attr.col, attr.placeholder).then(function(stat) {
             attributes[idx].originalValue = stat;
@@ -351,7 +350,7 @@ test.describe('#Page: Players', function() {
 
         playersPage.getTableStatsFor('Tier').then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
-          assert.sameMembers(['A', 'B', 'C', 'D', ''], uniqueStats);
+          assert.sameMembers(['A', 'B', 'C', 'D', '?'], uniqueStats);
         });
       });
     });

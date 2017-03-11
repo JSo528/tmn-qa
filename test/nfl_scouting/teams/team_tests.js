@@ -135,7 +135,7 @@ test.describe('#Page: Team', function() {
     });
 
     var attributes = [
-      { field: 'Tier', col: 2, type: 'dropdown', originalValue: 'Select value', updatedValue: 'C' },
+      { field: 'Tier', col: 2, type: 'dropdown', originalValue: '?', updatedValue: 'C' },
       // { field: 'Draft Year', col: 3, type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Jersey', col: 5, type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', col: 8, type: 'checkbox', originalValue: false, updatedValue: true },

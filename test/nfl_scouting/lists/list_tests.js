@@ -32,79 +32,79 @@ test.describe('#Page: List', function() {
     });
   });
 
- test.describe('#sorting', function() {
-    var columns = [
-      { colNum: 2, colName: 'Draft Year', sortType: 'number' },
-      { colNum: 3, colName: 'First Name', sortType: 'stringInsensitive' },
-      { colNum: 4, colName: 'Last Name', sortType: 'stringInsensitive' },
-      { colNum: 5, colName: 'Jersey', sortType: 'number' },
-      { colNum: 6, colName: 'Pos' },
-      { colNum: 7, colName: 'Height', sortType: 'number' },
-      { colNum: 8, colName: 'Weight', sortType: 'number' },
-      { colNum: 9, colName: 'Speed', sortType: 'number' },
-      { colNum: 10, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },    
-      { colNum: 11, colName: 'Unenrolled', sortType: 'boolean' },
-    ];
+ // test.describe('#sorting', function() {
+ //    var columns = [
+ //      { colNum: 2, colName: 'Draft Year', sortType: 'number' },
+ //      { colNum: 3, colName: 'First Name', sortType: 'stringInsensitive' },
+ //      { colNum: 4, colName: 'Last Name', sortType: 'stringInsensitive' },
+ //      { colNum: 5, colName: 'Jersey', sortType: 'number' },
+ //      { colNum: 6, colName: 'Pos' },
+ //      { colNum: 7, colName: 'Height', sortType: 'number' },
+ //      { colNum: 8, colName: 'Weight', sortType: 'number' },
+ //      { colNum: 9, colName: 'Speed', sortType: 'number' },
+ //      { colNum: 10, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },    
+ //      { colNum: 11, colName: 'Unenrolled', sortType: 'boolean' },
+ //    ];
 
-    var lastColNum;
-    columns.forEach(function(column) {
-      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
-        if (lastColNum) listPage.clickRemoveSortIcon(lastColNum);
-        lastColNum = column.colNum;
-        listPage.clickTableHeader(column.colNum);
+ //    var lastColNum;
+ //    columns.forEach(function(column) {
+ //      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+ //        if (lastColNum) listPage.clickRemoveSortIcon(lastColNum);
+ //        lastColNum = column.colNum;
+ //        listPage.clickTableHeader(column.colNum);
 
-        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
-          stats = extensions.normalizeArray(stats, column.sortType);
-          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
+ //        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
+ //          stats = extensions.normalizeArray(stats, column.sortType);
+ //          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+ //          assert.deepEqual(stats, sortedArray);
+ //        });
+ //      });
 
-      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
-        listPage.clickSortIcon(column.colNum);
+ //      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
+ //        listPage.clickSortIcon(column.colNum);
 
-        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
-          stats = extensions.normalizeArray(stats, column.sortType);
-          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
-  });
+ //        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
+ //          stats = extensions.normalizeArray(stats, column.sortType);
+ //          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+ //          assert.deepEqual(stats, sortedArray);
+ //        });
+ //      });
+ //    });
+ //  });
 
-  test.describe('#addingPlayer', function() {
-    test.it('adding list to player', function() {
-      browser.visit(url + 'player/31682');
-      playerPage.addProfileList('GI');
-    });
+ //  test.describe('#addingPlayer', function() {
+ //    test.it('adding list to player', function() {
+ //      browser.visit(url + 'player/31682');
+ //      playerPage.addProfileList('GI');
+ //    });
 
-    test.it('player should show up on list', function() {
-      navbar.goToListsPage();
-      listsPage.clickTableRowWithListName('GI');
-      listPage.waitForPageToLoad();
+ //    test.it('player should show up on list', function() {
+ //      navbar.goToListsPage();
+ //      listsPage.clickTableRowWithListName('GI');
+ //      listPage.waitForPageToLoad();
 
-      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
-        assert.equal(exists, true);
-      });
-    });
-  });
+ //      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
+ //        assert.equal(exists, true);
+ //      });
+ //    });
+ //  });
 
-  test.describe('#removingPlayer', function() {
-    test.it('removing list from player', function() {
-      browser.visit(url + 'player/31682');
-      playerPage.removeProfileList('GI');
-    });
+ //  test.describe('#removingPlayer', function() {
+ //    test.it('removing list from player', function() {
+ //      browser.visit(url + 'player/31682');
+ //      playerPage.removeProfileList('GI');
+ //    });
 
-    test.it('player should not show up on list', function() {
-      navbar.goToListsPage();
-      listsPage.clickTableRowWithListName('GI');
-      listPage.waitForPageToLoad();
+ //    test.it('player should not show up on list', function() {
+ //      navbar.goToListsPage();
+ //      listsPage.clickTableRowWithListName('GI');
+ //      listPage.waitForPageToLoad();
 
-      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
-        assert.equal(exists, false);
-      });
-    });
-  });  
+ //      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
+ //        assert.equal(exists, false);
+ //      });
+ //    });
+ //  });  
   
   test.describe('#updatingFields', function() {
     var attributes = [
@@ -115,14 +115,23 @@ test.describe('#Page: List', function() {
       { field: 'Speed', col: 9, type: 'input', updatedValue: '5.20e' },
       { field: 'Unenrolled', col: 11, type: 'checkbox', updatedValue: true }
     ];
+    var firstName, lastName, newRowNum;
 
     test.it('get original values', function() {
       navbar.goToListsPage();
       listsPage.clickTableRowWithListName('GI');
       listPage.waitForPageToLoad();
-      listPage.clickTableHeader('4')
+      
+      listPage.getTableStatField('input', 1, 3).then(function(stat) {
+        firstName = stat;
+      });
+
+      listPage.getTableStatField('input', 1, 4).then(function(stat) {
+        lastName = stat;
+      });
+
       attributes.forEach(function(attr, idx) {
-        listPage.getTableStatField(attr.type, playerRowNum, attr.col).then(function(stat) {
+        listPage.getTableStatField(attr.type, 1, attr.col).then(function(stat) {
           attributes[idx].originalValue = stat;
         });
       });
@@ -135,12 +144,14 @@ test.describe('#Page: List', function() {
       });
       browser.refresh();
       listPage.waitForPageToLoad();
-      listPage.clickTableHeader('4')
+      listPage.getRowNumForPlayer(firstName, lastName).then(function(stat) {
+        newRowNum = stat;
+      })
     });
 
     attributes.forEach(function(attr) {
       test.it('updating ' + attr.field + ' should persist on reload', function() {
-        listPage.getTableStatField(attr.type, playerRowNum, attr.col).then(function(value) {
+        listPage.getTableStatField(attr.type, newRowNum, attr.col).then(function(value) {
           assert.equal(value, attr.updatedValue, attr.field);
         });
       });
@@ -148,7 +159,7 @@ test.describe('#Page: List', function() {
 
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
-        listPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.originalValue );
+        listPage.changeTableStatField(attr.type, newRowNum, attr.col, attr.originalValue );
       });
     });
   });

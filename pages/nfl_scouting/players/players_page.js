@@ -185,27 +185,31 @@ PlayersPage.prototype.changeTableStatInput = function(row, col, value) {
 };
 
 PlayersPage.prototype.changeTableStatDropdown = function(row, col, value) {
-  if (value == '?') {
-    var currentValue;
-    var thiz = this
-    var d = Promise.defer();
-
-    this.getTableStat(row, col).then(function(stat) {
-      currentValue = stat
-    }).then(function() {
+  var d = Promise.defer();
+  var currentValue;
+  var thiz = this
+  
+  this.getTableStat(row, col).then(function(stat) {
+    currentValue = stat
+  }).then(function() {
+    if (value) {
+      if (value != currentValue) {
+        var locator = By.xpath(`.//div[@class='search']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
+        var optionLocator = By.xpath(`.//div[@class='search']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${value}']`)
+        d.fulfill(thiz.changeDropdown(locator, optionLocator));
+      } else {
+        d.fulfill(true)
+      }
+    } else {
       if (currentValue != 'Select value') {
         var locator = By.xpath(`.//div[@class='search']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
         var optionLocator = By.xpath(`.//div[@class='search']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${currentValue}']`)
         d.fulfill(thiz.changeDropdown(locator, optionLocator));
       }
-    });
+    }
+  });
 
-    return d.promise;
-  } else {
-    var locator = By.xpath(`.//div[@class='search']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div`);
-    var optionLocator = By.xpath(`.//div[@class='search']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/.//li[text()='${value}']`)
-    return this.changeDropdown(locator, optionLocator);  
-  }
+  return d.promise;
 };
 
 /****************************************************************************
@@ -289,6 +293,7 @@ PlayersPage.prototype.readAndDeleteExportCSV = function() {
 ** Aggregate Helpers
 *****************************************************************************/
 PlayersPage.prototype.changeTableStatField = function(type, row, col, value) {
+  console.log("** changeTableStateField")
   switch (type) {
     case 'input':
       return this.changeTableStatInput(row, col, value);
