@@ -8,7 +8,7 @@ var extensions = require('../../../lib/extensions.js');
 // Page Objects
 var Navbar = require('../../../pages/nfl_scouting/navbar.js');
 var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
-var navbar, playerPage;
+var navbar, playerPage, incidentReportdivNum;
 
 // Tests
 test.describe('#Page: Player', function() {
@@ -294,6 +294,7 @@ test.describe('#Page: Player', function() {
   test.describe('#incidentReports', function() {
     test.it('creating an incidence report should persist on reload', function() {
       var initialCount;
+      incidentReportdivNum = playerPage.NEW_INCIDENT_REPORT_DIV_NUM;
       playerPage.clickIncidentReportSpacer();
       playerPage.getIncidentReportCount().then(function(count) {
         initialCount = count;
@@ -309,21 +310,25 @@ test.describe('#Page: Player', function() {
         assert.equal(count, initialCount+1, '# of incident reports');
       });
 
-      playerPage.getIncidentReportValue(1,'week').then(function(value) {
+      playerPage.getIncidentReportValue(incidentReportdivNum,'week').then(function(value) {
         assert.equal(value, 'TC', 'week value');
       });
 
-      playerPage.getIncidentReportValue(1,'date').then(function(value) {
+      playerPage.getIncidentReportValue(incidentReportdivNum,'date').then(function(value) {
         assert.equal(value, '02/11/2015', 'date value');
       });
 
-      playerPage.getIncidentReportValue(1,'type').then(function(value) {
+      playerPage.getIncidentReportValue(incidentReportdivNum,'type').then(function(value) {
         assert.equal(value, 'X', 'type value');
       });
 
-      playerPage.getIncidentReportValue(1,'comment').then(function(value) {
+      playerPage.getIncidentReportValue(incidentReportdivNum,'comment').then(function(value) {
         assert.equal(value, 'test report', 'comment value');
       });
+    });
+
+    test.it('delete incident report', function() {
+      playerPage.toggleDeleteIncidentReport(incidentReportdivNum);
     });
   });
 });
