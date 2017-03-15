@@ -6,7 +6,7 @@ var assert = chai.assert;
 // Page Objects
 var PlayerPage = require('../../../pages/nfl_scouting/players/player_page.js');
 var ManageDraftPage = require('../../../pages/nfl_scouting/draft/manage_draft_page.js');
-var playerPage, manageDraftPage;
+var playerPage, manageDraftPage, incidentReportdivNum;
 
 test.describe('#Page: ManageDraft', function() {
   test.it('clicking manage draft link', function() {
@@ -99,8 +99,9 @@ test.describe('#Page: ManageDraft', function() {
   });
 
   test.describe('#incidentReports', function() {
-    test.it('creating an incidence report should persist on reload', function() {
+    test.it('creating an incidenct report should persist on reload', function() {
       var initialCount;
+      incidentReportdivNum = manageDraftPage.NEW_INCIDENT_REPORT_DIV_NUM;
       manageDraftPage.clickIncidentReportSpacer();
       manageDraftPage.getIncidentReportCount().then(function(count) {
         initialCount = count;
@@ -116,25 +117,25 @@ test.describe('#Page: ManageDraft', function() {
         assert.equal(count, initialCount+1, '# of incident reports');
       });
 
-      manageDraftPage.getIncidentReportValue(1,'week').then(function(value) {
+      manageDraftPage.getIncidentReportValue(incidentReportdivNum,'week').then(function(value) {
         assert.equal(value, 'W4', 'week value');
       });
 
-      manageDraftPage.getIncidentReportValue(1,'date').then(function(value) {
+      manageDraftPage.getIncidentReportValue(incidentReportdivNum,'date').then(function(value) {
         assert.equal(value, '06/06/2016', 'date value');
       });
 
-      manageDraftPage.getIncidentReportValue(1,'type').then(function(value) {
+      manageDraftPage.getIncidentReportValue(incidentReportdivNum,'type').then(function(value) {
         assert.equal(value, 'IR', 'type value');
       });
 
-      manageDraftPage.getIncidentReportValue(1,'comment').then(function(value) {
+      manageDraftPage.getIncidentReportValue(incidentReportdivNum,'comment').then(function(value) {
         assert.equal(value, 'test report manage draft page', 'comment value');
       });
     });
 
     test.it('delete incident report', function() {
-      manageDraftPage.toggleDeleteIncidentReport(2);
+      manageDraftPage.toggleDeleteIncidentReport(incidentReportdivNum);
     });
   });
 });
