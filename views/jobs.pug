@@ -1,0 +1,49 @@
+extend layouts/main
+block content
+  .alert.alert-success.hide
+    strong Success Message
+  .alert.alert-danger.hide
+    strong Error Message
+  table.table.table-striped.test-results-table
+    tr.section-header
+      th Name
+      th Cron Pattern
+      th Enabled
+      th Last Run At
+      th
+    each job in data.jobs
+      tr
+        td= job.name
+        td
+          input.form-control.cron-pattern-input(type='string' value=job.cronPattern)
+        td
+          input.enabled-checkbox(type='checkbox' value=enabled checked=job.enabled)
+        td= job.lastRunAt
+        td
+          button.btn.btn-primary.float-right.save-btn(type='submit' data-id=job.id) Save
+
+  script.
+    $('.save-btn').on('click', function() {
+      var id = $(this).data('id');
+      var enabled = $(this).parent().parent().find('.enabled-checkbox').is(":checked");
+      var cronPattern = $(this).parent().parent().find('.cron-pattern-input').val();
+
+      $.ajax({
+        type: 'POST',
+        url: '/api/jobs/'+id,
+        data: {enabled: enabled, cronPattern: cronPattern},
+        success: function(data) {
+          $('.alert').addClass('hide');
+          if (data.success) {
+            $('.alert-success').removeClass('hide');
+            $('.alert-success strong').text('Successfully saved job')
+            $('.alert-success').fadeIn().delay(5000).fadeOut(300);
+            // restart cron
+          } else {
+            $('.alert-danger').removeClass('hide');
+            $('.alert-danger strong').text(data.errorMessage);
+            $('.alert-danger').fadeIn().delay(5000).fadeOut(300);
+          }
+        }
+      })
+    });

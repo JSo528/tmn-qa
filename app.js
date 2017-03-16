@@ -21,6 +21,7 @@ var scripts = require('./lib/scripts');
 var dbConnect = require('./models/db_connect.js');
 dbConnect.connect(app.get('env'));
 var TestRun = require('./models/test_run.js');
+var Job = require('./models/job.js');
 
 // Middleware
 app.use(require('express-session')({
@@ -171,21 +172,72 @@ app.post('/kill-test/:id', function(req, res) {
   });
 });
 
-app.post('/start-cron', function(req, res) {
-  var cron = require('node-cron');
-  var task = cron.schedule('20,50 * * * *', function() {
-    console.log('** starting cron task')
-    var request = require('request');
-    var queueTestURL = constants.urls.host[app.get('env')]+'run-tests';
-    request.post(queueTestURL, {form: { testNumber: 6 }})
-  });
+/********************************************
+* CRON
+********************************************/
+app.get('/jobs', function(req, res) {
+  var data = {};
 
-  task.start();
-
-  res.redirect(303, '/test-results/');
+  Job.find()
+    .sort({'name': 1})
+    .exec(function(err, jobs) {
+      res.render('jobs', {
+        data: {
+          jobs: jobs
+        }
+      });    
+    });
 });
 
-// API
+var CronJob = require('cron').CronJob;
+function testCronPattern(pattern) {
+  try {
+    new CronJob(pattern, function() {})
+    return true
+  } catch(ex) { 
+    return false
+  }
+}
+
+app.post('/api/jobs/:id', function(req, res) {
+  if (req.body.cronPattern && !testCronPattern(req.body.cronPattern)) {
+    res.json({
+      success: false,
+      errorMessage: 'Invalid Cron Pattern'
+    })
+  } else {
+    Job.findById(req.params.id, function(err, job) {
+      job.update(req.body).exec(function(err, job) {
+        console.log(job)
+        if (err) {
+          res.json({
+            success: false,
+            errorMessage: err.message
+          })
+        } else {
+          var cmd = 'pm2 restart jobs/cron.js;'
+          var exec = require('child_process').exec;
+
+          exec(cmd, function(error, stdout, stderr) {
+            console.log('** child_process callback START **');
+            console.log(error);
+            console.log(stderr);
+            console.log(stdout);
+            console.log('** child_process callback END **');
+          })
+
+          res.json({
+            success: true
+          })
+        }
+      })
+    })
+  }
+});
+
+/********************************************
+* API
+********************************************/
 app.get('/api/test-runs/:id', function(req, res) {
   var jsdiff = require('diff');
 
