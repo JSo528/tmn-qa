@@ -1,9 +1,8 @@
 var Job = require('./job.js');
 
-var express = require('express');
-var app = express();
+var app = require('express')();
 var dbConnect = require('./db_connect.js');
-dbConnect.connect(app.get('env'));
+dbConnect.connect('production');
 
 // 9AM GMT every day
 var job = new Job({
@@ -16,6 +15,7 @@ var job = new Job({
 job.save(function(err, job) {
   if (err) {
     console.log("** error adding runNflScoutingTest job");
+    console.log(err)
   } else {
     console.log("** successfully added runNflScoutingTest job");
   }
@@ -32,6 +32,7 @@ var job = new Job({
 job.save(function(err, job) {
     if (err) {
       console.log("** error adding removeOldData job");
+      console.log(err)
     } else {
       console.log("** successfully added removeOldData job");
     }
