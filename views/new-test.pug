@@ -7,7 +7,7 @@ block content
       .error-container
         .alert.alert-danger
           p#errorMessage
-      form(class='form-horizontal' role='form' action='/run-tests' method='post')
+      form(class='form-horizontal' role='form' action='/api/run-test' method='post')
         .form-group
           label(for='testNumber').col-sm-3.control-label Test
           .col-sm-9
@@ -71,7 +71,9 @@ block content
       toggleTestFilesContainer();
     });
 
-    $('form').submit(function() {
+    $('form').submit(function(evt) {
+      evt.preventDefault();
+
       var portNumber = Number($('#portNumber').val());
 
       if(getEnv() == 'staging' && (portNumber < MIN_PORT || portNumber > MAX_PORT)) {
@@ -80,10 +82,21 @@ block content
         return false;
       } else if (getEnv() == 'production') {
         $('#portNumber').val("");
-        return true;
-      } else {
-        return true;
       };
+
+      $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: $(this).serialize(),
+        success: function(data) {
+          if (data.success) {
+            window.location.href = data.redirectUrl;
+          }
+        },
+        error: function() {
+          alert('There was an error');
+        }
+      })
     });
 
     togglePortNumber();

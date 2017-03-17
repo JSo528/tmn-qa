@@ -1,5 +1,4 @@
-var express = require('express');
-var app = express();
+var app = require('express')();
 var fs = require('fs');
 var webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
@@ -122,7 +121,7 @@ exports.generateTests = function(title, testFiles, startUrl) {
           }
 
           // check to see if there are any more tests in the queue 
-          var queueNextTestURL = constants.urls.host[app.get('env')]+'run-next-test';
+          var queueNextTestURL = constants.urls.host[app.get('env')]+'api/run-next-test';
           request.post(queueNextTestURL, function() {
             console.log('** QUEUE NEXT TEST');
             d.fulfill(true);    
