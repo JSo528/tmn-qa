@@ -7,7 +7,6 @@ var cron = require('node-cron');
 var Job = require('./../models/job.js');
 
 var cronObjects = {
-  'test': require('./test.js'),
   'runNflScoutingTest': require('./runNflScoutingTest.js'),
   'removeOldData': require('./removeOldData.js'),
 }
