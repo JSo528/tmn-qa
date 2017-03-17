@@ -5,7 +5,7 @@ var util = require('./../lib/util.js')
 var jobMetadata = {
   functionName: 'runNflScoutingTest',
   cronFunction: function() {
-    util.runTest(6);
+    util.runTest(4);
   }
 }
 
