@@ -16,27 +16,28 @@ test.describe('#Page: Measurables', function() {
     playerPage = new PlayerPage(driver);
     measurablesPage = new MeasurablesPage(driver);
     browser.visit(url + 'player/31682');
+    playerPage.waitForPageToLoad();
     playerPage.clickMeasurablesLink();
     measurablesPage.waitForPageToLoad();
   })
 
   test.describe('#creating', function() {
     var attributes = [
-      { field: 'event' },
+      { field: 'event', type: 'dropdown', values: ["APT", "NFS", "ALLSTAR"] },
       { field: 'date', type: 'date', values: ["02/11/2015", "11/04/2014", "06/02/2017"] },
       { field: 'fieldCondition', values: ['FI1E', 'GO2 V', 'TI3'], invalidValue: 'TEST' },
-      { field: 'fieldType', values: ['concrete', 'grass', 'track'] },
+      { field: 'fieldType' },
       { field: 'height', values: [5100, 6020, 5050], invalidValue: 500 },
       { field: 'weight', values: [250, 300, 175], invalidValue: 1000 },
       { field: 'hand', values: ["8 1/2", "10", "9 3/4"], invalidValue: 'L' },
       { field: 'arm', values: ["10 1/4", "12 2/3", "11"], invalidValue: 'L' },
       { field: 'wing', values: ["20", "20 1/2", "22 1/3"], invalidValue: 'L' },
-      { field: 'm40_1', values: [4.2, 4.6, 5.1], invalidValue: 'L' },
-      { field: 'm40_2', values: [4.2, 4.6, 5.1], invalidValue: 'L' },
-      { field: 'm10_1', values: [1.2, 1.6, 2.1], invalidValue: 'L' },
-      { field: 'm10_2', values: [1.2, 1.6, 2.1], invalidValue: 'L' },
-      { field: 'm20_1', values: [2.5, 2.9, 3.5], invalidValue: 'L' },
-      { field: 'm20_2', values: [2.5, 2.9, 3.5], invalidValue: 'L' },
+      { field: 'm40_1', values: ['4.2v', 4.6, 5.1], invalidValue: 'L' },
+      { field: 'm40_2', values: ['4.2v', 4.6, 5.1], invalidValue: 'L' },
+      { field: 'm10_1', values: ['1.2v', 1.6, 2.1], invalidValue: 'L' },
+      { field: 'm10_2', values: ['1.2v', 1.6, 2.1], invalidValue: 'L' },
+      { field: 'm20_1', values: ['2.5v', 2.9, 3.5], invalidValue: 'L' },
+      { field: 'm20_2', values: ['2.5v', 2.9, 3.5], invalidValue: 'L' },
       { field: 'verticalJump', values: [4010, 3060, 2110], invalidValue: 'L' },
       { field: 'broadJump', values: ["7'10", "8'02", "8'0"], invalidValue: 'L' },
       { field: 'benchPress', values: [30, 15, 5], invalidValue: 'L' },
@@ -48,7 +49,7 @@ test.describe('#Page: Measurables', function() {
     test.it('click create button', function() {
       measurablesPage.clickCreateButton();
       measurablesPage.waitForPageToLoad();
-      measurablesPage.getRowNumForValue('event', '').then(function(rowNum) {
+      measurablesPage.getRowNumForValue('fieldType', '').then(function(rowNum) {
         newRowNum = rowNum;
       });
     });
@@ -65,7 +66,7 @@ test.describe('#Page: Measurables', function() {
     test.it('reloading page', function() {
       browser.refresh();
       measurablesPage.waitForPageToLoad();
-      measurablesPage.getRowNumForValue('event', attributes[0].inputValue).then(function(rowNum) {
+      measurablesPage.getRowNumForValue('fieldType', attributes[3].inputValue).then(function(rowNum) {
         newRowNum = rowNum;
       });
     });
@@ -92,7 +93,7 @@ test.describe('#Page: Measurables', function() {
     test.it('reloading page', function() {
       browser.refresh();
       measurablesPage.waitForPageToLoad();
-      measurablesPage.getRowNumForValue('event', attributes[0].inputValue).then(function(rowNum) {
+      measurablesPage.getRowNumForValue('fieldType', attributes[3].inputValue).then(function(rowNum) {
         newRowNum = rowNum;
       });
     });
@@ -110,7 +111,7 @@ test.describe('#Page: Measurables', function() {
 
   test.describe('#liveRow', function() {
     var attributes = [
-      { field: 'event', value: 'IND' },
+      { field: 'event', value: 'NIC' },
       { field: 'date', type: 'date', value: '2/15/2017' },
       { field: 'fieldCondition', value: 'FO2 V' },
       { field: 'height', value: '6040' },

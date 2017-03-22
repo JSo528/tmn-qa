@@ -79,7 +79,7 @@ _.extend(MeasurablesPage.prototype, inputs);
 ** Functions
 *****************************************************************************/
 MeasurablesPage.prototype.waitForPageToLoad = function() {
-  return this.waitForEnabled(LAST_LOCATOR, 10000);
+  return this.waitForEnabled(LAST_LOCATOR, 20000);
 };
 
 MeasurablesPage.prototype.clickCreateButton = function() {
@@ -96,6 +96,12 @@ MeasurablesPage.prototype.changeDateField = function(rowNum, field, dateString) 
   return this.changeDatePickerFromString(locator, dateString);
 };
 
+MeasurablesPage.prototype.changeDropdownField = function(rowNum, field, value) {
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div[contains(@class, 'control')]`);
+  var optionLocator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div[contains(@class, 'control')]/ul/li[text()='${value}']`);
+  return this.changeDropdown(locator, optionLocator);
+};
+
 MeasurablesPage.prototype.getInputField = function(rowNum, field) {
   var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div[contains(@class, 'control')]`);
   return this.getText(locator);
@@ -104,6 +110,15 @@ MeasurablesPage.prototype.getInputField = function(rowNum, field) {
 MeasurablesPage.prototype.getDateField = function(rowNum, field) {
   var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/input`);
   return this.getInput(locator);
+};
+
+MeasurablesPage.prototype.getDropdownField = function(rowNum, field) {
+  var d = Promise.defer();
+  var locator = By.xpath(`.//table/tbody[1]/tr[not(contains(@class, '-details'))][${rowNum}]/td[${COLUMN_NUMS[field]}]/div/div`);
+  this.getText(locator).then(function(text) {
+    d.fulfill(text.trim());
+  })
+  return d.promise;
 };
 
 MeasurablesPage.prototype.errorMessageDisplayed = function(rowNum, field) {
@@ -148,6 +163,8 @@ MeasurablesPage.prototype.getLiveRowInputField = function(field) {
 *****************************************************************************/
 MeasurablesPage.prototype.changeStatField = function(type, rowNum, field, value) {
   switch (type) {
+    case 'dropdown':
+      return this.changeDropdownField(rowNum, field, value);
     case 'date':
       return this.changeDateField(rowNum, field, value);
     default:
@@ -157,6 +174,8 @@ MeasurablesPage.prototype.changeStatField = function(type, rowNum, field, value)
 
 MeasurablesPage.prototype.getStatField = function(type, rowNum, field) {
   switch (type) {
+    case 'dropdown':
+    return this.getDropdownField(rowNum, field);
     case 'date':
       return this.getDateField(rowNum, field);
     default:

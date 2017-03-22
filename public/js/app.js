@@ -26,7 +26,6 @@ App.Models.TestRun = Backbone.Model.extend({
   },
   parse: function(response, options) {
     var thiz = this;
-    console.log('fetched');
     if (response.success == false) {
       return
     }
@@ -37,7 +36,10 @@ App.Models.TestRun = Backbone.Model.extend({
         title: obj.title
       })
       if (failedTest) {
-        failedTest.set({imgFiles: obj.imgFiles})
+        failedTest.set({
+          errorNumber: obj.errorNumber, 
+          imgFiles: obj.imgFiles
+        })
       } else {
         thiz.failedTestList.add(new App.Models.FailedTest(obj))
       }

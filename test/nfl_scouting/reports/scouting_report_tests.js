@@ -97,6 +97,7 @@ test.describe('#Page: ScoutingReports', function() {
     });
 
     test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
+      this.timeout(120000);
       attributes.forEach(function(attr) {
         var input = attr.updatedValueInput || attr.updatedValue
         reportPage.changeProfileField(attr.type, attr.field, input );
@@ -148,6 +149,7 @@ test.describe('#Page: ScoutingReports', function() {
     ];
 
     test.it("updating fields (if this test fails, itll cause a cascading effect for the other tests in this section)", function() {
+      this.timeout(120000);
       reportPage.clickGameReportsSpacer();
       notesAttributes.forEach(function(attr) {
         reportPage.changeNotesField(attr.type, attr.field, attr.value );

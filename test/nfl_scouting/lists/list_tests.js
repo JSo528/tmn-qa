@@ -74,7 +74,7 @@ test.describe('#Page: List', function() {
 
   test.describe('#addingPlayer', function() {
     test.it('adding list to player', function() {
-      browser.visit(url + 'player/31682');
+      browser.visit(url + 'player/31683');
       playerPage.addProfileList('GI');
     });
 
@@ -83,7 +83,7 @@ test.describe('#Page: List', function() {
       listsPage.clickTableRowWithListName('GI');
       listPage.waitForPageToLoad();
 
-      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
+      listPage.playerExistsInTable('ELLIS', 'RANDALL').then(function(exists) {
         assert.equal(exists, true);
       });
     });
@@ -91,7 +91,7 @@ test.describe('#Page: List', function() {
 
   test.describe('#removingPlayer', function() {
     test.it('removing list from player', function() {
-      browser.visit(url + 'player/31682');
+      browser.visit(url + 'player/31683');
       playerPage.removeProfileList('GI');
     });
 
@@ -100,7 +100,7 @@ test.describe('#Page: List', function() {
       listsPage.clickTableRowWithListName('GI');
       listPage.waitForPageToLoad();
 
-      listPage.playerExistsInTable('DAKOTA', 'CORNWELL').then(function(exists) {
+      listPage.playerExistsInTable('ELLIS', 'RANDALL').then(function(exists) {
         assert.equal(exists, false);
       });
     });

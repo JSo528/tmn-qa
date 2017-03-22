@@ -86,6 +86,23 @@ a.stack-link {
   margin: 0 auto;
 }
 
+.select-options {
+  margin-top: 10px;
+}
+
+.select-options {
+  margin-top: 10px;
+}
+.select-options .select-option {
+  color: #337ab7;
+  display: inline-block;
+  cursor: pointer;
+
+}
+.select-options #unselectAll{
+  margin-left: 50px;
+}
+
 /* Test Results Page */
 .test-results-table {
   background-color: white;

@@ -26,12 +26,14 @@ block content
               option(value='custom' name='custom') Custom
             each script in scripts
               .test-files-container.hidden(data-test-number=script.id)
-                each file in script.testFiles
+                each val, file in script.testFiles
                   .checkbox
                     label
                       input(type='checkbox' name='fileWhitelist[]' value=file checked disabled=true)
                       = file
-
+            .select-options      
+              .select-option#selectAll Select All
+              .select-option#unselectAll Unselect All
         button.btn.btn-primary.btn-block(type='submit') Run Test
 
   script.
@@ -54,8 +56,10 @@ block content
     function toggleTestFilesContainer() {
       $('.test-files-container').addClass('hidden');
       $('.test-files-container input').attr('disabled', true);
+      $('.select-options').addClass('hidden');
 
       if ($('#testFiles').val() == 'custom') {
+        $('.select-options').removeClass('hidden');
         var testNumber = $('#testNumber').val();
         $('.test-files-container[data-test-number="'+testNumber+'"]').removeClass('hidden');
         $('.test-files-container[data-test-number="'+testNumber+'"] input').attr('disabled', false);
@@ -69,6 +73,14 @@ block content
 
     $('#testFiles').on('change', function() {
       toggleTestFilesContainer();
+    });
+
+    $('#selectAll').on('click', function() {
+      $('.checkbox input').prop('checked', true);
+    });
+
+    $('#unselectAll').on('click', function() {
+      $('.checkbox input').prop('checked', false);
     });
 
     $('form').submit(function(evt) {

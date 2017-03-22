@@ -15,7 +15,7 @@ exports.removeOldTestData = function(req, res) {
     message: 'Test Runs over 7 days old have been deleted'
   };
 
-  res.redirect(303, '/util');
+  res.redirect(303, '/tools');
 }
 
 
