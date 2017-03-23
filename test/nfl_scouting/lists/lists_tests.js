@@ -52,13 +52,4 @@ test.describe('#Page: Lists', function() {
       });
     });
   });
-
-  test.describe('#clicking', function() {
-    test.it('clicking into a list bring user to correct page', function() {
-      listsPage.clickTableRow(1);
-       driver.getCurrentUrl().then(function(url) {
-        assert.match(url, /\/tag\//, 'page URL');
-      });            
-    });
-  });
 });
