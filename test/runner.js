@@ -41,11 +41,11 @@ module.exports = function(testRun, env) {
   ]
   var envVars = Object.create( process.env );
   envVars.TEST_NUMBER = testRun.testNumber;
-  envVars.PORT_NUMBER = testRun.portNumber;
   envVars.TEST_RUN_ID = testRun.id;
-  envVars.START_URL = scripts.metadata[testRun.testNumber].startUrl;
   envVars.TITLE = "["+scripts.metadata[testRun.testNumber].name+"]";
-
+  envVars.START_URL = scripts.metadata[testRun.testNumber].startUrl;
+  if (testRun.portNumber) envVars.START_URL += ":" + testRun.portNumber;
+  
   testRun.testRunQueues.map(function(testRunQueueId) {
     TestRunQueue.findById(testRunQueueId, function(err, testRunQueue) {
       envVars.TEST_RUN_QUEUE_ID = testRunQueue.id;
