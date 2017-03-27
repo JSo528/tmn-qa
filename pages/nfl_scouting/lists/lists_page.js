@@ -28,6 +28,7 @@ ListsPage.prototype.constructor = ListsPage;
 ** Functions
 *****************************************************************************/
 ListsPage.prototype.getVisibleListsCount = function() {
+  this.waitUntilStaleness(LISTS_TABLE, 5000);
   return this.getElementCount(LISTS_ROWS);
 };
 

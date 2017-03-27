@@ -332,6 +332,7 @@ test.describe('#Page: Players', function() {
       });
       
       test.it('filters: Is Starter (OR), For Tier (OR)', function() {
+        this.timeout(120000);
         filters.removeFilter('For Class Years');
         playersPage.toggleColumn('Tier', true);
 
