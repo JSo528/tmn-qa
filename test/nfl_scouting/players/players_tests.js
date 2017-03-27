@@ -311,6 +311,7 @@ test.describe('#Page: Players', function() {
 
     test.describe('#compoundFilterTest', function() {
       test.it('filters: Is Starter (AND),  For Class Years (AND)', function() {
+        this.timeout(120000);
         browser.refresh();
         playersPage.toggleColumn('Starter', true);
         playersPage.addFilter('Is Starter');
@@ -332,7 +333,6 @@ test.describe('#Page: Players', function() {
       });
       
       test.it('filters: Is Starter (OR), For Tier (OR)', function() {
-        this.timeout(120000);
         filters.removeFilter('For Class Years');
         playersPage.toggleColumn('Tier', true);
 
