@@ -156,7 +156,7 @@ VideoPlaylist = {
   },
 
   selectFromPlayVideosDropdown: function(option) {
-    var dropdownLocator = By.css('paper-button.tmn-progress-button')
+    var dropdownLocator = By.css('tmn-menu-button.tmn-play-top');
     this.click(dropdownLocator);
 
     var optionLocator = By.xpath(`.//paper-menu/.//paper-item[text()='${option}']`);

@@ -269,7 +269,7 @@ Filters.prototype.selectAllForDropdownSidebarFilter = function(filterName, selec
   var element = this.driver.findElement(locator);
   element.isSelected().then(function(selected) {
     if (selected != select) {
-      d.fulfill(thiz.clickAndWait(locator, LOADING_CONTAINER));
+      d.fulfill(thiz.clickAndWait(locator, LOADING_CONTAINER, 30000));
     } else {
       d.fulfill(false);
     }

@@ -622,11 +622,11 @@ test.describe('#Team Pitching Section', function() {
     test.it('drawing a box on the heat map should update the hit chart for both sections', function() {
       // driver.sleep(1000);
       teamPage.getMultiFilterHitChartHitCount('top').then(function(count) {
-        assert.isAtMost(count, 72, 'correct number of hits for top hitChart');
+        assert.isAtMost(count, 75, 'correct number of hits for top hitChart');
       });      
 
       teamPage.getMultiFilterHitChartHitCount('bottom').then(function(count) {
-        assert.isAtMost(count, 72, 'correct number of hits for bottom hitChart');
+        assert.isAtMost(count, 75, 'correct number of hits for bottom hitChart');
       });            
     }); 
   });
@@ -661,7 +661,7 @@ test.describe('#Team Pitching Section', function() {
 
     test.it('should show the correct data in the table', function() {
       teamPage.getMatchupsAtBatHeaderText(1).then(function(sectionHeaderText) {
-        assert.equal(sectionHeaderText, 'Vs LHB M. Tauchman (ALB), Top 1, 0 Out', 'header for 1st at bat');
+        assert.equal(sectionHeaderText, 'Vs LHB M. Tauchman (ABQ), Top 1, 0 Out', 'header for 1st at bat');
       });
     }); 
 

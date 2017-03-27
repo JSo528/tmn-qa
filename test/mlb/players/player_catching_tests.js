@@ -132,8 +132,8 @@ test.describe('#Player Catching Section', function() {
 
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    
-      test.it('clicking on a stat opens the play by play modal', function() {
-        playerPage.clickOverviewTableStat(5,12);
+      test.it('clicking on a stat (2012 Ball Frmd) opens the play by play modal', function() {
+        playerPage.clickOverviewTableStat(5,14);
         playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
           assert.equal(text, 'Vs RHB R. Zimmerman (WSH), Top 1, 1 Out');
         });
@@ -146,7 +146,7 @@ test.describe('#Player Catching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Two Seamer 92.1 MPH ,98.1% ProbSL - Ball");
+          assert.equal(text, "0-0 Two Seamer 92.1 MPH ,98.1% ProbSL");
         });          
       }); 
 
@@ -164,7 +164,7 @@ test.describe('#Player Catching Section', function() {
           assert.equal(slaa, '43.09', '2008 Season SLAA');
         });
 
-        playerPage.getOverviewTableStat(1,8).then(function(slPlus) {
+        playerPage.getOverviewTableStat(1,10).then(function(slPlus) {
           assert.equal(slPlus, 106.4, '2008 season SL+');
         });                            
       });
@@ -216,11 +216,11 @@ test.describe('#Player Catching Section', function() {
         assert.equal(score, 'W 10-4', '10/2/2016 - Score of game');
       });      
 
-      playerPage.getGameLogTableStat(1,11).then(function(frmRaa) {
+      playerPage.getGameLogTableStat(1,13).then(function(frmRaa) {
         assert.equal(frmRaa, -0.10, '10/2/2016 - FrmRAA');
       });            
       
-      playerPage.getGameLogTableStat(1,12).then(function(frmCntRaa) {
+      playerPage.getGameLogTableStat(1,14).then(function(frmCntRaa) {
         assert.equal(frmCntRaa, 0.19, '10/2/2016 - FrmCntRAA');
       });                  
     });
@@ -241,7 +241,7 @@ test.describe('#Player Catching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 92.1997 MPH ,88.7% ProbSL - Ground Out");
+          assert.equal(text, "0-0 Fastball 92.2 MPH ,88.7% ProbSL");
         });          
       }); 
 

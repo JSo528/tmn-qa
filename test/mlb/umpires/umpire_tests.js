@@ -137,7 +137,7 @@ test.describe('#Umpire Page', function() {
         });
 
         umpirePage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Slider 88.7187 MPH - Ball");
+          assert.equal(text, "0-0 Slider 88.7 MPH ,52.8% ProbSL");
         });          
       }); 
 
@@ -250,7 +250,7 @@ test.describe('#Umpire Page', function() {
         });
 
         umpirePage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-2 Fastball 94.6642 MPH - Strikeout (Swinging)");
+          assert.equal(text, "0-2 Fastball 94.7 MPH ,8.0% ProbSL");
         });          
       }); 
 
@@ -299,7 +299,7 @@ test.describe('#Umpire Page', function() {
         umpirePage.getMatchupsPitchText(1,5).then(function(vel) {
           assert.equal(vel, 87, 'row 1 vel');
         });
-        umpirePage.getMatchupsPitchText(1,6).then(function(result) {
+        umpirePage.getMatchupsPitchText(1,7).then(function(result) {
           assert.equal(result, 'Strike Looking', 'row 1 Result');
         });
       });
@@ -313,7 +313,7 @@ test.describe('#Umpire Page', function() {
         });
 
         umpirePage.getFlatViewPitchText(4,7).then(function(result) {
-          assert.equal(result, 'LD', 'row 4 BattedBallType');
+          assert.equal(result, 'Line Out', 'row 4 result');
         });
       });
     })

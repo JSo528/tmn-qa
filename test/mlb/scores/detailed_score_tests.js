@@ -62,7 +62,7 @@ test.describe('#DetailedScore Page', function() {
           });
 
           detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-2 Changeup 85.3742 MPH - Strikeout (Swinging)");
+            assert.equal(text, "0-2 Changeup 85.4 MPH");
           });          
         }); 
 
@@ -87,7 +87,7 @@ test.describe('#DetailedScore Page', function() {
           });
 
           detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "0-0 Fastball 93.6841 MPH - Strike Looking");
+            assert.equal(text, "0-0 Fastball 93.7 MPH");
           });          
         }); 
 

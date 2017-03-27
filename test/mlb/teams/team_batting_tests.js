@@ -140,7 +140,7 @@ test.describe('#Team Batting Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-1 Fastball 96.5058 MPH - Ground Out");
+          assert.equal(text, "1-1 Fastball 96.5 MPH ,86.2% ProbSL");
         });          
       }); 
 
@@ -211,7 +211,7 @@ test.describe('#Team Batting Section', function() {
         filters.changeValuesForRangeSidebarFilter('Launch Angle:', 50, "");
 
         teamPage.getOverviewTableStat(8).then(function(pitches) {
-          assert.equal(pitches, 15, '2016 Bos Pitches');
+          assert.equal(pitches, 16, '2016 Bos Pitches');
         });
       });            
 
@@ -272,9 +272,9 @@ test.describe('#Team Batting Section', function() {
       var reports = [
         { type: 'Counting', topStat: 1598, statType: "H" },  
         { type: 'Pitch Rates', topStat: "38.7%", statType: "Foul%" },  
-        { type: 'Pitch Count', topStat: 12617, statType: "InZone#" },  
-        { type: 'Pitch Types', topStat: "2.9%", statType: "Sinker%" },  
-        { type: 'Pitch Type Counts', topStat: 725, statType: "Sinker#" },  
+        { type: 'Pitch Count', topStat: 12610, statType: "InZone#" },  
+        { type: 'Pitch Types', topStat: "2.7%", statType: "Sinker%" },  
+        { type: 'Pitch Type Counts', topStat: 667, statType: "Sinker#" },  
         { type: 'Pitch Locations', topStat: "60.2%", statType: "LowHalf%" },  
         { type: 'Pitch Calls', topStat: 231, statType: "BallFrmd" },  
         { type: 'Hit Types', topStat: 2060, statType: "Ground#" },  
@@ -322,7 +322,7 @@ test.describe('#Team Batting Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2-2 Fastball 97.5489 MPH - Fly Out");
+          assert.equal(text, "2-2 Fastball 97.5 MPH ,56.6% ProbSL");
         });          
       }); 
 
@@ -435,7 +435,7 @@ test.describe('#Team Batting Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-1 Fastball 96.5058 MPH - Ground Out");
+          assert.equal(text, "1-1 Fastball 96.5 MPH ,86.2% ProbSL");
         });          
       }); 
 
@@ -788,7 +788,7 @@ test.describe('#Team Batting Section', function() {
       });
 
       teamPage.getVideoPlaylistText(2,2).then(function(text) {
-        assert.equal(text, 'RHB D. Pedroia Vs RHP C. Archer (TB)', '2nd video, 2nd line');
+        assert.equal(text, 'Vs RHP C. Archer (TB)', '2nd video, 2nd line');
       });      
     });  
   });  

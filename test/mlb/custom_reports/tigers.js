@@ -131,7 +131,7 @@ test.describe('#CustomReports: Tigers', function() {
 
       test.it('title of heatmaps are correct', function() {
         tigers.getHeatmapTitle(1,1,1).then(function(title) {
-          assert.equal(title, 'FB AVG RHP', 'top left heatmap title');
+          assert.equal(title, 'FB Avg RHP', 'top left heatmap title');
         });
 
         tigers.getHeatmapTitle(1,1,2).then(function(title) {
@@ -313,7 +313,7 @@ test.describe('#CustomReports: Tigers', function() {
 
       test.it('title of heatmaps are correct', function() {
         tigers.getHeatmapTitle(2,1,1).then(function(title) {
-          assert.equal(title, 'FB AVG LHP', 'top left heatmap title');
+          assert.equal(title, 'FB Avg LHP', 'top left heatmap title');
         });
 
         tigers.getHeatmapTitle(2,1,2).then(function(title) {

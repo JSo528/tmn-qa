@@ -300,7 +300,7 @@ test.describe('#CustomReports: Phillies', function() {
       test.describe('page data', function() {
         test.it('heat maps show', function() {
           phillies.getHeatMapImageCount().then(function(count) {
-            assert.equal(count, 10, '# of heatmaps');
+            assert.equal(count, 16, '# of heatmaps');
           })
         });
 

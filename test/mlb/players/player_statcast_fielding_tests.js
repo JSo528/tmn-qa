@@ -34,38 +34,39 @@ test.describe('#Player StatcastFielding Section', function() {
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
-    test.describe('clicking into OF Area w/ Filter (men on: loaded)', function() {
-      test.before(function() {
-        filters.toggleSidebarFilter('Men On:', 'Loaded', true);
-      });
+    // TODO - feature has changed
+    // test.describe('clicking into OF Area w/ Filter (men on: loaded)', function() {
+    //   test.before(function() {
+    //     filters.toggleSidebarFilter('Men On:', 'Loaded', true);
+    //   });
 
-      // can't consistently click on the same fielding event, so just check if modal exists with data in it
-      test.it('clicking a statcast fielding event should show data in modal', function() {
-        playerPage.clickStatcastFieldingChartEvent(1);
-        playerPage.getStatcastFieldingModalTitle().then(function(title) {
-          assert.equal(title, 'Pop up Play by Play', 'modal title');
-        });
+    //   // can't consistently click on the same fielding event, so just check if modal exists with data in it
+    //   test.it('clicking a statcast fielding event should show data in modal', function() {
+    //     playerPage.clickStatcastFieldingChartEvent(1);
+    //     playerPage.getStatcastFieldingModalTitle().then(function(title) {
+    //       assert.equal(title, 'Pop up Play by Play', 'modal title');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
-          assert.equal(header, 'Inn', '1st col header');
-        });
+    //     playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
+    //       assert.equal(header, 'Inn', '1st col header');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
-          assert.equal(header, 'Opp', '3rd col header');
-        });
+    //     playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
+    //       assert.equal(header, 'Opp', '3rd col header');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
-          assert.equal(header, 'OutProb', '8th col header');
-        });
+    //     playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
+    //       assert.equal(header, 'OutProb', '8th col header');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
-          assert.equal(header, 'PosIndOutProb', '9th col header');
-        });
-      });
-      test.after(function() {
-        playerPage.closeStatcastFieldingModal();
-      });
-    });
+    //     playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
+    //       assert.equal(header, 'PosIndOutProb', '9th col header');
+    //     });
+    //   });
+    //   test.after(function() {
+    //     playerPage.closeStatcastFieldingModal();
+    //   });
+    // });
 
     test.describe('changing ballpark', function() {
       test.before(function() {
@@ -110,7 +111,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "5.90s HT | 127.6ft | 0.9s RT | 1.87s Jmp | 99.0% Eff | 19.9mph | 13.8ft to Wall | 25.3% outProb | Fly Out");
+          assert.equal(text, "5.90s HT | 127.6ft | 0.9s RT | 1.87s Jmp | 99.0% Eff | 19.9mph | 13.8ft to Wall | 25.3% outProb |");
         });          
       }); 
 
@@ -181,7 +182,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "3.67s HT | 42.8ft | 0.9s RT | 2.07s Jmp | 92.6% Eff | 11.6mph | 89.3ft to Wall | 99.6% outProb | Fly Out", '3rd line of 1st video description');
+          assert.equal(text, "3.67s HT | 42.8ft | 0.9s RT | 2.07s Jmp | 92.6% Eff | 11.6mph | 89.3ft to Wall | 99.6% outProb |", '3rd line of 1st video description');
         });          
       }); 
 
@@ -189,7 +190,7 @@ test.describe('#Player StatcastFielding Section', function() {
         playerPage.closeVideoPlaylistModal();
         playerPage.clickSimiliarPlaysIcon(1);
         playerPage.getSimiliarPlaysHeader().then(function(title) {
-          assert.match(title, /50 most similar fielding plays to successful catch by Mookie Betts in RF at Fenway Park \(10\/2\/2016\)/, 'modal title');   
+          assert.match(title, /50 most similar fielding plays to out recorded by Mookie Betts in RF at Fenway Park \(10\/2\/2016\)/, 'modal title');   
         })
       });
 

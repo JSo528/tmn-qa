@@ -42,6 +42,7 @@ test.describe('#CustomReports: Marlins', function() {
 
     test.describe('#SubSection: CustomBatting', function() {
       test.it('images start with 9 grid zones', function() {
+        this.timeout(120000);
         marlins.goToSubSection('customBatting');
         marlins.getNumberOfGridZonesForImages().then(function(zones) {
           assert.equal(zones, 9);
@@ -115,7 +116,7 @@ test.describe('#CustomReports: Marlins', function() {
       });
 
       test.it('changing filter (Date Range: 2016-4-1 to 2016-10-1) updates page', function() {
-        this.timeout(120000);
+        this.timeout(180000);
         filters.changeDropdownForDateSidebarFilter('Date Range:', '2016 First Half');
         marlins.getHeaderForFirstPlayer().then(function(headerText) {
           assert.match(headerText, /2016-04-01[\n -]*2016-07-13/);
@@ -165,9 +166,9 @@ test.describe('#CustomReports: Marlins', function() {
         marlins.goToSubSection('customPitching');
       });
 
-      test.it('page shows 12 heatmap images', function() {
+      test.it('page shows 14 heatmap images', function() {
         marlins.getPlayerHeatMapCount().then(function(count) {
-          assert.equal(count, 12);
+          assert.equal(count, 14);
         });
       });
     });

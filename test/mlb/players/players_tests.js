@@ -241,7 +241,7 @@ test.describe('#Players Page', function() {
           { type: 'Stat', topStat: 0.289 },  
           { type: 'Rank', topStat: 1, color: true },            
           { type: 'Percentile', topStat: "100.0%", color: true },
-          { type: 'Z-Score', topStat: 2.425 },
+          { type: 'Z-Score', topStat: 2.428 },
           { type: 'Stat Grade', topStat: 80 },
           { type: 'Stat (Rank)', topStat: ".289 (1)", color: true },
           { type: 'Stat (Percentile)', topStat: ".289 (100%)", color: true },
@@ -541,7 +541,7 @@ test.describe('#Players Page', function() {
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "1-1 Four Seamer 94 MPH - Home Run on a 371 ft Fly Ball");
+            assert.equal(text, "1-1 Four Seamer 94.0 MPH ,100.0% ProbSL");
           });          
         }); 
 
@@ -794,8 +794,8 @@ test.describe('#Players Page', function() {
 
       // Video Playlist
       test.describe('#VideoPlaylist', function() {     
-        test.it('clicking on a player stat opens the play by play modal', function() {
-          playersPage.clickTableStat(1, 12);
+        test.it('clicking on a player stat opens the play by play modal (Matt Weiters - BallsFrmd)', function() {
+          playersPage.clickTableStat(1, 14);
           playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
             assert.equal(text, 'Vs LHB B. Zobrist (TB), Bot 1, 1 Out');
           });
@@ -808,7 +808,7 @@ test.describe('#Players Page', function() {
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "1-2 Knuckle Curve 79 MPH ,76.5% ProbSL - Ball");
+            assert.equal(text, "1-2 Knuckle Curve 79.0 MPH ,76.5% ProbSL");
           });          
         }); 
 
@@ -878,18 +878,18 @@ test.describe('#Players Page', function() {
         test.it('clicking on a player stat opens the play by play modal', function() {
           playersPage.clickTableStat(1, 4);
           playersPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-            assert.equal(text, 'RHP M. Andriese (TB) Vs RHB L. Cain (KC), Top 1, 2 Out');
+            assert.equal(text, 'RHP T. Adleman (CIN) Vs LHB M. Carpenter (STL), Top 1, 0 Out');
           });
         });
 
         test.it('clicking into video opens correct video', function() {
           playersPage.clickPitchVideoIcon(1);
           playersPage.getVideoPlaylistText(1,1).then(function(text) {
-            assert.equal(text, "Top 1, 2 out");
+            assert.equal(text, "Top 1, 0 out");
           });
 
           playersPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "2.16s HT | 128.5ft | 0.8s RT | 0 Jmp | 98.9% Eff | 14.2mph | 142.8ft to Wall | 0.0% outProb | Single on a Line Drive");
+            assert.equal(text, "5.70s HT | 63.2ft | 0.8s RT | 1.84s Jmp | 97.2% Eff | 13.3mph | 27.3ft to Wall | 100.0% outProb |");
           });          
         }); 
 
@@ -897,7 +897,7 @@ test.describe('#Players Page', function() {
           playersPage.closeVideoPlaylistModal();
           playersPage.clickSimiliarPlaysIcon(1);
           playersPage.getSimiliarPlaysHeader().then(function(title) {
-            assert.match(title, /50 most similar fielding plays to unsuccessful catch by Desmond Jennings in LF at Tropicana Field \(8\/2\/2016\)/, 'modal title');
+            assert.match(title, /50 most similar fielding plays to out recorded by Billy Hamilton in CF at Great American Ball Park \(9\/4\/2016\)/, 'modal title');
           })
         });
 
@@ -921,7 +921,7 @@ test.describe('#Players Page', function() {
           filters.changeValuesForRangeSidebarFilter('Weight:', 180, 250);
 
           playersPage.getTableStat(1, 4).then(function(stat) {
-            assert.equal(stat, 429, '# of OFAirBall - Mookie Betts');
+            assert.equal(stat, 485, '# of OFAirBall - E Inciarte');
           });
         });
 

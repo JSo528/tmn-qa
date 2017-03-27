@@ -202,7 +202,7 @@ test.describe('#CustomReports: Rockies', function() {
           assert.equal(stat, 6.86, 'PitRockWAR for Kyle Hendricks');
         });
 
-        rockies.getTableStat(5,15).then(function(stat) {
+        rockies.getTableStat(6,15).then(function(stat) {
           assert.equal(stat, 6.64, 'TotRockWAR for Mike Trout');
         });
       });        
@@ -243,8 +243,8 @@ test.describe('#CustomReports: Rockies', function() {
     test.describe("#qualify by", function() {
       test.it("selecting (qualify by: Show All) shows the correct data", function() {
         rockies.changeRockWARQualifyBy('Show All');  
-        rockies.getTableStat(6,1).then(function(stat) {
-          assert.equal(stat, 'Tony Wolters', '3rd Row should be Jonathan Lucroy');
+        rockies.getTableStat(7,1).then(function(stat) {
+          assert.equal(stat, 'Tony Wolters', '7th Row should be Tony Wolters');
         });
       });
 

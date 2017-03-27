@@ -50,7 +50,7 @@ test.describe('#Umpires Page', function() {
       });
 
       umpiresPage.getVideoPlaylistText(1,3).then(function(text) {
-        assert.equal(text, "0-2 Fastball 94.6642 MPH - Strikeout (Swinging)");
+        assert.equal(text, "0-2 Fastball 94.7 MPH ,8.0% ProbSL");
       });          
     }); 
 
@@ -310,7 +310,7 @@ test.describe('#Umpires Page', function() {
     var statViews = [
       { type: 'Rank', topStat: 1, color: true },            
       { type: 'Percentile', topStat: "100.0%", color: true },
-      { type: 'Z-Score', topStat: 1.789 },
+      { type: 'Z-Score', topStat: 1.79 },
       { type: 'Stat Grade', topStat: 80 },
       { type: 'Stat (Rank)', topStat: "218 (1)", color: true },
       { type: 'Stat (Percentile)', topStat: "218 (100%)", color: true },
@@ -346,7 +346,7 @@ test.describe('#Umpires Page', function() {
       { type: 'Pitch Rates', topStat: "46.3%", statType: "InZoneMdl%", colNum: 8 },  
       { type: 'Pitch Counts', topStat: 132, statType: "StrkFrmd", colNum: 12 },  
       { type: 'Pitch Types', topStat: "54.6%", statType: "Fast%", colNum: 7 },  
-      { type: 'Pitch Type Counts', topStat: 10388, statType: "Fast#", colNum: 7 }
+      { type: 'Pitch Type Counts', topStat: 10424, statType: "Fast#", colNum: 7 }
     ];
 
     reports.forEach(function(report) {

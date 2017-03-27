@@ -83,11 +83,11 @@ test.describe('#Team Catching Section', function() {
         });
       });
 
-      test.it('adding filter: (Decisive Pitch: Yes) from sidebar displays correct data', function() {
+      test.it('adding filter: (Extension: 5-7) from sidebar displays correct data', function() {
         filters.changeValuesForRangeSidebarFilter('Extension:', 5, 7);
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 5962, 'Pitches');
+          assert.equal(pitches, 6038, 'Pitches');
         });
       });
 
@@ -95,7 +95,7 @@ test.describe('#Team Catching Section', function() {
         filters.addSelectionToDropdownSidebarFilter('Last Count:', '1 Strike');
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 1875, 'Pitches');
+          assert.equal(pitches, 1896, 'Pitches');
         });
       });
 
@@ -103,7 +103,7 @@ test.describe('#Team Catching Section', function() {
         filters.addSelectionToDropdownSidebarFilter('Last Horizontal Location:', 'Outer Half');
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 1032, 'Pitches');
+          assert.equal(pitches, 1043, 'Pitches');
         });
       }); 
 
@@ -111,7 +111,7 @@ test.describe('#Team Catching Section', function() {
         filters.addSelectionToDropdownSidebarFilter('Last Pitch Result:', 'Take');
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 583, 'Pitches');
+          assert.equal(pitches, 589, 'Pitches');
         });
       }); 
 
@@ -119,7 +119,7 @@ test.describe('#Team Catching Section', function() {
         filters.addSelectionToDropdownSidebarFilter('Last Pitch Type:', 'Fastball');
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 168, 'Pitches');
+          assert.equal(pitches, 169, 'Pitches');
         });
       }); 
 
@@ -127,7 +127,7 @@ test.describe('#Team Catching Section', function() {
         filters.changeValuesForRangeSidebarFilter('Last Pitch Velocity:', 90, 100);
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 103, 'Pitches');
+          assert.equal(pitches, 104, 'Pitches');
         });
       });      
 
@@ -135,7 +135,7 @@ test.describe('#Team Catching Section', function() {
         filters.addSelectionToDropdownSidebarFilter('Last Vertical Location:', 'Lower Half');
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 77, 'Pitches');
+          assert.equal(pitches, 78, 'Pitches');
         });
       }); 
 
@@ -143,7 +143,7 @@ test.describe('#Team Catching Section', function() {
         filters.selectForBooleanDropdownSidebarFilter('Last Zone Location:', 'Competitive');
 
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 54, 'Pitches');
+          assert.equal(pitches, 55, 'Pitches');
         });
       });
 
@@ -151,7 +151,7 @@ test.describe('#Team Catching Section', function() {
         filters.changeValuesForRangeSidebarFilter('PZ:', 1, 3);
         
         teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 49, 'Pitches');
+          assert.equal(pitches, 50, 'Pitches');
         });
       });  
 
@@ -204,7 +204,7 @@ test.describe('#Team Catching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-1 Fastball 93.9341 MPH ,20.3% ProbSL - Strike Looking");
+          assert.equal(text, "0-1 Fastball 93.9 MPH ,20.3% ProbSL");
         });          
       }); 
 
@@ -217,7 +217,7 @@ test.describe('#Team Catching Section', function() {
     test.describe("#Reports", function() {
       var reports = [
         { type: 'Pitch Types', topStat: '10.9%', statType: "Curve%" },  
-        { type: 'Pitch Type Counts', topStat: 2570, statType: "Curve#" },  
+        { type: 'Pitch Type Counts', topStat: 2566, statType: "Curve#" },  
         { type: 'Catcher Defense', topStat: 3, statType: "E" },  
         { type: 'Catcher Opposing Batters', topStat: 534, statType: "BB" },  
         { type: 'Catcher Pitch Rates', topStat: '46.7%', statType: "Swing%" },  
@@ -255,7 +255,7 @@ test.describe('#Team Catching Section', function() {
         });
 
         teamPage.getRosterTableStat(1,7).then(function(slaa) {
-          assert.equal(slaa, 0.65, 'Bobby Wilson SLAA');
+          assert.equal(slaa, 0.71, 'Bobby Wilson SLAA');
         });          
       });
 
@@ -272,7 +272,7 @@ test.describe('#Team Catching Section', function() {
         filters.changeFilterGroupDropdown('Situation');
         filters.changeValuesForRangeSidebarFilter('Current Run Diff:', 0, 1);
 
-        teamPage.getRosterTableStat(1,5).then(function(stat) {
+        teamPage.getRosterTableStat(2,5).then(function(stat) {
           assert.equal(stat, 6, 'Bryan Holaday BF');
         });
       });
@@ -280,8 +280,8 @@ test.describe('#Team Catching Section', function() {
       test.it('adding filter: (Current Opp Runs Scored: 0 to 3) from sidebar displays correct data', function() {
         filters.changeValuesForRangeSidebarFilter('Current Opp Runs Scored:', 0, 3);
 
-        teamPage.getRosterTableStat(1,8).then(function(stat) {
-          assert.equal(stat, 112.3, 'Bobby Wilson SL+');
+        teamPage.getRosterTableStat(1,10).then(function(stat) {
+          assert.equal(stat, 128.1, 'Bobby Wilson SL+');
         });
       }); 
 
@@ -289,7 +289,7 @@ test.describe('#Team Catching Section', function() {
         filters.changeValuesForRangeSidebarFilter('Current Team Runs Scored:', 0, 3);
 
         teamPage.getRosterTableStat(1,6).then(function(stat) {
-          assert.equal(stat, 86, 'Bobby Wilson Pitches');
+          assert.equal(stat, 94, 'Bobby Wilson Pitches');
         });
       }); 
 
@@ -341,7 +341,7 @@ test.describe('#Team Catching Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-1 Changeup 85.1066 MPH ,98.1% ProbSL - Ground Out");
+          assert.equal(text, "0-1 Changeup 85.1 MPH ,98.1% ProbSL");
         });          
       }); 
 

@@ -44,7 +44,7 @@ test.describe('#Player Pitching Section', function() {
         });
         
         playerPage.getHitChartHitCount('double').then(function(count) {
-          assert.equal(count, 3, 'correct number of doubles');
+          assert.equal(count, 4, 'correct number of doubles');
         });        
 
         playerPage.getHitChartHitCount('triple').then(function(count) {
@@ -58,7 +58,7 @@ test.describe('#Player Pitching Section', function() {
 
       test.it('selecting a heat map rectangle updates the data table', function() {
         playerPage.getOverviewTableStat(5,4).then(function(count) {
-          assert.equal(count, 269, '2016 Season - # of pitches');
+          assert.equal(count, 271, '2016 Season - # of pitches');
         });              
       });            
 
@@ -140,7 +140,7 @@ test.describe('#Player Pitching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2-2 Changeup 81.0796 MPH - Single on a Fly Ball");
+          assert.equal(text, "2-2 Changeup 81.1 MPH ,18.1% ProbSL");
         });          
       }); 
 
@@ -154,8 +154,8 @@ test.describe('#Player Pitching Section', function() {
       var reports = [
         { type: 'Rate', topStat: '22.8%', statType: "K%" },  
         { type: 'Counting', topStat: 8, statType: "HBP" },  
-        { type: 'Pitch Rates', topStat: "47.0%", statType: "InZone%" },  
-        { type: 'Pitch Count', topStat: 481, statType: "Chase#" },  
+        { type: 'Pitch Rates', topStat: "46.9%", statType: "InZone%" },  
+        { type: 'Pitch Count', topStat: 483, statType: "Chase#" },  
         { type: 'Pitch Types', topStat: "0.0%", statType: "Split%" },  
         { type: 'Pitch Type Counts', topStat: 0, statType: "Split#" },  
         { type: 'Pitch Locations', topStat: "19.7%", statType: "Inside%" },  
@@ -225,7 +225,7 @@ test.describe('#Player Pitching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 86.6839 MPH - Ball");
+          assert.equal(text, "0-0 Fastball 86.7 MPH ,6.4% ProbSL");
         });          
       }); 
 
@@ -294,7 +294,7 @@ test.describe('#Player Pitching Section', function() {
         { type: 'Pitch Types', topStat: "0.0%", statType: "Spec%" },  
         { type: 'Pitch Type Counts', topStat: 1961, statType: "Hard#", colNum: 13 },  
         { type: 'Pitch Locations', topStat: "19.8%", statType: "HMid%" },  
-        { type: 'Pitch Calls', topStat: 5.18, statType: "FrmCntRAA", colNum: 9 },  
+        { type: 'Pitch Calls', topStat: 5.3, statType: "FrmCntRAA", colNum: 9 },  
         { type: 'Hit Types', topStat: 124, statType: "Line#" },  
         { type: 'Hit Locations', topStat: "20.5%", statType: "HRtCtr%" },  
         { type: 'Home Runs', topStat: 303.5, statType: "FBDst", colNum: 8 },   
@@ -511,7 +511,7 @@ test.describe('#Player Pitching Section', function() {
       });
 
       playerPage.getVideoPlaylistText(2,3).then(function(text) {
-        assert.equal(text, '0-1 Changeup 79.6 MPH - Ball');
+        assert.equal(text, '0-1 Changeup 79.6 MPH');
       });      
     });  
   });  

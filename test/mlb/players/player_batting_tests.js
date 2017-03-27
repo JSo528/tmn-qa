@@ -58,7 +58,7 @@ test.describe('#Player Batting Section', function() {
 
       test.it('selecting a heat map rectangle updates the data table', function() {
         playerPage.getOverviewTableStat(6,5).then(function(count) {
-          assert.equal(count, 325, 'correct number of pitches');
+          assert.equal(count, 324, 'correct number of pitches');
         });              
       });            
 
@@ -213,7 +213,7 @@ test.describe('#Player Batting Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-1 Sinker 92.2 MPH - Ground Out");
+          assert.equal(text, "1-1 Sinker 92.2 MPH");
         });          
       }); 
 
@@ -228,14 +228,14 @@ test.describe('#Player Batting Section', function() {
         { type: 'Counting', topStat: 216, statType: "H" },  
         { type: 'Pitch Rates', topStat: "36.4%", statType: "Foul%" },  
         { type: 'Pitch Count', topStat: 1132, statType: "InZone#" },  
-        { type: 'Pitch Types', topStat: "5.4%", statType: "Sinker%" },  
-        { type: 'Pitch Type Counts', topStat: 132, statType: "Sinker#" },  
+        { type: 'Pitch Types', topStat: "4.8%", statType: "Sinker%" },  
+        { type: 'Pitch Type Counts', topStat: 118, statType: "Sinker#" },  
         { type: 'Pitch Locations', topStat: "48.0%", statType: "LowHalf%" },  
         { type: 'Pitch Calls', topStat: 15, statType: "BallFrmd" },  
         { type: 'Hit Types', topStat: 253, statType: "Ground#" },  
         { type: 'Hit Locations', topStat: "29.8%", statType: "HLftCtr%" },  
         { type: 'Home Runs', topStat: 18, statType: "HRPull" },  
-        { type: 'Exit Data', topStat: 0.008, statType: "ExSLGDf" },  
+        { type: 'Exit Data', topStat: 0.009, statType: "ExSLGDf" },  
         
       ];
       reports.forEach(function(report) {
@@ -292,7 +292,7 @@ test.describe('#Player Batting Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Slider 84.9478 MPH - Foul");
+          assert.equal(text, "0-0 Slider 84.9 MPH ,0.4% ProbSL");
         });          
       }); 
 
@@ -357,8 +357,8 @@ test.describe('#Player Batting Section', function() {
         { type: 'Counting', topStat: 128, statType: "H" },  
         { type: 'Pitch Rates', topStat: "0.0%", statType: "Foul%" },  
         { type: 'Pitch Count', topStat: 258, statType: "InZone#" },  
-        { type: 'Pitch Types', topStat: "7.3%", statType: "Sinker%" },  
-        { type: 'Pitch Type Counts', topStat: 25, statType: "Sinker#" },  
+        { type: 'Pitch Types', topStat: "6.7%", statType: "Sinker%" },  
+        { type: 'Pitch Type Counts', topStat: 23, statType: "Sinker#" },  
         { type: 'Pitch Locations', topStat: "49.4%", statType: "LowHalf%" },  
         { type: 'Pitch Calls', topStat: 0, statType: "BallFrmd" },  
         { type: 'Hit Types', topStat: 152, statType: "Ground#" },  
@@ -407,8 +407,8 @@ test.describe('#Player Batting Section', function() {
         playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        playerPage.getMatchupsPitchText(1,6).then(function(pitch) {
-          assert.equal(pitch, 'Single on a Line Drive');
+        playerPage.getMatchupsPitchText(1,7).then(function(pitch) {
+          assert.equal(pitch, 'Single on a Line Drive', '1st At Bat Result Col');
         });
       });
     });
@@ -656,34 +656,35 @@ test.describe('#Player Batting Section', function() {
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
-    test.describe('clicking into OF Area', function() {
-      test.it('clicking a statcast fielding event shoud show correct data in modal', function() {
-        playerPage.clickStatcastFieldingChartEvent(1);
-        playerPage.getStatcastFieldingModalTitle().then(function(title) {
-          assert.equal(title, 'Pop up Play by Play', 'modal title');
-        });
+    // TODO - this feature has changed
+    // test.describe('clicking into OF Area', function() {
+    //   test.it('clicking a statcast fielding event shoud show correct data in modal', function() {
+    //     playerPage.clickStatcastFieldingChartEvent(1);
+    //     playerPage.getStatcastFieldingModalTitle().then(function(title) {
+    //       assert.equal(title, 'Pop up Play by Play', 'modal title');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
-          assert.equal(header, 'Inn', '1st col header');
-        });
+    //     playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
+    //       assert.equal(header, 'Inn', '1st col header');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
-          assert.equal(header, 'Opp', '3rd col header');
-        });
+    //     playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
+    //       assert.equal(header, 'Opp', '3rd col header');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
-          assert.equal(header, 'OutProb', '8th col header');
-        });
+    //     playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
+    //       assert.equal(header, 'OutProb', '8th col header');
+    //     });
 
-        playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
-          assert.equal(header, 'PosIndOutProb', '9th col header');
-        });  
-      });
+    //     playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
+    //       assert.equal(header, 'PosIndOutProb', '9th col header');
+    //     });  
+    //   });
 
-      test.after(function() {
-        playerPage.closeStatcastFieldingModal();
-      });
-    });
+    //   test.after(function() {
+    //     playerPage.closeStatcastFieldingModal();
+    //   });
+    // });
 
     // Video Playlist
     // TODO - feature currently broken so fix these tests once feature is fixed

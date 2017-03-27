@@ -62,30 +62,31 @@ test.describe('#Team StatcastFielding Section', function() {
       });         
     })
 
-    test.describe('clicking into OF Area', function() {
-      test.it('clicking a statcast fielding event should show correct data in modal', function() {
-        teamPage.clickStatcastFieldingChartEvent(40);
-        teamPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
-          assert.equal(date, '4/20/2016', '1st row date');
-        });
+    // TODO - this feature has changed
+    // test.describe('clicking into OF Area', function() {
+    //   test.it('clicking a statcast fielding event should show correct data in modal', function() {
+    //     teamPage.clickStatcastFieldingChartEvent(40);
+    //     teamPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
+    //       assert.equal(date, '4/20/2016', '1st row date');
+    //     });
 
-        teamPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
-          assert.equal(result, 'Outfield Fly Ball Out', '1st row result');
-        });      
+    //     teamPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
+    //       assert.equal(result, 'Outfield Fly Ball Out', '1st row result');
+    //     });      
 
-        teamPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
-          assert.equal(outProb, '99.9%', '1st row OutProb');
-        });            
+    //     teamPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
+    //       assert.equal(outProb, '99.9%', '1st row OutProb');
+    //     });            
 
-        teamPage.getStatcastFieldingModalTableStat(1,9).then(function(posIndOutProb) {
-          assert.equal(posIndOutProb, '99.9%', '1st row PosIndOutProb');
-        });                  
-      });
+    //     teamPage.getStatcastFieldingModalTableStat(1,9).then(function(posIndOutProb) {
+    //       assert.equal(posIndOutProb, '99.9%', '1st row PosIndOutProb');
+    //     });                  
+    //   });
 
-      test.after(function() {
-        teamPage.closeStatcastFieldingModal();
-      });
-    });
+    //   test.after(function() {
+    //     teamPage.closeStatcastFieldingModal();
+    //   });
+    // });
 
     test.it('changing ballpark should change background image for fielding widget', function() {
       teamPage.changeBallparkDropdown('AT&T Park');
@@ -110,7 +111,7 @@ test.describe('#Team StatcastFielding Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2.54s HT | 24.5ft | 1.0s RT | 0 Jmp | 0.779821 Eff | 12.1mph | 70.7ft to Wall | 97.0% outProb | Single on a Line Drive");
+          assert.equal(text, "2.54s HT | 24.5ft | 1.0s RT | 0 Jmp | 0.779821 Eff | 12.1mph | 70.7ft to Wall | 97.0% outProb |");
         });          
       }); 
 
@@ -119,7 +120,7 @@ test.describe('#Team StatcastFielding Section', function() {
         teamPage.clickSimiliarPlaysIcon(1);
         teamPage.getSimiliarPlaysHeader().then(function(title) {
           // need to use match since this is dynamic
-          assert.match(title, /50 most similar fielding plays to unsuccessful catch by Angel Pagan in LF at AT&T Park \(8\/14\/2016\)/, 'modal title');
+          assert.match(title, /50 most similar fielding plays to failed out by Angel Pagan in LF at AT&T Park \(8\/14\/2016\)/, 'modal title');
         })
       });
 
@@ -219,7 +220,7 @@ test.describe('#Team StatcastFielding Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "3.64s HT | 66.8ft | 0.7s RT | 1.70s Jmp | 98.2% Eff | 18.2mph | 48.5ft to Wall | 46.0% outProb | Line Out");
+          assert.equal(text, "3.64s HT | 66.8ft | 0.7s RT | 1.70s Jmp | 98.2% Eff | 18.2mph | 48.5ft to Wall | 46.0% outProb |");
         });          
       }); 
 
@@ -286,7 +287,7 @@ test.describe('#Team StatcastFielding Section', function() {
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2.15s HT | 90.4ft | 1.4s RT | 0 Jmp | 0.9343 Eff | 9.0mph | 175.9ft to Wall | 0.0% outProb | Single on a Line Drive");
+          assert.equal(text, "2.15s HT | 90.4ft | 1.4s RT | 0 Jmp | 0.9343 Eff | 9.0mph | 175.9ft to Wall | 0.0% outProb |");
         });          
       }); 
 
