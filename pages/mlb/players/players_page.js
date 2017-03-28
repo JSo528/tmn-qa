@@ -106,6 +106,12 @@ PlayersPage.prototype.changeReport = function(report) {
   return this.changeDropdown(REPORT_SELECT[this.section], DROPDOWN_INPUT, report);
 };
 
+PlayersPage.prototype.waitForTableToLoad = function() {
+  var locator = By.id(STATS_TABLE_ID[this.section]);
+  this.waitUntilStaleness(locator, 10000);
+  return this.waitForEnabled(locator, 10000);
+};
+
 /****************************************************************************
 ** Stats
 *****************************************************************************/
@@ -145,6 +151,11 @@ PlayersPage.prototype.getPlayerTableHeader = function(col) {
 PlayersPage.prototype.clickTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='${STATS_TABLE_ID[this.section]}']/table/thead/tr/th[${col}]`);
   return this.click(locator); 
+};
+
+PlayersPage.prototype.getTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='${STATS_TABLE_ID[this.section]}']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 PlayersPage.prototype.changeQualifyBy = function(filter, stat, input) {

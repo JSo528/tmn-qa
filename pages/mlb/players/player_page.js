@@ -199,6 +199,10 @@ PlayerPage.prototype.changeReport = function(report) {
   return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
 };
 
+PlayerPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(this.statsTable(), 10000);
+  return this.waitForEnabled(this.statsTable(), 10000);
+};
 
 /****************************************************************************
 ** Overview
@@ -338,6 +342,16 @@ PlayerPage.prototype.clickGameLogTableStat = function(row, col) {
   return this.click(locator);  
 };
 
+PlayerPage.prototype.clickGameLogTableColumnHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerGameLogContainer']/table/thead/tr/th[${col}]`);
+  return this.click(locator); 
+};
+
+PlayerPage.prototype.getGameLogTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerGameLogContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
+};
+
 /****************************************************************************
 ** Splits
 *****************************************************************************/
@@ -416,6 +430,16 @@ PlayerPage.prototype.getCompTableStat = function(rowNum, col) {
 PlayerPage.prototype.getVsTableStat = function(rowNum, col) {
   var locator = By.xpath(`.//div[@id='tableBaseballPlayerStatsContainer']/table/tbody/tr[${rowNum}]/td[${col}]`);
   return this.getText(locator, 10000);
+};
+
+PlayerPage.prototype.clickVsTableColumnHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerStatsContainer']/table/thead/tr[1]/th[${col}]`);
+  return this.click(locator);
+};
+
+PlayerPage.prototype.getVsTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballPlayerStatsContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 /****************************************************************************

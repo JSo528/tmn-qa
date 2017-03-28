@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../lib/constants.js');
+var extensions = require('../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../pages/mlb/navbar.js');
@@ -30,44 +31,43 @@ test.describe('#Groups Page', function() {
       battingAvgCol = 6;
       outRateCol = 18;
     })
+
     // Sorting
-    test.describe('#Sorting', function() {
-      test.it('should be sorted initially by Batting Average desc', function() {
-        var statOne, statTwo, statSix;
-        groupsPage.getTableStat(1,battingAvgCol).then(function(stat) {
-          statOne = stat;
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 6, colName: 'BA', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+        { colNum: 5, colName: 'AB', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 11, colName: 'K%', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 18, colName: 'OutRate', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 21, colName: 'SHAV', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) groupsPage.clickTableColumnHeader(column.colNum);
+          groupsPage.waitForTableToLoad();
+          groupsPage.getTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
         });
 
-        groupsPage.getTableStat(2,battingAvgCol).then(function(stat) {
-          statTwo = stat;
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          groupsPage.clickTableColumnHeader(column.colNum);
+          groupsPage.waitForTableToLoad();
+          groupsPage.getTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
         });
-
-        groupsPage.getTableStat(6,battingAvgCol).then(function(stat) {
-          statSix = stat;
-
-          assert.isAtLeast(statOne, statTwo, "group 1's AVG is >= group 2's AVG");
-          assert.isAtLeast(statTwo, statSix, "group 2's AVG is >= group 6's AVG");
-        });           
       });
 
-      test.it('clicking on the OutRate column header should sort the table by OutRate asc', function() {
-        groupsPage.clickTableColumnHeader(outRateCol);
-        var statOne, statTwo, statSix;
-        groupsPage.getTableStat(1,outRateCol).then(function(stat) {
-          statOne = stat;
-        });
-
-        groupsPage.getTableStat(2,outRateCol).then(function(stat) {
-          statTwo = stat;
-        });
-
-        groupsPage.getTableStat(6,outRateCol).then(function(stat) {
-          statSix = stat;
-
-          assert.isAtMost(statOne, statTwo, "group 1's OutRate is <= group 2's OutRate");
-          assert.isAtMost(statTwo, statSix, "group 2's OutRate is <= group 6's OutRate");
-        });           
-      });  
+      test.after(function() {
+        groupsPage.clickTableColumnHeader(18);
+      });        
     });
 
     // Filters

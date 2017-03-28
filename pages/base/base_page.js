@@ -363,7 +363,6 @@ BasePage.prototype.getTextArray = function(locator, placeholder, timeout) {
         }
       })
     })
-
     d.fulfill(textArray)
   })
 

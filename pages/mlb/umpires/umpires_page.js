@@ -48,6 +48,11 @@ UmpiresPage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = 'tableBaseballUmpires
 /****************************************************************************
 ** Stats
 *****************************************************************************/
+UmpiresPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(STATS_TABLE, 10000);
+  return this.waitForEnabled(STATS_TABLE, 10000);
+};
+
 UmpiresPage.prototype.getPageTitle = function() {
   return this.getText(PAGE_TITLE);
 };
@@ -74,6 +79,11 @@ UmpiresPage.prototype.getTableBgColor = function(umpireNum, col) {
 UmpiresPage.prototype.clickTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballUmpiresStatsContainer']/table/thead/tr/th[${col}]`);
   return this.click(locator); 
+};
+
+UmpiresPage.prototype.getTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballUmpiresStatsContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 UmpiresPage.prototype.goToUmpirePage = function(umpireNum) {

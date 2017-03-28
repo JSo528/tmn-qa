@@ -181,6 +181,11 @@ TeamPage.prototype.changeVisualMode = function(mode) {
   var locator = By.xpath(`.//ul[@id='select2-results-1']/li/div[text()='${mode}']`);
   return this.click(locator)
 };
+
+TeamPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(this.statsTable(), 10000);
+  return this.waitForEnabled(this.statsTable(), 10000);
+};
  
 /****************************************************************************
 ** Overview
@@ -304,6 +309,16 @@ TeamPage.prototype.changeOnTeamDropdown = function(report) {
   return this.changeDropdown(ON_TEAM_SELECT, DROPDOWN_INPUT, report);  
 };
 
+TeamPage.prototype.clickRosterTableColumnHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/thead/tr/th[${col}]`);
+  return this.click(locator); 
+};
+
+TeamPage.prototype.getRosterTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='${ROSTER_TABLE_ID[this.section]}']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
+};
+
 /****************************************************************************
 ** Game Log Page
 *****************************************************************************/
@@ -317,6 +332,16 @@ TeamPage.prototype.clickGameLogTableStat = function(gameNum, col) {
   var row = gameNum + 5;
   var locator = By.xpath(`.//div[@id='tableBaseballTeamGameLogContainer']/table/tbody/tr[${row}]/td[${col}]/span`);
   return this.click(locator);
+};
+
+TeamPage.prototype.clickGameLogTableColumnHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballTeamGameLogContainer']/table/thead/tr/th[${col}]`);
+  return this.click(locator); 
+};
+
+TeamPage.prototype.getGameLogTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballTeamGameLogContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 /****************************************************************************
@@ -407,9 +432,14 @@ TeamPage.prototype.getVsTableStat = function(rowNum, col) {
   return this.getText(locator, 10000);
 };
 
-TeamPage.prototype.clickVsTableHeader = function(col) {
+TeamPage.prototype.clickVsTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsContainer']/table/thead/tr[1]/th[${col}]`);
   return this.click(locator);
+};
+
+TeamPage.prototype.getVsTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballTeamStatsContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 /****************************************************************************

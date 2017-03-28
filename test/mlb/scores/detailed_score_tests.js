@@ -124,93 +124,27 @@ test.describe('#DetailedScore Page', function() {
       // teamBatting - away team's 7th column
       // playerBatting - home team's leadoff hitter's 9th column
       // both these stats should be the same stat type
+
       var reports = [
-        {
-          reportName: 'Counting', 
-          expectedUrlContains: /BattingCounting/, 
-          statType: "Pitches", 
-          teamStat: 127, 
-          playerStat: 20
-        },
-        {
-          reportName: 'Pitch Rates', 
-          expectedUrlContains: /PitchRates/, 
-          statType: "Contact%", 
-          teamStat: "70.5%", 
-          playerStat: "66.7%"
-        },     
-        {
-          reportName: 'Pitch Counts', 
-          expectedUrlContains: /PitchCounts/, 
-          statType: "Strike#", 
-          teamStat: 85, 
-          playerStat: 13
-        },  
-        {
-          reportName: 'Pitch Types', 
-          expectedUrlContains: /PitchTypes/, 
-          statType: "Curve%", 
-          teamStat: "5.5%", 
-          playerStat: "0.0%"
-        }, 
-        {
-          reportName: 'Pitch Type Counts', 
-          expectedUrlContains: /PitchTypeCounts/, 
-          statType: "Curve#", 
-          teamStat: 7, 
-          playerStat: 0
-        }, 
-        {
-          reportName: 'Pitch Locations', 
-          expectedUrlContains: /PitchLocations/, 
-          statType: "VMid%", 
-          teamStat: "27.6%", 
-          playerStat: "25.0%",
-        },   
-        {
-          reportName: 'Pitch Calls', 
-          expectedUrlContains: /PitchCalls/, 
-          statType: "StrkFrmd", 
-          teamStat: 2, 
-          playerStat: 1,
-          colOffset: 2
-        },   
-        {
-          reportName: 'Hit Types', 
-          expectedUrlContains: /HitTypes/, 
-          statType: "Line%", 
-          teamStat: "33.3%", 
-          playerStat: "33.3%"
-        },             
-        {
-          reportName: 'Hit Locations', 
-          expectedUrlContains: /HitLocations/, 
-          statType: "HPull%", 
-          teamStat: "66.7%", 
-          playerStat: "0.0%"
-        },
-        {
-          reportName: 'Home Runs', 
-          expectedUrlContains: /HomeRuns/, 
-          statType: "HR/FB", 
-          teamStat: "18.2%", 
-          playerStat: "0.0%"
-        },
-                  {
-          reportName: 'Exit Data', 
-          expectedUrlContains: /ExitData/, 
-          statType: "SLG", 
-          teamStat: ".452", 
-          playerStat: ".400"
-        },
+        { name: 'Counting', urlContains: /BattingCounting/, statType: "Pitches", teamStat: 127, playerStat: 20 },
+        { name: 'Pitch Rates', urlContains: /PitchRates/, statType: "Contact%", teamStat: "70.5%", playerStat: "66.7%" },     
+        { name: 'Pitch Counts', urlContains: /PitchCounts/, statType: "Strike#", teamStat: 85, playerStat: 13 },  
+        { name: 'Pitch Types', urlContains: /PitchTypes/, statType: "Curve%", teamStat: "5.5%", playerStat: "0.0%" }, 
+        { name: 'Pitch Type Counts', urlContains: /PitchTypeCounts/, statType: "Curve#", teamStat: 7, playerStat: 0 }, 
+        { name: 'Pitch Locations', urlContains: /PitchLocations/, statType: "VMid%", teamStat: "27.6%", playerStat: "25.0%" },   
+        { name: 'Pitch Calls', urlContains: /PitchCalls/, statType: "StrkFrmd", teamStat: 2, playerStat: 1, colOffset: 2 },   
+        { name: 'Hit Types', urlContains: /HitTypes/, statType: "Line%", teamStat: "33.3%", playerStat: "33.3%" },             
+        { name: 'Hit Locations', urlContains: /HitLocations/, statType: "HPull%", teamStat: "66.7%", playerStat: "0.0%" },
+        { name: 'Home Runs', urlContains: /HomeRuns/, statType: "HR/FB", teamStat: "18.2%", playerStat: "0.0%" },
+        { name: 'Exit Data', urlContains: /ExitData/, statType: "SLG", teamStat: ".452", playerStat: ".400" }
       ];
 
       reports.forEach(function(report) {
-        test.describe('#Report: ' + report.reportName, function() {
-          test.it('selecting report: ' + report.reportName + ' goes to the correct url', function() {
-            detailedScorePage.changeBattingReport(report.reportName);
+        test.describe('#Report: ' + report.name, function() {
+          test.it('selecting report: ' + report.name + ' goes to the correct url', function() {
+            detailedScorePage.changeBattingReport(report.name);
             driver.getCurrentUrl().then(function(url) {
-              assert.match(url, report.expectedUrlContains);
+              assert.match(url, report.urlContains);
             });
           });
 
@@ -304,122 +238,29 @@ test.describe('#DetailedScore Page', function() {
       // if colOffset is set then we shift those columns by adding the default # by the colOffset value
       // both these stats should be the same stat type
       var reports = [
-        {
-          reportName: 'Rate', 
-          expectedUrlContains: /PitchingRate/, 
-          statType: "K%", 
-          teamStat: "16.2%", 
-          playerStat: "27.3%"
-        },        
-        {
-          reportName: 'Counting', 
-          expectedUrlContains: /PitchingCounting/, 
-          statType: "HBP", 
-          teamStat: 0, 
-          playerStat: 0
-        },
-        {
-          reportName: 'Pitch Rates', 
-          expectedUrlContains: /PitchingPitchRates/, 
-          statType: "InZone%", 
-          teamStat: "52.4%", 
-          playerStat: "53.2%"
-        },
-        {
-          reportName: 'Pitch Counts', 
-          expectedUrlContains: /PitchingPitchCounts/, 
-          statType: "Chase#", 
-          teamStat: 24, 
-          playerStat: 13
-        },
-        {
-          reportName: 'Pitch Types', 
-          expectedUrlContains: /PitchingPitchTypes/, 
-          statType: "Split%", 
-          teamStat: "7.9%", 
-          playerStat: "1.3%"
-        },
-        {
-          reportName: 'Pitch Type Count', 
-          expectedUrlContains: /PitchingPitchTypeCounts/, 
-          statType: "Split#", 
-          teamStat: 10, 
-          playerStat: 1
-        },
-        {
-          reportName: 'Pitch Locations', 
-          expectedUrlContains: /PitchingPitchLocations/, 
-          statType: "Inside%", 
-          teamStat: "26.2%", 
-          playerStat: "14.3%"
-        },
-                            {
-          reportName: 'Pitch Calls', 
-          expectedUrlContains: /PitchingPitchCalls/, 
-          statType: "BallFrmd", 
-          teamStat: 0, 
-          playerStat: 1
-        },
-        {
-          reportName: 'Hit Types', 
-          expectedUrlContains: /PitchingHitTypes/, 
-          statType: "Fly#", 
-          teamStat: 6, 
-          playerStat: 2
-        },
-        {
-          reportName: 'Hit Locations', 
-          expectedUrlContains: /PitchingHitLocations/, 
-          statType: "HDeadCtr%", 
-          teamStat: "26.7%", 
-          playerStat: "12.5%"
-        }, 
-        {
-          reportName: 'Movement', 
-          expectedUrlContains: /PitchingMovement/, 
-          statType: "TMTilt", 
-          teamStat: '1:02', 
-          playerStat: '12:55'
-        },
-        {
-          reportName: 'Home Runs', 
-          expectedUrlContains: /PitchingHomeRuns/, 
-          statType: "HRDst", 
-          teamStat: 370.8,
-          playerStat: 429.9,
-          colOffset: -4
-        },
-        {
-          reportName: 'Bids', 
-          expectedUrlContains: /PitchingBids/, 
-          statType: "HRDst", 
-          teamStat: 0.1,
-          playerStat: 2.0,
-          colOffset: 2
-        },
-        {
-          reportName: 'Baserunning', 
-          expectedUrlContains: /PitchingBaserunning/, 
-          statType: "BF", 
-          teamStat: 37,
-          playerStat: 22,
-          colOffset: -8
-        },
-        {
-          reportName: 'Exit Data', 
-          expectedUrlContains: /PitchingExitData/, 
-          statType: "ExISO", 
-          teamStat: 0.061,
-          playerStat: 0.218
-        }          
+        { name: 'Rate', urlContains: /PitchingRate/, statType: "K%", teamStat: "16.2%", playerStat: "27.3%" },        
+        { name: 'Counting', urlContains: /PitchingCounting/, statType: "HBP", teamStat: 0, playerStat: 0 },
+        { name: 'Pitch Rates', urlContains: /PitchingPitchRates/, statType: "InZone%", teamStat: "52.4%", playerStat: "53.2%" },
+        { name: 'Pitch Counts', urlContains: /PitchingPitchCounts/, statType: "Chase#", teamStat: 24, playerStat: 13 },
+        { name: 'Pitch Types', urlContains: /PitchingPitchTypes/, statType: "Split%", teamStat: "7.9%", playerStat: "1.3%" },
+        { name: 'Pitch Type Count', urlContains: /PitchingPitchTypeCounts/, statType: "Split#", teamStat: 10, playerStat: 1 },
+        { name: 'Pitch Locations', urlContains: /PitchingPitchLocations/, statType: "Inside%", teamStat: "26.2%", playerStat: "14.3%" },
+        { name: 'Pitch Calls', urlContains: /PitchingPitchCalls/, statType: "BallFrmd", teamStat: 0, playerStat: 1 },
+        { name: 'Hit Types', urlContains: /PitchingHitTypes/, statType: "Fly#", teamStat: 6, playerStat: 2 },
+        { name: 'Hit Locations', urlContains: /PitchingHitLocations/, statType: "HDeadCtr%", teamStat: "26.7%", playerStat: "12.5%" }, 
+        { name: 'Movement', urlContains: /PitchingMovement/, statType: "TMTilt", teamStat: '1:02', playerStat: '12:55' },
+        { name: 'Home Runs', urlContains: /PitchingHomeRuns/, statType: "HRDst", teamStat: 370.8, playerStat: 429.9, colOffset: -4 },
+        { name: 'Bids', urlContains: /PitchingBids/, statType: "HRDst", teamStat: 0.1, playerStat: 2.0, colOffset: 2 },
+        { name: 'Baserunning', urlContains: /PitchingBaserunning/, statType: "BF", teamStat: 37, playerStat: 22, colOffset: -8 },
+        { name: 'Exit Data', urlContains: /PitchingExitData/, statType: "ExISO", teamStat: 0.061, playerStat: 0.218 }          
       ];
 
       reports.forEach(function(report) {
-        test.describe('#Report: ' + report.reportName, function() {
-          test.it('selecting report: ' + report.reportName + ' goes to the correct url', function() {
-            detailedScorePage.changePitchingReport(report.reportName);
+        test.describe('#Report: ' + report.name, function() {
+          test.it('selecting report: ' + report.name + ' goes to the correct url', function() {
+            detailedScorePage.changePitchingReport(report.name);
             driver.getCurrentUrl().then(function(url) {
-              assert.match(url, report.expectedUrlContains);
+              assert.match(url, report.urlContains);
             });
           });
 

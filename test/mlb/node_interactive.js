@@ -4,6 +4,7 @@ var credentials = require('./lib/credentials.js');
 var By = webdriver.By;
 var Until = webdriver.until;
 var Key = require('selenium-webdriver').Key;
+var extensions = require('./lib/extensions.js')
 
 // Page Objects
 var LoginPage = require('./pages/login_page.js');

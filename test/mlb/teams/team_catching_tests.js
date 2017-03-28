@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../../lib/constants.js');
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
@@ -61,7 +62,7 @@ test.describe('#Team Catching Section', function() {
         teamPage.drawBoxOnCatcherHeatMap('right', 130,220,120,49);  
 
         teamPage.getOverviewTableStat(10).then(function(strkFrmd) {
-          assert.isAtMost(strkFrmd, 61, 'StrkFrmd');
+          assert.isAtMost(strkFrmd, 62, 'StrkFrmd');
         });        
       });   
 
@@ -246,6 +247,44 @@ test.describe('#Team Catching Section', function() {
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 7, colName: 'SLAA', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+        { colNum: 5, colName: 'BF', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 9, colName: 'ExCallStrk#', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 10, colName: 'SL+', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 14, colName: 'BallFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) teamPage.clickRosterTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getRosterTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          teamPage.clickRosterTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getRosterTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        teamPage.clickRosterTableColumnHeader(7);
+      });        
+    });    
+
     test.describe("#filters", function() {
       test.it('adding filter: (Pitch Type: Cutter) from sidebar displays correct data', function() {
         filters.toggleSidebarFilter('Pitch Type:', 'Cutter', true);
@@ -324,6 +363,46 @@ test.describe('#Team Catching Section', function() {
         assert.equal(slaa, -6.41, 'row 1 SLAA column');
       });            
     });
+
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 3, colName: 'Date', sortType: 'dates', defaultSort: 'desc', initialCol: true },
+        { colNum: 8, colName: 'SLAA', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 10, colName: 'FrmRAA', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 11, colName: 'StrkFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 13, colName: 'BallFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) teamPage.clickGameLogTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          teamPage.clickGameLogTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        teamPage.clickGameLogTableColumnHeader(3);
+        // weird that we need to do it twice
+        teamPage.clickGameLogTableColumnHeader(3);
+      });        
+    });        
 
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    

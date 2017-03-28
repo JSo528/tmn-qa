@@ -91,6 +91,11 @@ TeamsPage.prototype.changeReport = function(report) {
   return this.waitForEnabled(REPORT_SELECT[this.section], 30000);
 };
 
+TeamsPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(STATS_TABLE, 10000);
+  return this.waitForEnabled(STATS_TABLE, 10000);
+};
+
 /****************************************************************************
 ** Stats
 *****************************************************************************/
@@ -117,6 +122,11 @@ TeamsPage.prototype.clickTeamTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/thead/tr/th[${col}]`);
   this.waitForEnabled(locator);
   return this.click(locator); 
+};
+
+TeamsPage.prototype.getTeamTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballTeamsStatsContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 TeamsPage.prototype.clickTeamTableCell = function(teamNum, col) {

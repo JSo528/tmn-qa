@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../../lib/constants.js');
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
@@ -233,6 +234,45 @@ test.describe('#Umpire Page', function() {
         assert.equal(slaa, 6.08, '9/25/2016 - SLAA');
       });                  
     });
+
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 2, colName: 'Date', sortType: 'dates', defaultSort: 'desc', initialCol: true },
+        { colNum: 3, colName: 'HomeT', sortType: 'string', defaultSort: 'asc' },
+        { colNum: 7, colName: 'PA', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 9, colName: 'CC%', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 16, colName: 'MC#', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) umpirePage.clickGameLogTableColumnHeader(column.colNum);
+          umpirePage.waitForTableToLoad();
+          umpirePage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          umpirePage.clickGameLogTableColumnHeader(column.colNum);
+          umpirePage.waitForTableToLoad();
+          umpirePage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        umpirePage.clickGameLogTableColumnHeader(2);
+        umpirePage.clickGameLogTableColumnHeader(2);
+      });        
+    });    
 
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    

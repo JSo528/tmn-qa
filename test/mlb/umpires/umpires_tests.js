@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../../lib/constants.js');
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
@@ -61,44 +62,42 @@ test.describe('#Umpires Page', function() {
   });
 
   // Sorting
-  test.describe('#Sorting', function() {
-    test.it('should be sorted initially by SLAA asc', function() {
-      var statOne, statTwo, statTen;
-      umpiresPage.getTableStat(1,slaaCol).then(function(stat) {
-        statOne = stat;
+  test.describe("#sorting", function() {
+    var columns = [
+      { colNum: 9, colName: 'SLAA', sortType: 'number', defaultSort: 'asc', initialCol: true },
+      { colNum: 4, colName: 'G', sortType: 'string', defaultSort: 'desc' },
+      { colNum: 7, colName: 'CC%', sortType: 'number', defaultSort: 'desc' },
+      { colNum: 14, colName: 'MC#', sortType: 'number', defaultSort: 'asc' },
+      { colNum: 15, colName: 'StrkFrmd', sortType: 'number', defaultSort: 'asc' },
+    ]
+
+    columns.forEach(function(column) {
+      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+        if (!column.initialCol) umpiresPage.clickTableColumnHeader(column.colNum);
+        umpiresPage.waitForTableToLoad();
+        umpiresPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+          assert.deepEqual(stats, sortedArray);
+        })
       });
 
-      umpiresPage.getTableStat(2,slaaCol).then(function(stat) {
-        statTwo = stat;
+      test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+        umpiresPage.clickTableColumnHeader(column.colNum);
+        umpiresPage.waitForTableToLoad();
+        umpiresPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+          var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+          assert.deepEqual(stats, sortedArray);
+        })
       });
-
-      umpiresPage.getTableStat(10,slaaCol).then(function(stat) {
-        statTen = stat;
-
-        assert.isAtMost(statOne, statTwo, "umpire 1's SLAA is <= umpire 2's SLAA");
-        assert.isAtMost(statTwo, statTen, "umpire 2's SLAA is <= umpire 10's SLAA");
-      });           
     });
 
-    test.it('clicking on the BallFrmd column header should sort the table by BallFrmd desc', function() {
-      umpiresPage.clickTableColumnHeader(ballFrmdCol);
-      var statOne, statTwo, statTen;
-      umpiresPage.getTableStat(1,ballFrmdCol).then(function(stat) {
-        statOne = stat;
-      });
-
-      umpiresPage.getTableStat(2,ballFrmdCol).then(function(stat) {
-        statTwo = stat;
-      });
-
-      umpiresPage.getTableStat(10,ballFrmdCol).then(function(stat) {
-        statTen = stat;
-
-        assert.isAtLeast(statOne, statTwo, "umpire 1's BallFrmd is >= umpire 2's BallFrmd");
-        assert.isAtLeast(statTwo, statTen, "umpire 2's BallFrmd is >= umpire 10's BallFrmd");
-      });           
-    });  
-  });
+    test.after(function() {
+      umpiresPage.clickTableColumnHeader(16);
+    });        
+  });  
 
   // Filters
   test.describe('#Filters', function() {

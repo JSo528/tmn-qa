@@ -30,70 +30,45 @@ test.describe('#Teams Page', function() {
   test.describe('#Section: Batting', function() {
     test.describe('#SubSection: Stats', function() {
       test.before(function() {
-        battingAverageCol = 11;
-        winsCol = 5;
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2015);
       });
 
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by BA descending', function() {
-          var teamOneBA, teamTwoBA, teamTenBA;
-          teamsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
-            teamOneBA = stat;
+        var columns = [
+          { colNum: 11, colName: 'Batting Average', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+          { colNum: 5, colName: 'Wins', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 16, colName: 'K%', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 20, colName: 'R/G', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 21, colName: 'AB/HR', sortType: 'ferpNumber', defaultSort: 'asc' },
+        ]
+
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          teamsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
-            teamTwoBA = stat;
-          });
-
-          teamsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
-            teamTenBA = stat;
-
-            assert.isAtLeast(teamOneBA, teamTwoBA, "team 1's BA is >= team 2's BA");
-            assert.isAtLeast(teamTwoBA, teamTenBA, "team 2's BA is >= team 10's BA");
-          });            
-        });
-
-        test.it('clicking on the BA column header should reverse the sort', function() {
-          var teamOneBA, teamTwoBA, teamTenBA;
-          teamsPage.clickTeamTableColumnHeader(battingAverageCol);
-          teamsPage.getTeamTableStat(1,battingAverageCol).then(function(stat) {
-            teamOneBA = stat;
-          });
-
-          teamsPage.getTeamTableStat(2,battingAverageCol).then(function(stat) {
-            teamTwoBA = stat;
-          });
-
-          teamsPage.getTeamTableStat(10,battingAverageCol).then(function(stat) {
-            teamTenBA = stat;
-            assert.isAtMost(teamOneBA, teamTwoBA, "team 1's BA is <= team 2's BA");
-            assert.isAtMost(teamTwoBA, teamTenBA, "team 2's BA is <= team 10's BA");
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
         });
-
-        test.it('clicking on the W column header should sort the table by Wins', function() {
-          var teamOneWs, teamTwoWs, teamTenWs;
-          teamsPage.clickTeamTableColumnHeader(winsCol);
-          teamsPage.getTeamTableStat(1,winsCol).then(function(stat) {
-            teamOneWs = stat;
-          });
-
-          teamsPage.getTeamTableStat(2,winsCol).then(function(stat) {
-            teamTwoWs = stat;
-          });
-
-          teamsPage.getTeamTableStat(10,winsCol).then(function(stat) {
-            teamTenWs = stat;
-            assert.isAtLeast(teamOneWs, teamTwoWs, "team 1's Wins is >= team 2's Wins");
-            assert.isAtLeast(teamTwoWs, teamTenWs, "team 2's Wins is >= team 10's Wins");
-          });
-        });  
 
         test.after(function() {
-          teamsPage.clickTeamTableColumnHeader(battingAverageCol);
+          teamsPage.clickTeamTableColumnHeader(11);
         });        
       });
 
@@ -565,65 +540,39 @@ test.describe('#Teams Page', function() {
     test.describe('#SubSection: Stats', function() {
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by ERA ascending', function() {
-          var teamOneERA, teamTwoERA, teamTenERA;
+        var columns = [
+          { colNum: 21, colName: 'ERA', sortType: 'ferpNumber', defaultSort: 'asc', initialCol: true },
+          { colNum: 8, colName: 'L', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 12, colName: 'IP', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 18, colName: 'BB', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 26, colName: 'HR/9', sortType: 'ferpNumber', defaultSort: 'asc' },
+        ]
 
-          teamsPage.getTeamTableStat(1,eraCol).then(function(stat) {
-            teamOneERA = stat;
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          teamsPage.getTeamTableStat(2,eraCol).then(function(stat) {
-            teamTwoERA = stat;
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
-
-          teamsPage.getTeamTableStat(10,eraCol).then(function(stat) {
-            teamTenERA = stat;
-            assert.isAtMost(teamOneERA, teamTwoERA, "team one's ERA is <= team two's ERA");
-            assert.isAtMost(teamTwoERA, teamTenERA, "team two's ERA is <= team ten's ERA");
-          });                        
         });
-
-        test.it('clicking on the ERA column header should reverse the sort', function() {
-          var teamOneERA, teamTwoERA, teamTenERA;
-          teamsPage.clickTeamTableColumnHeader(eraCol);
-
-          
-          teamsPage.getTeamTableStat(1,eraCol).then(function(stat) {
-            teamOneERA = stat;
-          });
-
-          teamsPage.getTeamTableStat(2,eraCol).then(function(stat) {
-            teamTwoERA = stat;
-          });
-          
-          teamsPage.getTeamTableStat(10,eraCol).then(function(stat) {
-            teamTenERA = stat;
-            assert.isAtLeast(teamOneERA, teamTwoERA, "team one's ERA is >= team two's ERA");
-            assert.isAtLeast(teamTwoERA, teamTenERA, "team two's ERA is >= team ten's ERA");
-          });            
-        });
-
-        test.it('clicking on the K column header should sort the table by Ks', function() {
-          var teamOneKs, teamTwoKs, teamTenKs;
-          teamsPage.clickTeamTableColumnHeader(ksCol);
-
-          teamsPage.getTeamTableStat(1,ksCol).then(function(stat) {
-            teamOneKs = stat;
-          });
-
-          teamsPage.getTeamTableStat(2,ksCol).then(function(stat) {
-            teamTwoKs = stat;
-          });
-
-          teamsPage.getTeamTableStat(10,ksCol).then(function(stat) {
-            teamTenKs = stat;
-            assert.isAtLeast(teamOneKs, teamTwoKs, "team one's Ks is >= team two's Ks");
-            assert.isAtLeast(teamTwoKs, teamTenKs, "team two's Ks is >= team ten's Ks");
-          });            
-        });  
 
         test.after(function() {
-          teamsPage.clickTeamTableColumnHeader(eraCol);
+          teamsPage.clickTeamTableColumnHeader(21);
         });        
       });
 
@@ -736,24 +685,42 @@ test.describe('#Teams Page', function() {
     test.describe('#SubSection: Stats', function() {
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by SLAA descending', function() {
-          var teamOneSLAA, teamTwoSLAA, teamTenSLAA;
+        var columns = [
+          { colNum: 7, colName: 'SLAA', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+          { colNum: 8, colName: 'SL+', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 5, colName: 'BF', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 10, colName: 'FrmCntRAA', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 11, colName: 'StrkFrmd', sortType: 'ferpNumber', defaultSort: 'desc' }
+        ]
 
-          teamsPage.getTeamTableStat(1,slaaCol).then(function(stat) {
-            teamOneSLAA = stat;
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          teamsPage.getTeamTableStat(2,slaaCol).then(function(stat) {
-            teamTwoSLAA = stat;
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
-          
-          teamsPage.getTeamTableStat(10,slaaCol).then(function(stat) {
-            teamTenSLAA = stat;
-            assert.isAtLeast(teamOneSLAA, teamTwoSLAA, "team one's SLAA is >= team two's SLAA");
-            assert.isAtLeast(teamTwoSLAA, teamTenSLAA, "team two's SLAA is >= team ten's SLAA");
-          });            
         });
+
+        test.after(function() {
+          teamsPage.clickTeamTableColumnHeader(7);
+        });        
       });
+
 
       // Filters
       test.describe("#filters", function() {
@@ -853,24 +820,42 @@ test.describe('#Teams Page', function() {
     test.describe('#SubSection: Stats', function() {
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by OFWAirOut% descending', function() {
-          var teamOne, teamTwo, teamTen;
- 
-          teamsPage.getTeamTableStat(1,statCol).then(function(stat) {
-            teamOne = extensions.perToNum(stat);
+        var columns = [
+          { colNum: 10, colName: 'OFWAirOut%', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+          { colNum: 4, colName: 'OFAirBall', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 7, colName: 'ExRange%', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 11, colName: 'OFOutsPM', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 13, colName: 'OFNROut', sortType: 'ferpNumber', defaultSort: 'desc' },
+        ]
+
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          teamsPage.getTeamTableStat(2,statCol).then(function(stat) {
-            teamTwo = extensions.perToNum(stat);
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            teamsPage.clickTeamTableColumnHeader(column.colNum);
+            teamsPage.waitForTableToLoad();
+            teamsPage.getTeamTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
-
-          teamsPage.getTeamTableStat(10,statCol).then(function(stat) {
-            teamTen = extensions.perToNum(stat);
-            assert.isAtLeast(teamOne, teamTwo, "team one's OFWAirOut% is >= team two's OFWAirOut%");
-            assert.isAtLeast(teamTwo, teamTen, "team two's OFWAirOut% is >= team ten's OFWAirOut%");
-          });            
         });
+
+        test.after(function() {
+          teamsPage.clickTeamTableColumnHeader(10);
+        });        
       });
+
 
       test.describe("#filters", function() {
         test.it('adding filter: (Men On: 1st and 2nd) from sidebar displays correct data', function() {

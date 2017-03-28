@@ -77,8 +77,12 @@ UmpirePage.prototype.goToSubSection = function(subSection) {
   this.subSection = subSection
   var locator = By.xpath(`.//nav[contains(@class, 'report-nav')]/.//a[text()='${SUB_SECTION_TITLE[subSection]}']`);
   return this.click(locator);
-}
+};
 
+UmpirePage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(this.statsTable(), 10000);
+  return this.waitForEnabled(this.statsTable(), 10000);
+};
 
 /****************************************************************************
 ** Overview
@@ -144,6 +148,16 @@ UmpirePage.prototype.clickGameLogTableStat = function(row, col) {
   var rowNum = row + 5;
   var locator = By.xpath(`.//div[@id='tableBaseballUmpireGameLogContainer']/table/tbody/tr[${rowNum}]/td[${col}]/span`);
   return this.click(locator);  
+};
+
+UmpirePage.prototype.clickGameLogTableColumnHeader = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballUmpireGameLogContainer']/table/thead/tr/th[${col}]`);
+  return this.click(locator); 
+};
+
+UmpirePage.prototype.getGameLogTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballUmpireGameLogContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 /****************************************************************************

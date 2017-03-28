@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../../lib/constants.js');
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
@@ -204,6 +205,44 @@ test.describe('#Team StatcastFielding Section', function() {
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 10, colName: 'OFWAirOut%', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+        { colNum: 8, colName: 'OFGoodCtch', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 9, colName: 'OFBadCtch', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 12, colName: 'OFLWRnPM', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 13, colName: 'OFNROut', sortType: 'ferpNumber', defaultSort: 'desc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) teamPage.clickRosterTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getRosterTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          teamPage.clickRosterTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getRosterTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        teamPage.clickRosterTableColumnHeader(10);
+      });        
+    });    
+
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    
       test.it('clicking on a stat opens the play by play modal', function() {
@@ -270,6 +309,45 @@ test.describe('#Team StatcastFielding Section', function() {
         assert.equal(ofAirBall, 10, 'row OF Air Ball');
       });            
     });
+
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 3, colName: 'Date', sortType: 'dates', defaultSort: 'desc', initialCol: true },
+        { colNum: 5, colName: 'OFAirBall', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 8, colName: 'ExRange%', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 14, colName: 'OFNROut', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 15, colName: 'OFNIHit', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) teamPage.clickGameLogTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          teamPage.clickGameLogTableColumnHeader(column.colNum);
+          teamPage.waitForTableToLoad();
+          teamPage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        teamPage.clickGameLogTableColumnHeader(3);
+        teamPage.clickGameLogTableColumnHeader(3);
+      });        
+    });        
 
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    

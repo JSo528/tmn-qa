@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../../lib/constants.js');
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
@@ -21,6 +22,7 @@ test.describe('#Player Pitching Section', function() {
   });  
 
   test.it('should be on Kyle Hendricks 2016 player page', function() {
+    playerPage.goToSection('pitching');
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Kyle Hendricks');
     });
@@ -208,6 +210,43 @@ test.describe('#Player Pitching Section', function() {
       });            
     });
 
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 4, colName: 'Date', sortType: 'dates', defaultSort: 'desc', initialCol: true },
+        { colNum: 5, colName: 'Score', sortType: 'string', defaultSort: 'asc' },
+        { colNum: 9, colName: 'W', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 14, colName: 'IP', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 28, colName: 'HR/9', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) playerPage.clickGameLogTableColumnHeader(column.colNum);
+          playerPage.waitForTableToLoad();
+          playerPage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          playerPage.clickGameLogTableColumnHeader(column.colNum);
+          playerPage.waitForTableToLoad();
+          playerPage.getGameLogTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        playerPage.clickGameLogTableColumnHeader(4);
+      });        
+    });            
 
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    
@@ -530,6 +569,44 @@ test.describe('#Player Pitching Section', function() {
       });                                   
     });
 
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 19, colName: 'ERA', sortType: 'ferpNumber', defaultSort: 'asc', initialCol: true },
+        { colNum: 6, colName: 'L', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 26, colName: 'WHAV', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 13, colName: 'R', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 17, colName: 'K', sortType: 'ferpNumber', defaultSort: 'desc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) playerPage.clickVsTableColumnHeader(column.colNum);
+          playerPage.waitForTableToLoad();
+          playerPage.getVsTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          playerPage.clickVsTableColumnHeader(column.colNum);
+          playerPage.waitForTableToLoad();
+          playerPage.getVsTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        playerPage.clickVsTableColumnHeader(19);
+      });        
+    });      
+
     test.describe("#filters", function() {
       test.it('adding filter: (Inning: 1) displays correct data', function() {
         filters.toggleSidebarFilter("Inning:", "1", true);
@@ -562,6 +639,45 @@ test.describe('#Player Pitching Section', function() {
         assert.equal(pitches, 10, 'pitches against Jean Segura');
       });                                           
     });
+
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colNum: 20, colName: 'ERA', sortType: 'ferpNumber', defaultSort: 'asc', initialCol: true },
+        { colNum: 18, colName: 'K', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 3, colName: 'P', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colNum: 13, colName: 'ER', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 17, colName: 'BB', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
+
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) playerPage.clickVsTableColumnHeader(column.colNum);
+          playerPage.waitForTableToLoad();
+          playerPage.getVsTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          playerPage.clickVsTableColumnHeader(column.colNum);
+          playerPage.waitForTableToLoad();
+          playerPage.getVsTableStatsForCol(column.colNum).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
+        });
+      });
+
+      test.after(function() {
+        playerPage.clickVsTableColumnHeader(20);
+        playerPage.clickVsTableColumnHeader(20);
+      });        
+    });      
 
     test.describe("#filters", function() {
       test.it('adding filter: (count: 2 Strikes) displays correct data', function() {

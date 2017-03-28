@@ -3,6 +3,7 @@ var test = require('selenium-webdriver/testing');
 var chai = require('chai');
 var assert = chai.assert;
 var constants = require('../../../lib/constants.js');
+var extensions = require('../../../lib/extensions.js');
 
 // Page Objects
 var Navbar = require('../../../pages/mlb/navbar.js');
@@ -37,64 +38,40 @@ test.describe('#Players Page', function() {
 
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by BA descending', function() {
-          var playerOneBA, playerTwoBA, playerTenBA;
-          playersPage.getTableStat(1,battingAverageCol).then(function(stat) {
-            playerOneBA = stat;
+        var columns = [
+          { colNum: 8, colName: 'Batting Average', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+          { colNum: 12, colName: 'ISO', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 20, colName: 'OutRate', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 21, colName: 'wOBA', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 24, colName: 'SB%', sortType: 'ferpNumber', defaultSort: 'desc' },
+        ]
+
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          playersPage.getTableStat(2,battingAverageCol).then(function(stat) {
-            playerTwoBA = stat;
-          });
-
-          playersPage.getTableStat(10,battingAverageCol).then(function(stat) {
-            playerTenBA = stat;
-
-            assert.isAtLeast(playerOneBA, playerTwoBA, "player 1's BA is >= player 2's BA");
-            assert.isAtLeast(playerTwoBA, playerTenBA, "player 2's BA is >= player 10's BA");
-          });            
-        });
-
-        test.it('clicking on the BA column header should reverse the sort', function() {
-          var playerOneBA, playerTwoBA, playerTenBA;
-          playersPage.clickTableColumnHeader(battingAverageCol);
-          playersPage.getTableStat(1,battingAverageCol).then(function(stat) {
-            playerOneBA = stat;
-          });
-
-          playersPage.getTableStat(2,battingAverageCol).then(function(stat) {
-            playerTwoBA = stat;
-          });
-
-          playersPage.getTableStat(10,battingAverageCol).then(function(stat) {
-            playerTenBA = stat;
-
-            assert.isAtMost(playerOneBA, playerTwoBA, "player 1's BA is <= player 2's BA");
-            assert.isAtMost(playerTwoBA, playerTenBA, "player 2's BA is <= player 10's BA");
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
         });
-
-        test.it('clicking on the K% column header should sort the table by K% ascending', function() {
-          var p1, p2, p10;
-          playersPage.clickTableColumnHeader(ksPerCol);
-          playersPage.getTableStat(1,ksPerCol).then(function(stat) {
-            p1 = parseFloat(stat); // 11.1% becomes 0.111
-          });
-
-          playersPage.getTableStat(2,ksPerCol).then(function(stat) {
-            p2 = parseFloat(stat);
-          });
-
-          playersPage.getTableStat(10,ksPerCol).then(function(stat) {
-            p10 = parseFloat(stat);
-            assert.isAtMost(p1, p2, "player 1's k% is <= player 2's k%");
-            assert.isAtMost(p2, p10, "player 2's k% is <= player 10's k%");
-          });
-        });  
 
         test.after(function() {
-          playersPage.clickTableColumnHeader(battingAverageCol);
-        });    
+          playersPage.clickTableColumnHeader(8);
+        });        
       });
 
       // Video Playlist
@@ -466,62 +443,39 @@ test.describe('#Players Page', function() {
     test.describe('#SubSection: Stats', function() {
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by ERA ascending', function() {
-          var playerOneERA, playerTwoERA, playerTenERA;
+        var columns = [
+          { colNum: 21, colName: 'ERA', sortType: 'ferpNumber', defaultSort: 'asc', initialCol: true },
+          { colNum: 5, colName: 'G', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 9, colName: 'Win%', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 11, colName: 'BS', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 28, colName: 'WHAV', sortType: 'ferpNumber', defaultSort: 'asc' },
+        ]
 
-          
-          playersPage.getTableStat(1,eraCol).then(function(stat) {
-            playerOneERA = stat;
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
-            
-          playersPage.getTableStat(2,eraCol).then(function(stat) {
-            playerTwoERA = stat;
-          });
-            
-          playersPage.getTableStat(10,eraCol).then(function(stat) {
-            playerTenERA = stat;
 
-            assert.isAtMost(playerOneERA, playerTwoERA, "player one's ERA is <= player two's ERA");
-            assert.isAtMost(playerTwoERA, playerTenERA, "player two's ERA is <= player ten's ERA");
-          });            
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
+          });
         });
 
-        test.it('clicking on the ERA column header should reverse the sort', function() {
-          var playerOneERA, playerTwoERA, playerTenERA;
-          playersPage.clickTableColumnHeader(eraCol);
-
-          playersPage.getTableStat(1,eraCol).then(function(stat) {
-            playerOneERA = stat;
-          });
-
-          playersPage.getTableStat(2,eraCol).then(function(stat) {
-            playerTwoERA = stat;
-          });
-            
-          playersPage.getTableStat(10,eraCol).then(function(stat) {
-            playerTenERA = stat;
-            assert.isAtLeast(playerOneERA, playerTwoERA, "player one's ERA is >= player two's ERA");
-            assert.isAtLeast(playerTwoERA, playerTenERA, "player two's ERA is >= player ten's ERA");
-          });                      
-        });
-
-        test.it('clicking on the Ks column header should sort the table by Ks', function() {
-          var playerOneKs, playerTwoKs, playerTenKs;
-          playersPage.clickTableColumnHeader(ksCol);
-
-          playersPage.getTableStat(1,ksCol).then(function(stat) {
-            playerOneKs = stat;
-          });
-
-          playersPage.getTableStat(2,ksCol).then(function(stat) {
-            playerTwoKs = stat;
-          });
-
-          playersPage.getTableStat(10,ksCol).then(function(stat) {
-            playerTenKs = stat;
-            assert.isAtLeast(playerOneKs, playerTwoKs, "player one's Ks is >= player two's Ks");
-            assert.isAtLeast(playerTwoKs, playerTenKs, "player two's Ks is >= player ten's Ks");
-          });            
+        test.after(function() {
+          playersPage.clickTableColumnHeader(19);
         });        
       });
 
@@ -716,23 +670,40 @@ test.describe('#Players Page', function() {
     test.describe('#SubSection: Stats', function() {
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by SLAA descending', function() {
-          var playerOneSLAA, playerTwoSLAA, playerTenSLAA;
+        var columns = [
+          { colNum: 7, colName: 'SLAA', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+          { colNum: 8, colName: 'CallStrk#', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 6, colName: 'P', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 11, colName: 'FrmCntRAA', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 14, colName: 'BallFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
+        ]
 
-          playersPage.getTableStat(1,slaaCol).then(function(stat) {
-            playerOneSLAA = stat;
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          playersPage.getTableStat(2,slaaCol).then(function(stat) {
-            playerTwoSLAA = stat;
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
-          
-          playersPage.getTableStat(10,slaaCol).then(function(stat) {
-            playerTenSLAA = stat;
-            assert.isAtLeast(playerOneSLAA, playerTwoSLAA, "player one's SLAA is >= player two's SLAA");
-            assert.isAtLeast(playerTwoSLAA, playerTenSLAA, "player two's SLAA is >= player ten's SLAA");
-          });            
         });
+
+        test.after(function() {
+          playersPage.clickTableColumnHeader(7);
+        });        
       });
 
       // Filters
@@ -854,24 +825,41 @@ test.describe('#Players Page', function() {
     test.describe('#SubSection: Stats', function() {
       // Sorting
       test.describe("#sorting", function() {
-        test.it('should be sorted initially by OFWAirOut% descending', function() {
-          var playerOne, playerTwo, playerTen;
- 
-          playersPage.getTableStat(1,statCol).then(function(stat) {
-            playerOne = stat;
+        var columns = [
+          { colNum: 10, colName: 'OFWAirOut%', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+          { colNum: 9, colName: 'OFBadCatch', sortType: 'ferpNumber', defaultSort: 'asc' },
+          { colNum: 7, colName: 'OFAirHit', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 12, colName: 'OFLWRnPM', sortType: 'ferpNumber', defaultSort: 'desc' },
+          { colNum: 14, colName: 'OFNIHit', sortType: 'ferpNumber', defaultSort: 'asc' },
+        ]
+
+        columns.forEach(function(column) {
+          test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+            if (!column.initialCol) playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
 
-          playersPage.getTableStat(2,statCol).then(function(stat) {
-            playerTwo = stat;
+          test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+            playersPage.clickTableColumnHeader(column.colNum);
+            playersPage.waitForTableToLoad();
+            playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+              stats = extensions.normalizeArray(stats, column.sortType);
+              var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+              var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+              assert.deepEqual(stats, sortedArray);
+            })
           });
-
-          playersPage.getTableStat(10,statCol).then(function(stat) {
-            playerTen = stat;
-            assert.isAtLeast(playerOne, playerTwo, "player one's OFWAirOut% is >= player two's OFWAirOut%");
-            assert.isAtLeast(playerTwo, playerTen, "player two's OFWAirOut% is >= player ten's OFWAirOut%");
-          });            
         });
-      });
+
+        test.after(function() {
+          playersPage.clickTableColumnHeader(10);
+        });        
+      });     
 
       // Video Playlist
       test.describe('#VideoPlaylist', function() {     

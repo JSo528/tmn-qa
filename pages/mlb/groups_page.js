@@ -17,6 +17,7 @@ var GROUP_BY_SELECT = By.id("s2id_pageControlBaseballGroupByConf");
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
 
 var STATS_VIEW_SELECT = By.id("s2id_pageControlBaseballStatsViewTeams");
+var STATS_TABLE = By.xpath(".//div[@id='tableBaseballGroupsStatsContainer']/table");
 
 function GroupsPage(driver) {
   BasePage.call(this, driver);
@@ -24,6 +25,11 @@ function GroupsPage(driver) {
 
 GroupsPage.prototype = Object.create(BasePage.prototype);
 GroupsPage.prototype.constructor = GroupsPage;
+
+GroupsPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(STATS_TABLE, 10000);
+  return this.waitForEnabled(STATS_TABLE, 10000);
+};
 
 GroupsPage.prototype.goToSection = function(section) {
   var linkNum, lastLocator; 
@@ -73,6 +79,11 @@ GroupsPage.prototype.getTableBgColor = function(groupNum, col) {
 GroupsPage.prototype.clickTableColumnHeader = function(col) {
   var locator = By.xpath(`.//div[@id='tableBaseballGroupsStatsContainer']/table/thead/tr/th[${col}]`);
   return this.click(locator); 
+};
+
+GroupsPage.prototype.getTableStatsForCol = function(col) {
+  var locator = By.xpath(`.//div[@id='tableBaseballGroupsStatsContainer']/table/tbody/tr[@data-tmn-row-type="row"]/td[${col}]`);
+  return this.getTextArray(locator);
 };
 
 GroupsPage.prototype.changeGroupBy = function(groupBy) {
