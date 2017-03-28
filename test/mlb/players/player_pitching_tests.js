@@ -341,7 +341,7 @@ test.describe('#Player Pitching Section', function() {
         playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        playerPage.getMatchupsPitchText(1,6).then(function(pitch) {
+        playerPage.getMatchupsPitchText(1,7).then(function(pitch) {
           assert.equal(pitch, 'Strike Looking');
         });
       });

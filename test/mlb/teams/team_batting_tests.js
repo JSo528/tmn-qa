@@ -617,7 +617,7 @@ test.describe('#Team Batting Section', function() {
         teamPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        teamPage.getMatchupsPitchText(1,6).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,7).then(function(pitch) {
           assert.equal(pitch, 'Strike Looking');
         });
       });
