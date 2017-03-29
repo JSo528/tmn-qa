@@ -448,7 +448,6 @@ test.describe('#Teams Page', function() {
     });
 
     test.describe('#SubSection: Scatter Plot', function() {
-
       test.it('clicking the scatter_plot link goes to the correct URL', function() {
         teamsPage.goToSubSection('scatterPlot');
         driver.getCurrentUrl().then(function(url) {
@@ -521,7 +520,10 @@ test.describe('#Teams Page', function() {
       }); 
 
       test.it('clicking add a trend line should display a trendline on the chart', function() {
-        // TODO - looks like its broken right now?
+        teamsPage.toggleDisplayTrendLine();
+        teamsPage.isTrendLineVisible().then(function(displayed) {
+          assert.equal(displayed, true)
+        });
       }); 
     });
   });

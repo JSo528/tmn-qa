@@ -12,7 +12,7 @@ var Promise = require('selenium-webdriver').promise;
 var _ = require('underscore');
 var videoPlaylist = require('../mixins/videoPlaylist.js');
 var occurrencesAndStreaks = require('../mixins/occurrencesAndStreaks.js');
-var scatterPlot = require('../mixins/scatterPlot.js');
+var scatterPlot = require('../../mixins/scatterPlot.js');
 var chartColumns = require('../mixins/chartColumns.js');
 
 /****************************************************************************

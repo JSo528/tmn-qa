@@ -426,6 +426,13 @@ test.describe('#Players Page', function() {
         playersPage.getScatterPlotTableStat(1,4).then(function(newHomeRunsPer) {
           assert.notEqual(newHomeRunsPer, originalHomeRunsPer);
         });            
+      }); 
+
+      test.it('clicking add a trend line should display a trendline on the chart', function() {
+        playersPage.toggleDisplayTrendLine();
+        playersPage.isTrendLineVisible().then(function(displayed) {
+          assert.equal(displayed, true)
+        });
       });        
     });
   });
