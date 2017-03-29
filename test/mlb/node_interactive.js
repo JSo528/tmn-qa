@@ -49,9 +49,20 @@ umpirePage = new UmpirePage(driver)
 // Constants
 // var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
-var url = "https://dodgers.trumedianetworks.com/baseball/team-pitch-log-catching/TEX/140?pc=%7B%22bged%22%3A%22no%22%2C%22btbyto%22%3A%22team%22%7D&is=true&f=%7B%22bexitdir%22%3A%5B0%2C30%5D%2C%22bgt%22%3A%5B%22reg%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D&reportActiveTabIdx=0"
+var url = "https://dodgers.trumedianetworks.com/baseball/team-statcast/San%20Francisco%20Giants/137/overview/StatcastFieldingModel?is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
-navbar.goToScoresPage()
+
+filters.changeValuesForDateSidebarFilter('Date Range:', '2016-4-4', '2016-4-4')
+
+teamPage.getStatcastFieldingBallCount().then(function(count) {
+  console.log(count)
+})
+
+
+
+var TeamPage = require('./pages/mlb/teams/team_page.js');
+teamPage = new TeamPage(driver);
+teamPage.clickStatcastFieldingPlay(1)

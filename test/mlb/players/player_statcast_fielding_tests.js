@@ -34,44 +34,27 @@ test.describe('#Player StatcastFielding Section', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
+    
+    // Outfield Positioning
+    test.describe('#OutfieldPositioning', function() {  
+      test.it('should show correct # of plays on chart', function() {
+        playerPage.getStatcastFieldingBallCount().then(function(count) {
+          assert.equal(count, 429);
+        })
+      });
 
-    // TODO - feature has changed
-    // test.describe('clicking into OF Area w/ Filter (men on: loaded)', function() {
-    //   test.before(function() {
-    //     filters.toggleSidebarFilter('Men On:', 'Loaded', true);
-    //   });
+      test.it('clicking CF button should zoom into the CF portion of the chart', function() {
+        playerPage.clickStatcastFieldingZoomBtn('CF');
+        playerPage.getStatcastFieldingChartTranslation().then(function(attr) {
+          assert.equal(attr, "translate(-505,-150)scale(3,3)");
+        })
+      });
 
-    //   // can't consistently click on the same fielding event, so just check if modal exists with data in it
-    //   test.it('clicking a statcast fielding event should show data in modal', function() {
-    //     playerPage.clickStatcastFieldingChartEvent(1);
-    //     playerPage.getStatcastFieldingModalTitle().then(function(title) {
-    //       assert.equal(title, 'Pop up Play by Play', 'modal title');
-    //     });
-
-    //     playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
-    //       assert.equal(header, 'Inn', '1st col header');
-    //     });
-
-    //     playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
-    //       assert.equal(header, 'Opp', '3rd col header');
-    //     });
-
-    //     playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
-    //       assert.equal(header, 'OutProb', '8th col header');
-    //     });
-
-    //     playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
-    //       assert.equal(header, 'PosIndOutProb', '9th col header');
-    //     });
-    //   });
-    //   test.after(function() {
-    //     playerPage.closeStatcastFieldingModal();
-    //   });
-    // });
-
-    test.describe('changing ballpark', function() {
-      test.before(function() {
-        filters.toggleSidebarFilter('Men On:', 'Loaded', false);
+      test.it('clicking All button should zoom out the chart', function() {
+        playerPage.clickStatcastFieldingZoomBtn('');
+        playerPage.getStatcastFieldingChartTranslation().then(function(attr) {
+          assert.equal(attr, "translate(0,0)scale(1,1)");
+        })
       });
 
       test.it('should change background image for fielding widget', function() {
@@ -80,6 +63,74 @@ test.describe('#Player StatcastFielding Section', function() {
           assert.equal(id, 'BOS_3', 'image id');
         });
       });   
+    });
+
+    test.describe('#Range', function() {  
+      test.it('hitChart should have correct # of balls in play', function() {
+        playerPage.getHitChartHitCount('single').then(function(count) {
+          assert.equal(count, 103, 'correct number of singles');
+        });
+        
+        playerPage.getHitChartHitCount('double').then(function(count) {
+          assert.equal(count, 42, 'correct number of doubles');
+        });        
+
+        playerPage.getHitChartHitCount('triple').then(function(count) {
+          assert.equal(count, 6, 'correct number of triples');
+        });        
+
+        playerPage.getHitChartHitCount('homeRun').then(function(count) {
+          assert.equal(count, 0, 'correct number of home runs');
+        });   
+
+        playerPage.getHitChartHitCount('out').then(function(count) {
+          assert.equal(count, 307, 'correct number of outs');
+        });         
+      })
+    })
+
+    test.describe('#OutfieldRange', function() {    
+      test.it('should show correct # of points on chart', function() {
+        playerPage.getBinnedBoxesRectCount().then(function(count) {
+          assert.equal(count, 429);
+        })
+      });
+
+      test.it('should display correct count of plays by out prob', function() {
+        playerPage.getBinnedBoxesPlayCountForOutProb(0.01).then(function(count) {
+          assert.equal(count, 118, '<0.01 outProb play count');
+        })
+
+        playerPage.getBinnedBoxesPlayCountForOutProb(0.1).then(function(count) {
+          assert.equal(count, 19, '<0.1 outProb play count');
+        })
+
+        playerPage.getBinnedBoxesPlayCountForOutProb(0.2).then(function(count) {
+          assert.equal(count, 4, '<0.2 outProb play count');
+        })
+
+        playerPage.getBinnedBoxesPlayCountForOutProb(0.8).then(function(count) {
+          assert.equal(count, 8, '<0.8 outProb play count');
+        })
+
+        playerPage.getBinnedBoxesPlayCountForOutProb(0.9).then(function(count) {
+          assert.equal(count, 15, '<0.9 outProb play count');
+        })
+
+        playerPage.getBinnedBoxesPlayCountForOutProb(0.99).then(function(count) {
+          assert.equal(count, 51, '<0.99 outProb play count');
+        })
+
+        playerPage.getBinnedBoxesPlayCountForOutProb(1).then(function(count) {
+          assert.equal(count, 183, '<1 outProb play count');
+        })
+      });
+
+      test.it('should display correct outs added text', function() {
+        playerPage.getBinnedBoxesOutsAddedText().then(function(text) {
+          assert.equal(text, '13.89 Outs Added');
+        });
+      });
     });
 
     // eBIS Modal

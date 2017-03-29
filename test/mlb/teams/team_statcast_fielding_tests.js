@@ -14,7 +14,7 @@ var TeamPage = require('../../../pages/mlb/teams/team_page.js');
 var navbar, filters, teamsPage, teamPage, teamPage;
 
 test.describe('#Team StatcastFielding Section', function() {
-  test.before(function() {  
+  test.it('navigating to SF Giants 2016 team Page', function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
@@ -39,9 +39,9 @@ test.describe('#Team StatcastFielding Section', function() {
       teamPage.getOverviewTableStat(3).then(function(ofAirBall) {
         assert.equal(ofAirBall, 1425, 'OFAirBall');
       });        
-    });            
+    });          
 
-    test.it('hitChart should have correct # of balls in play', function() {
+    test.it('hitChart should have correct # of balls in play initially', function() {
       teamPage.getHitChartHitCount('single').then(function(count) {
         assert.equal(count, 736, 'correct number of singles');
       });
@@ -61,40 +61,111 @@ test.describe('#Team StatcastFielding Section', function() {
       teamPage.getHitChartHitCount('out').then(function(count) {
         assert.equal(count, 2214, 'correct number of outs');
       });         
-    })
+    })  
 
-    // TODO - this feature has changed
-    // test.describe('clicking into OF Area', function() {
-    //   test.it('clicking a statcast fielding event should show correct data in modal', function() {
-    //     teamPage.clickStatcastFieldingChartEvent(40);
-    //     teamPage.getStatcastFieldingModalTableStat(1,2).then(function(date) {
-    //       assert.equal(date, '4/20/2016', '1st row date');
-    //     });
+    // Outfield Positioning
+    test.describe('#OutfieldPositioning (filter: 4/4/2016)', function() {  
+      test.it('should show correct # of plays on chart', function() {
+        filters.changeValuesForDateSidebarFilter('Date Range:', '2016-4-4', '2016-4-4');
+        teamPage.getStatcastFieldingBallCount().then(function(count) {
+          assert.equal(count, 3);
+        })
+      });
 
-    //     teamPage.getStatcastFieldingModalTableStat(1,7).then(function(result) {
-    //       assert.equal(result, 'Outfield Fly Ball Out', '1st row result');
-    //     });      
+      test.it('clicking LF button should zoom into the LF portion of the chart', function() {
+        teamPage.clickStatcastFieldingZoomBtn('LF');
+        teamPage.getStatcastFieldingChartTranslation().then(function(attr) {
+          assert.equal(attr, "translate(-200,-300)scale(3,3)");
+        })
+      });
 
-    //     teamPage.getStatcastFieldingModalTableStat(1,8).then(function(outProb) {
-    //       assert.equal(outProb, '99.9%', '1st row OutProb');
-    //     });            
+      test.it('clicking All button should zoom out the chart', function() {
+        teamPage.clickStatcastFieldingZoomBtn('');
+        teamPage.getStatcastFieldingChartTranslation().then(function(attr) {
+          assert.equal(attr, "translate(0,0)scale(1,1)");
+        })
+      });
 
-    //     teamPage.getStatcastFieldingModalTableStat(1,9).then(function(posIndOutProb) {
-    //       assert.equal(posIndOutProb, '99.9%', '1st row PosIndOutProb');
-    //     });                  
-    //   });
-
-    //   test.after(function() {
-    //     teamPage.closeStatcastFieldingModal();
-    //   });
-    // });
-
-    test.it('changing ballpark should change background image for fielding widget', function() {
-      teamPage.changeBallparkDropdown('AT&T Park');
-      teamPage.getCurrentBallparkImageID().then(function(id) {
-        assert.equal(id, 'SF_-_2395', 'image id');
+      test.it('changing ballpark should change background image for fielding widget', function() {
+        teamPage.changeBallparkDropdown('AT&T Park');
+        teamPage.getCurrentBallparkImageID().then(function(id) {
+          assert.equal(id, 'SF_-_2395', 'image id');
+        });
       });
     });
+
+    test.describe('#Range (filter: 4/4/2016)', function() {  
+      test.it('hitChart should have correct # of balls in play', function() {
+        teamPage.getHitChartHitCount('single').then(function(count) {
+          assert.equal(count, 2, 'correct number of singles');
+        });
+        
+        teamPage.getHitChartHitCount('double').then(function(count) {
+          assert.equal(count, 0, 'correct number of doubles');
+        });        
+
+        teamPage.getHitChartHitCount('triple').then(function(count) {
+          assert.equal(count, 0, 'correct number of triples');
+        });        
+
+        teamPage.getHitChartHitCount('homeRun').then(function(count) {
+          assert.equal(count, 0, 'correct number of home runs');
+        });   
+
+        teamPage.getHitChartHitCount('out').then(function(count) {
+          assert.equal(count, 5, 'correct number of outs');
+        });         
+      })
+    })
+
+    test.describe('#OutfieldRange (filter: 4/4/2016)', function() {    
+      test.it('should show correct # of points on chart', function() {
+        teamPage.getBinnedBoxesRectCount().then(function(count) {
+          assert.equal(count, 3);
+        })
+      });
+
+      test.it('should display correct count of plays by out prob', function() {
+        teamPage.getBinnedBoxesPlayCountForOutProb(0.01).then(function(count) {
+          assert.equal(count, 1, '<0.01 outProb play count');
+        })
+
+        teamPage.getBinnedBoxesPlayCountForOutProb(0.1).then(function(count) {
+          assert.equal(count, 0, '<0.1 outProb play count');
+        })
+
+        teamPage.getBinnedBoxesPlayCountForOutProb(0.2).then(function(count) {
+          assert.equal(count, 0, '<0.2 outProb play count');
+        })
+
+        teamPage.getBinnedBoxesPlayCountForOutProb(0.8).then(function(count) {
+          assert.equal(count, 0, '<0.8 outProb play count');
+        })
+
+        teamPage.getBinnedBoxesPlayCountForOutProb(0.9).then(function(count) {
+          assert.equal(count, 0, '<0.9 outProb play count');
+        })
+
+        teamPage.getBinnedBoxesPlayCountForOutProb(0.99).then(function(count) {
+          assert.equal(count, 0, '<0.99 outProb play count');
+        })
+
+        teamPage.getBinnedBoxesPlayCountForOutProb(1).then(function(count) {
+          assert.equal(count, 2, '<1 outProb play count');
+        })
+      });
+
+      test.it('should display correct outs added text', function() {
+        teamPage.getBinnedBoxesOutsAddedText().then(function(text) {
+          assert.equal(text, '0.01 Outs Added');
+        });
+      });
+
+      test.it('removing date filter', function() {
+        filters.closeDropdownFilter('Date Range:');
+      });
+    });
+
     
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    

@@ -14,6 +14,7 @@ var _ = require('underscore');
 var videoPlaylist = require('../mixins/videoPlaylist.js');
 var occurrencesAndStreaks = require('../mixins/occurrencesAndStreaks.js');
 var hitChartFunctions = require('../mixins/hitChartFunctions.js');
+var statcastWidgets = require('../mixins/statcastWidgets.js');
 
 /****************************************************************************
 ** Locators
@@ -147,6 +148,7 @@ TeamPage.prototype.constructor = TeamPage;
 _.extend(TeamPage.prototype, videoPlaylist); // Matchups
 _.extend(TeamPage.prototype, occurrencesAndStreaks);
 _.extend(TeamPage.prototype, hitChartFunctions());
+_.extend(TeamPage.prototype, statcastWidgets);
 
 
 /****************************************************************************

@@ -773,35 +773,55 @@ test.describe('#Player Batting Section', function() {
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
-    // TODO - this feature has changed
-    // test.describe('clicking into OF Area', function() {
-    //   test.it('clicking a statcast fielding event shoud show correct data in modal', function() {
-    //     playerPage.clickStatcastFieldingChartEvent(1);
-    //     playerPage.getStatcastFieldingModalTitle().then(function(title) {
-    //       assert.equal(title, 'Pop up Play by Play', 'modal title');
-    //     });
+     // Outfield Positioning
+    test.describe('#OutfieldPositioning', function() {  
+      test.it('should show correct # of plays on chart', function() {
+        playerPage.getStatcastFieldingBallCount().then(function(count) {
+          assert.equal(count, 226);
+        })
+      });
 
-    //     playerPage.getStatcastFieldingModalTableHeader(1).then(function(header) {
-    //       assert.equal(header, 'Inn', '1st col header');
-    //     });
+      test.it('clicking RF button should zoom into the RF portion of the chart', function() {
+        playerPage.clickStatcastFieldingZoomBtn('RF');
+        playerPage.getStatcastFieldingChartTranslation().then(function(attr) {
+          assert.equal(attr, "translate(-800,-300)scale(3,3)");
+        })
+      });
 
-    //     playerPage.getStatcastFieldingModalTableHeader(3).then(function(header) {
-    //       assert.equal(header, 'Opp', '3rd col header');
-    //     });
+      test.it('clicking All button should zoom out the chart', function() {
+        playerPage.clickStatcastFieldingZoomBtn('');
+        playerPage.getStatcastFieldingChartTranslation().then(function(attr) {
+          assert.equal(attr, "translate(0,0)scale(1,1)");
+        })
+      });
 
-    //     playerPage.getStatcastFieldingModalTableHeader(8).then(function(header) {
-    //       assert.equal(header, 'OutProb', '8th col header');
-    //     });
+      test.it('changing ballpark should change background image for fielding widget', function() {
+        playerPage.changeBallparkDropdown('Safeco Field');
+        playerPage.getCurrentBallparkImageID().then(function(id) {
+          assert.equal(id, 'SEA_-_680', 'image id');
+        });
+      });
+    });
 
-    //     playerPage.getStatcastFieldingModalTableHeader(9).then(function(header) {
-    //       assert.equal(header, 'PosIndOutProb', '9th col header');
-    //     });  
-    //   });
+    test.describe('#Range', function() {  
+      test.it('hitChart should have correct # of balls in play', function() {
+        playerPage.getHitChartHitCount('single').then(function(count) {
+          assert.equal(count, 145, 'correct number of singles');
+        });
+        
+        playerPage.getHitChartHitCount('double').then(function(count) {
+          assert.equal(count, 42, 'correct number of doubles');
+        });        
 
-    //   test.after(function() {
-    //     playerPage.closeStatcastFieldingModal();
-    //   });
-    // });
+        playerPage.getHitChartHitCount('triple').then(function(count) {
+          assert.equal(count, 5, 'correct number of triples');
+        });        
+
+        playerPage.getHitChartHitCount('homeRun').then(function(count) {
+          assert.equal(count, 24, 'correct number of home runs');
+        });   
+      });
+    });
 
     // Video Playlist
     // TODO - feature currently broken so fix these tests once feature is fixed
@@ -829,7 +849,6 @@ test.describe('#Player Batting Section', function() {
         playerPage.closePlayByPlaytModal();
       });
     });
-
 
     test.describe('changing ballpark', function() {
       test.it('should change background image for fielding widget', function() {
