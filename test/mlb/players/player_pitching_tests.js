@@ -11,18 +11,22 @@ var Filters = require('../../../pages/mlb/filters.js');
 var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 
 var navbar, filters, playerPage;
+var playerURL = '/baseball/player-pitching/Kyle%20Hendricks/543294';
 
 test.describe('#Player Pitching Section', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
+    this.timeout(120000);
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver, 'pitching');
 
-    navbar.search('Kyle Hendricks', 1);
+    playerPage.visit(url+playerURL);
   });  
 
   test.it('should be on Kyle Hendricks 2016 player page', function() {
     playerPage.goToSection('pitching');
+    filters.removeSelectionFromDropdownFilter("Seasons:");
+    filters.addSelectionToDropdownFilter("Seasons:", 2016);
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Kyle Hendricks');
     });
@@ -148,9 +152,38 @@ test.describe('#Player Pitching Section', function() {
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
-    });      
+    });  
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        playerPage.addVideoToNewList(1, 'Player Pitching Tests');
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.listExistsInVideoLibrary('Player Pitching Tests').then(function(exists) {
+          assert.equal(exists, true, 'Player Pitching Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        playerPage.openVideoList('Player Pitching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    }); 
 
     test.describe("#Reports", function() {
       var reports = [
@@ -190,7 +223,7 @@ test.describe('#Player Pitching Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -253,7 +286,7 @@ test.describe('#Player Pitching Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         playerPage.clickGameLogTableStat(1,6);
         playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs RHB J. Peraza (CIN), Bot 1, 0 Out');
+          assert.equal(text, 'Vs RHB J. Segura (ARI), Bot 1, 0 Out');
         });
       });
 
@@ -264,20 +297,44 @@ test.describe('#Player Pitching Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "0-0 Fastball 86.7 MPH ,6.4% ProbSL");
+          assert.equal(text, "0-0 Fastball 86.3 MPH ,99.6% ProbSL");
         });          
       }); 
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
-    });    
+    });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Pitching Tests');
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Pitching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(2);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });  
 
     test.describe("#filters", function() {
       test.it('adding filter: (After Pitch Run Diff: -1 to 1) from sidebar displays correct data', function() {
         filters.changeFilterGroupDropdown('Situation');
         filters.changeValuesForRangeSidebarFilter('After Pitch Run Diff:', -1, 1);
+        playerPage.clickGameLogTableColumnHeader(4);
 
         playerPage.getGameLogTableStat(1,4).then(function(date) {
           assert.equal(date, '10/2/2016');
@@ -300,7 +357,7 @@ test.describe('#Player Pitching Section', function() {
 
   // Splits Section
   test.describe("#Subsection: Splits", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("splits");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -358,55 +415,94 @@ test.describe('#Player Pitching Section', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
-    test.describe('when selecting filter (Catchers: Miguel Montero)', function() {
-      test.before(function() {
-        filters.changeFilterGroupDropdown('Situation');
-        filters.addSelectionToDropdownSidebarFilter('Catchers:', 'Miguel Montero');
-      });
-      
-      test.it('should show the correct at bat header text', function() {
-        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "Vs LHB J. Villar (MIL), Top 1, 0 Out");
+    test.describe('#filters', function() {
+      test.describe('when selecting filter (Catchers: Miguel Montero)', function() {
+        test.it('test setup', function() {
+          filters.changeFilterGroupDropdown('Situation');
+          filters.addSelectionToDropdownSidebarFilter('Catchers:', 'Miguel Montero');
+        });
+        
+        test.it('should show the correct at bat header text', function() {
+          playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, "Vs LHB J. Villar (MIL), Top 1, 0 Out");
+          });
+        });
+
+        test.it('should show the correct row data', function() {
+          playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
+            assert.equal(pitch, 'Fastball');
+          });
+          playerPage.getMatchupsPitchText(1,7).then(function(pitch) {
+            assert.equal(pitch, 'Strike Looking');
+          });
         });
       });
 
-      test.it('should show the correct row data', function() {
-        playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
-          assert.equal(pitch, 'Fastball');
+      test.describe('when clicking flat view tab', function() {
+        test.it('should show the correct stats', function() {
+          playerPage.clickFlatViewTab();
+          playerPage.getFlatViewPitchText(1,2).then(function(num) {
+            assert.equal(num, '1', 'row 1 Num (pitches) col');
+          });
+
+          playerPage.getFlatViewPitchText(1,3).then(function(count) {
+            assert.equal(count, '0-0', 'row 1 count');
+          });
         });
-        playerPage.getMatchupsPitchText(1,7).then(function(pitch) {
-          assert.equal(pitch, 'Strike Looking');
-        });
+      })
+
+      test.after(function() {
+        filters.closeDropdownFilter('Catchers:');
       });
     });
 
-    test.describe('when clicking flat view tab', function() {
-      test.it('should show the correct stats', function() {
-        playerPage.clickFlatViewTab();
-        playerPage.getFlatViewPitchText(1,2).then(function(num) {
-          assert.equal(num, '1', 'row 1 Num (pitches) col');
-        });
-
-        playerPage.getFlatViewPitchText(1,3).then(function(count) {
-          assert.equal(count, '0-0', 'row 1 count');
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Pitching Tests');
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Pitching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
         });
       });
-    })
 
-    test.after(function() {
-      filters.closeDropdownFilter('Catchers:');
-    });
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.pbpRemoveVideoFromList(1, 'Player Pitching Tests');
+        playerPage.openVideoLibrary();
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoLibrary();
+      });
+    }); 
   });
 
   // Occurrences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -426,10 +522,11 @@ test.describe('#Player Pitching Section', function() {
 
   // Multi-Filter
   test.describe('#SubSection: Multi-Filter', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
+      playerPage.changeMultiFilterBottomSeason(2016);
     });
 
     test.it('should show the correct data initially', function() {
@@ -504,7 +601,7 @@ test.describe('#Player Pitching Section', function() {
 
   // Comps
   test.describe('#SubSection: Comps', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("comps");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -524,7 +621,7 @@ test.describe('#Player Pitching Section', function() {
 
   // Matchups
   test.describe('#SubSection: Matchups', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("matchups");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -553,11 +650,59 @@ test.describe('#Player Pitching Section', function() {
         assert.equal(text, '0-1 Changeup 79.6 MPH');
       });      
     });  
+    
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Pitching Tests');
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Pitching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.pbpRemoveVideoFromList(1, 'Player Pitching Tests');
+        playerPage.openVideoLibrary();
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+    });
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        playerPage.navigateBackToListIndex();
+        playerPage.deleteListFromLibrary('Player Pitching Tests');
+        
+        playerPage.listExistsInVideoLibrary('Player Pitching Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        playerPage.closeVideoLibrary();
+      });
+    });         
   });  
 
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("vsTeams");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -624,7 +769,7 @@ test.describe('#Player Pitching Section', function() {
 
   // Vs. Hitters
   test.describe("#Subsection: Vs Hitters", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("vsHitters");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);

@@ -28,6 +28,8 @@ test.describe('#Team Catching Section', function() {
   });  
 
   test.it('should be on Texas Rangers 2016 team page', function() {
+    filters.removeSelectionFromDropdownFilter("Seasons:");
+    filters.addSelectionToDropdownFilter("Seasons:", 2016);
     teamPage.getTeamName().then(function(text) {
       assert.equal( text, 'Texas Rangers');
     });
@@ -182,10 +184,8 @@ test.describe('#Team Catching Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getOverviewTableStat(5).then(function(pitches) {
-          assert.equal(pitches, 23637, 'Pitches');
-        });
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2016);
       });        
     });
 
@@ -211,9 +211,39 @@ test.describe('#Team Catching Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist from flat view', function() {     
+      test.it('should create new playlist', function() {
+        teamPage.clickFlatViewTab();
+        teamPage.addVideoToNewList(1, 'Team Catching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.listExistsInVideoLibrary('Team Catching Tests').then(function(exists) {
+          assert.equal(exists, true, 'Team Catching Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        teamPage.openVideoList('Team Catching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });     
 
     test.describe("#Reports", function() {
       var reports = [
@@ -283,7 +313,56 @@ test.describe('#Team Catching Section', function() {
       test.after(function() {
         teamPage.clickRosterTableColumnHeader(7);
       });        
-    });    
+    });   
+
+    // Video Playlist
+    test.describe('#VideoPlaylist', function() {    
+      test.it('clicking on a stat opens the play by play modal', function() {
+        teamPage.clickRosterTableStat(1,13);
+        teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+          assert.equal(text, 'Vs RHB K. Morales (KC), Top 1, 2 Out');
+        });
+      });
+
+      test.it('clicking into video opens correct video', function() {
+        teamPage.clickPitchVideoIcon(2);
+        teamPage.getVideoPlaylistText(1,1).then(function(text) {
+          assert.equal(text, "Top 1, 2 out");
+        });
+
+        teamPage.getVideoPlaylistText(1,3).then(function(text) {
+          assert.equal(text, "0-1 Fastball 95.0 MPH ,14.2% ProbSL");
+        });          
+      }); 
+
+      test.after(function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });  
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Catching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Catching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(2);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });
 
     test.describe("#filters", function() {
       test.it('adding filter: (Pitch Type: Cutter) from sidebar displays correct data', function() {
@@ -334,10 +413,6 @@ test.describe('#Team Catching Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getRosterTableStat(1,6).then(function(stat) {
-          assert.equal(stat, 5515, 'Bobby Wilson Pitches');
-        });
       }); 
     });
   });
@@ -370,7 +445,7 @@ test.describe('#Team Catching Section', function() {
         { colNum: 3, colName: 'Date', sortType: 'dates', defaultSort: 'desc', initialCol: true },
         { colNum: 8, colName: 'SLAA', sortType: 'ferpNumber', defaultSort: 'asc' },
         { colNum: 10, colName: 'FrmRAA', sortType: 'ferpNumber', defaultSort: 'asc' },
-        { colNum: 11, colName: 'StrkFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
+        { colNum: 12, colName: 'StrkFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
         { colNum: 13, colName: 'BallFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
       ]
 
@@ -426,9 +501,48 @@ test.describe('#Team Catching Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
+      });
+    });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Catching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Catching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
       });
     });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.clickGameLogTableStat(1,6);
+        teamPage.pbpRemoveVideoFromList(1, 'Team Catching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });
 
     test.describe("#filters", function() {
       test.it('adding filter: (Vs Team: LA Angels) from sidebar displays correct data', function() {
@@ -499,11 +613,60 @@ test.describe('#Team Catching Section', function() {
           assert.equal(count, '0-2', 'row 1 count');
         });
       });
+
+      test.after(function() {
+        filters.closeDropdownFilter('Exit Direction:');
+      });
     });
 
-    test.after(function() {
-      filters.closeDropdownFilter('Exit Direction:');
-    });
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Catching Tests');
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Catching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.pbpRemoveVideoFromList(1, 'Team Catching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+    });  
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        teamPage.navigateBackToListIndex();
+        teamPage.deleteListFromLibrary('Team Catching Tests');
+        
+        teamPage.listExistsInVideoLibrary('Team Catching Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });     
   });
 
   // Occurences & Streaks

@@ -11,18 +11,22 @@ var Filters = require('../../../pages/mlb/filters.js');
 var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 
 var navbar, filters, playerPage;
+var playerURL = '/baseball/player-statcast/Mookie%20Betts/605141/overview';
 
 test.describe('#Player StatcastFielding Section', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
+    this.timeout(120000);
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver);
 
-    navbar.search('Mookie Betts', 1);
+    playerPage.visit(url+playerURL);
   });  
 
   test.it('should be on Mookie Betts 2016 player page', function() {
     playerPage.goToSection('statcastFielding');
+    filters.removeSelectionFromDropdownFilter("Seasons:");
+    filters.addSelectionToDropdownFilter("Seasons:", 2016);
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Mookie Betts');
     });
@@ -30,7 +34,7 @@ test.describe('#Player StatcastFielding Section', function() {
 
   // Overview Section
   test.describe("#Subsection: Overview", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -39,7 +43,7 @@ test.describe('#Player StatcastFielding Section', function() {
     test.describe('#OutfieldPositioning', function() {  
       test.it('should show correct # of plays on chart', function() {
         playerPage.getStatcastFieldingBallCount().then(function(count) {
-          assert.equal(count, 429);
+          assert.equal(count, 435);
         })
       });
 
@@ -72,11 +76,11 @@ test.describe('#Player StatcastFielding Section', function() {
         });
         
         playerPage.getHitChartHitCount('double').then(function(count) {
-          assert.equal(count, 42, 'correct number of doubles');
+          assert.equal(count, 44, 'correct number of doubles');
         });        
 
         playerPage.getHitChartHitCount('triple').then(function(count) {
-          assert.equal(count, 6, 'correct number of triples');
+          assert.equal(count, 4, 'correct number of triples');
         });        
 
         playerPage.getHitChartHitCount('homeRun').then(function(count) {
@@ -92,25 +96,25 @@ test.describe('#Player StatcastFielding Section', function() {
     test.describe('#OutfieldRange', function() {    
       test.it('should show correct # of points on chart', function() {
         playerPage.getBinnedBoxesRectCount().then(function(count) {
-          assert.equal(count, 429);
+          assert.equal(count, 431);
         })
       });
 
       test.it('should display correct count of plays by out prob', function() {
         playerPage.getBinnedBoxesPlayCountForOutProb(0.01).then(function(count) {
-          assert.equal(count, 118, '<0.01 outProb play count');
+          assert.equal(count, 117, '<0.01 outProb play count');
         })
 
         playerPage.getBinnedBoxesPlayCountForOutProb(0.1).then(function(count) {
-          assert.equal(count, 19, '<0.1 outProb play count');
+          assert.equal(count, 23, '<0.1 outProb play count');
         })
 
         playerPage.getBinnedBoxesPlayCountForOutProb(0.2).then(function(count) {
-          assert.equal(count, 4, '<0.2 outProb play count');
+          assert.equal(count, 3, '<0.2 outProb play count');
         })
 
         playerPage.getBinnedBoxesPlayCountForOutProb(0.8).then(function(count) {
-          assert.equal(count, 8, '<0.8 outProb play count');
+          assert.equal(count, 6, '<0.8 outProb play count');
         })
 
         playerPage.getBinnedBoxesPlayCountForOutProb(0.9).then(function(count) {
@@ -118,7 +122,7 @@ test.describe('#Player StatcastFielding Section', function() {
         })
 
         playerPage.getBinnedBoxesPlayCountForOutProb(0.99).then(function(count) {
-          assert.equal(count, 51, '<0.99 outProb play count');
+          assert.equal(count, 53, '<0.99 outProb play count');
         })
 
         playerPage.getBinnedBoxesPlayCountForOutProb(1).then(function(count) {
@@ -128,7 +132,7 @@ test.describe('#Player StatcastFielding Section', function() {
 
       test.it('should display correct outs added text', function() {
         playerPage.getBinnedBoxesOutsAddedText().then(function(text) {
-          assert.equal(text, '13.89 Outs Added');
+          assert.equal(text, '13.64 Outs Added');
         });
       });
     });
@@ -163,22 +167,54 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "5.90s HT | 127.6ft | 0.9s RT | 1.87s Jmp | 99.0% Eff | 19.9mph | 13.8ft to Wall | 25.3% outProb |");
+          assert.equal(text, "5.90s HT | 127.6ft | 0.8s RT | 1.84s Jmp | 99.1% Eff | 19.9mph | 13.8ft to Wall | 25.3% outProb |");
         });          
       }); 
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
     });
 
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        playerPage.addVideoToNewList(1, 'Player StatcastFielding Tests');
+      })
+
+      test.it('playlist should exist in library', function() {
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.listExistsInVideoLibrary('Player StatcastFielding Tests').then(function(exists) {
+          assert.equal(exists, true, 'Player StatcastFielding Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        playerPage.openVideoList('Player StatcastFielding Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });     
+
     test.describe("#Reports", function() {
       var reports = [
-        { type: 'Outfielder Air Defense Skills', topStat: "65.5%", statType: "OFAirOut%" },  
-        { type: 'Outfield Batter Positioning', topStat: "104.6%", statType: "OFWPosAirWOut%" },    
-        { type: 'Outfielder Air Defense Positioning', topStat: "103.8%", statType: "OFWPosAirWOut%" },
-        { type: 'Outfielder Air Defense Range', topStat: "115.0%", statType: "ExRange%" },  
+        { type: 'Outfielder Air Defense Skills', topStat: "65.4%", statType: "OFAirOut%" },  
+        { type: 'Outfield Batter Positioning', topStat: "104.9%", statType: "OFWPosAirWOut%" },    
+        { type: 'Outfielder Air Defense Positioning', topStat: "104.0%", statType: "OFWPosAirWOut%" },
+        { type: 'Outfielder Air Defense Range', topStat: "115.9%", statType: "ExRange%" },  
       ];
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
@@ -194,7 +230,7 @@ test.describe('#Player StatcastFielding Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -273,7 +309,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "3.67s HT | 42.8ft | 0.9s RT | 2.07s Jmp | 92.6% Eff | 11.6mph | 89.3ft to Wall | 99.6% outProb |", '3rd line of 1st video description');
+          assert.equal(text, "3.67s HT | 42.8ft | 0.8s RT | 2.04s Jmp | 92.8% Eff | 11.6mph | 89.3ft to Wall | 99.6% outProb |", '3rd line of 1st video description');
         });          
       }); 
 
@@ -330,9 +366,32 @@ test.describe('#Player StatcastFielding Section', function() {
       test.after(function() {
         playerPage.closeSimiliarPlaysTooltipPitchVideoModal();
         playerPage.closeSimiliarPlaysModal();
-        playerPage.closePlayByPlaytModal();
       });
     });    
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player StatcastFielding Tests');
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player StatcastFielding Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(2);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });  
 
     test.describe("#filters", function() {
       test.it('adding filter: (Exit Velocity: 90-120) from sidebar displays correct data', function() {
@@ -343,7 +402,7 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getGameLogTableStat(3,7).then(function(outs) {
-          assert.equal(outs, 1, '# of OFAirOut');
+          assert.equal(outs, 2, '# of OFAirOut');
         });          
 
         playerPage.getGameLogTableStat(3,12).then(function(outPer) {
@@ -359,14 +418,14 @@ test.describe('#Player StatcastFielding Section', function() {
 
   // Pitch  Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
     test.describe('when selecting filter (Launch Angle: 0 - 30)', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.changeValuesForRangeSidebarFilter('Launch Angle:', 0, 30);
       });
       
@@ -394,10 +453,58 @@ test.describe('#Player StatcastFielding Section', function() {
         });
 
         playerPage.getFlatViewPitchText(1,6).then(function(pathEff) {
-          assert.equal(pathEff, '88.6%', 'row 1 pathEff');
+          assert.equal(pathEff, '88.7%', 'row 1 pathEff');
         });
       });
     })
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player StatcastFielding Tests');
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player StatcastFielding Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.pbpRemoveVideoFromList(1, 'Player StatcastFielding Tests');
+        playerPage.openVideoLibrary();
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+    }); 
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        playerPage.navigateBackToListIndex();
+        playerPage.deleteListFromLibrary('Player StatcastFielding Tests');
+        
+        playerPage.listExistsInVideoLibrary('Player StatcastFielding Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        playerPage.closeVideoLibrary();
+      });
+    });              
 
     test.after(function() {
       filters.closeDropdownFilter('Launch Angle:');
@@ -406,7 +513,7 @@ test.describe('#Player StatcastFielding Section', function() {
 
   // Occurences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);

@@ -163,9 +163,38 @@ test.describe('#Umpire Page', function() {
       test.after(function() {
         // umpiresPage.closeHitChartTooltipPitchVideoModal();
         umpirePage.closePitchVisualsModal();
-        umpirePage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        umpirePage.addVideoToNewList(1, 'Umpire Tests');
+        umpirePage.closePlayByPlayModal();
+        umpirePage.openVideoLibrary();
+        umpirePage.listExistsInVideoLibrary('Umpire Tests').then(function(exists) {
+          assert.equal(exists, true, 'Umpire Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        umpirePage.openVideoList('Umpire Tests');
+        umpirePage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        umpirePage.playVideoFromList(1);
+        umpirePage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        umpirePage.closeVideoPlaylistModal();
+      });
+    }); 
 
     test.describe('#filters', function() {
       test.it('adding filter: (Break Length (in): 6-9) from sidebar displays correct data', function() {
@@ -296,9 +325,32 @@ test.describe('#Umpire Page', function() {
 
       test.after(function() {
         umpirePage.closeVideoPlaylistModal();
-        umpirePage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        umpirePage.addVideoToList(1, 'Umpire Tests');
+        umpirePage.closePlayByPlayModal();
+        umpirePage.openVideoLibrary();
+        umpirePage.openVideoList('Umpire Tests');
+        umpirePage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        umpirePage.playVideoFromList(2);
+        umpirePage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        umpirePage.closeVideoPlaylistModal();
+      });
+    });      
 
 
     test.describe("#filters", function() {
@@ -357,6 +409,54 @@ test.describe('#Umpire Page', function() {
         });
       });
     })
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        umpirePage.addVideoToList(1, 'Umpire Tests');
+        umpirePage.openVideoLibrary();
+        umpirePage.openVideoList('Umpire Tests');
+        umpirePage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        umpirePage.playVideoFromList(1);
+        umpirePage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        umpirePage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        umpirePage.pbpRemoveVideoFromList(1, 'Umpire Tests');
+        umpirePage.openVideoLibrary();
+        umpirePage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+    }); 
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        umpirePage.navigateBackToListIndex();
+        umpirePage.deleteListFromLibrary('Umpire Tests');
+        
+        umpirePage.listExistsInVideoLibrary('Umpire Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        umpirePage.closeVideoLibrary();
+      }); 
+    });   
 
     test.after(function() {
       filters.closeDropdownFilter('Pitch Type:');

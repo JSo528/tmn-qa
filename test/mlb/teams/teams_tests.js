@@ -94,7 +94,36 @@ test.describe('#Teams Page', function() {
 
         test.after(function() {
           teamsPage.closeVideoPlaylistModal();
-          teamsPage.closePlayByPlaytModal();
+        });
+      });
+
+      // Video Library
+      test.describe('#VideoLibrary - add video to new playlist', function() {     
+        test.it('should create new playlist', function() {
+          teamsPage.addVideoToNewList(1, 'Teams Tests');
+          teamsPage.closePlayByPlayModal();
+          teamsPage.openVideoLibrary();
+          teamsPage.listExistsInVideoLibrary('Teams Tests').then(function(exists) {
+            assert.equal(exists, true, 'Teams Tests playlist exists in library');
+          });
+        });
+
+        test.it('should have correct # of videos', function() {
+          teamsPage.openVideoList('Teams Tests');
+          teamsPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 1);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          teamsPage.playVideoFromList(1);
+          teamsPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          teamsPage.closeVideoPlaylistModal();
         });
       });
 
@@ -142,23 +171,6 @@ test.describe('#Teams Page', function() {
         });
       });
 
-      // (temporary)
-      // TODO - remove after push
-      // test.describe('#ISO Mode', function() {
-      //   test.it('selecting LA from search should add team to table', function() {
-      //     teamsPage.clickIsoBtn("on");
-      //     teamsPage.addToIsoTable('LA', 2);
-      //     teamsPage.getTeamTableStat(1,3).then(function(stat) {
-      //       assert.equal(stat, ' LAD', '1st row team name');
-      //     });
-      //   });
-
-      //   test.after(function() {
-      //     teamsPage.clickIsoBtn("off");
-      //     teamsPage.clearTablePins();
-      //   });
-      // });
-      
       // Isolation Mode
       test.describe("#isolation mode", function() {
         test.it('selecting LA Dodgers from search should add team to table', function() {
@@ -596,9 +608,48 @@ test.describe('#Teams Page', function() {
 
         test.after(function() {
           teamsPage.closeVideoPlaylistModal();
-          teamsPage.closePlayByPlaytModal();
         });
       });
+
+      // Video Library
+      test.describe('#VideoLibrary - add video to existing playlist', function() {     
+        test.it('should have correct # of videos', function() {
+          teamsPage.addVideoToList(1, 'Teams Tests');
+          teamsPage.closePlayByPlayModal();
+          teamsPage.openVideoLibrary();
+          teamsPage.openVideoList('Teams Tests');
+          teamsPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 2);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          teamsPage.playVideoFromList(2);
+          teamsPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          teamsPage.closeVideoPlaylistModal();
+        });
+      });
+
+      test.describe('#VideoLibrary - removing video thru pbp', function() {     
+        test.it('should have correct # of videos', function() {
+          teamsPage.clickTeamTableStat(1, 20);
+          teamsPage.pbpRemoveVideoFromList(1, 'Teams Tests');
+          teamsPage.closePlayByPlayModal();
+          teamsPage.openVideoLibrary();
+          teamsPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 1);
+          });
+        });
+
+        test.it('closing video modal', function() {
+          teamsPage.closeVideoLibrary();
+        });
+      });      
 
       // Filters
       test.describe("#filters", function() {
@@ -722,6 +773,69 @@ test.describe('#Teams Page', function() {
           teamsPage.clickTeamTableColumnHeader(7);
         });        
       });
+
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a team stat opens the play by play modal', function() {
+          teamsPage.clickTeamTableStat(1, 11);
+          teamsPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'Vs RHB J. Bourgeois (CIN), Top 1, 0 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          teamsPage.clickPitchVideoIcon(2);
+          teamsPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Top 1, 0 out");
+          });
+
+          teamsPage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "0-0 Fastball 91.2 MPH ,12.3% ProbSL");
+          });          
+        }); 
+
+        test.after(function() {
+          teamsPage.closeVideoPlaylistModal();
+        });
+      });
+
+      // Video Library
+      test.describe('#VideoLibrary - add video to existing playlist', function() {     
+        test.it('should have correct # of videos', function() {
+          teamsPage.addVideoToList(1, 'Teams Tests');
+          teamsPage.closePlayByPlayModal();
+          teamsPage.openVideoLibrary();
+          teamsPage.openVideoList('Teams Tests');
+          teamsPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 2);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          teamsPage.playVideoFromList(2);
+          teamsPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          teamsPage.closeVideoPlaylistModal();
+        });
+      });
+
+      test.describe('#VideoLibrary - removing video thru sidebar', function() {     
+        test.it('should have correct # of videos', function() {
+          teamsPage.openVideoLibrary();
+          teamsPage.removeVideoFromList(1);
+          teamsPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 1);
+          });
+        });
+
+        test.it('closing video modal', function() {
+          teamsPage.closeVideoLibrary();
+        });
+      });      
 
 
       // Filters
@@ -857,6 +971,90 @@ test.describe('#Teams Page', function() {
           teamsPage.clickTeamTableColumnHeader(10);
         });        
       });
+
+      // Video Playlist
+      test.describe('#VideoPlaylist', function() {     
+        test.it('clicking on a team stat opens the play by play modal', function() {
+          teamsPage.clickTeamTableStat(1, 9);
+          teamsPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, 'RHP J. Odorizzi (TB) Vs LHB D. Gordon (MIA), Top 4, 0 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          teamsPage.clickPitchVideoIcon(2);
+          teamsPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Top 4, 0 out");
+          });
+
+          teamsPage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "2.56s HT | 22.7ft | 1.1s RT | 0 Jmp | 0.952217 Eff | 14.7mph | 88.0ft to Wall | 97.9% outProb |");
+          });          
+        }); 
+
+        test.after(function() {
+          teamsPage.closeVideoPlaylistModal();
+        });
+      });
+
+      // Video Library
+      test.describe('#VideoLibrary - add video to existing playlist', function() {     
+        test.it('adding video to list', function() {
+          teamsPage.addVideoToList(1, 'Teams Tests');
+        });
+
+        test.it('should have correct # of videos', function() {
+          teamsPage.closePlayByPlayModal();
+          teamsPage.openVideoLibrary();
+          teamsPage.openVideoList('Teams Tests');
+          teamsPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 2);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          teamsPage.playVideoFromList(2);
+          teamsPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+
+          teamsPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Top 1, 0 out");
+          });
+        });
+
+        test.it('closing video modal', function() {
+          teamsPage.closeVideoPlaylistModal();
+          teamsPage.closeVideoLibrary();
+        });
+      });
+
+      test.describe('#VideoLibrary - changing name of playlist', function() {     
+        test.it('should rename playlist', function() {
+          teamsPage.openVideoLibrary();
+          teamsPage.navigateBackToListIndex();
+
+          teamsPage.changeNameOfList('Teams Tests', 'Teams Tests 2');
+          teamsPage.listExistsInVideoLibrary('Teams Tests 2').then(function(exists) {
+            assert.equal(exists, true)
+          });
+        });
+      }); 
+
+      test.describe('#VideoLibrary - deleting playlist', function() {
+        test.it('should remove playlist', function() {
+          teamsPage.deleteListFromLibrary('Teams Tests 2');
+          
+          teamsPage.listExistsInVideoLibrary('Teams Tests 2').then(function(exists) {
+            assert.equal(exists, false);
+          })
+        });
+
+        test.it('close video library', function() {
+          teamsPage.closeVideoLibrary();
+        });
+      });    
+
 
 
       test.describe("#filters", function() {

@@ -413,6 +413,17 @@ TeamPage.prototype.getMultiFilterHeatMapImageTitle = function(topOrBottom) {
   return this.getHeatMapImageTitle(locator);
 };
 
+TeamPage.prototype.changeMultiFilterBottomSeason = function(year) {
+  var removeLocator = By.xpath(".//div[@id='filterSetBot']/div/div/div/div[div[contains(text()[1], 'Seasons:')]]/div/ul/li/a[@class='select2-search-choice-close']");
+  var locator = By.xpath(".//div[@id='filterSetBot']/div/div/div/div[div[contains(text()[1], 'Seasons:')]]/div/ul");
+  var inputLocator = By.xpath(".//div[@id='filterSetBot']/div/div/div/div[div[contains(text()[1], 'Seasons:')]]/div/ul/li[contains(@class, 'select2-search-field')]/input");
+  this.click(removeLocator);
+  this.click(locator, 10000);
+  this.sendKeys(inputLocator, year, 10000);
+  this.sendKeys(inputLocator, Key.ENTER);
+  return this.sendKeys(inputLocator, Key.ESCAPE);
+}
+
 /****************************************************************************
 ** Comps
 *****************************************************************************/

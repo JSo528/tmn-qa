@@ -92,7 +92,51 @@ test.describe('#Players Page', function() {
 
         test.after(function() {
           playersPage.closeVideoPlaylistModal();
-          playersPage.closePlayByPlaytModal();
+          playersPage.closePlayByPlayModal();
+        }); 
+      });
+
+      // Video Library
+      test.describe('#VideoLibrary - selecting "Add All" to new playlist', function() {
+        test.it('changing report to counting', function() {
+          playersPage.changeReport('Counting');
+          playersPage.clickTableStat(1, 15);
+        });
+
+        test.it('should create new playlist', function() {
+          playersPage.addAllVideosToNewList("Players Tests");
+          playersPage.closePlayByPlayModal();
+          playersPage.openVideoLibrary();
+          playersPage.listExistsInVideoLibrary('Players Tests').then(function(exists) {
+            assert.equal(exists, true, 'Players Tests playlist exists in library');
+          });
+        });        
+
+        test.it('should have correct # of videos', function() {
+          playersPage.openVideoList('Players Tests');
+          playersPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 7);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          playersPage.playVideoFromList(1);
+          playersPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+
+          playersPage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Bot 3, 0 out");
+          });
+
+          playersPage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "2-0 Changeup 85.0 MPH");
+          });  
+        });
+
+        test.it('closing video modal & changing report back to rate', function() {
+          playersPage.closeVideoPlaylistModal();
+          playersPage.changeReport('Rate');
         }); 
       });
 
@@ -508,9 +552,51 @@ test.describe('#Players Page', function() {
 
         test.after(function() {
           playersPage.closeVideoPlaylistModal();
-          playersPage.closePlayByPlaytModal();
         });
       });
+
+      // Video Library
+      test.describe('#VideoLibrary - add video to existing playlist', function() {     
+        test.it('adding video to list', function() {
+          playersPage.addVideoToList(1, 'Players Tests');
+        });
+
+        test.it('should have correct # of videos', function() {
+          playersPage.closePlayByPlayModal();
+          playersPage.openVideoLibrary();
+          playersPage.openVideoList('Players Tests');
+          playersPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 8);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          playersPage.playVideoFromList(1);
+          playersPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          playersPage.closeVideoPlaylistModal();
+        });
+      });
+
+      test.describe('#VideoLibrary - removing video thru pbp', function() {     
+        test.it('should have correct # of videos', function() {
+          playersPage.clickTableStat(1, 20);
+          playersPage.pbpRemoveVideoFromList(1, 'Players Tests');
+          playersPage.closePlayByPlayModal();
+          playersPage.openVideoLibrary();
+          playersPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count,7);
+          });
+        });
+
+        test.it('closing video modal', function() {
+          playersPage.closeVideoLibrary();
+        });
+      });  
 
       // Filters
       test.describe("#filters", function() {
@@ -792,9 +878,46 @@ test.describe('#Players Page', function() {
 
         test.after(function() {
           playersPage.closeVideoPlaylistModal();
-          playersPage.closePlayByPlaytModal();
         });
       });
+
+      // Video Library
+      test.describe('#VideoLibrary - add video to existing playlist', function() {     
+        test.it('should have correct # of videos', function() {
+          playersPage.addVideoToList(1, 'Players Tests');
+          playersPage.closePlayByPlayModal();
+          playersPage.openVideoLibrary();
+          playersPage.openVideoList('Players Tests');
+          playersPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 8);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          playersPage.playVideoFromList(1);
+          playersPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          playersPage.closeVideoPlaylistModal();
+        });
+      });
+
+      test.describe('#VideoLibrary - removing video thru sidebar', function() {     
+        test.it('should have correct # of videos', function() {
+          playersPage.openVideoLibrary();
+          playersPage.removeVideoFromList(1);
+          playersPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 7);
+          });
+        });
+
+        test.it('closing video modal', function() {
+          playersPage.closeVideoLibrary();
+        });
+      });  
 
       // Reports
       test.describe("#reports", function() {
@@ -898,11 +1021,63 @@ test.describe('#Players Page', function() {
 
         test.after(function() {
           playersPage.closeSimiliarPlaysModal();
-          playersPage.closePlayByPlaytModal();
         });
       });    
 
-       test.describe("#filters", function() {
+      // Video Library
+      test.describe('#VideoLibrary - add video to existing playlist', function() {     
+        test.it('adding video to list', function() {
+          playersPage.addVideoToList(1, 'Players Tests');
+        });
+
+        test.it('should have correct # of videos', function() {
+          playersPage.closePlayByPlayModal();
+          playersPage.openVideoLibrary();
+          playersPage.openVideoList('Players Tests');
+          playersPage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 8);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          playersPage.playVideoFromList(1);
+          playersPage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          playersPage.closeVideoPlaylistModal();
+        });
+      });
+
+      test.describe('#VideoLibrary - changing name of playlist', function() {     
+        test.it('should rename playlist', function() {
+          playersPage.openVideoLibrary();
+          playersPage.navigateBackToListIndex();
+
+          playersPage.changeNameOfList('Players Tests', 'Players Tests 2');
+          playersPage.listExistsInVideoLibrary('Players Tests 2').then(function(exists) {
+            assert.equal(exists, true)
+          });
+        });
+      }); 
+
+      test.describe('#VideoLibrary - deleting playlist', function() {
+        test.it('should remove playlist', function() {
+          playersPage.deleteListFromLibrary('Players Tests 2');
+          
+          playersPage.listExistsInVideoLibrary('Players Tests 2').then(function(exists) {
+            assert.equal(exists, false);
+          })
+        });
+
+        test.it('close video library', function() {
+          playersPage.closeVideoLibrary();
+        });
+      });    
+
+      test.describe("#filters", function() {
         test.it('adding filter: (Height: 60 to 72) from sidebar displays correct data', function() {
           filters.changeFilterGroupDropdown('Player')
           filters.changeValuesForRangeSidebarFilter('Height:', 60, 72);

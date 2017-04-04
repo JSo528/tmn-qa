@@ -36,6 +36,7 @@ test.describe('#Umpires Page', function() {
     });
   });
 
+  // Video Playlist
   test.describe('#VideoPlaylist', function() {    
     test.it('clicking on a team stat opens the play by play modal', function() {
       umpiresPage.clickTableStat(1,5);
@@ -57,9 +58,55 @@ test.describe('#Umpires Page', function() {
 
     test.after(function() {
       umpiresPage.closeVideoPlaylistModal();
-      umpiresPage.closePlayByPlaytModal();
     });
   });
+
+  // Video Library
+  test.describe('#VideoLibrary - add video to new playlist from flat view', function() {     
+    test.it('should create new playlist', function() {
+      umpiresPage.clickFlatViewTab();
+      umpiresPage.addVideoToNewList(1, 'Umpires Tests');
+      umpiresPage.closePlayByPlayModal();
+      umpiresPage.openVideoLibrary();
+      umpiresPage.listExistsInVideoLibrary('Umpires Tests').then(function(exists) {
+        assert.equal(exists, true, 'Teams Tests playlist exists in library');
+      });
+    });
+
+    test.it('should have correct # of videos', function() {
+      umpiresPage.openVideoList('Umpires Tests');
+      umpiresPage.getVideoCountFromList().then(function(count) {
+        assert.equal(count, 1);
+      });
+    });
+
+    test.it('should be able to play video', function() {
+      umpiresPage.playVideoFromList(1);
+      umpiresPage.isVideoModalDisplayed().then(function(displayed){
+        assert.equal(displayed, true);
+      });        
+    });
+
+    test.it('closing video modal', function() {
+      umpiresPage.closeVideoPlaylistModal();
+    });
+  });
+
+  test.describe('#VideoLibrary - deleting playlist', function() {
+    test.it('should remove playlist', function() {
+      umpiresPage.openVideoLibrary();
+      umpiresPage.navigateBackToListIndex();
+      umpiresPage.deleteListFromLibrary('Umpires Tests');
+      
+      umpiresPage.listExistsInVideoLibrary('Umpires Tests').then(function(exists) {
+        assert.equal(exists, false);
+      })
+    });
+
+    test.it('close video library', function() {
+      umpiresPage.closeVideoLibrary();
+    });
+  });      
 
   // Sorting
   test.describe("#sorting", function() {

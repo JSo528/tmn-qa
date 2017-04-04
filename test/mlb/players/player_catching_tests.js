@@ -11,14 +11,16 @@ var Filters = require('../../../pages/mlb/filters.js');
 var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 
 var navbar, filters, statsPage, playerPage;
+var playerURL = '/baseball/player-batting/Yadier%20Molina/425877';
 
 test.describe('#Player Catching Section', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
+    this.timeout(120000);
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver);
 
-    navbar.search('Yadier Molina', 1);
+    playerPage.visit(url+playerURL);
   });  
 
   test.it('should be on Yadier Molina 2016 player page', function() {
@@ -30,7 +32,7 @@ test.describe('#Player Catching Section', function() {
 
   // Overview Section
   test.describe("#Subsection: Overview", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -153,9 +155,41 @@ test.describe('#Player Catching Section', function() {
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
     });    
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        playerPage.addVideoToNewList(1, 'Player Catching Tests');
+      });
+
+      test.it('playlist should exist in library', function() {
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.listExistsInVideoLibrary('Player Catching Tests').then(function(exists) {
+          assert.equal(exists, true, 'Player Catching Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        playerPage.openVideoList('Player Catching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });     
 
     test.describe('#filters', function() {
       test.it('adding filter: (Pitch Type: Breaking Ball (curve/slider)) from sidebar displays correct data', function() {
@@ -202,7 +236,7 @@ test.describe('#Player Catching Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -287,9 +321,32 @@ test.describe('#Player Catching Section', function() {
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
-    });    
+    });  
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Catching Tests');
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Catching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(2);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });  
 
     test.describe("#filters", function() {
       test.it('adding filter: (Pitcher Pitch #: 60-150) from sidebar displays correct data', function() {
@@ -313,14 +370,14 @@ test.describe('#Player Catching Section', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
     test.describe('when selecting filter (PX: 2 - 3)', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.changeFilterGroupDropdown('Pitch')
         filters.changeValuesForRangeSidebarFilter('PX:', 2, 3);
       });
@@ -354,6 +411,54 @@ test.describe('#Player Catching Section', function() {
       });
     })
 
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Catching Tests');
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Catching Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.pbpRemoveVideoFromList(1, 'Player Catching Tests');
+        playerPage.openVideoLibrary();
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+    }); 
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        playerPage.navigateBackToListIndex();
+        playerPage.deleteListFromLibrary('Player Catching Tests');
+        
+        playerPage.listExistsInVideoLibrary('Player Catching Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        playerPage.closeVideoLibrary();
+      });
+    });          
+
     test.after(function() {
       filters.closeDropdownFilter('PX:');
     });
@@ -361,7 +466,7 @@ test.describe('#Player Catching Section', function() {
 
   // Occurences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);

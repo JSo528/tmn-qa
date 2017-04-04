@@ -50,7 +50,7 @@ test.describe('#Team Batting Section', function() {
         teamPage.drawBoxOnOverviewHeatMap(150,150,25,25);
 
         teamPage.getHitChartHitCount('single').then(function(count) {
-          assert.equal(count, 10, 'correct number of singles');
+          assert.equal(count, 9, 'correct number of singles');
         });
         
         teamPage.getHitChartHitCount('double').then(function(count) {
@@ -128,28 +128,58 @@ test.describe('#Team Batting Section', function() {
     // Video Playlist
     test.describe('#VideoPlaylist', function() {    
       test.it('clicking on a stat opens the play by play modal', function() {
-        teamPage.clickOverviewTableStat(9);
+        teamPage.clickOverviewTableStat(13);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'Vs RHP A. Sanchez (TOR), Bot 1, 0 Out');
+          assert.equal(text, 'Vs RHP J. Biagini (TOR), Bot 6, 1 Out');
         });
       });
 
       test.it('clicking into video opens correct video', function() {
         teamPage.clickPitchVideoIcon(2);
         teamPage.getVideoPlaylistText(1,1).then(function(text) {
-          assert.equal(text, "Bot 1, 0 out");
+          assert.equal(text, "Bot 6, 1 out");
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "1-1 Fastball 96.5 MPH ,86.2% ProbSL");
+          assert.equal(text, "1-2 Cutter 95.5 MPH ,70.3% ProbSL");
         });          
       }); 
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist from flat view', function() {     
+      test.it('should create new playlist', function() {
+        teamPage.clickFlatViewTab();
+        teamPage.addVideoToNewList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.listExistsInVideoLibrary('Team Batting Tests').then(function(exists) {
+          assert.equal(exists, true, 'Team Batting Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        teamPage.openVideoList('Team Batting Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Men On: On 1B Only) from sidebar displays correct data', function() {
@@ -214,15 +244,13 @@ test.describe('#Team Batting Section', function() {
         teamPage.getOverviewTableStat(8).then(function(pitches) {
           assert.equal(pitches, 16, '2016 Bos Pitches');
         });
-      });            
+      });  
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getOverviewTableStat(8).then(function(pitches) {
-          assert.equal(pitches, 24947, '2016 Bos Pitches');
-        });
-      });      
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2016);
+      });          
     });
 
     // Visual Mode Dropdown
@@ -273,11 +301,11 @@ test.describe('#Team Batting Section', function() {
       var reports = [
         { type: 'Counting', topStat: 1598, statType: "H" },  
         { type: 'Pitch Rates', topStat: "38.7%", statType: "Foul%" },  
-        { type: 'Pitch Count', topStat: 12610, statType: "InZone#" },  
+        { type: 'Pitch Count', topStat: 12623, statType: "InZone#" },  
         { type: 'Pitch Types', topStat: "2.7%", statType: "Sinker%" },  
-        { type: 'Pitch Type Counts', topStat: 667, statType: "Sinker#" },  
+        { type: 'Pitch Type Counts', topStat: 658, statType: "Sinker#" },  
         { type: 'Pitch Locations', topStat: "60.2%", statType: "LowHalf%" },  
-        { type: 'Pitch Calls', topStat: 231, statType: "BallFrmd" },  
+        { type: 'Pitch Calls', topStat: 233, statType: "BallFrmd" },  
         { type: 'Hit Types', topStat: 2060, statType: "Ground#" },  
         { type: 'Hit Locations', topStat: "22.3%", statType: "HLftCtr%" },  
         { type: 'Home Runs', topStat: 153, statType: "HRPull" },  
@@ -367,7 +395,30 @@ test.describe('#Team Batting Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
+      });
+    });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Batting Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(2);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
       });
     });
 
@@ -428,11 +479,7 @@ test.describe('#Team Batting Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getRosterTableStat(1,5).then(function(pitches) {
-          assert.equal(pitches, 2709, 'Mookie Betts Pitches');
-        });
-      });
+      });          
     });
   });
 
@@ -519,9 +566,48 @@ test.describe('#Team Batting Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Batting Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.clickGameLogTableStat(1,8);
+        teamPage.pbpRemoveVideoFromList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });       
 
     test.describe("#filters", function() {
       test.it('adding filter: (Spin Angle: 0 - 180) from dropdown displays correct data', function() {
@@ -576,11 +662,7 @@ test.describe('#Team Batting Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getGameLogTableStat(1,3).then(function(stat) {
-          assert.equal(stat, '10/2/2016', 'row 1 date');
-        });
-      }); 
+      });          
     });
   });  
 
@@ -714,6 +796,45 @@ test.describe('#Team Batting Section', function() {
       });
     })
 
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Batting Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.pbpRemoveVideoFromList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });         
+
     test.after(function() {
       filters.closeDropdownFilter('Pitch Result:');
     });
@@ -745,6 +866,7 @@ test.describe('#Team Batting Section', function() {
       teamPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
+      teamPage.changeMultiFilterBottomSeason(2016);
     });
 
     test.it('should show the correct data initially', function() {
@@ -868,7 +990,47 @@ test.describe('#Team Batting Section', function() {
       teamPage.getVideoPlaylistText(2,2).then(function(text) {
         assert.equal(text, 'Vs RHP C. Archer (TB)', '2nd video, 2nd line');
       });      
-    });  
+    }); 
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Batting Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Batting Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        teamPage.openVideoLibrary();
+        teamPage.navigateBackToListIndex();
+        teamPage.deleteListFromLibrary('Team Batting Tests');
+        
+        teamPage.listExistsInVideoLibrary('Team Batting Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });     
   });  
 
   // Vs. Teams
@@ -919,7 +1081,7 @@ test.describe('#Team Batting Section', function() {
       });
 
       test.after(function() {
-        teamPage.clickVsTableColumnHeader(8);
+        teamPage.clickVsTableColumnHeader(9);
       });        
     });    
 
@@ -982,11 +1144,7 @@ test.describe('#Team Batting Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getVsTableStat(1,7).then(function(stat) {
-          assert.equal(stat, 270, 'OAK PA');
-        });
-      });            
+      });                    
     });
   });   
 

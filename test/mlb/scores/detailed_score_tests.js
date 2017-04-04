@@ -68,7 +68,7 @@ test.describe('#DetailedScore Page', function() {
 
         test.after(function() {
           detailedScorePage.closeVideoPlaylistModal();
-          detailedScorePage.closePlayByPlaytModal();
+          detailedScorePage.closePlayByPlayModal();
         });
       });
 
@@ -91,9 +91,38 @@ test.describe('#DetailedScore Page', function() {
           });          
         }); 
 
-        test.after(function() {
+        test.it('closing video modal', function() {
           detailedScorePage.closeVideoPlaylistModal();
-          detailedScorePage.closePlayByPlaytModal();
+        });
+      });
+
+      // Video Library
+      test.describe('#VideoLibrary - add all videos to new playlist', function() {
+        test.it('should create new playlist', function() {
+          detailedScorePage.addAllVideosToNewList("Detailed Score Tests");
+          detailedScorePage.closePlayByPlayModal();
+          detailedScorePage.openVideoLibrary();
+          detailedScorePage.listExistsInVideoLibrary('Detailed Score Tests').then(function(exists) {
+            assert.equal(exists, true, 'Detailed Score Tests playlist exists in library');
+          });
+        });
+
+        test.it('should have correct # of videos', function() {
+          detailedScorePage.openVideoList('Detailed Score Tests');
+          detailedScorePage.getVideoCountFromList().then(function(count) {
+            assert.equal(count, 20);
+          });
+        });
+
+        test.it('should be able to play video', function() {
+          detailedScorePage.playVideoFromList(1);
+          detailedScorePage.isVideoModalDisplayed().then(function(displayed){
+            assert.equal(displayed, true);
+          });        
+        });
+
+        test.it('closing video modal', function() {
+          detailedScorePage.closeVideoPlaylistModal();
         });
       });
     });
@@ -215,6 +244,34 @@ test.describe('#DetailedScore Page', function() {
         });
       });   
     }); 
+    
+    // TODO - once this is fixed, add tests for video library, similiar plays, etc.
+    test.describe('#VideoPlaylist', function() {    
+      test.describe('#TeamStat', function() {    
+        test.it('clicking on a team stat opens the play by play modal', function() {
+          detailedScorePage.clickTeamPitchingStat('home', 11);
+          detailedScorePage.getMatchupsAtBatHeaderText(2).then(function(text) {
+            assert.equal(text, 'Vs RHP K. Gausman (BAL), Bot 1, 1 Out');
+          });
+        });
+
+        test.it('clicking into video opens correct video', function() {
+          detailedScorePage.clickPitchVideoIcon(2);
+          detailedScorePage.getVideoPlaylistText(1,1).then(function(text) {
+            assert.equal(text, "Bot 1, 0 out");
+          });
+
+          detailedScorePage.getVideoPlaylistText(1,3).then(function(text) {
+            assert.equal(text, "0-2 Changeup 85.4 MPH");
+          });          
+        }); 
+
+        test.after(function() {
+          detailedScorePage.closeVideoPlaylistModal();
+          detailedScorePage.closePlayByPlayModal();
+        });
+      });
+    });
 
     test.describe('#Reports', function() {
       test.describe('#Report: Traditional', function() {
@@ -374,10 +431,48 @@ test.describe('#DetailedScore Page', function() {
         });
       });  
 
-      test.after(function() {
+      test.it('close video playlist modal', function() {
         detailedScorePage.closeVideoPlaylistModal();
-      });         
+      });        
+    }); 
+
+    test.describe('#VideoLibrary - selecting "Add All" to existing playlist', function() {
+      test.it('should have correct # of videos', function() {
+        detailedScorePage.addAllVideosToList('Detailed Score Tests');
+        detailedScorePage.closePlayByPlayModal();
+        detailedScorePage.openVideoLibrary();
+        detailedScorePage.openVideoList('Detailed Score Tests');
+        detailedScorePage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 20);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        detailedScorePage.playVideoFromList(1);
+        detailedScorePage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        detailedScorePage.closeVideoPlaylistModal();
+      }); 
     });
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        detailedScorePage.openVideoLibrary();
+        detailedScorePage.deleteListFromLibrary('Detailed Score Tests');
+        
+        detailedScorePage.listExistsInVideoLibrary('Detailed Score Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        detailedScorePage.closeVideoLibrary();
+      });
+    });    
 
     test.describe('#pitch by pitch visuals', function() {
       test.before(function() {

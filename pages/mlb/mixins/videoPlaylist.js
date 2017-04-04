@@ -105,7 +105,7 @@ VideoPlaylist = {
   isPlayByPlayModalDisplayed: function() {
     return this.isDisplayed(this.PLAY_BY_PLAY_MODAL, 2000);
   },
-  closePlayByPlaytModal: function() {
+  closePlayByPlayModal: function() {
     var d = Promise.defer();
     var thiz = this;
 
@@ -281,6 +281,117 @@ VideoPlaylist = {
   closePitchVisualsModal: function() {
     return this.click(this.PITCH_VISUALS_MODAL_CLOSE_BTN());
   },  
+
+  // VideoLibrary
+  addAllVideosToNewList: function(listName) {
+    var btnLocator = By.css("tmn-playlist-add-all paper-button");
+    var optionLocator = By.css("tmn-playlistadditem-menu paper-item:nth-of-type(2)");
+    var createNewBtn = By.css("tmn-playlist-add-dialog .iron-selected paper-button");
+    var inputLocator = By.css("tmn-playlist-add-dialog input");
+    var submitBtnLocator = By.css("tmn-playlist-add-dialog #createBtn");
+    var overlayLocator = By.css("iron-overlay-backdrop");
+    this.click(btnLocator);
+    this.click(optionLocator);
+    this.click(createNewBtn);
+    this.sendKeys(inputLocator, listName);
+    this.click(submitBtnLocator);
+    return this.waitUntilStaleness(overlayLocator, 10000);
+  },
+  addAllVideosToList: function(listName) {
+    var btnLocator = By.css("tmn-playlist-add-all paper-button");
+    var optionLocator = By.css("tmn-playlistadditem-menu paper-item:nth-of-type(2)");
+    var listOptionLocator = By.xpath(`.//tmn-playlist-add-dialog/.//div[contains(@class, 'playlistTitle')][text()='${listName}']`);
+    this.click(btnLocator);
+    this.click(optionLocator);
+    return this.click(listOptionLocator);
+  },
+  addVideoToNewList: function(videoNum, listName) {
+    var addVideoLocator = By.xpath(`.//div[not(contains(@class, 'hidden'))]/div/div/div/table/tbody/tr[contains(@data-tmn-row-type,'row')][${videoNum}]/td[1]/tmn-playlistadditem/paper-icon-button/iron-icon`);
+    var optionLocator = By.css("tmn-playlistadditem-menu paper-item:nth-of-type(2)");
+    var createNewLocator = By.css("tmn-playlist-add-dialog .iron-selected paper-button");
+    var inputLocator = By.css("tmn-playlist-add-dialog input");
+    var submitBtnLocator = By.css("tmn-playlist-add-dialog #createBtn");
+    this.click(addVideoLocator);
+    this.click(optionLocator);
+    this.click(createNewLocator);
+    this.sendKeys(inputLocator, listName);
+    return this.click(submitBtnLocator);
+  },
+  addVideoToList: function(videoNum, listName) {
+    var addVideoLocator = By.xpath(`.//div[not(contains(@class, 'hidden'))]/div/div/div/table/tbody/tr[contains(@data-tmn-row-type,'row')][${videoNum}]/td[1]/tmn-playlistadditem/paper-icon-button/iron-icon`);
+    var optionLocator = By.xpath(`.//tmn-callout-menu/div/paper-menu/div/paper-item[text()='${listName}']`)
+    this.click(addVideoLocator);
+    return this.click(optionLocator);
+  },
+  pbpRemoveVideoFromList: function(videoNum) {
+    var removeVideoLocator = By.xpath(`.//div[not(contains(@class, 'hidden'))]/div/div/div/table/tbody/tr[contains(@data-tmn-row-type,'row')][${videoNum}]/td[1]/tmn-playlistadditem/paper-icon-button/iron-icon`);
+    return this.click(removeVideoLocator);
+    
+  },
+  openVideoList: function(listName) {
+    var locator = By.xpath(`.//tmn-sidebar-panel/.//paper-item-body/div[contains(@class, 'tmn-playlist-summary')][1][text()='${listName}']`);
+    var sidebarPanelLocator = By.css("tmn-sidebar-panel #mainContainer tmn-playlist-summarylist");
+    this.click(locator);
+    return this.waitUntilStaleness(sidebarPanelLocator, 5000);
+
+  },
+  navigateBackToListIndex: function() {
+    var locator = By.xpath(".//tmn-playlist-itemlist/.//paper-icon-button[@icon='tmn-icons:arrow-back']/iron-icon");
+    return this.click(locator);
+  },
+  getVideoCountFromList: function() {
+    var locator = By.css(".playlistItemContent paper-icon-item");
+    return this.getElementCount(locator);
+  },
+  playVideoFromList: function(videoNum) {
+    var locator = By.css(`.playlistItemContent paper-icon-item:nth-of-type(${videoNum}) iron-icon`);
+    var modalLocator = By.id('videoModaladaptor');
+    return this.click(locator);
+  },
+  removeVideoFromList: function(videoNum) {
+    var locator = By.xpath(`.//div[contains(@class, 'playlistItemContent')]/paper-icon-item/paper-icon-button[${videoNum}]`);
+    var sidebarPanelLocator = By.css("tmn-sidebar-panel #mainContainer tmn-playlist-summarylist");
+    this.click(locator);
+    return this.waitUntilStaleness(sidebarPanelLocator, 5000);
+  },
+  changeNameOfList: function(listName, newListName) {
+    var optionsLocator = By.xpath(`.//tmn-sidebar/.//tmn-playlist-summary/paper-icon-item[paper-item-body/div[text()='${listName}']]/paper-icon-button`);
+    var renameLocator = By.xpath(".//tmn-playlist-summary/.//div[contains(@class, 'selectable-content')]/paper-item[text()='Rename']");
+    var inputLocator = By.css("tmn-playlist-summarylist tmn-confirmation-dialog input");
+    var submitBtnLocator = By.xpath(".//tmn-playlist-summarylist/.//tmn-confirmation-dialog/.//paper-button[text()='Rename']");
+    this.click(optionsLocator);
+    this.click(renameLocator);
+    this.clear(inputLocator);
+    this.sendKeys(inputLocator, newListName);
+    return this.click(submitBtnLocator);
+  },
+  deleteListFromLibrary: function(listName) {
+    var optionsLocator = By.xpath(`.//tmn-sidebar/.//tmn-playlist-summary/paper-icon-item[paper-item-body/div[text()='${listName}']]/paper-icon-button`);
+    var deleteLocator = By.xpath(`.//tmn-sidebar/.//tmn-playlist-summary/paper-icon-item[paper-item-body/div[text()='${listName}']]/tmn-playlist-edit-menu/..//paper-item[text()='Delete']`);
+    var confirmationLocator = By.xpath(".//tmn-playlist-summarylist/.//tmn-confirmation-dialog/paper-dialog[not(contains(@aria-hidden, 'true'))]/.//paper-button[text()='Delete Playlist']");
+    var containerLocator = By.css("tmn-sidebar-panel #mainContainer");
+    this.click(optionsLocator);
+    this.click(deleteLocator);
+    this.click(confirmationLocator);
+    return this.waitUntilStaleness(containerLocator, 5000);
+
+  },
+  openVideoLibrary: function() {
+    var locator = By.css("tmn-sidebar #externalToggle iron-icon");
+    return this.click(locator);
+  },
+  closeVideoLibrary: function() {
+    var locator = By.xpath(".//tmn-sidebar-panel/.//paper-toolbar/.//paper-icon-button[@icon='icons:close']");
+    return this.click(locator);
+  },
+  listExistsInVideoLibrary: function(listName) {
+    var d = Promise.defer();
+    var locator = By.css("tmn-sidebar-panel paper-item-body .tmn-playlist-summary:nth-of-type(1)");
+    this.getTextArray(locator).then(function(textArray) {
+       d.fulfill(textArray.indexOf(listName) != -1);
+    });
+    return d.promise;
+  }
 }
 
 module.exports = VideoPlaylist;

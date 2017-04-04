@@ -49,20 +49,10 @@ umpirePage = new UmpirePage(driver)
 // Constants
 // var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
-var url = "https://dodgers.trumedianetworks.com/baseball/team-statcast/San%20Francisco%20Giants/137/overview/StatcastFieldingModel?is=true&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D"
+var url = "https://dodgers-staging.trumedianetworks.com:3005/baseball/team-multi-filter-batting/BOS/111?pc=%7B%22bvism%22%3A%22BA%22%2C%22bvism2%22%3A%22sync%22%7D&is=true&t=%7B%22so%22%3A%22DEFAULT%22%2C%22oc%22%3A%22%5BBA%5D%22%7D&f=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseason%22%3A%5B%222016%22%5D%7D&fbot=%7B%22bgt%22%3A%5B%22reg%22%5D%2C%22bseason%22%3A%5B%222017%22%5D%7D"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-filters.changeValuesForDateSidebarFilter('Date Range:', '2016-4-4', '2016-4-4')
 
-teamPage.getStatcastFieldingBallCount().then(function(count) {
-  console.log(count)
-})
-
-
-
-var TeamPage = require('./pages/mlb/teams/team_page.js');
-teamPage = new TeamPage(driver);
-teamPage.clickStatcastFieldingPlay(1)

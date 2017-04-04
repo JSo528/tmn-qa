@@ -11,18 +11,22 @@ var Filters = require('../../../pages/mlb/filters.js');
 var PlayerPage = require('../../../pages/mlb/players/player_page.js');
 
 var navbar, filters, playerPage;
+var playerURL = '/baseball/player-batting/Jose%20Altuve/514888/overview/BattingRate';
 
 test.describe('#Player Batting Section', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
+    this.timeout(120000);
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     playerPage = new PlayerPage(driver);
 
-    navbar.search('Jose Altuve', 1);
+    playerPage.visit(url+playerURL);
   });  
 
   test.it('should be on Jose Altuve 2016 player page', function() {
     playerPage.goToSection('batting');
+    filters.removeSelectionFromDropdownFilter("Seasons:");
+    filters.addSelectionToDropdownFilter("Seasons:", 2016);
     playerPage.getPlayerName().then(function(text) {
       assert.equal( text, 'Jose Altuve');
     });
@@ -60,7 +64,7 @@ test.describe('#Player Batting Section', function() {
 
       test.it('selecting a heat map rectangle updates the data table', function() {
         playerPage.getOverviewTableStat(6,5).then(function(count) {
-          assert.equal(count, 324, 'correct number of pitches');
+          assert.equal(count, 322, 'correct number of pitches');
         });              
       });            
 
@@ -221,15 +225,44 @@ test.describe('#Player Batting Section', function() {
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        playerPage.addVideoToNewList(1, 'Player Batting Tests');
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.listExistsInVideoLibrary('Player Batting Tests').then(function(exists) {
+          assert.equal(exists, true, 'Player Batting Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        playerPage.openVideoList('Player Batting Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });     
 
     test.describe("#Reports", function() {
       var reports = [
         { type: 'Counting', topStat: 216, statType: "H" },  
         { type: 'Pitch Rates', topStat: "36.4%", statType: "Foul%" },  
-        { type: 'Pitch Count', topStat: 1132, statType: "InZone#" },  
+        { type: 'Pitch Count', topStat: 1124, statType: "InZone#" },  
         { type: 'Pitch Types', topStat: "4.8%", statType: "Sinker%" },  
         { type: 'Pitch Type Counts', topStat: 118, statType: "Sinker#" },  
         { type: 'Pitch Locations', topStat: "48.0%", statType: "LowHalf%" },  
@@ -258,7 +291,7 @@ test.describe('#Player Batting Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -339,9 +372,32 @@ test.describe('#Player Batting Section', function() {
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Batting Tests');
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Batting Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(2);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Batted Ball: Hard Ground Ball) from sidebar displays correct data', function() {
@@ -368,7 +424,7 @@ test.describe('#Player Batting Section', function() {
 
   // Splits Section
   test.describe("#Subsection: Splits", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("splits");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -397,7 +453,7 @@ test.describe('#Player Batting Section', function() {
       var reports = [
         { type: 'Counting', topStat: 128, statType: "H" },  
         { type: 'Pitch Rates', topStat: "0.0%", statType: "Foul%" },  
-        { type: 'Pitch Count', topStat: 258, statType: "InZone#" },  
+        { type: 'Pitch Count', topStat: 256, statType: "InZone#" },  
         { type: 'Pitch Types', topStat: "6.7%", statType: "Sinker%" },  
         { type: 'Pitch Type Counts', topStat: 23, statType: "Sinker#" },  
         { type: 'Pitch Locations', topStat: "49.4%", statType: "LowHalf%" },  
@@ -405,7 +461,7 @@ test.describe('#Player Batting Section', function() {
         { type: 'Hit Types', topStat: 152, statType: "Ground#" },  
         { type: 'Hit Locations', topStat: "32.2%", statType: "HLftCtr%" },  
         { type: 'Home Runs', topStat: 12, statType: "HRPull" },  
-        { type: 'Exit Data', topStat: 0.007, statType: "ExSLGDf" },  
+        { type: 'Exit Data', topStat: 0.008, statType: "ExSLGDf" },  
         
       ];
       reports.forEach(function(report) {
@@ -426,55 +482,94 @@ test.describe('#Player Batting Section', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
-    test.describe('when selecting filter (Batted Ball Angle Range: 0 - 10)', function() {
-      test.before(function() {
-        filters.changeFilterGroupDropdown('PA');
-        filters.changeValuesForRangeSidebarFilter('Batted Ball Angle Range:', 0, 10);
-      });
-      
-      test.it('should show the correct at bat header text', function() {
-        playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "Vs RHP N. Vincent (SEA), Bot 11, 1 Out");
+    test.describe('#filters', function() {
+      test.describe('when selecting filter (Batted Ball Angle Range: 0 - 10)', function() {
+        test.it('test setup', function() {
+          filters.changeFilterGroupDropdown('PA');
+          filters.changeValuesForRangeSidebarFilter('Batted Ball Angle Range:', 0, 10);
+        });
+        
+        test.it('should show the correct at bat header text', function() {
+          playerPage.getMatchupsAtBatHeaderText(1).then(function(text) {
+            assert.equal(text, "Vs RHP N. Vincent (SEA), Bot 11, 1 Out");
+          });
+        });
+
+        test.it('should show the correct row data', function() {
+          playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
+            assert.equal(pitch, 'Fastball');
+          });
+          playerPage.getMatchupsPitchText(1,7).then(function(pitch) {
+            assert.equal(pitch, 'Single on a Line Drive', '1st At Bat Result Col');
+          });
         });
       });
 
-      test.it('should show the correct row data', function() {
-        playerPage.getMatchupsPitchText(1,4).then(function(pitch) {
-          assert.equal(pitch, 'Fastball');
+      test.describe('when clicking flat view tab', function() {
+        test.it('should show the correct stats', function() {
+          playerPage.clickFlatViewTab();
+          playerPage.getFlatViewPitchText(1,2).then(function(num) {
+            assert.equal(num, '5', 'row 1 Num (pitches) col');
+          });
+
+          playerPage.getFlatViewPitchText(1,3).then(function(count) {
+            assert.equal(count, '1-2', 'row 1 count');
+          });
         });
-        playerPage.getMatchupsPitchText(1,7).then(function(pitch) {
-          assert.equal(pitch, 'Single on a Line Drive', '1st At Bat Result Col');
-        });
+      })
+
+      test.after(function() {
+        filters.closeDropdownFilter('Batted Ball Angle Range:');
       });
     });
 
-    test.describe('when clicking flat view tab', function() {
-      test.it('should show the correct stats', function() {
-        playerPage.clickFlatViewTab();
-        playerPage.getFlatViewPitchText(1,2).then(function(num) {
-          assert.equal(num, '5', 'row 1 Num (pitches) col');
-        });
-
-        playerPage.getFlatViewPitchText(1,3).then(function(count) {
-          assert.equal(count, '1-2', 'row 1 count');
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Batting Tests');
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Batting Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
         });
       });
-    })
 
-    test.after(function() {
-      filters.closeDropdownFilter('Batted Ball Angle Range:');
-    });
-  });
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.pbpRemoveVideoFromList(1, 'Player Batting Tests');
+        playerPage.openVideoLibrary();
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoLibrary();
+      });
+    }); 
+  });        
 
   // Occurences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -494,10 +589,11 @@ test.describe('#Player Batting Section', function() {
 
   // Multi-Filter
   test.describe('#SubSection: Multi-Filter', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
+      playerPage.changeMultiFilterBottomSeason(2016);
     });
 
     test.it('should show the correct data initially', function() {
@@ -571,7 +667,7 @@ test.describe('#Player Batting Section', function() {
 
   // Comps
   test.describe('#SubSection: Comps', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("comps");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -591,7 +687,7 @@ test.describe('#Player Batting Section', function() {
 
   // Matchups
   test.describe('#SubSection: Matchups', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("matchups");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -610,6 +706,7 @@ test.describe('#Player Batting Section', function() {
       });
     });
 
+    // Video Playlist
     test.it('video playlist displays correct side information', function() {
       playerPage.clickPitchVideoIcon(1);
       playerPage.getVideoPlaylistText(2,1).then(function(text) {
@@ -619,12 +716,49 @@ test.describe('#Player Batting Section', function() {
       playerPage.getVideoPlaylistText(2,2).then(function(text) {
         assert.equal(text, 'Vs RHP F. Hernandez (SEA)');
       });      
-    });  
+    });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.addVideoToList(1, 'Player Batting Tests');
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Batting Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        playerPage.pbpRemoveVideoFromList(1, 'Player Batting Tests');
+        playerPage.openVideoLibrary();
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoLibrary();
+      });
+    }); 
   });  
 
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("vsTeams");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -691,7 +825,7 @@ test.describe('#Player Batting Section', function() {
 
   // Vs. Pitchers
   test.describe("#Subsection: Vs Pitchers", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("vsPitchers");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -767,7 +901,7 @@ test.describe('#Player Batting Section', function() {
 
   // Defensive Positioning
   test.describe("#Subsection: Defensive Positioning", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       playerPage.goToSubSection("defensivePositioning");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -777,7 +911,7 @@ test.describe('#Player Batting Section', function() {
     test.describe('#OutfieldPositioning', function() {  
       test.it('should show correct # of plays on chart', function() {
         playerPage.getStatcastFieldingBallCount().then(function(count) {
-          assert.equal(count, 226);
+          assert.equal(count, 221);
         })
       });
 
@@ -846,9 +980,50 @@ test.describe('#Player Batting Section', function() {
 
       test.after(function() {
         playerPage.closeVideoPlaylistModal();
-        playerPage.closePlayByPlaytModal();
       });
     });
+
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should add video', function() {
+        playerPage.addVideoToList(1, 'Player Batting Tests');
+      })
+
+      test.it('should have correct # of videos', function() {
+        playerPage.closePlayByPlayModal();
+        playerPage.openVideoLibrary();
+        playerPage.openVideoList('Player Batting Tests');
+        playerPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        playerPage.playVideoFromList(1);
+        playerPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        playerPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        playerPage.openVideoLibrary();
+        playerPage.navigateBackToListIndex();
+        playerPage.deleteListFromLibrary('Player Batting Tests');
+        
+        playerPage.listExistsInVideoLibrary('Player Batting Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        playerPage.closeVideoLibrary();
+      });
+    });         
 
     test.describe('changing ballpark', function() {
       test.it('should change background image for fielding widget', function() {

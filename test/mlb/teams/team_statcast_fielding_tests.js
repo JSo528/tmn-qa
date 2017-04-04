@@ -28,6 +28,9 @@ test.describe('#Team StatcastFielding Section', function() {
   });  
 
   test.it('should be on San Francisco Giants 2016 team page', function() {
+    filters.removeSelectionFromDropdownFilter("Seasons:");
+    filters.addSelectionToDropdownFilter("Seasons:", 2016);
+
     teamPage.getTeamName().then(function(text) {
       assert.equal( text, 'San Francisco Giants');
     });
@@ -37,17 +40,17 @@ test.describe('#Team StatcastFielding Section', function() {
   test.describe("#Subsection: Overview", function() {
     test.it('should initially have the correct data', function() {
       teamPage.getOverviewTableStat(3).then(function(ofAirBall) {
-        assert.equal(ofAirBall, 1425, 'OFAirBall');
+        assert.equal(ofAirBall, 1460, 'OFAirBall');
       });        
     });          
 
     test.it('hitChart should have correct # of balls in play initially', function() {
       teamPage.getHitChartHitCount('single').then(function(count) {
-        assert.equal(count, 736, 'correct number of singles');
+        assert.equal(count, 758, 'correct number of singles');
       });
       
       teamPage.getHitChartHitCount('double').then(function(count) {
-        assert.equal(count, 225, 'correct number of doubles');
+        assert.equal(count, 228, 'correct number of doubles');
       });        
 
       teamPage.getHitChartHitCount('triple').then(function(count) {
@@ -172,18 +175,18 @@ test.describe('#Team StatcastFielding Section', function() {
       test.it('clicking on a stat opens the play by play modal', function() {
         teamPage.clickOverviewTableStat(8);
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, 'RHP S. Casilla (SF) Vs RHB M. Machado (BAL), Top 9, 1 Out');
+          assert.equal(text, 'RHP J. Nathan (SF) Vs RHB N. Hundley (COL), Bot 9, 1 Out');
         });
       });
 
       test.it('clicking into video opens correct video', function() {
         teamPage.clickPitchVideoIcon(1);
         teamPage.getVideoPlaylistText(1,1).then(function(text) {
-          assert.equal(text, "Top 9, 1 out");
+          assert.equal(text, "Bot 9, 1 out");
         });
 
         teamPage.getVideoPlaylistText(1,3).then(function(text) {
-          assert.equal(text, "2.54s HT | 24.5ft | 1.0s RT | 0 Jmp | 0.779821 Eff | 12.1mph | 70.7ft to Wall | 97.0% outProb |");
+          assert.equal(text, "5.09s HT | 93.2ft | 1.3s RT | 2.34s Jmp | 0.966776 Eff | 19.6mph | 146.6ft to Wall | 97.1% outProb |");
         });          
       }); 
 
@@ -192,15 +195,53 @@ test.describe('#Team StatcastFielding Section', function() {
         teamPage.clickSimiliarPlaysIcon(1);
         teamPage.getSimiliarPlaysHeader().then(function(title) {
           // need to use match since this is dynamic
-          assert.match(title, /50 most similar fielding plays to failed out by Angel Pagan in LF at AT&T Park \(8\/14\/2016\)/, 'modal title');
+          assert.match(title, /most similar fielding plays to failed out by Angel Pagan in LF at Coors Field \(9\/7\/2016\)/, 'modal title');
         })
       });
 
       test.after(function() {
         teamPage.closeSimiliarPlaysModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist from flat view', function() {     
+      test.it('should create new playlist', function() {
+        teamPage.addVideoToNewList(1, 'Team StatcastFielding Tests');
+      });
+
+      test.it('playlist should exist', function() {
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.listExistsInVideoLibrary('Team StatcastFielding Tests').then(function(exists) {
+          assert.equal(exists, true, 'Team StatcastFielding Tests playlist exists in library');
+        });
+      });
+
+      // TODO - turn these tests back on once feature is fixed
+
+      // test.it('should have correct # of videos', function() {
+      //   teamPage.openVideoList('Team StatcastFielding Tests');
+      //   teamPage.getVideoCountFromList().then(function(count) {
+      //     assert.equal(count, 1);
+      //   });
+      // });
+
+      // test.it('should be able to play video', function() {
+      //   teamPage.playVideoFromList(1);
+      //   teamPage.isVideoModalDisplayed().then(function(displayed){
+      //     assert.equal(displayed, true);
+      //   });        
+      // });
+
+      // test.it('closing video modal', function() {
+      //   teamPage.closeVideoPlaylistModal();
+      // });
+
+      test.it('closing video library', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });     
 
     test.describe("#filters", function() {
       test.it('adding filter: (Run Diff After Inning: 1 to 3) from sidebar displays correct data', function() {
@@ -208,7 +249,7 @@ test.describe('#Team StatcastFielding Section', function() {
         filters.changeValuesForRangeSidebarFilter('Run Diff After Inning:', 1, 3);
 
         teamPage.getOverviewTableStat(3).then(function(stat) {
-          assert.equal(stat, 143, 'OFAirBall');
+          assert.equal(stat, 144, 'OFAirBall');
         });
       });
 
@@ -239,10 +280,8 @@ test.describe('#Team StatcastFielding Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getOverviewTableStat(3).then(function(stat) {
-          assert.equal(stat, 1425, '# of OFAirBall');
-        });
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2016);
       }); 
     });
 
@@ -250,8 +289,8 @@ test.describe('#Team StatcastFielding Section', function() {
     test.describe("#Reports", function() {
       var reports = [
         { type: 'Outfielder Air Defense Team Model', topStat: '107.0%', statType: "ExRange%" },  
-        { type: 'Outfielder Air Defense Team Skills', topStat: '58.4%', statType: "OFAirOut%" },  
-        { type: 'Outfield Batter Positioning', topStat: '102.6%', statType: "OFWPosAirOut%" },  
+        { type: 'Outfielder Air Defense Team Skills', topStat: '58.2%', statType: "OFAirOut%" },  
+        { type: 'Outfield Batter Positioning', topStat: '102.8%', statType: "OFWPosAirOut%" },  
       ];
       reports.forEach(function(report) {
         test.it("selecting " + report.type + " shows the correct stat value for " + report.statType, function() {
@@ -336,9 +375,38 @@ test.describe('#Team StatcastFielding Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        teamPage.addVideoToNewList(1, 'Team StatcastFielding Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.listExistsInVideoLibrary('Team StatcastFielding Tests').then(function(exists) {
+          assert.equal(exists, true, 'Team StatcastFielding Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        teamPage.openVideoList('Team StatcastFielding Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
 
     test.describe("#filters", function() {
       test.it('adding filter: (Batted Ball: Line Drive) from sidebar displays correct data', function() {
@@ -348,8 +416,8 @@ test.describe('#Team StatcastFielding Section', function() {
           assert.equal(player, 'Kelby Tomlinson');
         });
 
-        teamPage.getRosterTableStat(3,7).then(function(stat) {
-          assert.equal(stat,  '103.4%', 'Gorkys Hernandez ExRange%');
+        teamPage.getRosterTableStat(1,10).then(function(stat) {
+          assert.equal(stat,  '217.4%', 'Kebly Tomlinson OFWAirOut%');
         });          
       });
     });
@@ -442,9 +510,35 @@ test.describe('#Team StatcastFielding Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should add video', function() {
+        teamPage.addVideoToList(1, 'Team StatcastFielding Tests');
+      });
+
+      test.it('should have correct # of videos', function() {
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team StatcastFielding Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });       
 
     test.describe("#filters", function() {
       test.it('adding filter: (Forward Velocity: 80-120) from sidebar displays correct data', function() {
@@ -499,14 +593,6 @@ test.describe('#Team StatcastFielding Section', function() {
           assert.equal(stat, '5/11/2016', 'row 1 date');
         });                           
       });            
-      
-      test.it('clicking "default filters" returns filters back to default state', function() {
-        filters.clickDefaultFiltersBtn();
-
-        teamPage.getGameLogTableStat(1,3).then(function(stat) {
-          assert.equal(stat, '10/2/2016', 'row 1 date');
-        });
-      }); 
     });
   });     
 
@@ -525,26 +611,17 @@ test.describe('#Team StatcastFielding Section', function() {
       
       test.it('should show the correct at bat footer text', function() {
         teamPage.getMatchupsAtBatFooterText(1).then(function(text) {
-          assert.equal(text, "Adrian Gonzalez Lines Out Softly To Left Fielder Angel Pagan.");
+          assert.equal(text, "Josh Donaldson Singles On A Line Drive To Left Fielder Gregor Blanco.");
         });
       });
 
       test.it('should show the correct row data', function() {
         teamPage.getMatchupsPitchText(1,2).then(function(hang) {
-          assert.equal(hang, '3.78s', 'row 1 hang');
+          assert.equal(hang, '1.62s', 'row 1 hang');
         });
         teamPage.getMatchupsPitchText(1,3).then(function(dist) {
-          assert.equal(dist, '33.4ft', 'row 1 dist');
+          assert.equal(dist, '41.8ft', 'row 1 dist');
         });
-        teamPage.getMatchupsPitchText(1,4).then(function(react) {
-          assert.equal(react, '1.5s', 'row 1 react');
-        });
-        teamPage.getMatchupsPitchText(1,5).then(function(jump) {
-          assert.equal(jump, '2.64s', 'row 1 jump');
-        });
-        teamPage.getMatchupsPitchText(1,6).then(function(pathEff) {
-          assert.equal(pathEff, '90.5%', 'row 1 PathEff');
-        });        
       });
 
       test.describe('clicking similar plays icon', function() {
@@ -568,18 +645,75 @@ test.describe('#Team StatcastFielding Section', function() {
         test.it('should show the correct stats', function() {
           teamPage.clickFlatViewTab();
           teamPage.getFlatViewPitchText(1,9).then(function(speed) {
-            assert.equal(speed, '9.7mph', 'row 1 speed');
+            assert.equal(speed, '11.0mph', 'row 1 speed');
           });
 
           teamPage.getFlatViewPitchText(2,8).then(function(accel) {
-            assert.equal(accel, '0.33s', 'row 2 accel');
+            assert.equal(accel, '0.30s', 'row 2 accel');
           });
         });
       });
+
+      test.after(function() {
+        filters.closeDropdownFilter('Launch Angle:');
+      });
     });
 
-    test.after(function() {
-      filters.closeDropdownFilter('Launch Angle:');
-    });
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should be able to add video', function() {
+        teamPage.addVideoToList(1, 'Team StatcastFielding Tests');
+      })
+
+      test.it('should have correct # of videos', function() {
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team StatcastFielding Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.pbpRemoveVideoFromList(1, 'Team StatcastFielding Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });  
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        teamPage.openVideoLibrary();
+        teamPage.navigateBackToListIndex();
+        teamPage.deleteListFromLibrary('Team StatcastFielding Tests');
+        
+        teamPage.listExistsInVideoLibrary('Team StatcastFielding Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });     
   });
 });

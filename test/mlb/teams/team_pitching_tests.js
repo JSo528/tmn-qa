@@ -30,6 +30,8 @@ test.describe('#Team Pitching Section', function() {
   });  
 
   test.it('should be on AAA - El Paso Chihuahuas 2016 team page', function() {
+    filters.removeSelectionFromDropdownFilter("Seasons:");
+    filters.addSelectionToDropdownFilter("Seasons:", 2016);
     teamPage.getTeamName().then(function(text) {
       assert.equal( text, 'El Paso Chihuahuas (SD)');
     });
@@ -183,16 +185,14 @@ test.describe('#Team Pitching Section', function() {
         filters.changeValuesForRangeSidebarFilter('Forward Velocity:', '', 90);
 
         teamPage.getOverviewTableStat(3).then(function(pitches) {
-          assert.equal(pitches, 2, 'Pitches');
+          assert.equal(pitches, 1, 'Pitches');
         });
       });            
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getOverviewTableStat(3).then(function(pitches) {
-          assert.equal(pitches, 20866, 'Pitches');
-        });
+        filters.removeSelectionFromDropdownFilter("Seasons:");
+        filters.addSelectionToDropdownFilter("Seasons:", 2016);
       });      
     });
 
@@ -218,9 +218,38 @@ test.describe('#Team Pitching Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to new playlist', function() {     
+      test.it('should create new playlist', function() {
+        teamPage.addVideoToNewList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.listExistsInVideoLibrary('Team Pitching Tests').then(function(exists) {
+          assert.equal(exists, true, 'Team Pitching Tests playlist exists in library');
+        });
+      });
+
+      test.it('should have correct # of videos', function() {
+        teamPage.openVideoList('Team Pitching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 1);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });        
 
     test.describe("#Reports", function() {
       var reports = [
@@ -324,9 +353,32 @@ test.describe('#Team Pitching Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
-    });    
+    });  
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Pitching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(2);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });
 
     test.describe("#filters", function() {
       test.it('adding filter: (Batter Hand: Righty) from dropdown displays correct data', function() {
@@ -456,9 +508,48 @@ test.describe('#Team Pitching Section', function() {
 
       test.after(function() {
         teamPage.closeVideoPlaylistModal();
-        teamPage.closePlayByPlaytModal();
       });
     });    
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Pitching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.clickGameLogTableStat(1,5);
+        teamPage.pbpRemoveVideoFromList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });        
 
     test.describe("#filters", function() {
       test.it('adding filter: (Batted Ball: Ground Ball) from sidebar displays correct data', function() {
@@ -513,10 +604,6 @@ test.describe('#Team Pitching Section', function() {
       
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getGameLogTableStat(1,3).then(function(stat) {
-          assert.equal(stat, '9/5/2016', 'row 1 date');
-        });
       }); 
     });
   });  
@@ -606,7 +693,7 @@ test.describe('#Team Pitching Section', function() {
       
       test.it('should show the correct at bat header text', function() {
         teamPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-          assert.equal(text, "Vs RHB C. Nelson (ALB), Top 1, 1 Out");
+          assert.equal(text, "Vs RHB C. Nelson (ABQ), Top 1, 1 Out");
         });
       });
 
@@ -614,7 +701,7 @@ test.describe('#Team Pitching Section', function() {
         teamPage.getMatchupsPitchText(1,4).then(function(pitch) {
           assert.equal(pitch, 'Fastball');
         });
-        teamPage.getMatchupsPitchText(1,6).then(function(pitch) {
+        teamPage.getMatchupsPitchText(1,7).then(function(pitch) {
           assert.equal(pitch, 'Fly Out');
         });
       });
@@ -629,11 +716,50 @@ test.describe('#Team Pitching Section', function() {
           assert.equal(count, '1-1', 'row 1 count is 1-1');
         });
       });
+
+      test.after(function() {
+        filters.closeDropdownFilter('Pitch Result:');
+      });
     });
 
-    test.after(function() {
-      filters.closeDropdownFilter('Pitch Result:');
-    });
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Pitching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - removing video thru pbp', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.pbpRemoveVideoFromList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 2);
+        });
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });         
   });
 
   // Occurences & Streaks
@@ -662,6 +788,7 @@ test.describe('#Team Pitching Section', function() {
       teamPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
+      teamPage.changeMultiFilterBottomSeason(2016);
     });
 
     test.it('should show the correct data initially', function() {
@@ -698,13 +825,12 @@ test.describe('#Team Pitching Section', function() {
 
     // doing less than because of the same reason as above
     test.it('drawing a box on the heat map should update the hit chart for both sections', function() {
-      // driver.sleep(1000);
       teamPage.getMultiFilterHitChartHitCount('top').then(function(count) {
-        assert.isAtMost(count, 75, 'correct number of hits for top hitChart');
+        assert.isAtMost(count, 76, 'correct number of hits for top hitChart');
       });      
 
       teamPage.getMultiFilterHitChartHitCount('bottom').then(function(count) {
-        assert.isAtMost(count, 75, 'correct number of hits for bottom hitChart');
+        assert.isAtMost(count, 76, 'correct number of hits for bottom hitChart');
       });            
     }); 
   });
@@ -748,8 +874,48 @@ test.describe('#Team Pitching Section', function() {
       teamPage.getMatchupsAtBatHeaderText(1).then(function(sectionHeaderText) {
         assert.equal(sectionHeaderText, 'Vs RHB Y. Puig (OKC), Bot 1, 1 Out', '1st pitch log');
       });
-    });   
-  });  
+    });
+
+    // Video Library
+    test.describe('#VideoLibrary - add video to existing playlist', function() {     
+      test.it('should have correct # of videos', function() {
+        teamPage.addVideoToList(1, 'Team Pitching Tests');
+        teamPage.closePlayByPlayModal();
+        teamPage.openVideoLibrary();
+        teamPage.openVideoList('Team Pitching Tests');
+        teamPage.getVideoCountFromList().then(function(count) {
+          assert.equal(count, 3);
+        });
+      });
+
+      test.it('should be able to play video', function() {
+        teamPage.playVideoFromList(1);
+        teamPage.isVideoModalDisplayed().then(function(displayed){
+          assert.equal(displayed, true);
+        });        
+      });
+
+      test.it('closing video modal', function() {
+        teamPage.closeVideoPlaylistModal();
+      });
+    });    
+
+    test.describe('#VideoLibrary - deleting playlist', function() {
+      test.it('should remove playlist', function() {
+        teamPage.openVideoLibrary();
+        teamPage.navigateBackToListIndex();
+        teamPage.deleteListFromLibrary('Team Pitching Tests');
+        
+        teamPage.listExistsInVideoLibrary('Team Pitching Tests').then(function(exists) {
+          assert.equal(exists, false);
+        })
+      });
+
+      test.it('close video library', function() {
+        teamPage.closeVideoLibrary();
+      });
+    });     
+  });     
 
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
