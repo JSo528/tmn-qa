@@ -10,7 +10,7 @@ var ScoresPage = require('../../../pages/mlb/scores/scores_page.js');
 var navbar, scoresPage;
 
 test.describe('#Scores Page', function() {
-  test.before(function() {
+  test.it('test setup', function() {
     navbar  = new Navbar(driver);
     scoresPage = new ScoresPage(driver);
   });

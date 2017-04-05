@@ -12,7 +12,7 @@ var navbar, filters, teamsPage, teamsPage, extensions;
 var battingAverageCol, winsCol, eraCol, ksCol, slaaCol, statCol;
 
 test.describe('#Teams Page', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
@@ -29,7 +29,7 @@ test.describe('#Teams Page', function() {
 
   test.describe('#Section: Batting', function() {
     test.describe('#SubSection: Stats', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2015);
       });
@@ -101,6 +101,9 @@ test.describe('#Teams Page', function() {
       test.describe('#VideoLibrary - add video to new playlist', function() {     
         test.it('should create new playlist', function() {
           teamsPage.addVideoToNewList(1, 'Teams Tests');
+        });
+
+        test.it('playlist should exist in library', function() {
           teamsPage.closePlayByPlayModal();
           teamsPage.openVideoLibrary();
           teamsPage.listExistsInVideoLibrary('Teams Tests').then(function(exists) {
@@ -541,7 +544,7 @@ test.describe('#Teams Page', function() {
   });
 
   test.describe('#Section: Pitching', function() {
-    test.before(function() {    
+    test.it('test setup', function() {    
       teamsPage.goToSubSection('stats');
       teamsPage.goToSection("pitching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -653,7 +656,7 @@ test.describe('#Teams Page', function() {
 
       // Filters
       test.describe("#filters", function() {
-        test.before(function() {
+        test.it('test setup', function() {
           teamsPage.clickTeamTableColumnHeader(ksCol);
         });
 
@@ -727,7 +730,7 @@ test.describe('#Teams Page', function() {
   });
 
   test.describe('#Section: Catching', function() {
-    test.before(function() {    
+    test.it('test setup', function() {    
       teamsPage.goToSubSection('stats');
       teamsPage.goToSection("catching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -890,10 +893,8 @@ test.describe('#Teams Page', function() {
 
         test.it('clicking "default filters" returns filters back to default state', function() {
           filters.clickDefaultFiltersBtn();
-
-          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
-            assert.equal(slaa, 387.34, 'LA Dodgers SLAA');
-          });
+          filters.removeSelectionFromDropdownFilter("Seasons:");
+          filters.addSelectionToDropdownFilter("Seasons:", 2016);
         });
 
         // TODO - remove once above bug is fixed
@@ -925,7 +926,7 @@ test.describe('#Teams Page', function() {
   });
 
   test.describe('#Section: Statcast Fielding', function() {
-    test.before(function() {    
+    test.it('test setup', function() {    
       teamsPage.goToSubSection('stats');
       teamsPage.goToSection("statcastFielding");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -977,19 +978,15 @@ test.describe('#Teams Page', function() {
         test.it('clicking on a team stat opens the play by play modal', function() {
           teamsPage.clickTeamTableStat(1, 9);
           teamsPage.getMatchupsAtBatHeaderText(1).then(function(text) {
-            assert.equal(text, 'RHP J. Odorizzi (TB) Vs LHB D. Gordon (MIA), Top 4, 0 Out');
+            assert.equal(text, 'RHP E. Volquez (KC) Vs RHB G. Urshela (CLE), Bot 2, 2 Out');
           });
         });
 
         test.it('clicking into video opens correct video', function() {
           teamsPage.clickPitchVideoIcon(2);
           teamsPage.getVideoPlaylistText(1,1).then(function(text) {
-            assert.equal(text, "Top 4, 0 out");
+            assert.equal(text, "Bot 2, 2 out");
           });
-
-          teamsPage.getVideoPlaylistText(1,3).then(function(text) {
-            assert.equal(text, "2.56s HT | 22.7ft | 1.1s RT | 0 Jmp | 0.952217 Eff | 14.7mph | 88.0ft to Wall | 97.9% outProb |");
-          });          
         }); 
 
         test.after(function() {
@@ -1108,15 +1105,11 @@ test.describe('#Teams Page', function() {
 
         test.it('clicking "default filters" returns filters back to default state', function() {
           filters.clickDefaultFiltersBtn();
-
-          teamsPage.getTeamTableStat(1,7).then(function(slaa) {
-            assert.equal(slaa, '111.2%', 'KC OFWAirOut%');
-          });
+          filters.removeSelectionFromDropdownFilter("Seasons:");
+          filters.addSelectionToDropdownFilter("Seasons:", 2015);
         });
 
         test.after(function() {
-          filters.removeSelectionFromDropdownFilter("Seasons:", 2016);
-          filters.addSelectionToDropdownFilter("Seasons:", 2015);
           filters.toggleSidebarFilter('Season Level:', 'MLB', true); // TODO - remove this once default btn is fixed
         });
       });

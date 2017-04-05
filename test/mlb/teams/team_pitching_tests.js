@@ -14,7 +14,7 @@ var TeamPage = require('../../../pages/mlb/teams/team_page.js');
 var navbar, filters, teamsPage, teamPage, teamPage;
 
 test.describe('#Team Pitching Section', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
@@ -225,6 +225,9 @@ test.describe('#Team Pitching Section', function() {
     test.describe('#VideoLibrary - add video to new playlist', function() {     
       test.it('should create new playlist', function() {
         teamPage.addVideoToNewList(1, 'Team Pitching Tests');
+      });
+
+      test.it('playlist should exist in library', function() {
         teamPage.closePlayByPlayModal();
         teamPage.openVideoLibrary();
         teamPage.listExistsInVideoLibrary('Team Pitching Tests').then(function(exists) {
@@ -287,7 +290,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Roster Section
   test.describe("#Subsection: Roster", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("roster");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -427,7 +430,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -610,7 +613,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Splits Section
   test.describe("#Subsection: Splits", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("splits");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -679,14 +682,15 @@ test.describe('#Team Pitching Section', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
     test.describe('when selecting filter (Pitch Result: In Play)', function() {
-      test.before(function() {
+      test.it('test setup', function() {
+        this.timeout(120000);
         filters.changeFilterGroupDropdown('Pitch');
         filters.addSelectionToDropdownSidebarFilter('Pitch Result:', 'In Play');
       });
@@ -764,7 +768,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Occurences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -784,7 +788,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Multi-Filter
   test.describe('#SubSection: Multi-Filter', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -837,7 +841,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Comps
   test.describe('#SubSection: Comps', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("comps");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -857,7 +861,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Matchups
   test.describe('#SubSection: Matchups', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("matchups");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -919,7 +923,7 @@ test.describe('#Team Pitching Section', function() {
 
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("vsTeams");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -1036,17 +1040,13 @@ test.describe('#Team Pitching Section', function() {
 
       test.it('clicking "default filters" returns filters back to default state', function() {
         filters.clickDefaultFiltersBtn();
-
-        teamPage.getVsTableStat(1,2).then(function(pitches) {
-          assert.equal(pitches, 512, 'Omaha Pitches');
-        });
       }); 
     });                 
   });   
 
   // Vs. Hitters
   test.describe("#Subsection: Vs Hitters", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("vsHitters");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);

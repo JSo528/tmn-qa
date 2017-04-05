@@ -14,7 +14,7 @@ var groupsPage, filters, navbar;
 var battingAvgCol, outRateCol, eraCol, slaaCol;
 
 test.describe('#Groups Page', function() {
-  test.before(function() {
+  test.it('test setup', function() {
     groupsPage = new GroupsPage(driver);
     filters  = new Filters(driver);
     navbar  = new Navbar(driver);
@@ -22,7 +22,7 @@ test.describe('#Groups Page', function() {
   });
 
   test.describe('#Section: Batting', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2009);
       filters.removeSelectionFromDropdownFilter("Game Type:");
@@ -72,7 +72,7 @@ test.describe('#Groups Page', function() {
 
     // Filters
     test.describe('#Filters', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.changeFilterGroupDropdown("Situation");
       });
 
@@ -316,7 +316,7 @@ test.describe('#Groups Page', function() {
   });
 
   test.describe('#Section: Pitching', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       groupsPage.goToSection("Pitching");
       
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -349,7 +349,7 @@ test.describe('#Groups Page', function() {
 
     // Filters
     test.describe('#Filters', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.changeFilterGroupDropdown("Game");
       });
 
@@ -421,7 +421,7 @@ test.describe('#Groups Page', function() {
   });
 
   test.describe('#Section: Catching', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       groupsPage.goToSection("Catching");
       
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -434,7 +434,7 @@ test.describe('#Groups Page', function() {
 
     // Filters
     test.describe('#Filters', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.changeFilterGroupDropdown("Pitch");
       });
 

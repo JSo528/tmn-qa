@@ -14,7 +14,7 @@ var umpiresPage, filters, navbar;
 var slaaCol, ballFrmdCol;
 
 test.describe('#Umpires Page', function() {
-  test.before(function() {
+  test.it('test setup', function() {
     umpiresPage = new UmpiresPage(driver);
     filters  = new Filters(driver);
     navbar  = new Navbar(driver);
@@ -66,6 +66,9 @@ test.describe('#Umpires Page', function() {
     test.it('should create new playlist', function() {
       umpiresPage.clickFlatViewTab();
       umpiresPage.addVideoToNewList(1, 'Umpires Tests');
+    });
+
+    test.it('playlist should exist in library', function() {
       umpiresPage.closePlayByPlayModal();
       umpiresPage.openVideoLibrary();
       umpiresPage.listExistsInVideoLibrary('Umpires Tests').then(function(exists) {
@@ -148,7 +151,7 @@ test.describe('#Umpires Page', function() {
 
   // Filters
   test.describe('#Filters', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       filters.changeFilterGroupDropdown("Pitch");
     });
 
@@ -283,7 +286,7 @@ test.describe('#Umpires Page', function() {
 
   // Group By
   test.describe('#Group By', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       filters.addSelectionToDropdownFilter('Seasons:', 2015);
     });
 

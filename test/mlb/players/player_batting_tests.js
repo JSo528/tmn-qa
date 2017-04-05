@@ -232,6 +232,9 @@ test.describe('#Player Batting Section', function() {
     test.describe('#VideoLibrary - add video to new playlist', function() {     
       test.it('should create new playlist', function() {
         playerPage.addVideoToNewList(1, 'Player Batting Tests');
+      });
+
+      test.it('playlist should exist in library', function() {
         playerPage.closePlayByPlayModal();
         playerPage.openVideoLibrary();
         playerPage.listExistsInVideoLibrary('Player Batting Tests').then(function(exists) {

@@ -14,7 +14,7 @@ var navbar, filters, detailedScorePage;
 var gameURL = '/baseball/game-batting/NYY-BAL/2016-10-02/449283';
 
 test.describe('#DetailedScore Page', function() {
-  test.before(function() {
+  test.it('test setup', function() {
     detailedScorePage = new DetailedScorePage(driver);
     filters = new Filters(driver);
     detailedScorePage.visit(url+gameURL);
@@ -100,6 +100,9 @@ test.describe('#DetailedScore Page', function() {
       test.describe('#VideoLibrary - add all videos to new playlist', function() {
         test.it('should create new playlist', function() {
           detailedScorePage.addAllVideosToNewList("Detailed Score Tests");
+        });
+
+        test.it('playlist should exist in library', function() {
           detailedScorePage.closePlayByPlayModal();
           detailedScorePage.openVideoLibrary();
           detailedScorePage.listExistsInVideoLibrary('Detailed Score Tests').then(function(exists) {
@@ -340,7 +343,7 @@ test.describe('#DetailedScore Page', function() {
   });
 
   test.describe('#Section: Pitch By Pitch', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       detailedScorePage.goToSection("pitchByPitch");
     });
 
@@ -475,7 +478,7 @@ test.describe('#DetailedScore Page', function() {
     });    
 
     test.describe('#pitch by pitch visuals', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         detailedScorePage.clickPitchVisualsIcon(1);
       });
 
@@ -505,7 +508,7 @@ test.describe('#DetailedScore Page', function() {
   });   
 
   test.describe('#Section: Pitching Splits', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       detailedScorePage.goToSection("pitchingSplits");
     });
 

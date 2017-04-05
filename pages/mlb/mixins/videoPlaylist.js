@@ -120,7 +120,7 @@ VideoPlaylist = {
   },  
   // Flat View
   getFlatViewPitchText: function(rowNum, col) {
-    var locator = By.xpath(`.//table/tbody/tr[${rowNum}]/td[${col}]`);
+    var locator = By.xpath(`.//div[not(contains(@class, 'hidden'))]/div/div/div/table/tbody/tr[${rowNum}]/td[${col}]`);
     return this.getText(locator, 30000);
   },
 
@@ -355,10 +355,10 @@ VideoPlaylist = {
     return this.waitUntilStaleness(sidebarPanelLocator, 5000);
   },
   changeNameOfList: function(listName, newListName) {
-    var optionsLocator = By.xpath(`.//tmn-sidebar/.//tmn-playlist-summary/paper-icon-item[paper-item-body/div[text()='${listName}']]/paper-icon-button`);
-    var renameLocator = By.xpath(".//tmn-playlist-summary/.//div[contains(@class, 'selectable-content')]/paper-item[text()='Rename']");
-    var inputLocator = By.css("tmn-playlist-summarylist tmn-confirmation-dialog input");
-    var submitBtnLocator = By.xpath(".//tmn-playlist-summarylist/.//tmn-confirmation-dialog/.//paper-button[text()='Rename']");
+    var optionsLocator = By.xpath(`.//paper-icon-item[paper-item-body/div[text()='${listName}']]/paper-icon-button`);
+    var renameLocator = By.xpath(`.//paper-icon-item[paper-item-body/div[text()='${listName}']]/.//paper-item[text()='Rename']`);
+    var inputLocator = By.xpath(`.//paper-icon-item[paper-item-body/div[text()='${listName}']]/.//tmn-confirmation-dialog/.//input`);
+    var submitBtnLocator = By.xpath(`.//paper-icon-item[paper-item-body/div[text()='${listName}']]/.//paper-button[text()='Rename']`);
     this.click(optionsLocator);
     this.click(renameLocator);
     this.clear(inputLocator);
@@ -366,8 +366,8 @@ VideoPlaylist = {
     return this.click(submitBtnLocator);
   },
   deleteListFromLibrary: function(listName) {
-    var optionsLocator = By.xpath(`.//tmn-sidebar/.//tmn-playlist-summary/paper-icon-item[paper-item-body/div[text()='${listName}']]/paper-icon-button`);
-    var deleteLocator = By.xpath(`.//tmn-sidebar/.//tmn-playlist-summary/paper-icon-item[paper-item-body/div[text()='${listName}']]/tmn-playlist-edit-menu/..//paper-item[text()='Delete']`);
+    var optionsLocator = By.xpath(`.//paper-icon-item[paper-item-body/div[text()='${listName}']]/paper-icon-button`);
+    var deleteLocator = By.xpath(`.//paper-icon-item[paper-item-body/div[text()='${listName}']]/.//paper-item[text()='Delete']`);
     var confirmationLocator = By.xpath(".//tmn-playlist-summarylist/.//tmn-confirmation-dialog/paper-dialog[not(contains(@aria-hidden, 'true'))]/.//paper-button[text()='Delete Playlist']");
     var containerLocator = By.css("tmn-sidebar-panel #mainContainer");
     this.click(optionsLocator);

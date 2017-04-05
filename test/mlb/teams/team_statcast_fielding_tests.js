@@ -309,7 +309,7 @@ test.describe('#Team StatcastFielding Section', function() {
 
   // Roster Section
   test.describe("#Subsection: Roster", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("roster");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -382,6 +382,9 @@ test.describe('#Team StatcastFielding Section', function() {
     test.describe('#VideoLibrary - add video to new playlist', function() {     
       test.it('should create new playlist', function() {
         teamPage.addVideoToNewList(1, 'Team StatcastFielding Tests');
+      });
+
+      test.it('playlist should exist in library', function() {
         teamPage.closePlayByPlayModal();
         teamPage.openVideoLibrary();
         teamPage.listExistsInVideoLibrary('Team StatcastFielding Tests').then(function(exists) {
@@ -429,7 +432,7 @@ test.describe('#Team StatcastFielding Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -598,14 +601,14 @@ test.describe('#Team StatcastFielding Section', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
     test.describe('when selecting filter (Launch Angle: 0-30)', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.changeValuesForRangeSidebarFilter('Launch Angle:', 0, 30);
       });
       

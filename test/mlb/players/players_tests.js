@@ -13,7 +13,7 @@ var navbar, playersPage;
 var battingAverageCol, ksPerCol, eraCol, ksCol, slaaCol, statCol;
 
 test.describe('#Players Page', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
     navbar  = new Navbar(driver);  
     filters = new Filters(driver);
     playersPage = new PlayersPage(driver);
@@ -29,7 +29,7 @@ test.describe('#Players Page', function() {
 
   test.describe('#Section: Batting', function() {
     test.describe('#SubSection: Stats', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         battingAverageCol = 8;
         ksPerCol = 13;
         filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -105,6 +105,9 @@ test.describe('#Players Page', function() {
 
         test.it('should create new playlist', function() {
           playersPage.addAllVideosToNewList("Players Tests");
+        });
+
+        test.it('playlist should exist in library', function() {
           playersPage.closePlayByPlayModal();
           playersPage.openVideoLibrary();
           playersPage.listExistsInVideoLibrary('Players Tests').then(function(exists) {
@@ -163,7 +166,7 @@ test.describe('#Players Page', function() {
           filters.addSelectionToDropdownSidebarFilter('On Team:', 'Colorado Rockies (mlb)');
 
           playersPage.getTableStat(1,3).then(function(stat) {
-            assert.equal(stat, ' C. Dickerson (DH-COL)', '1st row player');
+            assert.equal(stat, ' C. Dickerson (LF-COL)', '1st row player');
           });
         });    
 
@@ -251,7 +254,7 @@ test.describe('#Players Page', function() {
 
       // Stats View
       test.describe("#stats view", function() {
-        test.before(function() {
+        test.it('test setup', function() {
           filters.changeFilterGroupDropdown('Common');
           filters.toggleSidebarFilter('Zone Location:', 'Out of Strike Zone', true);
         });
@@ -327,7 +330,7 @@ test.describe('#Players Page', function() {
 
       // Batting Reports
       test.describe("#batting reports", function() {
-        test.before(function() {
+        test.it('test setup', function() {
           filters.changeFilterGroupDropdown('Common');
           filters.toggleSidebarFilter('Horizontal Location:', 'Middle Third', true);
         });
@@ -428,7 +431,7 @@ test.describe('#Players Page', function() {
     });
 
     test.describe('#SubSection: Scatter Plot', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.removeSelectionFromDropdownFilter("Seasons:");
         filters.addSelectionToDropdownFilter("Seasons:", 2013);
       });
@@ -482,7 +485,7 @@ test.describe('#Players Page', function() {
   });
 
   test.describe('#Section: Pitching', function() {
-    test.before(function() {    
+    test.it('test setup', function() {    
       playersPage.goToSubSection("stats");
       playersPage.goToSection("pitching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -752,7 +755,7 @@ test.describe('#Players Page', function() {
   });
 
   test.describe('#Section: Catching', function() {
-    test.before(function() {    
+    test.it('test setup', function() {    
       playersPage.goToSubSection("stats");
       playersPage.goToSection("catching");
       filters.removeSelectionFromDropdownFilter("Seasons:");
@@ -765,7 +768,6 @@ test.describe('#Players Page', function() {
       test.describe("#sorting", function() {
         var columns = [
           { colNum: 7, colName: 'SLAA', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
-          { colNum: 8, colName: 'CallStrk#', sortType: 'ferpNumber', defaultSort: 'asc' },
           { colNum: 6, colName: 'P', sortType: 'ferpNumber', defaultSort: 'desc' },
           { colNum: 11, colName: 'FrmCntRAA', sortType: 'ferpNumber', defaultSort: 'desc' },
           { colNum: 14, colName: 'BallFrmd', sortType: 'ferpNumber', defaultSort: 'asc' },
@@ -944,7 +946,7 @@ test.describe('#Players Page', function() {
   });
 
   test.describe('#Section: Statcast Fielding', function() {
-    test.before(function() {    
+    test.it('test setup', function() {    
       playersPage.goToSubSection("stats");
       playersPage.goToSection("statcastFielding");
       filters.removeSelectionFromDropdownFilter("Seasons:");

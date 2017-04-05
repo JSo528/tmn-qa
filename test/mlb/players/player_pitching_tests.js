@@ -159,6 +159,9 @@ test.describe('#Player Pitching Section', function() {
     test.describe('#VideoLibrary - add video to new playlist', function() {     
       test.it('should create new playlist', function() {
         playerPage.addVideoToNewList(1, 'Player Pitching Tests');
+      });
+
+      test.it('playlist should exist in library', function() {
         playerPage.closePlayByPlayModal();
         playerPage.openVideoLibrary();
         playerPage.listExistsInVideoLibrary('Player Pitching Tests').then(function(exists) {
@@ -424,6 +427,7 @@ test.describe('#Player Pitching Section', function() {
     test.describe('#filters', function() {
       test.describe('when selecting filter (Catchers: Miguel Montero)', function() {
         test.it('test setup', function() {
+          this.timeout(120000);
           filters.changeFilterGroupDropdown('Situation');
           filters.addSelectionToDropdownSidebarFilter('Catchers:', 'Miguel Montero');
         });

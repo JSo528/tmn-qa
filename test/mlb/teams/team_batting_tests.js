@@ -14,7 +14,7 @@ var TeamPage = require('../../../pages/mlb/teams/team_page.js');
 var navbar, filters, teamsPage, teamPage;
 
 test.describe('#Team Batting Section', function() {
-  test.before(function() {  
+  test.it('test setup', function() {  
     navbar  = new Navbar(driver);  
     filters  = new Filters(driver);  
     teamsPage = new TeamsPage(driver);
@@ -36,7 +36,7 @@ test.describe('#Team Batting Section', function() {
   test.describe("#Subsection: Overview", function() {
     // Heat Map & Hit Charts
     test.describe("#Heat Maps & Hit Charts", function() {
-      test.before(function() {
+      test.it('test setup', function() {
         teamPage.changeReport("Counting");
       });
 
@@ -154,6 +154,9 @@ test.describe('#Team Batting Section', function() {
     test.describe('#VideoLibrary - add video to new playlist from flat view', function() {     
       test.it('should create new playlist', function() {
         teamPage.clickFlatViewTab();
+      });
+
+      test.it('playlist should exist in library', function() {
         teamPage.addVideoToNewList(1, 'Team Batting Tests');
         teamPage.closePlayByPlayModal();
         teamPage.openVideoLibrary();
@@ -329,7 +332,7 @@ test.describe('#Team Batting Section', function() {
 
   // Roster Section
   test.describe("#Subsection: Roster", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("roster");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -485,7 +488,7 @@ test.describe('#Team Batting Section', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -668,7 +671,7 @@ test.describe('#Team Batting Section', function() {
 
   // Splits Section
   test.describe("#Subsection: Splits", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("splits");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -755,14 +758,15 @@ test.describe('#Team Batting Section', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
     test.describe('when selecting filter (Pitch Result: Strike Looking)', function() {
-      test.before(function() {
+      test.it('test setup', function() {
+        this.timeout(120000);
         filters.changeFilterGroupDropdown('Pitch');
         filters.addSelectionToDropdownSidebarFilter('Pitch Result:', 'Strike Looking');
       });
@@ -842,7 +846,7 @@ test.describe('#Team Batting Section', function() {
 
   // Occurences & Streaks
   test.describe('#SubSection: Occurrences & Streaks', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("occurrencesAndStreaks");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -862,7 +866,7 @@ test.describe('#Team Batting Section', function() {
 
   // Multi-Filter
   test.describe('#SubSection: Multi-Filter', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("multiFilter");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -942,7 +946,7 @@ test.describe('#Team Batting Section', function() {
 
   // Comps
   test.describe('#SubSection: Comps', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("comps");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -962,7 +966,7 @@ test.describe('#Team Batting Section', function() {
 
   // Matchups
   test.describe('#SubSection: Matchups', function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("matchups");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -1035,7 +1039,7 @@ test.describe('#Team Batting Section', function() {
 
   // Vs. Teams
   test.describe("#Subsection: Vs Teams", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("vsTeams");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -1150,7 +1154,7 @@ test.describe('#Team Batting Section', function() {
 
   // Vs. Pitchers
   test.describe("#Subsection: Vs Pitchers", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       teamPage.goToSubSection("vsPitchers");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);

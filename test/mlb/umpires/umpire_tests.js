@@ -14,7 +14,7 @@ var UmpirePage = require('../../../pages/mlb/umpires/umpire_page.js');
 var umpiresPage, umpirePage, filters, navbar;
 
 test.describe('#Umpire Page', function() {
-  test.before(function() {
+  test.it('test setup', function() {
     umpiresPage = new UmpiresPage(driver);
     umpirePage = new UmpirePage(driver);
     filters  = new Filters(driver);
@@ -34,7 +34,7 @@ test.describe('#Umpire Page', function() {
 
   // Overview Section
   test.describe("#Subsection: Overview", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
@@ -170,6 +170,9 @@ test.describe('#Umpire Page', function() {
     test.describe('#VideoLibrary - add video to new playlist', function() {     
       test.it('should create new playlist', function() {
         umpirePage.addVideoToNewList(1, 'Umpire Tests');
+      });
+      
+      test.it('should create new playlist', function() {
         umpirePage.closePlayByPlayModal();
         umpirePage.openVideoLibrary();
         umpirePage.listExistsInVideoLibrary('Umpire Tests').then(function(exists) {
@@ -240,7 +243,7 @@ test.describe('#Umpire Page', function() {
 
   // Game Logs Section
   test.describe("#Subsection: Game Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       umpirePage.goToSubSection("gameLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
@@ -370,14 +373,14 @@ test.describe('#Umpire Page', function() {
 
   // Pitch Logs
   test.describe("#Subsection: Pitch Log", function() {
-    test.before(function() {
+    test.it('test setup', function() {
       umpirePage.goToSubSection("pitchLog");
       filters.removeSelectionFromDropdownFilter("Seasons:");
       filters.addSelectionToDropdownFilter("Seasons:", 2016);
     });
 
     test.describe('when selecting filter (Pitch Type: Changeup)', function() {
-      test.before(function() {
+      test.it('test setup', function() {
         filters.toggleSidebarFilter('Pitch Type:', 'Changeup', true);
       });
       
