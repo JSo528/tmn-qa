@@ -8,6 +8,7 @@ var extensions = require('../../../lib/extensions.js');
 var Navbar = require('../../../pages/nfl/navbar.js');
 var Filters = require('../../../pages/nfl/filters.js');
 var ScoresPage = require('../../../pages/nfl/scores/scores_page.js');
+var TeamPage = require('../../../pages/nfl/teams/team_page.js');
 var navbar, filters, scoresPage;
 
 test.describe('#Page: Scores', function() {
@@ -15,6 +16,7 @@ test.describe('#Page: Scores', function() {
     navbar = new Navbar(driver);
     filters = new Filters(driver);
     scoresPage = new ScoresPage(driver);
+    teamPage = new TeamPage(driver);
   });
 
   test.it('clicking the scores link goes to the correct page', function() {
@@ -57,12 +59,13 @@ test.describe('#Page: Scores', function() {
 
   test.describe('#checkingLinks', function() {
     test.beforeEach(function() {
-      var newUrl = url + 'football/scores/nfl?pc=%7B"fws"%3A"14"%7D&is=true';
+      var newUrl = url + '/football/scores/nfl?pc=%7B"fws"%3A"14"%7D&is=true';
       scoresPage.visit(newUrl);
     });
 
     test.it('clicking into team goes to the correct page', function() {
       scoresPage.clickTeam(1, "home");
+      teamPage.waitForTableToLoad();
       
       driver.getTitle().then(function(title) {
         assert.equal( title, 'Chiefs Overview');

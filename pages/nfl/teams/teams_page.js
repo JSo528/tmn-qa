@@ -22,6 +22,7 @@ var scatterPlot = require('../../mixins/scatterPlot.js');
 // shared
 var REPORT_SELECT = By.id("s2id_reportNavFootballTeamsSubCommon");
 var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-search']/input");
+var STATS_TABLE = By.xpath(".//div[@id='tableFootballTeamsStatsContainer']/table");
 
 // Stats
 var GROUP_BY_SELECT = By.id("s2id_pageControlFootballGroupBy");
@@ -77,6 +78,11 @@ TeamsPage.prototype.changeReport = function(report) {
   return this.waitForEnabled(REPORT_SELECT, 30000);
 };
 
+TeamsPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(STATS_TABLE, 10000);
+  return this.waitForEnabled(STATS_TABLE, 10000);
+};
+
 /****************************************************************************
 ** Stats
 *****************************************************************************/
@@ -118,6 +124,11 @@ TeamsPage.prototype.getStatsTableBgColor = function(rowNum, colNum) {
   return this.getCssValue(locator, "background-color");
 };
 
+TeamsPage.prototype.getStatsTableBgColorFor = function(rowNum, colName) {
+  var locator = By.xpath(`.//div[@id='tableFootballTeamsStatsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamsStatsContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]`);
+  return this.getCssValue(locator, "background-color");
+};
+
 TeamsPage.prototype.clickStatsExportLink = function() {
   this.click(STATS_EXPORT_LINK);
   return this.driver.sleep(5000);
@@ -125,6 +136,21 @@ TeamsPage.prototype.clickStatsExportLink = function() {
 
 TeamsPage.prototype.readAndDeleteExportCSV = function() {
   return this.readAndDeleteCSV('../Downloads/export.csv');
+};
+
+TeamsPage.prototype.clickStatsTableHeaderFor = function(colName) {
+  var locator = By.xpath(`.//div[@id='tableFootballTeamsStatsContainer']/table/thead/tr/th[text()="${colName}"]`);
+  return this.click(locator);
+};
+
+TeamsPage.prototype.getStatsTableStatsFor = function(colName) {
+  var locator = By.xpath(`.//div[@id='tableFootballTeamsStatsContainer']/table/tbody/tr[@data-tmn-row-type='row']/td[count(//div[@id='tableFootballTeamsStatsContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]`);
+  return this.getTextArray(locator);
+};
+
+TeamsPage.prototype.getStatsTableStatFor = function(rowNum, colName) {
+  var locator = By.xpath(`.//div[@id='tableFootballTeamsStatsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamsStatsContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]`);
+  return this.getText(locator);
 };
 
 /****************************************************************************

@@ -19,48 +19,51 @@ test.describe('#Page: Players', function() {
   });
 
   test.describe('#Section: Stats', function() {
-    test.describe("#table", function() {
-      test.it('should initially be sorted by PsRt desc', function() {
-        playersPage.getStatsTableStats(17).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
+    // Sorting
+    test.describe("#sorting", function() {
+      var columns = [
+        { colName: 'PsrRt', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+        { colName: 'Comp%', sortType: 'ferpNumber', defaultSort: 'desc' },
+        { colName: 'Int', sortType: 'ferpNumber', defaultSort: 'asc' },
+      ]
 
-      test.it('sorting by PsYds desc should display players in correct order', function() {
-        playersPage.clickStatsTableHeader(12);
-        playersPage.getStatsTableStats(12).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
+      columns.forEach(function(column) {
+        test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+          if (!column.initialCol) playersPage.clickStatsTableHeaderFor(column.colName);
+          playersPage.waitForTableToLoad();
+          playersPage.getStatsTableStatsFor(column.colName).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
+            assert.deepEqual(stats, sortedArray);
+          })
         });
-      });
 
-      test.it('sorting by PsYds asc should display players in correct order', function() {
-        playersPage.clickStatsTableHeader(12);
-        playersPage.getStatsTableStats(12).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
+        test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+          playersPage.clickStatsTableHeaderFor(column.colName);
+          playersPage.waitForTableToLoad();
+          playersPage.getStatsTableStatsFor(column.colName).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType);
+            var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+            var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
+            assert.deepEqual(stats, sortedArray);
+          })
         });
+      });  
+      
+      test.it('changing filter back to PsrRt', function() {
+        playersPage.clickStatsTableHeaderFor('PsrRt');
       });
-
-      test.it('sorting by PsRt desc should display players in correct order', function() {
-        playersPage.clickStatsTableHeader(17);
-        playersPage.getStatsTableStats(17).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
+    });  
 
     test.describe("#filters", function() {
       test.it('changing filter - (Season/Week: 2015 W1 to 2015 W17), shows correct stats', function() {
         filters.changeValuesForSeasonWeekDropdownFilter(2015, 'W1', 2015, 'W17', true);
 
-        playersPage.getStatsTableStat(1,3).then(function(stat) {
+        playersPage.getStatsTableStatFor(1,'Player').then(function(stat) {
           assert.equal(stat, ' Russell Wilson (QB-SEA)', '1st row - Player');
         });
 
-        playersPage.getStatsTableStat(1,9).then(function(stat) {
+        playersPage.getStatsTableStatFor(1,'Cmp').then(function(stat) {
           assert.equal(stat, 329, '1st row - Cmp');
         });
       });
@@ -68,11 +71,11 @@ test.describe('#Page: Players', function() {
       test.it('adding filter - (Distance To Goal: 0 to 20), shows correct stats ', function() {
         filters.changeValuesForRangeSidebarFilter('Distance To Goal:', 0, 20);
 
-        playersPage.getStatsTableStat(1,12).then(function(stat) {
+        playersPage.getStatsTableStatFor(1,'PsYds').then(function(stat) {
           assert.equal(stat, 169, '1st row - PsYds');
         });
 
-        playersPage.getStatsTableStat(1,14).then(function(stat) {
+        playersPage.getStatsTableStatFor(1,'PsTD').then(function(stat) {
           assert.equal(stat, 8, '1st row - PsTD');
         });
       });
@@ -80,14 +83,14 @@ test.describe('#Page: Players', function() {
       test.it('adding filter - (Score Diff: -7 to 7), shows correct stats ', function() {
         filters.changeValuesForRangeSidebarFilter('Score Diff:', -7, 7);
 
-        playersPage.getStatsTableStat(1,10).then(function(stat) {
+        playersPage.getStatsTableStatFor(1,'Att').then(function(stat) {
           assert.equal(stat, 18, '1st row - Att');
         });
       });
 
       test.it('adding filter - (Play Goal To Go: Yes), shows correct stats ', function() {
         filters.toggleSidebarFilter('Play Goal to Go:', 'Yes', true);
-        playersPage.getStatsTableStat(1,13).then(function(stat) {
+        playersPage.getStatsTableStatFor(1,'Yd/Att').then(function(stat) {
           assert.equal(stat, 6.00, '1st row - Yd/Att');
         });
       });
@@ -299,27 +302,31 @@ test.describe('#Page: Players', function() {
 
     test.describe("#reports", function() {
       var reports = [
-        { type: 'Offensive Plays', topStat: 45, statType: "OffTD", colNum: 5 },  
-        { type: 'QB Stats (Adv)', topStat: 110.1, statType: "PsrRt", colNum: 18 },  
-        { type: 'Passing Rates', topStat: 110.1, statType: "PsrRt", colNum: 6 },  
-        { type: 'Passing Rates (Adv)', topStat: 8.70, statType: "Yd/Att", colNum: 6 },  
-        { type: 'Rushing', topStat: 1485, statType: "RnYds", colNum: 5 },  
-        { type: 'Receptions', topStat: 1871, statType: "RecYds", colNum: 6 },  
-        { type: 'From Scrimmage', topStat: 1871, statType: "ScrYds", colNum: 7 },  
-        { type: 'Rushing Receiving', topStat: 1871, statType: "ScrYds", colNum: 7 },  
-        { type: 'Touchdowns', topStat: 45, statType: "TD", colNum: 5 },  
-        { type: 'Defensive Stats', topStat: 154, statType: "DfTkl", colNum: 5 },  
-        { type: 'FG / XP / 2Pt', topStat: 34, statType: "FG", colNum: 5 },  
-        { type: 'Kickoffs', topStat: 89.0, statType: "OpKRSP", colNum: 8 }, 
-        { type: 'Punts', topStat: 96, statType: "P", colNum: 5 }, 
-        { type: 'Returns', topStat: 1077, statType: "K-Ryd", colNum: 6 }, 
-        { type: 'QB Stats', topStat: 110.1, statType: "PsrRt", colNum: 17 },  
+        { type: 'Offensive Plays', topStat: 45, statType: "OffTD" },  
+        { type: 'QB Stats (Adv)', topStat: 110.1, statType: "PsrRt" },  
+        { type: 'Passing Rates', topStat: 110.1, statType: "PsrRt" },  
+        { type: 'Passing Rates (Adv)', topStat: 8.70, statType: "Yd/Att" },  
+        { type: 'Rushing', topStat: 1485, statType: "RnYds" },  
+        { type: 'Receptions', topStat: 1871, statType: "RecYds" },  
+        { type: 'From Scrimmage', topStat: 1871, statType: "ScrYds" },  
+        { type: 'Rushing Receiving', topStat: 1871, statType: "ScrYds" },  
+        { type: 'Touchdowns', topStat: 45, statType: "TD" },  
+        { type: 'Defensive Stats', topStat: 154, statType: "DfTkl" },  
+        { type: 'FG / XP / 2Pt', topStat: 34, statType: "FG" },  
+        { type: 'Kickoffs', topStat: 89.0, statType: "OpKRSP" }, 
+        { type: 'Punts', topStat: 96, statType: "P" }, 
+        { type: 'Returns', topStat: 1077, statType: "K-RYd" }, 
+        { type: 'Receptions (Adv)', topStat: 710, statType: "Routes" }, 
+        { type: 'Defensive Stats (Adv)', topStat: 100, statType: "Prsrs" }, 
+        { type: 'Blocking', topStat: 75, statType: "PrsrAllwd" }, 
+        { type: 'Player Participation/Grades', topStat: 139, statType: "PffGrade" }, 
+        { type: 'QB Stats', topStat: 110.1, statType: "PsrRt" },  
       ];
 
       reports.forEach(function(report) {
         test.it("selecting (report: " + report.type + ") shows the correct stat value for " + report.statType, function() {
           playersPage.changeReport(report.type);  
-          playersPage.getStatsTableStat(1,report.colNum).then(function(stat) {
+          playersPage.getStatsTableStatFor(1,report.statType).then(function(stat) {
             assert.equal(stat, report.topStat);
           });
         });

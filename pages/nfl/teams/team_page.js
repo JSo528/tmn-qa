@@ -11,6 +11,7 @@ var Key = require('selenium-webdriver').Key;
 
 // Locators
 var TEAM_NAME = By.css('h1.name');
+var CONTAINER = By.css('.container');
 
 function TeamPage(driver, section) {
   BasePage.call(this, driver);
@@ -27,6 +28,11 @@ TeamPage.prototype.goToSection = function(section) {
 
 TeamPage.prototype.getTeamName = function() {
   return this.getText(TEAM_NAME, 30000);
+};
+
+TeamPage.prototype.waitForTableToLoad = function() {
+  this.waitUntilStaleness(CONTAINER, 10000);
+  return this.waitForEnabled(CONTAINER, 10000);
 };
 
 

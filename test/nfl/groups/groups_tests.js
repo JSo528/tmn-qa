@@ -25,378 +25,243 @@ test.describe('#Page: Groups', function() {
     });
   });
 
-    test.describe('#sorting', function() {
-      test.it('should be sorted initially by Win% desc', function() {
-        groupsPage.getTableStats(6).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
+  // Sorting
+  test.describe("#sorting", function() {
+    var columns = [
+      { colName: 'Win%', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+      { colName: 'OpYds', sortType: 'ferpNumber', defaultSort: 'asc' },
+      { colName: 'PS', sortType: 'ferpNumber', defaultSort: 'desc' },
+    ]
+
+    columns.forEach(function(column) {
+      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+        if (!column.initialCol) groupsPage.clickTableHeaderFor(column.colName);
+        groupsPage.waitForTableToLoad();
+        groupsPage.getTableStatsFor(column.colName).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, column.defaultSort);
           assert.deepEqual(stats, sortedArray);
-        });
+        })
       });
 
-      test.it('clicking on the PM column header should sort the table by PM desc', function() {
-        groupsPage.clickTableColumnHeader(9);
-        groupsPage.getTableStats(9).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'desc');
+      test.it('reversing sort for ' + column.colName + ' should sort table accordingly', function() {
+        groupsPage.clickTableHeaderFor(column.colName);
+        groupsPage.waitForTableToLoad();
+        groupsPage.getTableStatsFor(column.colName).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortOrder = column.defaultSort == 'desc' ? 'asc' : 'desc';
+          var sortedArray = extensions.customSortByType(column.sortType, stats, sortOrder);
           assert.deepEqual(stats, sortedArray);
-        });
-      });  
+        })
+      });
+    }); 
+  });  
 
-      test.it('clicking on the PM column header a second time should sort the table by PM asc', function() {
-        groupsPage.clickTableColumnHeader(9);
-        groupsPage.getTableStats(9).then(function(stats) {
-          var sortedArray = extensions.customSort(stats, 'asc');
-          assert.deepEqual(stats, sortedArray);
-        });
-      });  
+  test.describe("#filters", function() {
+    test.it('sort by wins', function() {
+      groupsPage.clickTableHeaderFor('W');
+    });
 
-      test.after(function() {
-        groupsPage.clickTableColumnHeader(6);
+    test.it('changing filter - (Season/Week: 2016 W1 to 2016 W17), shows correct stats', function() {
+      filters.changeValuesForSeasonWeekDropdownFilter(2016, 'W1', 2016, 'W17', true);
+      groupsPage.waitForTableToLoad();
+      groupsPage.getTableStatFor(1,'Division').then(function(stat) {
+        assert.equal(stat, 'NFC East', '1st row - Group');
+      });
+
+      groupsPage.getTableStatFor(1,'W').then(function(stat) {
+        assert.equal(stat, 39, '1st row - Wins');
       });
     });
 
-    test.describe("#filters", function() {
-      test.it('changing filter - (Season/Week: 2016 W1 to 2016 W17), shows correct stats', function() {
-        filters.changeValuesForSeasonWeekDropdownFilter(2016, 'W1', 2016, 'W17', true);
-
-        groupsPage.getTableStat(1,1).then(function(stat) {
-          assert.equal(stat, 'NFC East', '1st row - Group');
-        });
-
-        groupsPage.getTableStat(1,3).then(function(stat) {
-          assert.equal(stat, 39, '1st row - Wins');
-        });
+    test.it('adding filter - (Final Opp Pass Yards: 0 to 200), shows correct stats ', function() {
+      filters.changeFilterGroupDropdown('Game')
+      filters.changeValuesForRangeSidebarFilter('Final Opp Pass Yards:', 0, 200);
+      groupsPage.waitForTableToLoad();
+      groupsPage.getTableStatFor(1,'Division').then(function(stat) {
+        assert.equal(stat, 'AFC East', '1st row - Group');
       });
 
-      test.it('adding filter - (Final Opp Pass Yards: 0 to 200), shows correct stats ', function() {
-        filters.changeFilterGroupDropdown('Game')
-        filters.changeValuesForRangeSidebarFilter('Final Opp Pass Yards:', 0, 200);
-
-        groupsPage.getTableStat(1,1).then(function(stat) {
-          assert.equal(stat, 'AFC East', '1st row - Group');
-        });
-
-        groupsPage.getTableStat(1,8).then(function(stat) {
-          assert.equal(stat, 297, '1st row - PA');
-        });
-      });
-
-      test.it('adding filter - (Final Opp Rush Yards: 0 to 100), shows correct stats ', function() {
-        filters.changeValuesForRangeSidebarFilter('Final Opp Rush Yards:', 0, 100);
-
-        groupsPage.getTableStat(1,1).then(function(stat) {
-          assert.equal(stat, 'AFC East', '1st row - Group');
-        });
-
-        groupsPage.getTableStat(1,10).then(function(stat) {
-          assert.equal(stat, 1563, '1st row - Yds');
-        });
-      });
-
-      test.it('adding filter - (Final Opp Score: 0 to 10), shows correct stats ', function() {
-        filters.changeValuesForRangeSidebarFilter('Final Opp Score:', 0, 10);
-
-        groupsPage.getTableStat(1,1).then(function(stat) {
-          assert.equal(stat, 'AFC North', '1st row - Group');
-        });
-
-        groupsPage.getTableStat(1,14).then(function(stat) {
-          assert.equal(stat, 4, '1st row - TOMgn');
-        });
+      groupsPage.getTableStatFor(1,'PA').then(function(stat) {
+        assert.equal(stat, 297, '1st row - PA');
       });
     });
 
-  // test.describe('#Section: Batting', function() {
-  //   test.before(function() {
-  //     filters.removeSelectionFromDropdownFilter("Seasons:");
-  //     filters.addSelectionToDropdownFilter("Seasons:", 2009);
-  //     filters.removeSelectionFromDropdownFilter("Game Type:");
-  //     filters.addSelectionToDropdownFilter("Type:", "Playoff");
+    test.it('adding filter - (Final Opp Rush Yards: 0 to 100), shows correct stats ', function() {
+      filters.changeValuesForRangeSidebarFilter('Final Opp Rush Yards:', 0, 100);
+      groupsPage.waitForTableToLoad();
+      groupsPage.getTableStatFor(1,'Division').then(function(stat) {
+        assert.equal(stat, 'NFC West', '1st row - Group');
+      });
 
-  //     battingAvgCol = 6;
-  //     outRateCol = 18;
-  //   })
-  //   // Sorting
-  //   test.describe('#Sorting', function() {
-  //     test.it('should be sorted initially by Batting Average desc', function() {
-  //       var statOne, statTwo, statSix;
-  //       groupsPage.getTableStat(1,battingAvgCol).then(function(stat) {
-  //         statOne = stat;
-  //       });
+      groupsPage.getTableStatFor(1,'Yds').then(function(stat) {
+        assert.equal(stat, 4588, '1st row - Yds');
+      });
+    });
 
-  //       groupsPage.getTableStat(2,battingAvgCol).then(function(stat) {
-  //         statTwo = stat;
-  //       });
+    test.it('adding filter - (Final Opp Score: 0 to 10), shows correct stats ', function() {
+      filters.changeValuesForRangeSidebarFilter('Final Opp Score:', 0, 10);
+      groupsPage.waitForTableToLoad();
+      groupsPage.getTableStatFor(1,'Division').then(function(stat) {
+        assert.equal(stat, 'NFC West', '1st row - Group');
+      });
 
-  //       groupsPage.getTableStat(6,battingAvgCol).then(function(stat) {
-  //         statSix = stat;
+      groupsPage.getTableStatFor(1,'TOMgn').then(function(stat) {
+        assert.equal(stat, 2, '1st row - TOMgn');
+      });
+    });
+  });
 
-  //         assert.isAtLeast(statOne, statTwo, "group 1's AVG is >= group 2's AVG");
-  //         assert.isAtLeast(statTwo, statSix, "group 2's AVG is >= group 6's AVG");
-  //       });           
-  //     });
+  test.describe("#groupBy", function() {
+    test.it('sort by TOP', function() {
+      groupsPage.clickTableHeaderFor('TOP');
+    });
 
-  //     test.it('clicking on the OutRate column header should sort the table by OutRate asc', function() {
-  //       groupsPage.clickTableColumnHeader(outRateCol);
-  //       var statOne, statTwo, statSix;
-  //       groupsPage.getTableStat(1,outRateCol).then(function(stat) {
-  //         statOne = stat;
-  //       });
+    test.it('selecting "By Conference" shows the correct headers', function() {
+      groupsPage.changeGroupBy("By Conference");
+      groupsPage.getTableHeader(1).then(function(header) {
+        assert.equal(header, "Conference");
+      });
 
-  //       groupsPage.getTableStat(2,outRateCol).then(function(stat) {
-  //         statTwo = stat;
-  //       });
+      groupsPage.getTableStatFor(1,'TOP').then(function(stat) {
+        assert.equal(stat, '35:23', 'Conference 1 - TOP');
+      });
+    });
 
-  //       groupsPage.getTableStat(6,outRateCol).then(function(stat) {
-  //         statSix = stat;
+    test.it('selecting "By Division" shows the correct headers', function() {
+      groupsPage.changeGroupBy("By Division");
+      groupsPage.getTableHeader(1).then(function(header) {
+        assert.equal(header, "Division");
+      });
 
-  //         assert.isAtMost(statOne, statTwo, "group 1's OutRate is <= group 2's OutRate");
-  //         assert.isAtMost(statTwo, statSix, "group 2's OutRate is <= group 6's OutRate");
-  //       });           
-  //     });  
-  //   });
+      groupsPage.getTableStatFor(1,'Division').then(function(stat) {
+        assert.equal(stat, 'NFC North');
+      });
 
-  //   // Filters
-  //   test.describe('#Filters', function() {
-  //     test.before(function() {
-  //       filters.changeFilterGroupDropdown("Situation");
-  //     });
+      groupsPage.getTableStatFor(1,'TOP').then(function(stat) {
+        assert.equal(stat, '39:36', 'Division 1 - TOP');
+      });
+    });
 
-  //     test.it('filtering by (After Pitch Run Diff: -1 to 1) should show the correct value for OutRate leader', function() {
-  //       filters.changeValuesForRangeSidebarFilter("After Pitch Run Diff:", -1, 1);
+    test.it('selecting "By Season" shows the correct headers', function() {
+      groupsPage.changeGroupBy("By Season");
+      groupsPage.getTableHeader(1).then(function(header) {
+        assert.equal(header, "Year");
+      });
 
-  //       groupsPage.getTableStat(1,outRateCol).then(function(stat) {
-  //         assert.equal(stat, '64.1%');
-  //       });
+      groupsPage.getTableStatFor(1,'Year').then(function(stat) {
+        assert.equal(stat, '2016');
+      });
 
-  //       groupsPage.getTableStat(1,1).then(function(stat) {
-  //         assert.equal(stat, 'AL Central');
-  //       });
-  //     });    
+      groupsPage.getTableStatFor(1,'TOP').then(function(stat) {
+        assert.equal(stat, '34:22');
+      });
+    });
 
-  //     test.it('filtering by (Batter Position: LF, CF, RF) should give the correct value for OutRate leader', function() {
-  //       filters.addSelectionToDropdownSidebarFilter('Batter Position:', 'LF');
-  //       filters.addSelectionToDropdownSidebarFilter('Batter Position:', 'CF');
-  //       filters.addSelectionToDropdownSidebarFilter('Batter Position:', 'RF');
+    test.it('selecting "By Week" shows the correct headers', function() {
+      groupsPage.changeGroupBy("By Week");
+      groupsPage.getTableHeader(1).then(function(header) {
+        assert.equal(header, "Week");
+      });          
 
-  //       groupsPage.getTableStat(1,outRateCol).then(function(stat) {
-  //         assert.equal(stat, '61.1%');
-  //       });
+      groupsPage.getTableStatFor(1,'Week').then(function(stat) {
+        assert.equal(stat, 9);
+      });
 
-  //       groupsPage.getTableStat(1,1).then(function(stat) {
-  //         assert.equal(stat, 'NL Central');
-  //       });    
-  //     });      
-  //   });
+      groupsPage.getTableStatFor(1,'TOP').then(function(stat) {
+        assert.equal(stat, '39:39');
+      });
+    });        
 
-  //   // Group By
-  //   test.describe('#Group By', function() {
-  //     test.it('grouping by: league should show the league name column', function() {
-  //       groupsPage.changeGroupBy("By League");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'League');
-  //       });
-  //     });
+    test.it('selecting "By Venue" shows the correct headers', function() {
+      groupsPage.changeGroupBy("By Venue");
+      groupsPage.getTableHeader(1).then(function(header) {
+        assert.equal(header, "Venue");
+      });          
 
-  //     test.it('grouping by: league should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 18).then(function(stat) {
-  //         assert.equal(stat, '67.1%'); // OutRate
-  //       });
+      groupsPage.getTableStatFor(1,'Venue').then(function(stat) {
+        assert.equal(stat, 'Lambeau Field');
+      });
 
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, "AL");
-  //       });      
-  //     }); 
+      groupsPage.getTableStatFor(1,'TOP').then(function(stat) {
+        assert.equal(stat, '39:36');
+      });
+    });        
 
-  //     test.it('grouping by: month should show the month name column', function() {
-  //       groupsPage.changeGroupBy("By Month");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'Month');
-  //       });
-  //     });
+    test.it('selecting "By Division"', function() {
+      groupsPage.changeGroupBy("By Division");
+    });      
+  });
 
-  //     test.it('grouping by: month should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 18).then(function(stat) {
-  //         assert.equal(stat, '58.3%'); // OutRate
-  //       });
+  test.describe("#statsView", function() {
+    var statViews = [
+      { type: 'Per Game', statType: 'Yds', topStat: 406 },            
+      { type: 'Per Team Game', statType: 'OpYds', topStat: 189 },
+      { type: 'Stats', statType: 'PM', topStat: 16 },
+      
+    ];
+    statViews.forEach(function(statView) {
+      test.it("selecting (stats view: " + statView.type + ") shows the correct stat value for PsrRt", function() {
+        groupsPage.changeStatsView(statView.type);  
+        groupsPage.getTableStatFor(1,statView.statType).then(function(stat) {
+          assert.equal(stat, statView.topStat);
+        });
+      });
+    });
+  });
 
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, "November");
-  //       });      
-  //     }); 
+  test.describe("#reports", function() {
+    var reports = [
+      { type: 'Team Offense', stat: 307.3, statType: "Yd/G" },  
+      { type: 'Team Defense', stat: 254.7, statType: "Yd/G" },  
+      { type: 'Team Turnovers', stat: 7, statType: "TOMgn" },  
+      { type: 'Team Drives', stat: 333, statType: "OpPly" },  
+      { type: 'Team Drive Rates', stat: 2.6, statType: "Pts/D" },  
+      { type: 'Opponent Drive Rates', stat: 0.33, statType: "Pts/D" },  
+      { type: 'Team Offensive Rates', stat: 5.48, statType: "Yd/Ply" },  
+      { type: 'Defensive Rates', stat: 3.62, statType: "Yd/Ply" },
+      { type: 'Team Offensive Conversions', stat: '56.3%', statType: "3rdCv%" },  
+      { type: 'Defensive Conversions', stat: '20.0%', statType: "3rdCv%" },  
+      { type: 'Team Special Teams Summary', stat: '100.0%', statType: "FG%" },  
+      { type: 'Team Penalties', stat: 9, statType: "Pen" },  
+      { type: 'Offensive Plays', stat: 20, statType: "OffTD" },  
+      { type: 'Defensive Plays', stat: 0, statType: "OffTD" },  
+      { type: 'QB Stats', stat: '69.6%', statType: "Comp%" },  
+      { type: 'Opponent QB Stats', stat: '38.5%', statType: "Comp%" },  
+      { type: 'Passing Rates', stat: 102.2, statType: "PsrRt" },  
+      { type: 'Opponent Passing Rates', stat: 22.9, statType: "PsrRt" },  
+      { type: 'Rushing', stat: 829, statType: "RnYds" },  
+      { type: 'Opponent Rushing', stat: 69, statType: "RnYds" },  
+      { type: 'Receptions', stat: 1460, statType: "RecYds" },  
+      { type: 'Opponent Receptions', stat: 130, statType: "RecYds" },  
+      { type: 'From Scrimmage', stat: 20, statType: "ScrTD" },  
+      { type: 'Rushing Receiving', stat: 2245, statType: "Yds" },  
+      { type: 'Opponent Rushing Receiving', stat: 189, statType: "Yds" },  
+      { type: 'Touchdowns', stat: 21, statType: "TD" },  
+      { type: 'Opponent Touchdowns', stat: 1, statType: "TD" },  
+      { type: 'Defensive Stats', stat: 296, statType: "DfTkl" },  
+      { type: 'FG / XP / 2Pt', stat: 12, statType: "FG" },  
+      { type: 'Two Point Conversions', stat: '100.0%', statType: "2PtCv%" }, 
+      { type: 'Third Down Conversions', stat: 9, statType: "3rdCv" }, 
+      { type: 'Red Zone Drives', stat: '70.0%', statType: "RZTD%" }, 
+      { type: 'Team Differentials', stat: 147, statType: "PtsMgn" }, 
+      { type: 'Kickoffs', stat: 13, statType: "KO" }, 
+      { type: 'Punts', stat: 26, statType: "P" }, 
+      { type: 'Returns', stat: 126, statType: "K-RYd" }, 
+      { type: 'Opponent Returns', stat: 28, statType: "K-RYd" }, 
+      { type: 'Team Offense Rank', stat: 307.3, statType: "Yd/G" }, 
+      { type: 'Receptions (Adv)', stat: 454, statType: "Routes" }, 
+      { type: 'Defensive Stats (Adv)', stat: 147, statType: "Prsrs" }, 
+      { type: 'Team Record', stat: 4, statType: "W" },  
+    ];    
 
-  //     test.it('grouping by: org should show the org name column', function() {
-  //       groupsPage.changeGroupBy("By Org");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'Org');
-  //       });
-  //     });
-
-  //     test.it('grouping by: org should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 18).then(function(stat) {
-  //         assert.equal(stat, '53.6%'); // OutRate
-  //       });
-
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, "COL");
-  //       });      
-  //     }); 
-
-  //     // Seasons
-  //     test.it('grouping by: season should show the years column', function() {
-  //       filters.addSelectionToDropdownFilter('Seasons:', 2010);
-  //       groupsPage.changeGroupBy("By Season");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'Year');
-  //       });
-  //     });
-
-  //     test.it('grouping by: season should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, 2009);
-  //       });     
-
-  //       groupsPage.getTableStat(1, 18).then(function(stat) {
-  //         assert.equal(stat, '68.0%');
-  //       });            
-  //     });    
-
-  //     test.it('grouping by: league season should show the league and year columns', function() {
-  //       groupsPage.changeGroupBy("By League Season");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'League');
-  //       });
-
-  //       groupsPage.getTableHeader(2).then(function(header) {
-  //         assert.equal(header, 'Year');
-  //       });      
-  //     });
-
-  //     test.it('grouping by: league season should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, "AL");
-  //       });     
-
-  //       groupsPage.getTableStat(1, 2).then(function(stat) {
-  //         assert.equal(stat, 2009);
-  //       });           
-
-  //       groupsPage.getTableStat(1, 19).then(function(stat) {
-  //         assert.equal(stat, '67.1%');
-  //       });            
-  //     });    
-
-  //     test.it('grouping by: division season should show the division and year columns', function() {
-  //       groupsPage.changeGroupBy("By Division Season");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'Division');
-  //       });
-
-  //       groupsPage.getTableHeader(2).then(function(header) {
-  //         assert.equal(header, 'Year');
-  //       });      
-  //     });
-
-  //     test.it('grouping by: division season should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, "NL West");
-  //       });     
-
-  //       groupsPage.getTableStat(1, 2).then(function(stat) {
-  //         assert.equal(stat, 2010);
-  //       });           
-
-  //       groupsPage.getTableStat(1, 19).then(function(stat) {
-  //         assert.equal(stat, '59.4%');
-  //       });            
-  //     });    
-
-  //     test.it('grouping by: org season should show the org and year columns', function() {
-  //       groupsPage.changeGroupBy("By Org Season");
-  //       groupsPage.getTableHeader(1).then(function(header) {
-  //         assert.equal(header, 'Org');
-  //       });
-
-  //       groupsPage.getTableHeader(2).then(function(header) {
-  //         assert.equal(header, 'Year');
-  //       });      
-  //     });
-
-  //     test.it('grouping by: org season should show the correct results', function() {
-  //       groupsPage.getTableStat(1, 1).then(function(stat) {
-  //         assert.equal(stat, "COL");
-  //       });     
-
-  //       groupsPage.getTableStat(1, 2).then(function(stat) {
-  //         assert.equal(stat, 2009);
-  //       });           
-
-  //       groupsPage.getTableStat(1, 19).then(function(stat) {
-  //         assert.equal(stat, '53.6%');
-  //       });            
-  //     });        
-
-
-  //     test.after(function() {
-  //       groupsPage.changeGroupBy("By Division");
-  //       filters.removeSelectionFromDropdownFilter("Seasons:", 2009, true);
-  //     });
-  //   });  
-
-  //   // Stats View
-  //   test.describe("#stats view", function() {
-  //     var statViews = [
-  //       { type: 'Rank', topStat: 1},            
-  //       { type: 'Percentile', topStat: "100.0%"},
-  //       { type: 'Z-Score', topStat: 1.025 },
-  //       { type: 'Stat Grade', topStat: 80 },
-  //       { type: 'Stat (Rank)', topStat: "59.4% (1)"},
-  //       { type: 'Stat (Percentile)', topStat: "59.4% (100%)"},
-  //       { type: 'Stat (Z-Score)', topStat: "59.4% (1.02)"},
-  //       { type: 'Stat (Stat Grade)', topStat: "59.4% (80)"},
-  //       { type: 'Pct of Team', topStat: "59.4%"},
-  //     ];
-  //     statViews.forEach(function(statView) {
-  //       test.it("selecting (stats view: " + statView.type + ") shows the correct value for the OutRate leader", function() {
-  //         groupsPage.changeStatsView(statView.type);  
-  //         groupsPage.getTableStat(1,outRateCol).then(function(stat) {
-  //           assert.equal(stat, statView.topStat);
-  //         });
-  //       });
-  //     });
-
-  //     test.after(function() {
-  //       groupsPage.changeStatsView('Stats');
-  //     });
-  //   });  
-
-  //   // Groups Batting Reports
-  //   test.describe("#reports", function() {
-  //     var reports = [
-  //         { type: 'Counting', topStat: 25, statType: "H", colNum: 10 },  
-  //         { type: 'Pitch Rates', topStat: "42.2%", statType: "InZone%", colNum: 11 },  
-  //         { type: 'Pitch Counts', topStat: 23, statType: "InZone#", colNum: 10 },  
-  //         { type: 'Pitch Types', topStat: "49.2%", statType: "Fast%", colNum: 5 },  
-  //         { type: 'Pitch Type Counts', topStat: 166, statType: "Fast#", colNum: 5 },  
-  //         { type: 'Pitch Locations', topStat: "42.2%", statType: "InZone%", colNum: 5 },  
-  //         { type: 'Pitch Calls', topStat: -3.57, statType: "SLAA", colNum: 5 },  
-  //         { type: 'Hit Types', topStat: 0.57, statType: "GB/FB", colNum: 4 },  
-  //         { type: 'Hit Locations', topStat: "87.5%", statType: "HPull%", colNum: 7 },  
-  //         { type: 'Home Runs', topStat: 4, statType: "HR", colNum: 5 }
-  //     ];
-
-  //     reports.forEach(function(report) {
-  //       test.it("selecting (report: " + report.type + ") shows the correct value for the " + report.statType + " leader", function() {
-  //         groupsPage.changeBattingReport(report.type);  
-          
-  //         groupsPage.getTableHeader(report.colNum).then(function(stat) {
-  //           assert.equal(stat, report.statType);
-  //         });
-
-  //         groupsPage.getTableStat(1,report.colNum).then(function(stat) {
-  //           assert.equal(stat, report.topStat);
-  //         });
-  //       });
-  //     });        
-  //   });
-  // });    
+    reports.forEach(function(report) {
+      test.it("selecting (report: " + report.type + ") shows the correct stat value for " + report.statType, function() {
+        groupsPage.changeReport(report.type);  
+        groupsPage.getTableStatFor(1,report.statType).then(function(stat) {
+          assert.equal(stat, report.stat);
+        });
+      });
+    });
+  });
 });
