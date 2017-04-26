@@ -21,6 +21,7 @@ var SOCCER_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='SOCCER']
 var TEAMS_LAST_LOCATOR = By.id("s2id_reportNavFootballTeamsSubCommon");
 var PLAYERS_LAST_LOCATOR = By.id("s2id_reportNavFootballPlayersSubCommon");
 var SCORES_LAST_LOCATOR = By.id("s2id_pageControlFootballYear");
+var PERFORMANCE_LAST_LOCATOR = By.id("tableFootballTeamPracticeGameContainer");
 
 var SEARCH_INPUT = By.css('.navbar-tmn #search-bar input');
 
@@ -55,7 +56,7 @@ Navbar.prototype.goToGroupsPage = function() {
 
 Navbar.prototype.goToPerformancePage = function() {
   this.click(PERFORMANCE_LINK);
-  return this.waitForEnabled(UMPIRES_LAST_LOCATOR, 30000);
+  return this.waitForEnabled(PERFORMANCE_LAST_LOCATOR, 30000);
 };
 
 Navbar.prototype.goToMLBPage = function() {

@@ -125,10 +125,8 @@ ChartColumns = {
   },
 
   // Pinning
-  clickTablePin: function(rowNum, numOffset) {
-    var numOffset = numOffset || 4
-    var row = numOffset + rowNum;
-    var locator = By.xpath(`.//div[@id='${this.CHART_COLUMNS_TABLE_ID()}']/table/tbody/tr[${row}]/td/span[@class='table-pin fa fa-lg fa-thumb-tack']`);
+  clickTablePin: function(rowNum) {
+    var locator = By.xpath(`.//div[@id='${this.CHART_COLUMNS_TABLE_ID()}']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td/span[@class='table-pin fa fa-lg fa-thumb-tack']`);
     return this.click(locator);
   },
 
@@ -142,9 +140,7 @@ ChartColumns = {
     return this.click(locator);
   },
   getIsoTableStat: function(rowNum, col) {
-    // First 4 rows are for the headers
-    var row = 4 + rowNum;
-    var locator = By.xpath(`.//div[@id='${this.CHART_COLUMNS_ISO_TABLE_ID()}']/table/tbody/tr[${row}]/td[${col}]`);
+    var locator = By.xpath(`.//div[@id='${this.CHART_COLUMNS_ISO_TABLE_ID()}']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[${col}]`);
     return this.getText(locator);
   },
   addToIsoTable: function(name, selectionNum) {
