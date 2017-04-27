@@ -271,7 +271,7 @@ PerformancePage.prototype.getPracticeStatsTableStatsFor = function(colName) {
 
 PerformancePage.prototype.getPracticeStatsTableStatFor = function(rowNum, colName) {
   var locator = By.xpath(`.//div[@id='tableFootballTeamPracticeContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamPracticeContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]`);
-  return this.getTextArray(locator);
+  return this.getText(locator);
 };
 
 PerformancePage.prototype.getPracticeSessionTableStatFor = function(rowNum, colName) {
