@@ -26,6 +26,13 @@ VideoPlaylist = {
   PLAY_BY_PLAY_MODAL: By.css(".in .modal-bb-pitch-by-pitch"),
   PLAY_BY_PLAY_CLOSE_BTN: By.css(".in .modal-bb-pitch-by-pitch .modal-footer button"),
 
+
+  BY_POSSESSION_ID: function() {
+    return this.DEFAULT_BY_POSSESSION_ID[this.section] || this.DEFAULT_BY_POSSESSION_ID;
+  },
+  FLAT_VIEW_ID: function() {
+    return this.DEFAULT_FLAT_VIEW_ID[this.section] || this.DEFAULT_FLAT_VIEW_ID;
+  },
   /****************************************************************************
   ** Functions
   *****************************************************************************/
@@ -48,7 +55,7 @@ VideoPlaylist = {
     return this.getText(locator, 20000);
   },
   getPossessionPlayText: function(playNum, colNum) {
-    var locator = By.xpath(`.//div[@id='${this.BY_POSSESSION_ID}']/table/tbody/tr[@data-tmn-row-type='row'][${playNum}]/td[${colNum}]`);
+    var locator = By.xpath(`.//div[@id='${this.BY_POSSESSION_ID()}']/table/tbody/tr[@data-tmn-row-type='row'][${playNum}]/td[${colNum}]`);
     return this.getText(locator);
   },
   getPosessionFooterText: function(posNum) {
@@ -57,7 +64,7 @@ VideoPlaylist = {
     return this.getText(locator);
   },
   clickByPossessionPlayVideoIcon: function(playNum) {
-    var locator = By.xpath(`.//div[@id='${this.BY_POSSESSION_ID}']/table/tbody/tr[@data-tmn-row-type='row'][${playNum}]/td/tmn-video-icon`);
+    var locator = By.xpath(`.//div[@id='${this.BY_POSSESSION_ID()}']/table/tbody/tr[@data-tmn-row-type='row'][${playNum}]/td/tmn-video-icon`);
     return this.click(locator);
   },
   isPlayByPlayModalDisplayed: function() {
@@ -78,7 +85,7 @@ VideoPlaylist = {
   },  
   // Flat View
   getFlatViewPlayText: function(playNum, colNum) {
-    var locator = By.xpath(`.//div[@id='${this.FLAT_VIEW_ID}']/table/tbody/tr[@data-tmn-row-type='row'][${playNum}]/td[${colNum}]`);
+    var locator = By.xpath(`.//div[@id='${this.FLAT_VIEW_ID()}']/table/tbody/tr[@data-tmn-row-type='row'][${playNum}]/td[${colNum}]`);
     return this.getText(locator);
   },
   // Video Modal

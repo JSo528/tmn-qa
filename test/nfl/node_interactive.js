@@ -14,6 +14,7 @@ var Filters = require('./pages/nfl/filters.js');
 
 // Teams Pages
 var TeamsPage = require('./pages/nfl/teams/teams_page.js');
+var TeamPage = require('./pages/nfl/teams/team_page.js');
 
 // Scores Pages
 var ScoresPage = require('./pages/nfl/scores/scores_page.js');
@@ -34,6 +35,7 @@ navbar  = new Navbar(driver);
 standingsPage = new StandingsPage(driver);
 scoresPage = new ScoresPage(driver);
 teamsPage = new TeamsPage(driver);
+teamPage = new TeamPage(driver);
 playersPage = new PlayersPage(driver);
 filters = new Filters(driver);
 groupsPage = new GroupsPage(driver);
@@ -43,9 +45,12 @@ performancePage = new PerformancePage(driver);
 // Constants
 // var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
-var url = "https://49ers.analytics.trumedianetworks.com/football/performance-dashboard/nfl/"
+var url = "https://49ers.analytics.trumedianetworks.com/football/team-presnap-premium/49ers/4500/nfl?is=true&f=%7B%22fgt%22%3A%5B%22regular%22%5D%2C%22fswr%22%3A%7B%22fromSeason%22%3A%222016%22%2C%22fromWeek%22%3A%221%22%2C%22toSeason%22%3A%222016%22%2C%22toWeek%22%3A%2217%22%7D%7D"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
+var locator = By.css('#sliderBar');
+
+filters.clickOffset(locator, 0, -100)

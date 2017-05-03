@@ -58,8 +58,8 @@ _.extend(TeamsPage.prototype, occurrencesAndStreaks);
 _.extend(TeamsPage.prototype, scatterPlot);
 
 
-TeamsPage.prototype.BY_POSSESSION_ID = 'tableFootballTeamPlayByPlayModalContainer';
-TeamsPage.prototype.FLAT_VIEW_ID = 'tableFootballTeamPlayByPlayModalTableContainer';                                      
+TeamsPage.prototype.DEFAULT_BY_POSSESSION_ID = 'tableFootballTeamPlayByPlayModalContainer';
+TeamsPage.prototype.DEFAULT_FLAT_VIEW_ID = 'tableFootballTeamPlayByPlayModalTableContainer';                                      
 TeamsPage.prototype.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID = 'tableFootballTeamsStatsContainer';
 TeamsPage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = 'tableFootballTeamsStatsISOContainer';
 TeamsPage.prototype.X_STAT_SELECT = By.id('s2id_pageControlFootballScatterXStatTypeZebra');
@@ -115,7 +115,7 @@ TeamsPage.prototype.getStatsTableHeader = function(colNum) {
 };
 
 TeamsPage.prototype.clickStatsTableStat = function(rowNum, colNum) {
-  var locator = By.xpath(`.//div[@id='tableFootballTeamsStatsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[${colNum}]/span`);
+  var locator = By.xpath(`.//div[@id='tableFootballTeamsStatsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[${colNum}]/*[self::span or self::a]`);
   return this.click(locator);
 };
 

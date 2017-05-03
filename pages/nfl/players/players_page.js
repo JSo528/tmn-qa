@@ -43,7 +43,7 @@ _.extend(PlayersPage.prototype, chartColumns);
 _.extend(PlayersPage.prototype, occurrencesAndStreaks);
 _.extend(PlayersPage.prototype, scatterPlot);
 
-PlayersPage.prototype.BY_POSSESSION_ID = 'tableFootballPlayerPlayByPlayModalContainer';
+PlayersPage.prototype.DEFAULT_BY_POSSESSION_ID = 'tableFootballPlayerPlayByPlayModalContainer';
 PlayersPage.prototype.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID = 'tableFootballPlayersStatsContainer';
 PlayersPage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = 'tableFootballPlayersStatsISOContainer';
 

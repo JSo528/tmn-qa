@@ -81,7 +81,7 @@ test.describe('#Page: Performance', function() {
 
     test.describe("#sorting", function() {
       var columns = [
-        { colName: 'Dist', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+        { colName: 'DistTotal', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
         { colName: 'RelWalkTime', sortType: 'ferpTime', defaultSort: 'desc' },
         { colName: 'RelTargetMPH', sortType: 'ferpNumber', defaultSort: 'desc' },
       ]
@@ -182,19 +182,19 @@ test.describe('#Page: Performance', function() {
 
       test.it('pinned total should show the correct sum', function() {
         performancePage.getPinnedTotalTableStat(8).then(function(stat) {
-          assert.equal(stat, 1000, 'pinned total - Dist');
+          assert.equal(stat, 1000, 'pinned total - DistTotal');
         });
       });
 
       test.it('hovering over bar chart should show correct stats', function() {
         performancePage.hoverOverBarChartStack(1,'walk')
         performancePage.getBarChartTooltipText().then(function(text) {
-          assert.equal(text, 'JaCorey Shepherd\nRelWalkYds: 341');
+          assert.equal(text, 'JaCorey Shepherd\nRelWalkYds: 121');
         });
 
         performancePage.hoverOverBarChartStack(1,'jog')
         performancePage.getBarChartTooltipText().then(function(text) {
-          assert.equal(text, 'JaCorey Shepherd\nRelJogYds: 51');
+          assert.equal(text, 'JaCorey Shepherd\nRelJogYds: 341');
         });
       });
 
@@ -205,12 +205,12 @@ test.describe('#Page: Performance', function() {
       test.it('hovering over time bars should show correct stats', function() {
         performancePage.hoverOverBarChartStack(1,'walk')
         performancePage.getBarChartTooltipText().then(function(text) {
-          assert.equal(text, 'JaCorey Shepherd\nRelWalkTime: 0:02:24');
+          assert.equal(text, 'JaCorey Shepherd\nRelWalkTime: 0:01:42');
         });
 
         performancePage.hoverOverBarChartStack(1,'jog')
         performancePage.getBarChartTooltipText().then(function(text) {
-          assert.equal(text, 'JaCorey Shepherd\nRelJogTime: 0:00:07');
+          assert.equal(text, 'JaCorey Shepherd\nRelJogTime: 0:02:24');
         });
       });      
 
@@ -294,8 +294,8 @@ test.describe('#Page: Performance', function() {
           assert.equal(header, "Season");
         });
 
-        performancePage.getStatsTableStatFor(1,'Dist').then(function(stat) {
-          assert.equal(stat, 512, 'Team 1 - Dist');
+        performancePage.getStatsTableStatFor(1,'DistTotal').then(function(stat) {
+          assert.equal(stat, 512, 'Team 1 - DistTotal');
         });
       });
 
@@ -339,13 +339,13 @@ test.describe('#Page: Performance', function() {
       ];
       
       test.it('sorting by yds desc', function() {
-        performancePage.clickStatsTableHeaderFor('Dist');  
+        performancePage.clickStatsTableHeaderFor('DistTotal');  
       })
 
       statViews.forEach(function(statView) {
         test.it("selecting (stats view: " + statView.type + ") shows the correct stat value", function() {
           performancePage.changeStatsView(statView.type);  
-          performancePage.getStatsTableStatFor(1,'Dist').then(function(stat) {
+          performancePage.getStatsTableStatFor(1,'DistTotal').then(function(stat) {
             assert.equal(stat, statView.topStat);
           });
         });
@@ -354,11 +354,12 @@ test.describe('#Page: Performance', function() {
 
     test.describe("#reports", function() {
       var reports = [
-        { type: 'Dist/Time/Sprints By Zebra Defined Zone', topStat: 512, statType: "Dist" },  
+        { type: 'Zebra Team Summary', topStat: 512, statType: "DistTotal" },  
+        { type: 'Zebra Relative Summary', topStat: 512, statType: "DistTotal" },  
         { type: 'Rates and Peaks', topStat: 9.3, statType: "MaxStndYPS" },  
         { type: 'Accel/Decel/CoD', topStat: 8, statType: "TotalAccels" },  
-        { type: 'Dist/Time/Sprints By Team Zone', topStat: 512, statType: "Dist" },   
-        { type: 'Dist/Time/Sprints By Player Relative Zone', topStat: 512, statType: "Dist" },   
+        { type: 'Dist/Time/Sprints By Team Zone', topStat: 512, statType: "DistTotal" },   
+        { type: 'Dist/Time/Sprints By Player Relative Zone', topStat: 512, statType: "DistTotal" },   
       ];
 
       reports.forEach(function(report) {
@@ -514,7 +515,7 @@ test.describe('#Page: Performance', function() {
 
     test.describe("#sorting", function() {
       var columns = [
-        { colName: 'Dist', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
+        { colName: 'DistTotal', sortType: 'ferpNumber', defaultSort: 'desc', initialCol: true },
         { colName: 'RelJogTime', sortType: 'ferpTime', defaultSort: 'desc' },
         { colName: 'RelHardEffortDist', sortType: 'ferpNumber', defaultSort: 'desc' },
       ]
@@ -545,7 +546,7 @@ test.describe('#Page: Performance', function() {
 
     test.describe("#pinning/isoMode", function() {
       test.it('clicking the pin icon for the Garrett Celek should add him to the pinned table', function() {
-        performancePage.clickTablePin(1);
+        performancePage.clickTablePin(2);
 
         performancePage.getIsoTableStat(1,2).then(function(stat) {
           assert.equal(stat, 'Garrett Celek (TE-SF)');
@@ -562,7 +563,7 @@ test.describe('#Page: Performance', function() {
           assert.equal(stat, '0:09:06');
         });
 
-        performancePage.getPracticeSessionTableStatFor(3,'Dist').then(function(stat) {
+        performancePage.getPracticeSessionTableStatFor(3,'DistTotal').then(function(stat) {
           assert.equal(stat, 320);
         });
       });
@@ -570,11 +571,12 @@ test.describe('#Page: Performance', function() {
 
     test.describe("#reports", function() {
       var reports = [
-        { type: 'Dist/Time/Sprints By Zebra Defined Zone', topStat: 2490, statType: "Dist" },  
+        { type: 'Zebra Team Summary', topStat: 2490, statType: "DistTotal" },  
+        { type: 'Zebra Relative Summary', topStat: 2490, statType: "DistTotal" },  
         { type: 'Rates and Peaks', topStat: 7.3, statType: "MaxStndYPS" },  
         { type: 'Accel/Decel/CoD', topStat: 41, statType: "TotalAccels" },  
-        { type: 'Dist/Time/Sprints By Team Zone', topStat: 2490, statType: "Dist" },   
-        { type: 'Dist/Time/Sprints By Player Relative Zone', topStat: 2490, statType: "Dist" },   
+        { type: 'Dist/Time/Sprints By Team Zone', topStat: 2490, statType: "DistTotal" },   
+        { type: 'Dist/Time/Sprints By Player Relative Zone', topStat: 2490, statType: "DistTotal" },   
       ];
 
       reports.forEach(function(report) {
