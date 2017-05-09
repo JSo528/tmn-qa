@@ -125,7 +125,7 @@ PlayersPage.prototype.goToPlayerPage = function(playerNum) {
 PlayersPage.prototype.clickTableStat = function(playerNum, col) {
   // First 4 rows are for the headers
   var row = 4 + playerNum;
-  var locator = By.xpath(`.//div[@id='${STATS_TABLE_ID[this.section]}']/table/tbody/tr[${row}]/td[${col}]/span`);
+  var locator = By.xpath(`.//div[@id='${STATS_TABLE_ID[this.section]}']/table/tbody/tr[${row}]/td[${col}]/*[self::span or self::a]`);
   return this.click(locator);
 };
 

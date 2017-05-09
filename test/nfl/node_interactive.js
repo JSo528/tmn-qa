@@ -21,6 +21,7 @@ var ScoresPage = require('./pages/nfl/scores/scores_page.js');
 
 // Players Pages
 var PlayersPage = require('./pages/nfl/players/players_page.js');
+var PlayerPage = require('./pages/nfl/players/player_page.js');
 
 var StandingsPage = require('./pages/nfl/standings_page.js');
 
@@ -40,17 +41,20 @@ playersPage = new PlayersPage(driver);
 filters = new Filters(driver);
 groupsPage = new GroupsPage(driver);
 performancePage = new PerformancePage(driver);
+playerPage = new PlayerPage(driver);
 
 
 // Constants
 // var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
-var url = "https://49ers.analytics.trumedianetworks.com/football/team-presnap-premium/49ers/4500/nfl?is=true&f=%7B%22fgt%22%3A%5B%22regular%22%5D%2C%22fswr%22%3A%7B%22fromSeason%22%3A%222016%22%2C%22fromWeek%22%3A%221%22%2C%22toSeason%22%3A%222016%22%2C%22toWeek%22%3A%2217%22%7D%7D"
+var url = 'https://49ers.analytics.trumedianetworks.com/football/player-performance-log/Carlos%20Hyde/2543743/nfl?pc=%7B"fsv"%3A"stats"%7D'
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-var locator = By.css('#sliderBar');
+playerPage.section = 'performanceLog'
 
-filters.clickOffset(locator, 0, -100)
+        playerPage.isModalDisplayed().then(function(isDisplayed) {
+          console.log(isDisplayed)
+        }); 

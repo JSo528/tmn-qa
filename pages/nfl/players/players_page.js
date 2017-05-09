@@ -97,7 +97,7 @@ PlayersPage.prototype.getStatsTableHeader = function(colNum) {
 };
 
 PlayersPage.prototype.clickStatsTableStat = function(rowNum, colNum) {
-  var locator = By.xpath(`.//div[@id='tableFootballPlayersStatsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[${colNum}]/span`);
+  var locator = By.xpath(`.//div[@id='tableFootballPlayersStatsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[${colNum}]/*[self::span or self::a]`);
   return this.click(locator);
 };
 

@@ -94,6 +94,9 @@ function generateTests() {
   test.describe(process.env.TITLE, function() {
     var passedCount = 0;
     var failedCount = 0;
+    var maxWidth = constants.screenSize.maxWidth;
+    var maxHeight = constants.screenSize.maxHeight;
+
     this.timeout(constants.timeOuts.mocha);  
     this.retries(0);    
 
@@ -103,6 +106,7 @@ function generateTests() {
         .then(function(doc) {
           testRunQueue = doc;
           driver = new webdriver.Builder().withCapabilities({'browserName': 'chrome'}).build();
+          driver.manage().window().setSize(maxWidth, maxHeight);
           browser = new Browser(driver);
           url = process.env.START_URL;
 

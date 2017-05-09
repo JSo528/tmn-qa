@@ -409,13 +409,10 @@ test.describe('#Page: Performance', function() {
         var initialWidth;
         return performancePage.getDashboardBarWidth(1, 'walking').then(function(width) {
           initialWidth = width;
-          console.log("###")
-          console.log(initialWidth);
         }).then(function() {
           return performancePage.changeDashboardDropdown('Metrics mode', 'Position');
         }).then(function() {
           return performancePage.getDashboardBarWidth(1, 'walking').then(function(width) {
-            console.log(width);
             assert.notEqual(width, initialWidth);
           });
         })

@@ -345,7 +345,7 @@ test.describe('#Page: Team', function() {
       teamPage.goToSection("playByPlay");
     });
 
-    test.describe('when selecting filter (Off Half Possession #: Strike Looking)', function() {
+    test.describe('when selecting filter (Off Half Possession #: 3 to 5)', function() {
       test.it('test setup', function() {
         filters.changeFilterGroupDropdown('Drive');
         filters.changeValuesForRangeSidebarFilter('Off Half Possession #:', 3, 5);
@@ -526,7 +526,7 @@ test.describe('#Page: Team', function() {
       });                   
 
       teamPage.getSplitsTableStat(2,7).then(function(stat) {
-        assert.equal(stat, 250, 'row 2 should have 220 PS');
+        assert.equal(stat, 250, 'row 2 should have 250 PS');
       });                         
     });
 

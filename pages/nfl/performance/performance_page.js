@@ -10,10 +10,7 @@ var Promise = require('selenium-webdriver').promise;
 
 // Mixins
 var _ = require('underscore');
-var videoPlaylist = require('../mixins/videoPlaylist.js');
 var chartColumns = require('../../mixins/chartColumns.js');
-var occurrencesAndStreaks = require('../mixins/occurrencesAndStreaks.js');
-var scatterPlot = require('../../mixins/scatterPlot.js');
 
 /****************************************************************************
 ** Locators
@@ -145,14 +142,14 @@ PerformancePage.prototype.getStatsTableHeader = function(colNum) {
 };
 
 PerformancePage.prototype.hoverOverBarChartStack = function(playerNum, barType) {
-    var fillText = BAR_CHART_COLORS[barType];
-    var locator = By.css(`g.layer[style="fill: ${fillText};"] rect:nth-of-type(${playerNum})`);
-    var thiz = this;
+  var fillText = BAR_CHART_COLORS[barType];
+  var locator = By.css(`g.layer[style="fill: ${fillText};"] rect:nth-of-type(${playerNum})`);
+  var thiz = this;
 
-    this.driver.findElement(locator).then(function(elem) {
-      thiz.driver.actions().mouseMove(elem).perform();
-      thiz.driver.sleep(5000);
-    });
+  this.driver.findElement(locator).then(function(elem) {
+    thiz.driver.actions().mouseMove(elem).perform();
+    thiz.driver.sleep(5000);
+  });
 };
 
 PerformancePage.prototype.getBarChartTooltipText = function() {
