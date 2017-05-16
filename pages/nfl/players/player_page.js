@@ -8,7 +8,6 @@ var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
 var Key = require('selenium-webdriver').Key;
-var q = require('q');
 
 // Mixins
 var _ = require('underscore');
@@ -51,7 +50,11 @@ var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div[@class='select2-se
 var DATA_TABLE = {
   'overview': By.css('.container'),
   'gameLog': By.css("#tableFootballPlayerGameLogContainer > table"),
-  'performanceLog': By.css("#tableFootballPlayerPerformanceLogContainer > table")
+  'performanceLog': By.css("#tableFootballPlayerPerformanceLogContainer > table"),
+  'occurrencesAndStreaks': By.css("#tableFootballPlayerStreaksContainer > table"),
+  'splits': By.css("#tableFootballPlayerSplitsContainer > table"),
+  'multiFilter': By.css("#tableFootballPlayerMultiFilterContainer > table"),
+  
 }
 
 var BAR_CHART_COLORS = {
@@ -102,7 +105,6 @@ PlayerPage.prototype.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID = {
 };
 PlayerPage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = {
   'performanceLog': 'tableFootballPlayerPerformanceLogISOContainer'
-
 };
 
 /****************************************************************************
@@ -161,6 +163,24 @@ PlayerPage.prototype.clickOverviewSeasonTableStat = function(rowNum, colName) {
   return this.click(locator);
 };
 
+PlayerPage.prototype.clickOverviewSeasonsExportLink = function() {
+  var locator = By.id("tablePlayerOverviewSeasonTableExport");
+  this.click(locator);
+  return this.driver.sleep(3000);
+};
+
+PlayerPage.prototype.clickOverviewResultsExportLink = function() {
+  var locator = By.id("tablePlayerOverviewGameByGameTableExport");
+  this.click(locator);
+  return this.driver.sleep(3000);
+};
+
+PlayerPage.prototype.clickOverviewRankExportLink = function() {
+  var locator = By.id("tablePlayerOverviewRankTableExport");
+  this.click(locator);
+  return this.driver.sleep(3000);
+};
+
 /****************************************************************************
 ** Game Log
 *****************************************************************************/
@@ -189,6 +209,18 @@ PlayerPage.prototype.getGameLogTableBgColorFor = function(rowNum, colName) {
   return this.getCssValue(locator, "background-color");
 };
 
+PlayerPage.prototype.clickGameLogExportLink = function() {
+  var locator = By.id("tableFootballPlayerGameLogTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+PlayerPage.prototype.clickGameLogExportAllLink = function() {
+  var locator = By.id("<%=name%>TableExportAll");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
 /****************************************************************************
 ** Play by Play
 *****************************************************************************/
@@ -207,6 +239,12 @@ PlayerPage.prototype.getPlayByPlayTableStat = function(rowNum, colNum) {
   return this.getText(locator);
 };
 
+PlayerPage.prototype.clickPlayByPlayExportLink = function() {
+  var locator = By.id("tableFootballPlayerPlayByPlayTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
 /****************************************************************************
 ** Occurrences & Streaks
 *****************************************************************************/
@@ -218,6 +256,12 @@ PlayerPage.prototype.getStreaksTableHeader = function(col) {
 PlayerPage.prototype.getStreaksTableStat = function(row, col) {
   var locator = By.xpath(`.//div[@id='tableFootballPlayerStreaksContainer']/table/tbody/tr[@data-tmn-row-type='row'][${row}]/td[${col}]`);
   return this.getText(locator);
+};
+
+PlayerPage.prototype.clickStreaksExportLink = function() {
+  var locator = By.id("tableFootballPlayerStreaksTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -238,6 +282,12 @@ PlayerPage.prototype.getSplitsTableStatFor = function(rowNum, colName) {
   return this.getText(locator);
 };
 
+PlayerPage.prototype.clickSplitsFilterExportLink = function() {
+  var locator = By.id("tableFootballPlayerSplitsTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
 /****************************************************************************
 ** Multi-Filter
 *****************************************************************************/
@@ -249,6 +299,12 @@ PlayerPage.prototype.getMultiFilterTableStatFor = function(rowNum, colName) {
 PlayerPage.prototype.clickMultiFilterTableStatFor = function(rowNum, colName) {
   var locator = By.xpath(`.//div[@id='tableFootballPlayerMultiFilterContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballPlayerMultiFilterContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]/span`);
   return this.click(locator);
+};
+
+PlayerPage.prototype.clickMultiFilterExportLink = function() {
+  var locator = By.id("tableFootballPlayerMultiFilterTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -325,7 +381,7 @@ PlayerPage.prototype.hoverOverPracticeSessionBarChartStack = function(sessionNum
 
   this.driver.findElement(locator).then(function(elem) {
     thiz.driver.actions().mouseMove(elem).perform();
-    thiz.driver.sleep(5000);
+    thiz.driver.sleep(1000);
   });
 };
 
@@ -337,7 +393,7 @@ PlayerPage.prototype.togglePracticeSessionBarChartType = function(type) {
   var inputLocator = By.css("football-performance-bar-chart[table-name='tableFootballPlayerPracticeSessions'] #checkboxContainer");
   var checkMarkLocator = By.css("football-performance-bar-chart[table-name='tableFootballPlayerPracticeSessions'] #checkboxContainer #checkmark");
   
-  this.isDisplayed(checkMarkLocator).then(function(displayed) {
+  this.isDisplayed(checkMarkLocator, 1000).then(function(displayed) {
     if (checked != displayed) {
       d.fulfill(thiz.click(inputLocator));
     }
@@ -352,11 +408,11 @@ PlayerPage.prototype.hoverOverPerformanceLogBarChartStack = function(sessionNum,
 
   this.driver.findElement(locator).then(function(elem) {
     thiz.driver.actions().mouseMove(elem).perform();
-    thiz.driver.sleep(5000);
+    thiz.driver.sleep(1000);
   });
 };
 
-PlayerPage.prototype.togglePerformanceLogrChartType = function(type) {
+PlayerPage.prototype.togglePerformanceLogChartType = function(type) {
   var checked = (type == 'Time');
   var d = Promise.defer();
   var thiz = this;
@@ -364,12 +420,24 @@ PlayerPage.prototype.togglePerformanceLogrChartType = function(type) {
   var inputLocator = By.css("football-performance-bar-chart[table-name='tableFootballPlayerPerformanceLog'] #checkboxContainer");
   var checkMarkLocator = By.css("football-performance-bar-chart[table-name='tableFootballPlayerPerformanceLog'] #checkboxContainer #checkmark");
   
-  this.isDisplayed(checkMarkLocator).then(function(displayed) {
+  this.isDisplayed(checkMarkLocator, 1000).then(function(displayed) {
     if (checked != displayed) {
       d.fulfill(thiz.click(inputLocator));
     }
   })
   return d.promise;
+};
+
+PlayerPage.prototype.clickPerformanceLogExportLink = function() {
+  var locator = By.id("tableFootballPlayerPerformanceLogTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+PlayerPage.prototype.clickPerformanceLogExportAllLink = function() {
+  var locator = By.id("<%=name%>TableExportAll");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -413,7 +481,7 @@ PlayerPage.prototype.hoverOverFortyPlusPunt = function(puntNum) {
 
   this.driver.findElement(locator).then(function(elem) {
     thiz.driver.actions().mouseMove(elem).perform();
-    thiz.driver.sleep(5000);
+    thiz.driver.sleep(1000);
   });
 };
 
@@ -440,8 +508,14 @@ PlayerPage.prototype.hoverOverFortyMinusPunt = function(puntNum) {
 
   this.driver.findElement(locator).then(function(elem) {
     thiz.driver.actions().mouseMove(elem).perform();
-    thiz.driver.sleep(5000);
+    thiz.driver.sleep(1000);
   });
+};
+
+PlayerPage.prototype.clickPuntingExportLink = function() {
+  var locator = By.id("tableCowboysPlayerPuntingTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -485,8 +559,14 @@ PlayerPage.prototype.hoverOverKickingKickoff = function(kickNum) {
 
   this.driver.findElement(locator).then(function(elem) {
     thiz.driver.actions().mouseMove(elem).perform();
-    thiz.driver.sleep(5000);
+    thiz.driver.sleep(1000);
   });
+};
+
+PlayerPage.prototype.clickKickingExportLink = function() {
+  var locator = By.id("tableCowboysPlayerKickingTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -543,7 +623,7 @@ PlayerPage.prototype.hoverOverAlignmentVisualPlay = function(playNum) {
 
   this.driver.findElement(locator).then(function(elem) {
     thiz.driver.actions().mouseMove(elem).perform();
-    thiz.driver.sleep(5000);
+    thiz.driver.sleep(1000);
   });
 };
 

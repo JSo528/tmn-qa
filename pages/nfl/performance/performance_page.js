@@ -15,13 +15,21 @@ var chartColumns = require('../../mixins/chartColumns.js');
 /****************************************************************************
 ** Locators
 *****************************************************************************/
+var SECTION_NAMES = {
+  'practicesAndGames': 'Practices and Games',
+  'performanceStats': 'Performance Stats',
+  'livePracticeDashboard': 'Live Practice Dashboard',
+  'practice': 'Performance Stats',
+  'report': 'Report',
+}
 
 // Stats
 var STATS_TABLE = {
+  'practicesAndGames': By.css('#tableFootballTeamPracticeGameContainer > table'),
   'performanceStats': By.xpath(".//div[@id='tableFootballPlayersGamePracticeStatsContainer']/table"),
   'practice': By.xpath(".//div[@id='tableFootballTeamPracticeContainer']/table"),
-
 };
+
 var GROUP_BY_SELECT = By.id("s2id_pageControlFootballPlayerPracticeGameGroupBy");
 var STATS_VIEW_SELECT = By.id("s2id_pageControlFootballStatsViewPlayersPracticeGame");
 var REPORT_SELECT = By.id("s2id_reportNavFootballPlayerPracticeSubCommon");
@@ -46,17 +54,12 @@ var PRACTICE_REPORT_SECTIONS = {
   'players': By.id('players-report')
 }
 
-// var YEAR_SELECT = By.id('s2id_pageControlFootballYear');
-// var WEEK_SELECT = By.id('s2id_pageControlFootballRegWeek');
-// var VIEW_SELECT = By.id('s2id_pageControlFootballStandingsGroup');
-// var DROPDOWN_INPUT = By.xpath(".//div[@id='select2-drop']/div/input");
-// var TABLES = By.css('table');
-
 /****************************************************************************
 ** Constructor
 *****************************************************************************/
 function PerformancePage(driver) {
   BasePage.call(this, driver)
+  this.section = 'practicesAndGames';
 };
 
 PerformancePage.prototype = Object.create(BasePage.prototype);
@@ -71,14 +74,14 @@ PerformancePage.prototype.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID = {
 PerformancePage.prototype.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID = {
   'performanceStats': 'tableFootballPlayersGamePracticeStatsISOContainer',
   'practice': 'tableFootballTeamPracticeISOContainer',
-
 };
 
 /****************************************************************************
 ** Shared
 *****************************************************************************/
 PerformancePage.prototype.goToSection = function(section) {
-  var locator = By.xpath(`.//div[@class='navbar-header']/ul/li/a[text()='${section}']`);
+  this.section = section;
+  var locator = By.xpath(`.//div[@class='navbar-header']/ul/li/a[text()='${SECTION_NAMES[this.section]}']`);
   return this.click(locator);
 };
 
@@ -101,8 +104,14 @@ PerformancePage.prototype.getTableStatFor = function(rowNum, colName) {
 };
 
 PerformancePage.prototype.clickTableStatFor = function(rowNum, colName) {
-var locator = By.xpath(`.//div[@id='tableFootballTeamPracticeGameContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamPracticeGameContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]/a`);
+  var locator = By.xpath(`.//div[@id='tableFootballTeamPracticeGameContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamPracticeGameContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]/a`);
   return this.click(locator);
+};
+
+PerformancePage.prototype.clickPracticesAndGamesExportLink = function() {
+  var locator = By.id('tableFootballTeamPracticeGameTableExport');
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -171,6 +180,18 @@ PerformancePage.prototype.toggleBarChartType = function(type) {
     }
   })
   return d.promise;
+};
+
+PerformancePage.prototype.clickStatsExportLink = function() {
+  var locator = By.id('tableFootballPlayersGamePracticeStatsTableExport');
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+PerformancePage.prototype.clickStatsExportAllLink = function() {
+  var locator = By.id('<%=name%>TableExportAll');
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -279,6 +300,30 @@ PerformancePage.prototype.getPracticeSessionTableStatFor = function(rowNum, colN
 PerformancePage.prototype.toggleShowPinnedPlayerSessions = function() {
   var locator = By.css("#tableFootballPlayersPracticeSessionsControls div.btn");
   return this.click(locator);
+};
+
+PerformancePage.prototype.clickPracticeExportLink = function() {
+  var locator = By.id('tableFootballTeamPracticeTableExport');
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+PerformancePage.prototype.clickPracticeExportAllLink = function() {
+  var locator = By.id('<%=name%>TableExportAll');
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+PerformancePage.prototype.clickPracticeExportLegacyLink = function() {
+  var locator = By.css('.export-link-custom');
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+PerformancePage.prototype.clickPracticeZebraExportLink = function() {
+  var locator = By.css('.export-link-custom-2');
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************

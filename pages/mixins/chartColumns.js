@@ -84,7 +84,7 @@ ChartColumns = {
   },
 
   hoverOverHistogramStack: function(stackNum) {
-    var locator = By.css(`.modal-dialog g.stack:nth-of-type(${stackNum})`);
+    var locator = By.css(`.modal-dialog g.stack:nth-of-type(${stackNum}) rect`);
     var thiz = this;
 
     this.driver.findElement(locator).then(function(elem) {
@@ -149,6 +149,10 @@ ChartColumns = {
   },
   getPinnedTotalTableStat: function(col) {
     var locator = By.xpath(`.//div[@id='${this.CHART_COLUMNS_TABLE_ID()}']/table/tbody/tr[3]/td[${col}]`);
+    return this.getText(locator);
+  },
+  getPinnedAverageTableStat: function(col) {
+    var locator = By.xpath(`.//div[@id='${this.CHART_COLUMNS_TABLE_ID()}']/table/tbody/tr[2]/td[${col}]`);
     return this.getText(locator);
   }
 }

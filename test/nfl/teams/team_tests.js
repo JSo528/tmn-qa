@@ -401,9 +401,12 @@ test.describe('#Page: Team', function() {
       test.it('closing modals', function() {
         teamPage.closeVideoPlaylistModal();
         teamPage.closePlayByPlayModal();
-        filters.changeValuesForRangeSidebarFilter('Def Half Possession #:', '', '');
       });
-    });    
+
+      test.it('removing filter', function() {
+        filters.changeValuesForRangeSidebarFilter('Def Half Possession #:', '', '');
+      });  
+    });  
   });
 
   test.describe('#Section: Occurrences & Streaks', function() {
@@ -458,7 +461,7 @@ test.describe('#Page: Team', function() {
       teamPage.getStreaksTableStat(1,2).then(function(team) {
         assert.equal(team, "2016 W14 - BAL@NE\n ", 'Row1 Game');
       });
-    });              
+    });      
   });
 
   test.describe('#Section: Splits', function() {

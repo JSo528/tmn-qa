@@ -462,6 +462,7 @@ BasePage.prototype.readAndDeleteCSV = function(path) {
   var csv = require("fast-csv");
   var fs = require('fs-extra');
   var fileContents = "";
+  var path = '../Downloads/export.csv';
 
   try {
     fs.readFileSync(path);
@@ -478,7 +479,12 @@ BasePage.prototype.readAndDeleteCSV = function(path) {
     })
   } catch (err) {
     console.log("ERROR: " + err);
-    d.fulfill(null);
+    fs.remove(path, function (err) {
+      if (err) {
+        console.error(err);
+      } 
+      d.fulfill(null);
+    });
   }  
 
   return d.promise;

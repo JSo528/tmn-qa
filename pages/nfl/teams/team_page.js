@@ -149,6 +149,24 @@ TeamPage.prototype.clickRankTab = function(tabName) {
   return this.click(locator);
 };
 
+TeamPage.prototype.clickOverviewRosterExportLink = function() {
+  var locator = By.id("teamSummaryRosterTableZebraTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+TeamPage.prototype.clickOverviewResultsExportLink = function() {
+  var locator = By.id("tableNFLTeamSummaryGameByGameZebraTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+TeamPage.prototype.clickOverviewRankExportLink = function() {
+  var locator = By.id("tableTeamOverviewRankTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
 /****************************************************************************
 ** Summary
 *****************************************************************************/
@@ -185,6 +203,20 @@ TeamPage.prototype.clickGameLogTableStatFor = function(rowNum, colName) {
   return this.click(locator);
 };
 
+TeamPage.prototype.clickGameLogExportLink = function() {
+  var locator = By.id("tableFootballTeamGameLogTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+
+TeamPage.prototype.clickGameLogExportAllLink = function() {
+  var locator = By.id("<%=name%>TableExportAll");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+
 /****************************************************************************
 ** Play by Play
 *****************************************************************************/
@@ -203,6 +235,12 @@ TeamPage.prototype.getPlayByPlayTableStat = function(rowNum, colNum) {
   return this.getText(locator);
 };
 
+TeamPage.prototype.clickPlayByPlayExportLink = function() {
+  var locator = By.id("tableFootballTeamPlayByPlayTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
 /****************************************************************************
 ** Occurrences & Streaks
 *****************************************************************************/
@@ -214,6 +252,12 @@ TeamPage.prototype.getStreaksTableHeader = function(col) {
 TeamPage.prototype.getStreaksTableStat = function(row, col) {
   var locator = By.xpath(`.//div[@id='tableFootballTeamStreaksContainer']/table/tbody/tr[@data-tmn-row-type='row'][${row}]/td[${col}]`);
   return this.getText(locator);
+};
+
+TeamPage.prototype.clickStreaksExportLink = function() {
+  var locator = By.id("tableFootballTeamStreaksTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -232,6 +276,12 @@ TeamPage.prototype.getSplitsTableStat = function(row, col) {
 TeamPage.prototype.getSplitsTableStatFor = function(rowNum, colName) {
   var locator = By.xpath(`.//div[@id='tableFootballTeamSplitsContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamSplitsContainer']/table/tbody/tr[1]/td[text()="${colName}"]/preceding-sibling::td)+1]`);
   return this.getText(locator);
+};
+
+TeamPage.prototype.clickSplitsExportLink = function() {
+  var locator = By.id("tableFootballTeamSplitsTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************
@@ -267,6 +317,12 @@ TeamPage.prototype.getRosterTableBgColorFor = function(rowNum, colName) {
   return this.getCssValue(locator, "background-color");
 };
 
+TeamPage.prototype.clickRosterExportLink = function() {
+  var locator = By.id("tableFootballTeamRosterTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
 /****************************************************************************
 ** Multi-Filter
 *****************************************************************************/
@@ -278,6 +334,12 @@ TeamPage.prototype.getMultiFilterTableStatFor = function(rowNum, colName) {
 TeamPage.prototype.clickMultiFilterTableStatFor = function(rowNum, colName) {
   var locator = By.xpath(`.//div[@id='tableFootballTeamMultiFilterContainer']/table/tbody/tr[@data-tmn-row-type='row'][${rowNum}]/td[count(//div[@id='tableFootballTeamMultiFilterContainer']/table/thead/tr/th[text()="${colName}"]/preceding-sibling::th)+1]/span`);
   return this.click(locator);
+};
+
+TeamPage.prototype.clickMultiFilterExportLink = function() {
+  var locator = By.id("tableFootballTeamMultiFilterTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
 };
 
 /****************************************************************************

@@ -84,4 +84,11 @@ GroupsPage.prototype.getTableHeader = function(colNum) {
   return this.getText(locator);
 };
 
+GroupsPage.prototype.clickExportLink = function() {
+  var locator = By.id("tableFootballConfStatsTableExport");
+  this.click(locator);
+  return this.driver.sleep(1000);
+};
+
+
 module.exports = GroupsPage;

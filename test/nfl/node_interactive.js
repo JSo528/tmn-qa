@@ -18,7 +18,7 @@ var TeamPage = require('./pages/nfl/teams/team_page.js');
 
 // Scores Pages
 var ScoresPage = require('./pages/nfl/scores/scores_page.js');
-
+var GamePage = require('./pages/nfl/scores/game_page.js');
 // Players Pages
 var PlayersPage = require('./pages/nfl/players/players_page.js');
 var PlayerPage = require('./pages/nfl/players/player_page.js');
@@ -42,19 +42,19 @@ filters = new Filters(driver);
 groupsPage = new GroupsPage(driver);
 performancePage = new PerformancePage(driver);
 playerPage = new PlayerPage(driver);
-
+gamePage = new GamePage(driver);
 
 // Constants
 // var url = "https://dodgers-staging.trumedianetworks.com:3005"
 // var url = "https://angels.trumedianetworks.com:3005"
-var url = 'https://49ers.analytics.trumedianetworks.com/football/player-performance-log/Carlos%20Hyde/2543743/nfl?pc=%7B"fsv"%3A"stats"%7D'
+var url = 'https://49ers.analytics.trumedianetworks.com/football/performance-report-game/Falcons-49ers/2016-12-18/2016121809/nfl/'
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-playerPage.section = 'performanceLog'
 
-        playerPage.isModalDisplayed().then(function(isDisplayed) {
-          console.log(isDisplayed)
-        }); 
+
+gamePage.getReportPlayers().then(function(stat) {
+  console.log(stat)
+});

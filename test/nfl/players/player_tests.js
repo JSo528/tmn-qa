@@ -234,43 +234,43 @@ test.describe('#Page: Player', function() {
           });
         });
       });
+    });
 
-      test.describe("#statsView", function() {
-        var topColor = "rgba(108, 223, 118, 1)";
-        var statViews = [
-          { type: 'Rank', topStat: 1, color: true },            
-          { type: 'Percentile', topStat: "100.0%", color: true },
-          { type: 'Z-Score', topStat: 2.909 },
-          { type: 'Stat Grade', topStat: 80 },
-          { type: 'Stat (Rank)', topStat: "503 (1)", color: true },
-          { type: 'Stat (Percentile)', topStat: "503 (100%)", color: true },
-          { type: 'Stat (Z-Score)', topStat: "503 (2.91)" },
-          { type: 'Stat (Stat Grade)', topStat: "503 (80)" },
-          { type: 'Per Game', topStat: 503 },
-          { type: 'Per Team Game', topStat: 503 },
-          { type: 'Stats', topStat: 503 }
-        ];
+    test.describe("#statsView", function() {
+      var topColor = "rgba(108, 223, 118, 1)";
+      var statViews = [
+        { type: 'Rank', topStat: 1, color: true },            
+        { type: 'Percentile', topStat: "100.0%", color: true },
+        { type: 'Z-Score', topStat: 2.909 },
+        { type: 'Stat Grade', topStat: 80 },
+        { type: 'Stat (Rank)', topStat: "503 (1)", color: true },
+        { type: 'Stat (Percentile)', topStat: "503 (100%)", color: true },
+        { type: 'Stat (Z-Score)', topStat: "503 (2.91)" },
+        { type: 'Stat (Stat Grade)', topStat: "503 (80)" },
+        { type: 'Per Game', topStat: 503 },
+        { type: 'Per Team Game', topStat: 503 },
+        { type: 'Stats', topStat: 503 }
+      ];
 
-        test.it('sort by psYds', function() {
-          playerPage.clickGameLogTableHeaderFor('PsYds');
+      test.it('sort by psYds', function() {
+        playerPage.clickGameLogTableHeaderFor('PsYds');
+      });
+  
+      statViews.forEach(function(statView) {
+        test.it("selecting (stats view: " + statView.type + ") shows the correct stat value", function() {
+          playerPage.changeStatsView(statView.type);  
+          playerPage.getGameLogTableStatFor(1,'PsYds').then(function(stat) {
+            assert.equal(stat, statView.topStat);
+          });
         });
-    
-        statViews.forEach(function(statView) {
-          test.it("selecting (stats view: " + statView.type + ") shows the correct stat value", function() {
-            playerPage.changeStatsView(statView.type);  
-            playerPage.getGameLogTableStatFor(1,'PsYds').then(function(stat) {
-              assert.equal(stat, statView.topStat);
+
+        if (statView.color) {
+          test.it("selecting " + statView.type + " shows the top value the right color", function() {
+            playerPage.getGameLogTableBgColorFor(1,'PsYds').then(function(color) {
+              assert.equal(color, topColor);
             });
           });
-
-          if (statView.color) {
-            test.it("selecting " + statView.type + " shows the top value the right color", function() {
-              playerPage.getGameLogTableBgColorFor(1,'PsYds').then(function(color) {
-                assert.equal(color, topColor);
-              });
-            });
-          }
-        });
+        }
       });      
     });
   });
@@ -366,7 +366,7 @@ test.describe('#Page: Player', function() {
           assert.equal(pitch, '(4:45) (No Huddle, Shotgun) 7-C.Kaepernick pass short left to 17-J.Kerley to SEA 24 for 6 yards (25-R.Sherman). Officials to measure for 1st down - Short. Caught at SEA 27. 3-yds YAC');
         });
       });
-    })
+    });
   });
 
   // Occurrences & Streaks Section
@@ -416,7 +416,7 @@ test.describe('#Page: Player', function() {
       playerPage.getStreaksTableStat(1,2).then(function(team) {
         assert.equal(team, "2016 W10 - SEA@NE\n ", 'Row1 Game');
       });
-    }); 
+    });   
   });
 
   // Splits Section
@@ -859,7 +859,7 @@ test.describe('#Page: Player', function() {
     test.describe("#reports", function() {
       var reports = [
         { type: 'Zebra Team Summary', topStat: 553, statType: "DistTotal" },  
-        { type: 'Zebra Relative Summary', topStat: 41, statType: "RelRunYds" },  
+        { type: 'Zebra Relative Summary', topStat: 53, statType: "RelRunYds" },  
         { type: 'Rates and Peaks', topStat: 6.5, statType: "MaxStndYPS" },  
         { type: 'Accel/Decel/CoD', topStat: 14, statType: "TotalAccels" },  
         { type: 'Dist/Time/Sprints By Team Zone', topStat: '0:01:30', statType: "TeamJogTime" },   
@@ -886,7 +886,7 @@ test.describe('#Page: Player', function() {
 
         playerPage.hoverOverPracticeSessionBarChartStack(1,'jog')
         playerPage.getPracticeSessionBarChartTooltipText().then(function(text) {
-          assert.equal(text, '04/19/2017 low\n1 - Warm Up\nRelJogYds: 264');
+          assert.equal(text, '04/19/2017 low\n1 - Warm Up\nRelJogYds: 251');
         });
       });
 
@@ -902,7 +902,7 @@ test.describe('#Page: Player', function() {
 
         playerPage.hoverOverPracticeSessionBarChartStack(1,'jog')
         playerPage.getPracticeSessionBarChartTooltipText().then(function(text) {
-          assert.equal(text, '04/19/2017 low\n1 - Warm Up\nRelJogTime: 0:01:29');
+          assert.equal(text, '04/19/2017 low\n1 - Warm Up\nRelJogTime: 0:01:27');
         });
       });      
     });
@@ -916,12 +916,12 @@ test.describe('#Page: Player', function() {
 
         playerPage.hoverOverPerformanceLogBarChartStack(1,'jog')
         playerPage.getPerformanceLogBarChartTooltipText().then(function(text) {
-          assert.equal(text, '2016 W17 (04/19/2017)\nPractice - Drills: 9\nRelJogYds: 1383');
+          assert.equal(text, '2016 W17 (04/19/2017)\nPractice - Drills: 9\nRelJogYds: 1330');
         });
       });
 
       test.it('toggling show time instead of distance', function() {
-        playerPage.togglePerformanceLogrChartType('Time');
+        playerPage.togglePerformanceLogChartType('Time');
       });
 
       test.it('hovering over time bars should show correct stats', function() {
@@ -932,7 +932,7 @@ test.describe('#Page: Player', function() {
 
         playerPage.hoverOverPerformanceLogBarChartStack(1,'jog')
         playerPage.getPerformanceLogBarChartTooltipText().then(function(text) {
-          assert.equal(text, '2016 W17 (04/19/2017)\nPractice - Drills: 9\nRelJogTime: 0:06:58');
+          assert.equal(text, '2016 W17 (04/19/2017)\nPractice - Drills: 9\nRelJogTime: 0:06:49');
         });
       });  
     });

@@ -71,9 +71,7 @@ test.describe('#Page: Performance', function() {
 
   test.describe('#Section: Performance Stats', function() {
     test.it('clicking Performance Stats link goes to correct page', function() {
-
-      performancePage.goToSection('Performance Stats');
-      performancePage.setSection('performanceStats');
+      performancePage.goToSection('performanceStats');
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /performance\-players/);
       });
@@ -375,7 +373,7 @@ test.describe('#Page: Performance', function() {
 
   test.describe('#Section: Live Practice Dashboard', function() {
     test.it('clicking Live Practice Dashboard link goes to correct page', function() {
-      performancePage.goToSection('Live Practice Dashboard');
+      performancePage.goToSection('livePracticeDashboard');
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /performance\-dashboard/);
       });
@@ -458,7 +456,7 @@ test.describe('#Page: Performance', function() {
     test.describe('#compareTo', function() {
       test.it('only last 4 weeks of practices appear on bar chart initally', function() {
         var dateThreshold = new Date();
-        dateThreshold.setDate(dateThreshold.getDate()-28);
+        dateThreshold.setDate(dateThreshold.getDate()-29);
 
         performancePage.getEarliestDashboardBarDate(1).then(function(date) {
           assert.isAtLeast(date, dateThreshold);
@@ -468,7 +466,7 @@ test.describe('#Page: Performance', function() {
       test.it('changing time period to 2 weeks updates the view correctly', function() {
         performancePage.changeDashboardDropdown('Compare to', 'Last 2 weeks');
         var dateThreshold = new Date();
-        dateThreshold.setDate(dateThreshold.getDate()-14);
+        dateThreshold.setDate(dateThreshold.getDate()-15);
 
         performancePage.getEarliestDashboardBarDate(1).then(function(date) {
           assert.isAtLeast(date, dateThreshold);
@@ -478,7 +476,7 @@ test.describe('#Page: Performance', function() {
       test.it('changing time period to 7 days updates the view correctly', function() {
         performancePage.changeDashboardDropdown('Compare to', 'Last 7 days');
         var dateThreshold = new Date();
-        dateThreshold.setDate(dateThreshold.getDate()-7);
+        dateThreshold.setDate(dateThreshold.getDate()-8);
 
         performancePage.getEarliestDashboardBarDate(1).then(function(date) {
           assert.isAtLeast(date, dateThreshold);
@@ -489,7 +487,7 @@ test.describe('#Page: Performance', function() {
 
   test.describe('#Section: Ind Practice Performance Stats', function() {
     test.it("clicking individual practice link goes to correct page", function() {
-      performancePage.goToSection('Practices and Games');
+      performancePage.goToSection('practicesAndGames');
       filters.addDropdownFilter('Season / Week');
       filters.changeValuesForSeasonWeekDropdownFilter(2016, 'W1', 2016, 'W16', true);
       performancePage.clickTableStatFor(2,'result');
@@ -543,7 +541,7 @@ test.describe('#Page: Performance', function() {
 
     test.describe("#pinning/isoMode", function() {
       test.it('clicking the pin icon for the Garrett Celek should add him to the pinned table', function() {
-        performancePage.clickTablePin(2);
+        performancePage.clickTablePin(3);
 
         performancePage.getIsoTableStat(1,2).then(function(stat) {
           assert.equal(stat, 'Garrett Celek (TE-SF)');
@@ -589,7 +587,7 @@ test.describe('#Page: Performance', function() {
 
   test.describe('#Section: Ind Practice Report', function() {
      test.it("clicking report link goes to correct page", function() {
-      performancePage.goToSection('Report');
+      performancePage.goToSection('report');
       
       driver.getCurrentUrl().then(function(url) {
         assert.match(url, /performance\-report/);
