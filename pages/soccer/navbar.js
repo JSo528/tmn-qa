@@ -8,18 +8,14 @@ var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 
 // Locators
-var LEAGUES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='League Tables']");
-var TEAMS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Team Sortables']");
-var PLAYERS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Player Sortables']");
-var MATCHES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Match Results']");
+var TABLES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Tables']");
+var TEAMS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Teams']");
+var PLAYERS_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Players']");
+var MATCHES_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='Matches']");
 
-var BASEBALL_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='MLB']");
-var NFL_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='NFL']");
-var NCAA_FOOTBALL_LINK = By.xpath(".//header[@class='navbar-tmn']/.//a[text()='NCAA Football']");
-
-var LEAGUES_LAST_LOCATOR = By.id("s2id_league");
-var TEAMS_LAST_LOCATOR = By.css("tableSoccerTeamsStatsContainer > table");
-var PLAYERS_LAST_LOCATOR = By.css("tableSoccerPlayersStatsContainer > table");
+var TABLES_LAST_LOCATOR = By.id("s2id_league");
+var TEAMS_LAST_LOCATOR = By.css('tmn-table#results-table > table:nth-of-type(1)');
+var PLAYERS_LAST_LOCATOR = By.css('tmn-table#results-table > table:nth-of-type(1)');
 var MATCHES_LAST_LOCATOR = By.id("s2id_league");
 
 
@@ -32,9 +28,9 @@ function Navbar(driver) {
 Navbar.prototype = Object.create(BasePage.prototype);
 Navbar.prototype.constructor = Navbar;
 
-Navbar.prototype.goToLeaguesPage = function() {
-  this.click(LEAGUES_LINK);
-  return this.waitForEnabled(LEAGUES_LAST_LOCATOR, 30000);
+Navbar.prototype.goToTablesPage = function() {
+  this.click(TABLES_LINK);
+  return this.waitForEnabled(TABLES_LAST_LOCATOR, 30000);
 };
 
 Navbar.prototype.goToMatchesPage = function() {
@@ -50,18 +46,6 @@ Navbar.prototype.goToTeamsPage = function() {
 Navbar.prototype.goToPlayersPage = function() {
   this.click(PLAYERS_LINK);
   return this.waitForEnabled(PLAYERS_LAST_LOCATOR, 30000);
-};
-
-Navbar.prototype.goToMLBPage = function() {
-  return this.click(BASEBALL_LINK);
-};
-
-Navbar.prototype.goToNflPage = function() {
-  return this.click(NFL_LINK);
-};
-
-Navbar.prototype.goToNcaaFootballPage = function() {
-  return this.click(NCAA_FOOTBALL_LINK);
 };
 
 Navbar.prototype.search = function(searchTerm, selectionNum) {

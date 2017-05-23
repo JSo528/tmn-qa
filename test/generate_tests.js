@@ -46,14 +46,17 @@ function writeScreenshot() {
     // set size of window
     element = driver.findElement(locator);
     driver.manage().window().setSize(maxWidth, maxHeight);
-    return element.getSize();
-  }).then(function(size) {
-    height = size.height + 100;
-    return element.getLocation();
-  }).then(function(location) {
-    height += location.y;
-    height = (height > maxHeight) ? maxHeight : height;
-    driver.manage().window().setSize(maxWidth, height);
+    return element.getSize().then(function(size) {
+      height = size.height + 100;
+      return element.getLocation();
+    }).then(function(location) {
+      height += location.y;
+      height = (height > maxHeight) ? maxHeight : height;
+      driver.manage().window().setSize(maxWidth, height);
+      return driver.takeScreenshot();
+    });
+  }, function() {
+    driver.manage().window().setSize(maxWidth, maxHeight);
     return driver.takeScreenshot();
   }).then(function(data) {
     fs.writeFileSync(screenshotPath + fileName, data, 'base64');
