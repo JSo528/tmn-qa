@@ -234,7 +234,7 @@ Filters.prototype.changeValuesForDateSidebarFilter = function(filterName, dateFr
   this.sendKeys(dateFromLocator, Key.ENTER);
   this.sendKeys(dateToLocator, dateTo);
   this.sendKeys(dateToLocator, Key.ENTER);
-  return this.waitUntilStaleness(LOADING_CONTAINER);
+  return this.waitUntilStaleness(LOADING_CONTAINER, 10000);
 };
 
 // filterName<String> : name of the filter that should be changed(exact text value)

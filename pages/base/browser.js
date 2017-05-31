@@ -114,4 +114,8 @@ Browser.prototype.back = function() {
   return this.driver.navigate().back();
 };
 
+Browser.prototype.scrollToTop = function() {
+  return this.driver.executeScript("window.scrollTo(0,0)");
+};
+
 module.exports = Browser;
