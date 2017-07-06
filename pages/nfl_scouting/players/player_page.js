@@ -38,6 +38,7 @@ var INCIDENT_DIVS = By.css('.incidents .incident');
 var CREATE_EVALUATION_REPORT_BTN = By.xpath(".//div[@inject='evaluationReports']/.//button[text()=' Create ']");
 var CREATE_SCOUTING_REPORT_BTN = By.xpath(".//div[@inject='scoutingReports']/.//button[text()=' Create ']");
 var CREATE_INTERVIEW_REPORT_BTN = By.xpath(".//div[@inject='interviewReports']/.//button[text()=' Create ']");
+var CREATE_MEDICAL_REPORT_BTN = By.xpath(".//div[@inject='medicalReports']/.//button[text()=' Create ']");
 
 var EVALUATION_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='evaluationReports']/.//table/tbody/tr/td[3]/div/input");
 var SCOUTING_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='scoutingReports']/.//table/tbody/tr/td[4]/div/input");
@@ -196,6 +197,10 @@ PlayerPage.prototype.goToInterviewReport = function(reportNum) {
 
 PlayerPage.prototype.getInterviewReportAuthors = function() {
   return this.getInputValueArray(INTERVIEW_REPORT_AUTHORS_INPUTS);
+};
+
+PlayerPage.prototype.clickCreateMedicalReportBtn = function() {
+  return this.click(CREATE_MEDICAL_REPORT_BTN);
 };
 
 /****************************************************************************
