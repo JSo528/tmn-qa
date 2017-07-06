@@ -179,7 +179,7 @@ PlayerPage.prototype.clickCreateScoutingReportBtn = function() {
 };
 
 PlayerPage.prototype.goToScoutingReport = function(reportNum) {
-  return this.click(By.xpath(`.//div[@inject='scoutingReports']/.//table/tbody/tr[${reportNum}]`));
+  return this.click(By.xpath(`.//div[@inject='scoutingReports']/.//div[contains(@class, 'table-wrap')]/table/tbody/tr[${reportNum}]`));
 };
 
 PlayerPage.prototype.getScoutingReportAuthors = function() {

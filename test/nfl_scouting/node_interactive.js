@@ -46,9 +46,3 @@ var url = "https://staging.jags.scouting.trumedianetworks.com/"
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
-
-browser.visit("https://staging.jags.scouting.trumedianetworks.com/measurables/31682?tenant=jaguars")
-
-
-
-measurablesPage.changeDropdownField(2, 'event', 'NIC')

@@ -160,7 +160,7 @@ test.describe('#Page: Players', function() {
   test.describe('#filters', function() {
     var dropdownFilters = [
       { name: 'At Positions', values: ['QB'], columnName: 'Pos' },
-      { name: 'For Draft Years', values: ['2018', '2020'], columnName: 'Draft Year' },
+      { name: 'For Draft Years', values: ['2018', '2019'], columnName: 'Draft Year' },
       { name: 'For Tier', values: ['A'], columnName: 'Tier' },
       { name: 'Draft Position', values: ['LEO'], columnName: 'Draft Position' },
       { name: 'Bowl Game', values: ['SR'], columnName: 'Bowl Game' },
@@ -170,15 +170,15 @@ test.describe('#Page: Players', function() {
     ];
 
     var checkboxFilters = [
-      { name: 'Underclassman', value: false, columnName: 'Underclassman' },
+      { name: 'Underclassman', value: false, columnName: 'Underclassman', displayValue: '' },
       { name: 'Jag Head', value: true, columnName: 'Jag Head' },
-      { name: 'Skull/Crossbones', value: false, columnName: 'Skull/Crossbones' },
+      { name: 'Skull/Crossbones', value: false, columnName: 'Skull/Crossbones', displayValue: '' },
       { name: 'T', value: true, columnName: 'T' },
-      { name: 'SR', value: false, columnName: 'SR' },
+      { name: 'SR', value: false, columnName: 'SR', displayValue: '' },
       { name: 'NIC', value: true, columnName: 'NIC' },
-      { name: 'Red Dot', value: false, columnName: 'Red Dot' },
+      { name: 'Red Dot', value: false, columnName: 'Red Dot', displayValue: '' },
       { name: 'Blk', value: true, columnName: 'Blk' },
-      { name: 'Blk+', value: false, columnName: 'Blk+' },
+      { name: 'Blk+', value: false, columnName: 'Blk+', displayValue: '' },
     ];
 
     var rangeFilters = [
@@ -218,8 +218,8 @@ test.describe('#Page: Players', function() {
 
         playersPage.getTableStatsFor(filter.columnName).then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
-
-          assert.sameMembers([filter.value.toString()], uniqueStats);
+          var value = filter.displayValue === undefined ? filter.value.toString() : filter.displayValue;
+          assert.sameMembers([value], uniqueStats);
         });
       });
     });
@@ -280,7 +280,7 @@ test.describe('#Page: Players', function() {
       playersPage.waitForPageToLoad();
 
       playersPage.getTableStatsFor('Last Name').then(function(stats) {
-        assert.sameMembers(['DANIELS', 'EVANS', 'VICKERS'], stats);
+        assert.sameMembers(['EVANS', 'VICKERS'], stats);
       });
     });
 
@@ -310,7 +310,7 @@ test.describe('#Page: Players', function() {
     })
 
     test.describe('#compoundFilterTest', function() {
-      test.it('filters: Is Starter (AND),  For Class Years (AND)', function() {
+      test.it('filters: Is Starter: true (AND),  For Class Years: FR (AND), At Positions: K  (AND)', function() {
         this.timeout(120000);
         browser.refresh();
         playersPage.toggleColumn('Starter', true);
@@ -318,7 +318,10 @@ test.describe('#Page: Players', function() {
         filters.changeCheckboxFilter('Is Starter', true);
 
         playersPage.addFilter('For Class Years');
-        filters.setDropdownFilter('For Class Years', ['SO']);
+        filters.setDropdownFilter('For Class Years', ['FR']);
+
+        playersPage.addFilter('At Positions');
+        filters.setDropdownFilter('At Positions', ['PK']);
 
         playersPage.waitForPageToLoad();
 
@@ -328,7 +331,7 @@ test.describe('#Page: Players', function() {
         });
 
         playersPage.getTableStatsFor('Last Name').then(function(stats) {
-          assert.includeMembers(stats, ['Adams', 'Butler']);
+          assert.includeMembers(stats, ['Aguayo', 'Blankenship']);
         });
       });
       
@@ -338,7 +341,7 @@ test.describe('#Page: Players', function() {
 
         filters.changeFilterLogic('Is Starter', 'or');
         playersPage.addFilter('For Tier');
-        filters.setDropdownFilter('For Tier', ['A']);
+        filters.setDropdownFilter('For Tier', ['D']);
         filters.changeFilterLogic('For Tier', 'or');
         
         playersPage.waitForPageToLoad();
@@ -356,24 +359,24 @@ test.describe('#Page: Players', function() {
     });
   });
 
-  test.describe('#exportCsv', function() {
-    test.it('clicking export csv exports csv file', function() {
-      browser.refresh();
-      playersPage.addFilter('On Player Lists');
-      filters.setResourceSetFilter('On Player Lists', ['GI']);
+  // test.describe('#exportCsv', function() {
+  //   test.it('clicking export csv exports csv file', function() {
+  //     browser.refresh();
+  //     playersPage.addFilter('On Player Lists');
+  //     filters.setResourceSetFilter('On Player Lists', ['GI']);
       
-      playersPage.addFilter('At Positions');
-      filters.setDropdownFilter('At Positions', ['QB']);
+  //     playersPage.addFilter('At Positions');
+  //     filters.setDropdownFilter('At Positions', ['QB']);
 
-      playersPage.waitForPageToLoad();
-      playersPage.clickExportButton();
-    });
+  //     playersPage.waitForPageToLoad();
+  //     playersPage.clickExportButton();
+  //   });
 
-    test.it('csv file should have the correct data', function() {
-      var exportFileContents = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone/n10,APODACA,AUSTIN,QB,NMUN,6030,212,5.10e,,/n15,BAILEY,AARON,QB,IANO,6005v,230v,4.55e,,/n2,CONQUE,ZACHARY,QB,TXSF,6050v,235v,4.90e,,/n,EASTON,DALTON,QB,RIBT,6000,192,5.00e,,/n9,EVANS,DANE,QB,OKTU,6010,210,5.00e,,/n,FERGUSON,TYLER,QB,KYWE,6040,225,4.95e,,/n13,HOUSTON,BARTLETT,QB,WIUN,6031v,234v,4.95e,,/n7,JENKINS,ELIJAH,QB,ALJA,6007v,206v,4.85e,,/n19,NELSON,JACK,QB,MNWI,6036v,236v,4.87v,,/n14,NORVELL,TRENTON,QB,ILWE,6050,225,4.95e,,/n7,O\'CONNOR,TYLER,QB,MIST,6010e,220e,4.95e,,/n,SPOONER,QADR,QB,CNMG,6000,192,5.00e,,/n18,SWOOPES,TYRONE,QB,TXUN,6034e,230e,4.80e,,/n,WINDHAM,GREG,QB,OHUN,6010,215,5.00e,,/n';
-      return playersPage.readAndDeleteExportCSV().then(function(data) {
-        assert.equal(data, exportFileContents);
-      });
-    });
-  });
+  //   test.it('csv file should have the correct data', function() {
+  //     var exportFileContents = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone/n10,APODACA,AUSTIN,QB,NMUN,6030,212,5.10e,,/n15,BAILEY,AARON,QB,IANO,6005v,230v,4.55e,,/n2,CONQUE,ZACHARY,QB,TXSF,6050v,235v,4.90e,,/n,EASTON,DALTON,QB,RIBT,6000,192,5.00e,,/n9,EVANS,DANE,QB,OKTU,6010,210,5.00e,,/n,FERGUSON,TYLER,QB,KYWE,6040,225,4.95e,,/n13,HOUSTON,BARTLETT,QB,WIUN,6031v,234v,4.95e,,/n7,JENKINS,ELIJAH,QB,ALJA,6007v,206v,4.85e,,/n19,NELSON,JACK,QB,MNWI,6036v,236v,4.87v,,/n14,NORVELL,TRENTON,QB,ILWE,6050,225,4.95e,,/n7,O\'CONNOR,TYLER,QB,MIST,6010e,220e,4.95e,,/n,SPOONER,QADR,QB,CNMG,6000,192,5.00e,,/n18,SWOOPES,TYRONE,QB,TXUN,6034e,230e,4.80e,,/n,WINDHAM,GREG,QB,OHUN,6010,215,5.00e,,/n';
+  //     return playersPage.readAndDeleteExportCSV().then(function(data) {
+  //       assert.equal(data, exportFileContents);
+  //     });
+  //   });
+  // });
 });

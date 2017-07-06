@@ -9,19 +9,20 @@ var Navbar = require('../../pages/nfl_scouting/navbar.js');
 var PlayerPage = require('../../pages/nfl_scouting/players/player_page.js');
 var LoginPage = require('../../pages/login_page.js');
 var ScoutingReportPage = require('../../pages/nfl_scouting/reports/scouting_report_page.js');
-var InterviewReportPage = require('../../pages/nfl_scouting/reports/interviewreport_page.js');
+var InterviewReportPage = require('../../pages/nfl_scouting/reports/interview_report_page.js');
 var EvaluationReportPage = require('../../pages/nfl_scouting/reports/evaluation_report_page.js');
-
-var navbar, playerPage, loginPage, scoutingReportPage, interviewReportPage, evaluationReportPage;
+var ManageDraftPage = require('../../pages/nfl_scouting/draft/manage_draft_page.js');
+var navbar, playerPage, loginPage, scoutingReportPage, interviewReportPage, evaluationReportPage, manageDraftPage;
 
 test.describe('#Seed', function() {
   test.before(function() {
     navbar = new Navbar(driver);
     playerPage = new PlayerPage(driver);
     loginPage = new LoginPage(driver);
-
-    loginPage.visit(url);
-    loginPage.login(credentials.testUser.email, credentials.testUser.password);
+    scoutingReportPage = new ScoutingReportPage(driver);
+    interviewReportPage = new InterviewReportPage(driver);
+    evaluationReportPage = new EvaluationReportPage(driver);
+    manageDraftPage = new ManageDraftPage(driver);
   });
 
   test.it('adding data for scenarios/incident_report_tests', function() {
@@ -133,9 +134,14 @@ test.describe('#Seed', function() {
     playerPage.clickDeleteBtn();
 
     // Add alerts for Vickers
+    browser.visit(url+'player/31684');
+    playerPage.clickManageDraftLink();
+    manageDraftPage.changeProfileInput('Alerts', 'au')
   });
 
   test.it('adding data measurables_tests', function() {
     // Add live row, Ind data etc.
   });
+
+
 });

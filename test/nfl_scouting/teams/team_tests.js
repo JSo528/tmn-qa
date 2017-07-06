@@ -80,6 +80,23 @@ test.describe('#Page: Team', function() {
   });
 
   test.describe('#filters', function() {
+    test.it('adding class year: SO and removing class year: JR should update player list', function() {
+      filters.changeDropdownFilter('For Class Years', 'SO');
+      filters.changeDropdownFilter('For Class Years', 'JR');
+      teamPage.getTableStatsForCol(4).then(function(years) {
+        var uniqYears = Array.from(new Set(years));
+        assert.sameMembers(uniqYears, ['SO', 'SR']);
+      });
+    });
+
+    test.it('adding draft year: 2019, should update player list', function() {
+      filters.changeDropdownFilter('For Draft Years', 2019);
+      teamPage.getTableStatsForCol(3).then(function(years) {
+        var uniqYears = Array.from(new Set(years));
+        assert.sameMembers(uniqYears, ['2019', '2018']);
+      });
+    });
+
     test.it('selecting starters only, should update player list', function() {
       filters.changeCheckboxFilter('Is Starter', true);
       teamPage.getTableCheckboxStats(8).then(function(statuses) {
@@ -104,13 +121,6 @@ test.describe('#Page: Team', function() {
       });
     });
 
-    test.it('adding draft year: 2018, should update player list', function() {
-      filters.changeDropdownFilter('For Draft Years', 2018);
-      teamPage.getTableStatsForCol(3).then(function(years) {
-        assert.sameMembers(years, ['2017', '2018']);
-      });
-    });
-
     test.it('adding tier C, should update player list', function() {
       filters.changeDropdownFilter('For Tier', 'C');
       teamPage.getTableStatsForCol(2).then(function(tiers) {
@@ -119,11 +129,11 @@ test.describe('#Page: Team', function() {
       });
     });
 
-    test.it('selecting positions = DL should update player list', function() {
-      filters.changeDropdownFilter('At Positions', 'FS');
+    test.it('selecting positions = RB should update player list', function() {
+      filters.changeDropdownFilter('At Positions', 'RB');
       teamPage.getTableStatsForCol(9).then(function(positions) {
         var uniquePositions = Array.from(new Set(positions));
-        assert.sameMembers(['FS'], uniquePositions);
+        assert.sameMembers(['RB'], uniquePositions);
       });
     });
   });
