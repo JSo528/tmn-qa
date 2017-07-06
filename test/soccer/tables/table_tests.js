@@ -21,12 +21,10 @@ var SEASONS = [
   "Under 21 Friendlies 2016 (World)",
   "Under 20 Friendlies 2016 (World)",
   "Under 19 Friendlies 2017 (World)",
-  "Under 17 Friendlies 2017 (World)",
   "Under 17 Friendlies 2016 (World)",
   "UEFA Youth League 2016/2017 (Europe)",
   "UEFA Women's Championship 2017 Netherlands (Europe)",
   "UEFA U19 Championship 2017 Georgia (Europe)",
-  "UEFA Europa League 2016/2017 (Europe)",
   "UEFA Europa League 2015/2016 (Europe)",
   "UEFA Champions League 2016/2017 (Europe)",
   "UEFA Champions League 2015/2016 (Europe)",
@@ -37,7 +35,6 @@ var SEASONS = [
   "Süper Lig 2015/2016 (Turkey)",
   "Süper Lig 2014/2015 (Turkey)",
   "Super Cup 2016/2017 (Italy)",
-  "Super Cup 2016 (Chile)",
   "SheBelieves Cup 2017 (World)",
   "SheBelieves Cup 2016 (World)",
   "Serie A 2017 (Brazil)",
@@ -231,6 +228,10 @@ test.describe('#Section: Tables', function() {
 
         test.it('going to season: ' + season + ' works', function() {
           tablePage.changeSeason(season);
+          tablePage.getLeagueTitle().then(function(title) {
+            assert.equal(title, season);
+          });
+
           tablePage.isTableDisplayed().then(function(displayed) {
             assert.equal(displayed, true);
           });

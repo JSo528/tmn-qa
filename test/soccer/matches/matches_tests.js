@@ -92,8 +92,8 @@ test.describe('#Page: Scores', function() {
       matchesPage.clickBoxScore(1);
 
       driver.getCurrentUrl().then(function(url) {
-          assert.match(url, /soccer\/match-result\/Arsenal-Manchester-City\/2015-12-21/);
-        });      
+        assert.match(url, /soccer\/match-result\/Arsenal-Manchester-City\/2015-12-21/);
+      });      
     });
 
     test.it('clicking into team goes to the correct page', function() {

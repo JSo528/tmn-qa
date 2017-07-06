@@ -37,32 +37,33 @@ ChartColumns = {
   TOOLTIP: By.css('.d3-tip.e'),
 
   // Defaults
-  DEFAULT_CHART_COLUMNS_DATA_TABLE_ID: 'results-table', 
+  DEFAULT_CHART_COLUMNS_DATA_TABLE_CSS: '#results-table', 
   DEFAULT_CHART_COLUMNS_ISO_TABLE_ID: 'pinned-table', 
 
-  CHART_COLUMNS_TABLE_ID: function() {
-    return this.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID[this.section] || this.DEFAULT_CHART_COLUMNS_DATA_TABLE_ID;
+  CHART_COLUMNS_TABLE_CSS: function() {
+    return this.DEFAULT_CHART_COLUMNS_DATA_TABLE_CSS[this.tabName] || this.DEFAULT_CHART_COLUMNS_DATA_TABLE_CSS;
   },
   CHART_COLUMNS_ISO_TABLE_ID: function() {
-    return this.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID[this.section] || this.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID;
+    return this.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID[this.tabName] || this.DEFAULT_CHART_COLUMNS_ISO_TABLE_ID;
   },
   /****************************************************************************
   ** Functions
   *****************************************************************************/
   clickChartColumnsBtn: function() {
-    var locator = By.css(`#${this.CHART_COLUMNS_TABLE_ID()} table`);
+    var locator = By.css(`tmn-table${this.CHART_COLUMNS_TABLE_CSS()} table`);
+    console.log(locator)
     this.driver.wait(Until.elementLocated(locator));
     return this.click(this.CHART_COLUMNS_BTN);
   },
   clickChartColumnsTableHeader: function(col) {
-    var locator = By.css(`#${this.CHART_COLUMNS_TABLE_ID()} table th:nth-of-type(${col})`);    
+    var locator = By.css(`tmn-table${this.CHART_COLUMNS_TABLE_CSS()} table:nth-of-type(1) th:nth-of-type(${col})`);    
     this.waitForEnabled(locator);
     return this.click(locator); 
   },
   
   // Histogram
   openHistogram: function(colNum) {
-    var histogramLocator = By.xpath(`.//tmn-table[@id='results-table']/table[1]/thead/tr/th[${colNum}]/paper-tooltip/.//div[contains(@class, 'tmn-table-thead')]/div[1]/a`)
+    var histogramLocator = By.css(`tmn-table${this.CHART_COLUMNS_TABLE_CSS()} > table:nth-of-type(1) th:nth-of-type(${colNum}) paper-tooltip div.tmn-table-thead div:nth-of-type(1) a`)
     this.clickChartColumnsTableHeader(colNum);
     return this.click(histogramLocator);
   },
@@ -90,11 +91,13 @@ ChartColumns = {
 
   // ScatterChart
   openScatterChart: function(selectionOne, selectionTwo) {
-    var scatterChartLinkOne = By.xpath(`.//tmn-table[@id='results-table']/table[1]/thead/tr/th[${selectionOne}]/paper-tooltip/.//div[contains(@class, 'tmn-table-thead')]/div[2]/a`)
-    var scatterChartLinkTwo = By.xpath(`.//tmn-table[@id='results-table']/table[1]/thead/tr/th[${selectionTwo}]/paper-tooltip/.//div[contains(@class, 'tmn-table-thead')]/div[2]/a`)
-    this.clickChartColumnsTableHeader(selectionOne);
+    var scatterChartLinkOne = By.css(`tmn-table${this.CHART_COLUMNS_TABLE_CSS()} > table:nth-of-type(1) th:nth-of-type(${selectionOne}) paper-tooltip div.tmn-table-thead div:nth-of-type(2) a`)
+    var scatterChartLinkTwo = By.css(`tmn-table${this.CHART_COLUMNS_TABLE_CSS()} > table:nth-of-type(1) th:nth-of-type(${selectionTwo}) paper-tooltip div.tmn-table-thead div:nth-of-type(2) a`)
+    this.clickChartColumnsTableHeader(selectionOne)
+    driver.sleep(500);
     this.click(scatterChartLinkOne);
     this.clickChartColumnsTableHeader(selectionTwo);
+    driver.sleep(500);
     return this.click(scatterChartLinkTwo);
   },
 
@@ -114,7 +117,7 @@ ChartColumns = {
 
   // Pinning
   clickTablePin: function(rowNum) {
-    var locator = By.xpath(`.//tmn-table[@id='${this.CHART_COLUMNS_TABLE_ID()}']/table/tbody/tr[@data-tmn-row][${rowNum}]/td[1]/tmn-table-action-column/span[@data-tmn-table-row-pin]`);
+    var locator = By.xpath(`.//tmn-table[@id='results-table']/table/tbody/tr[@data-tmn-row][${rowNum}]/td[1]/tmn-table-action-column/span[@data-tmn-table-row-pin]`);
     return this.click(locator);
   },
 

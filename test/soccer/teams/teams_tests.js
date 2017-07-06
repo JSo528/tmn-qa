@@ -26,7 +26,7 @@ test.describe('#Section: Teams', function() {
       test.describe('#createReport', function() {
         test.it('clicking create report btn opens custom report modal', function() {
           teamsPage.clickCreateReportBtn();
-          teamsPage.changeReportName('Test');
+          teamsPage.changeReportName('Teams Test');
           teamsPage.isCustomReportModalDisplayed().then(function(displayed) {
             assert.equal(displayed, true);
           });
@@ -113,7 +113,7 @@ test.describe('#Section: Teams', function() {
 
         test.it('saving report sets it to current report', function() {
           teamsPage.getCurrentReport().then(function(stat) {
-            assert.equal(stat, 'Test');
+            assert.equal(stat, 'Teams Test');
           });
         });
 
@@ -133,7 +133,7 @@ test.describe('#Section: Teams', function() {
         });
 
         test.it('changing report name', function() {
-          teamsPage.changeReportName('Test2');
+          teamsPage.changeReportName('Teams Test2');
         });
 
         test.it('pressing save button closes modal', function() {
@@ -152,7 +152,7 @@ test.describe('#Section: Teams', function() {
 
         test.it('saving report sets it to current report', function() {
           teamsPage.getCurrentReport().then(function(stat) {
-            assert.equal(stat, 'Test2');
+            assert.equal(stat, 'Teams Test2');
           });
         });    
       });
@@ -160,7 +160,7 @@ test.describe('#Section: Teams', function() {
       test.describe('#deleteReport', function() {
         test.it('clicking delete report removes report & sets default as the current report', function() {
           teamsPage.getCurrentReport().then(function(reportName) {
-            if (reportName == 'Test2') {
+            if (reportName == 'Teams Test2') {
               teamsPage.clickDeleteReportBtn();
               teamsPage.getCurrentReport().then(function(stat) {
                 assert.equal(stat, 'default');

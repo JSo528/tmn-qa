@@ -303,10 +303,22 @@ BasePage.prototype.sendKeys = function(locator, keys, timeout) {
 
 // types into the search box for dropdown
 BasePage.prototype.changeDropdown = function(selectLocator, inputLocator, value) {
+  var d = Promise.defer();
+  var noResultsLocator = By.xpath(".//li[@class='select2-no-results']");
+
   this.click(selectLocator, 30000);
   this.sendKeys(inputLocator, value, 30000);
   var inputElement = this.driver.findElement(inputLocator);
-  return inputElement.sendKeys(Key.ENTER);
+  inputElement.sendKeys(Key.ENTER);
+
+  this.isDisplayed(noResultsLocator, 100).then(function(displayed) {
+    if (displayed) {
+      d.fulfill(this.sendKeys(inputLocator, Key.ESCAPE));
+    } else {
+      d.fulfill(true)
+    }
+  }.bind(this));
+  return d.promise;
 };
 
 // exact match for dropdown (clicks on the li element)
@@ -424,6 +436,16 @@ BasePage.prototype.getAttribute = function(locator, attribute) {
   return d.promise;
 };
 
+BasePage.prototype.getAttributeForElementNum = function(locator, attribute, elementNum) {
+  var d = Promise.defer();
+  this.driver.findElements(locator).then(function(elements) {
+    elements[elementNum].getAttribute(attribute).then(function(value) {
+      d.fulfill(value)
+    })
+  })
+  return d.promise;
+};
+
 BasePage.prototype.getElementCount = function(locator) {
   var d = Promise.defer();
   this.driver.findElements(locator).then(function(elements) {
@@ -487,6 +509,22 @@ BasePage.prototype.readAndDeleteCSV = function(path) {
     });
   }  
 
+  return d.promise;
+};
+
+BasePage.prototype.clickVisible = function(locator, timeout) {
+  var d = Promise.defer();
+  var thiz = this;
+
+  this.driver.findElements(locator).then(function(elements) {
+    elements.map(function(element) {
+      element.isDisplayed().then(function(displayed) {
+        if (displayed) {
+          d.fulfill(element.click());
+        }
+      })
+    })
+  });
   return d.promise;
 };
 
