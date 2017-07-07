@@ -22,6 +22,8 @@ var LAST_LOCATOR = By.xpath(".//div[@inject='evaluationReports']/.//table");
 var NAME_LINK = By.xpath(".//div[contains(@class,'title')]/div/a");
 var MANAGE_DRAFT_LINK = By.xpath(".//div[@inject='player.draftLink']/a");
 var MEASURABLES_LINK = By.xpath(".//div[@inject='player.measurablesLink']/a");
+var HRT_TESTING_LINK = By.xpath(".//div[@inject='player.hrtTestingLink']/a");
+
 var DELETE_BTN = By.xpath(".//button[@inject='player.deleted']");
 
 // IncidentReport
@@ -80,6 +82,10 @@ PlayerPage.prototype.clickManageDraftLink = function() {
 
 PlayerPage.prototype.clickMeasurablesLink = function() {
   return this.click(MEASURABLES_LINK);
+};
+
+PlayerPage.prototype.clickHrtTestingLink = function() {
+  return this.click(HRT_TESTING_LINK);
 };
 
 // Player Profile 

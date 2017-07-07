@@ -19,6 +19,7 @@ var EvaluationReportPage = require('./pages/nfl_scouting/reports/evaluation_repo
 var ScoutingReportPage = require('./pages/nfl_scouting/reports/scouting_report_page.js');
 var InterviewReportPage = require('./pages/nfl_scouting/reports/interview_report_page.js');
 var MedicalReportPage = require('./pages/nfl_scouting/reports/medical_report_page.js');
+var HrtTestingReportPage = require('./pages/nfl_scouting/reports/hrt_testing_report_page.js');
 var ListPage = require('./pages/nfl_scouting/lists/list_page.js');
 var ManageDraftPage = require('./pages/nfl_scouting/draft/manage_draft_page.js');
 var Filters = require('./pages/nfl_scouting/filters.js');
@@ -35,6 +36,7 @@ evaluationReportPage = new EvaluationReportPage(driver);
 scoutingReportPage = new ScoutingReportPage(driver);
 interviewReportPage = new InterviewReportPage(driver);
 medicalReportPage = new MedicalReportPage(driver);
+hrtTestingReportPage = new HrtTestingReportPage(driver);
 scoutPage = new ScoutPage(driver);
 listPage = new ListPage(driver);
 manageDraftPage = new ManageDraftPage(driver);
@@ -44,12 +46,19 @@ measurablesPage = new MeasurablesPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-var url = "http://localhost:3000/medicalReport/1462?tenant=jaguars"
+var url = "http://localhost:3000/player/31690/hrtTestingReport?tenant=jaguars"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-medicalReportPage.getCommentsField("General Comments", "date").then(function(value) {
-  console.log(value)
-});
+hrtTestingReportPage.changeSigmaMotivationField('dedication', 5)
+
+var field = 'dedication'
+var locator = By.css(`div[inject='${field}']`);
+
+var grade = 10
+filters.getCssValue(locator, 'width').then(function(val) {
+  var xVal = parseFloat(val) / 10 * grade - 10;
+  filters.clickOffset(locator, xVal, 10);
+}.bind(this)) 
