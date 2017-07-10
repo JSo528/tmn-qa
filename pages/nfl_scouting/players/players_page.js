@@ -212,6 +212,60 @@ PlayersPage.prototype.changePlayersTableStatDropdown = function(row, col, value,
   return d.promise;
 };
 
+PlayersPage.prototype.togglePlayerRow = function(row) {
+  var rowNum = row * 3 - 2;
+  var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td[1]/div/i`);
+  return this.click(locator);
+};
+
+PlayersPage.prototype.addListToPlayer = function(row, listName) {
+  var rowNum = (row*3)-1;
+  var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/.//input[2]`);
+  var selectionLocator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/.//div[contains(@class,'tt-menu')]/div/div[1]`)
+  this.sendKeys(locator, listName);
+  return this.click(selectionLocator)
+};
+
+PlayersPage.prototype.getPlayerLists = function(row) {
+  var rowNum = (row*3)-1;
+  var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/div[contains(@class, 'entities')]/span/span`);
+  return this.getTextArray(locator);
+};
+
+PlayersPage.prototype.removeListFromPlayer = function(row, listName) {
+  var rowNum = (row*3)-1;
+  var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/div[contains(@class, 'entities')]/span[span[text()='${listName}']]/i`)
+  return this.click(locator);
+};
+
+PlayersPage.prototype.createBatchMeasurables = function(event) {
+  var expanderLocator = By.xpath(".//div[contains(@class, 'batch-measurables')]/div/div/div/div/i");
+  var eventLocator = By.xpath(`.//div[contains(@class, 'batch-measurables')]/.//div[@inject="batchCreate.event"]/div`);
+  var optionLocator = By.xpath(`.//div[contains(@class, 'batch-measurables')]/.//div[@inject="batchCreate.event"]/ul/li[text()='${event}']`);
+  var createBtn = By.xpath(".//div[contains(@class, 'batch-measurables')]/.//button");
+
+  this.click(expanderLocator);
+  this.changeDropdown(eventLocator, optionLocator);
+  return this.click(createBtn);
+};
+
+
+PlayersPage.prototype.changeMeasurableInputField = function(playerNum, row, col, value) {
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
+  return this.changeInput(locator, value);
+};
+
+PlayersPage.prototype.getMeasurableInputField = function(playerNum, row, col) {
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
+  return this.getText(locator);
+};
+
+PlayersPage.prototype.getMeasurablesCount = function(playerNum) {
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]`);
+  return this.getElementCount(locator);
+};
+
+
 /****************************************************************************
 ** Filters
 *****************************************************************************/
@@ -228,7 +282,7 @@ PlayersPage.prototype.changePlayersNumberOfRows = function(numRows) {
   var thiz = this;
   var d = Promise.defer();
 
-  this.getTableRowCount().then(function(stat) {
+  this.getPlayersTableRowCount().then(function(stat) {
     var digits = stat.toString().length;
     for (var i=0; i<digits; i++) {
       thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, Key.BACK_SPACE);    
@@ -236,7 +290,7 @@ PlayersPage.prototype.changePlayersNumberOfRows = function(numRows) {
 
     thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, numRows);
     thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, Key.ENTER);
-    d.fulfill(thiz.waitUntilStaleness(By.xpath(".//div[@inject='players']"), 500));
+    d.fulfill(thiz.waitUntilStaleness(By.xpath(".//div[@inject='players']"), 5000));
   })
 
   return d.promise;

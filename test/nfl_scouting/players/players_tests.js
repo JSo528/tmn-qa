@@ -51,7 +51,7 @@ test.describe('#Page: Players', function() {
       });
 
       test.it('clicking arrow next to last name header should reverse the sort', function() {
-        playersPage.clickSortIcon(3);
+        playersPage.clickPlayersSortIcon(3);
 
         playersPage.getPlayersTableStatsForCol(3).then(function(stats) {
           stats = extensions.normalizeArray(stats, 'stringInsensitive');
@@ -126,6 +126,27 @@ test.describe('#Page: Players', function() {
           playersPage.changePlayersTableStatField(attr.type, 2, attr.col, attr.originalValue );
         });
       });
+
+      test.it('adding list to player should persist on reload', function() {
+        playersPage.togglePlayerRow(1);
+        playersPage.addListToPlayer(1, 'TEST');
+        browser.refresh();
+        playersPage.waitForPageToLoad();
+        playersPage.togglePlayerRow(1);
+        playersPage.getPlayerLists(1).then(function(lists) {
+          assert.include(lists, 'TEST');
+        });
+      });
+
+      test.it('removing list from player should persist on reload', function() {
+        playersPage.removeListFromPlayer(1, 'TEST');
+        browser.refresh();
+        playersPage.waitForPageToLoad();
+        playersPage.togglePlayerRow(1);
+        playersPage.getPlayerLists(1).then(function(lists) {
+          assert.notInclude(lists, 'TEST');
+        });
+      });
     });
 
     test.describe('#controls', function() {
@@ -162,7 +183,7 @@ test.describe('#Page: Players', function() {
       { name: 'At Positions', values: ['QB'], columnName: 'Pos' },
       { name: 'For Draft Years', values: ['2018', '2019'], columnName: 'Draft Year' },
       { name: 'For Tier', values: ['A'], columnName: 'Tier' },
-      { name: 'Draft Position', values: ['LEO'], columnName: 'Draft Position' },
+      { name: 'Draft Position', values: ['TEY'], columnName: 'Draft Position' },
       { name: 'Bowl Game', values: ['SR'], columnName: 'Bowl Game' },
       { name: 'Feb. Grade', values: ['7.5'], columnName: 'Feb. Grade', parsedValues: ['7.5'] },
       { name: 'Dec. Grade', values: ['8.0'], columnName: 'Dec. Grade', parsedValues: ['8.0'] },
@@ -359,24 +380,75 @@ test.describe('#Page: Players', function() {
     });
   });
 
-  // test.describe('#exportCsv', function() {
-  //   test.it('clicking export csv exports csv file', function() {
-  //     browser.refresh();
-  //     playersPage.addPlayersFilter('On Player Lists');
-  //     filters.setResourceSetFilter('On Player Lists', ['GI']);
+  test.describe('#exportCsv', function() {
+    test.it('clicking export csv exports csv file', function() {
+      browser.refresh();
+      playersPage.addPlayersFilter('On Player Lists');
+      filters.setResourceSetFilter('On Player Lists', ['GI']);
       
-  //     playersPage.addPlayersFilter('At Positions');
-  //     filters.setDropdownFilter('At Positions', ['QB']);
+      playersPage.addPlayersFilter('At Positions');
+      filters.setDropdownFilter('At Positions', ['QB']);
 
-  //     playersPage.waitForPageToLoad();
-  //     playersPage.clickExportButton();
-  //   });
+      playersPage.waitForPageToLoad();
+      playersPage.clickExportButton();
+    });
 
-  //   test.it('csv file should have the correct data', function() {
-  //     var exportFileContents = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone/n10,APODACA,AUSTIN,QB,NMUN,6030,212,5.10e,,/n15,BAILEY,AARON,QB,IANO,6005v,230v,4.55e,,/n2,CONQUE,ZACHARY,QB,TXSF,6050v,235v,4.90e,,/n,EASTON,DALTON,QB,RIBT,6000,192,5.00e,,/n9,EVANS,DANE,QB,OKTU,6010,210,5.00e,,/n,FERGUSON,TYLER,QB,KYWE,6040,225,4.95e,,/n13,HOUSTON,BARTLETT,QB,WIUN,6031v,234v,4.95e,,/n7,JENKINS,ELIJAH,QB,ALJA,6007v,206v,4.85e,,/n19,NELSON,JACK,QB,MNWI,6036v,236v,4.87v,,/n14,NORVELL,TRENTON,QB,ILWE,6050,225,4.95e,,/n7,O\'CONNOR,TYLER,QB,MIST,6010e,220e,4.95e,,/n,SPOONER,QADR,QB,CNMG,6000,192,5.00e,,/n18,SWOOPES,TYRONE,QB,TXUN,6034e,230e,4.80e,,/n,WINDHAM,GREG,QB,OHUN,6010,215,5.00e,,/n';
-  //     return playersPage.readAndDeleteExportCSV().then(function(data) {
-  //       assert.equal(data, exportFileContents);
-  //     });
-  //   });
-  // });
+    test.it('csv file should have the correct data', function() {
+      var exportFileContents = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone/n10,APODACA,AUSTIN,QB,NMUN,6030,212,5.10e,,/n15,BAILEY,AARON,QB,IANO,6005v,230v,4.55e,,/n2,CONQUE,ZACHARY,QB,TXSF,6050v,235v,4.90e,,/n,EASTON,DALTON,QB,RIBT,6000,192,5.00e,,/n9,EVANS,DANE,QB,OKTU,6010,210,5.00e,,/n,FERGUSON,TYLER,QB,KYWE,6040,225,4.95e,,/n13,HOUSTON,BARTLETT,QB,WIUN,6031v,234v,4.95e,,/n7,JENKINS,ELIJAH,QB,ALJA,6007v,206v,4.85e,,/n19,NELSON,JACK,QB,MNWI,6036v,236v,4.87v,,/n14,NORVELL,TRENTON,QB,ILWE,6050,225,4.95e,,/n7,O\'CONNOR,TYLER,QB,MIST,6010e,220e,4.95e,,/n,SPOONER,QADR,QB,CNMG,6000,192,5.00e,,/n18,SWOOPES,TYRONE,QB,TXUN,6034e,230e,4.80e,,/n,WINDHAM,GREG,QB,OHUN,6010,215,5.00e,,/n';
+      return playersPage.readAndDeleteExportCSV().then(function(data) {
+        assert.equal(data, exportFileContents);
+      });
+    });
+  });
+
+  test.describe('#measurables', function() {
+    test.it('editing measurable persists', function() {
+      browser.refresh();
+      playersPage.togglePlayerRow(1);
+      playersPage.changeMeasurableInputField(1, 1, 9, 9.5);
+      browser.refresh();
+      playersPage.togglePlayerRow(1);
+      playersPage.getMeasurableInputField(1, 1, 9).then(function(stat) {
+        assert.equal(stat, 9.5, '1st player hand field')
+      })
+    });
+
+    test.it('editing measurable persists', function() {
+      browser.refresh();
+      playersPage.togglePlayerRow(1);
+      playersPage.changeMeasurableInputField(1, 1, 9, 3.5);
+      browser.refresh();
+      playersPage.togglePlayerRow(1);
+      playersPage.getMeasurableInputField(1, 1, 9).then(function(stat) {
+        assert.equal(stat, 3.5, '1st player hand field')
+      })
+    });
+
+    test.it('creating batch measurable persists for all players with open measurables', function() {
+      var pOneCount, pTwoCount;
+      driver.sleep(2000);
+      playersPage.getMeasurablesCount(1).then(function(count) {
+        pOneCount = count;
+      })
+
+      playersPage.togglePlayerRow(2);
+      driver.sleep(2000);
+      playersPage.getMeasurablesCount(2).then(function(count) {
+        pTwoCount = count;
+      })
+      playersPage.togglePlayerRow(2);
+      playersPage.createBatchMeasurables('NFS');
+      playersPage.waitForPageToLoad()
+
+      playersPage.getMeasurablesCount(1).then(function(count) {
+        assert.equal(count, pOneCount+1, 'player 1 measurable count')
+      });
+
+      playersPage.togglePlayerRow(1);
+      playersPage.togglePlayerRow(2);
+      playersPage.getMeasurablesCount(2).then(function(count) {
+        assert.equal(count, pTwoCount, 'player 2 measurable count')
+      });
+    });
+  });
 });
