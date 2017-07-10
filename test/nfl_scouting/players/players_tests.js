@@ -38,12 +38,12 @@ test.describe('#Page: Players', function() {
       ];
 
       test.it('adding filter for tier A', function() {
-        playersPage.addFilter('For Tier');
+        playersPage.addPlayersFilter('For Tier');
         filters.setDropdownFilter('For Tier', ['A']);
       });
 
       test.it('players list should be sorted alphabetically by last name asc initially', function() {
-        playersPage.getTableStatsForCol(3).then(function(stats) {
+        playersPage.getPlayersTableStatsForCol(3).then(function(stats) {
           stats = extensions.normalizeArray(stats, 'stringInsensitive');
           var sortedArray = extensions.customSortByType('stringInsensitive', stats, 'asc');
           assert.deepEqual(stats, sortedArray);
@@ -53,7 +53,7 @@ test.describe('#Page: Players', function() {
       test.it('clicking arrow next to last name header should reverse the sort', function() {
         playersPage.clickSortIcon(3);
 
-        playersPage.getTableStatsForCol(3).then(function(stats) {
+        playersPage.getPlayersTableStatsForCol(3).then(function(stats) {
           stats = extensions.normalizeArray(stats, 'stringInsensitive');
           var sortedArray = extensions.customSortByType('stringInsensitive', stats, 'desc');
           assert.deepEqual(stats, sortedArray);
@@ -63,11 +63,11 @@ test.describe('#Page: Players', function() {
       var lastColNum = 3;
       columns.forEach(function(column) {
         test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
-          playersPage.clickRemoveSortIcon(lastColNum);
+          playersPage.clickPlayersRemoveSortIcon(lastColNum);
           lastColNum = column.colNum;
-          playersPage.clickTableHeader(column.colNum);
+          playersPage.clickPlayersTableHeader(column.colNum);
 
-          playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          playersPage.getPlayersTableStatsForCol(column.colNum).then(function(stats) {
             stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
             var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
             assert.deepEqual(stats, sortedArray);
@@ -75,9 +75,9 @@ test.describe('#Page: Players', function() {
         });
 
         test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
-          playersPage.clickSortIcon(column.colNum);
+          playersPage.clickPlayersSortIcon(column.colNum);
 
-          playersPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          playersPage.getPlayersTableStatsForCol(column.colNum).then(function(stats) {
             stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
             var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
             assert.deepEqual(stats, sortedArray);
@@ -99,7 +99,7 @@ test.describe('#Page: Players', function() {
         browser.refresh();
         playersPage.waitForPageToLoad();
         attributes.forEach(function(attr, idx) {
-          playersPage.getTableStat(2,attr.col, attr.placeholder).then(function(stat) {
+          playersPage.getPlayersTableStat(2,attr.col, attr.placeholder).then(function(stat) {
             attributes[idx].originalValue = stat;
           });
         });
@@ -107,7 +107,7 @@ test.describe('#Page: Players', function() {
 
       test.it('updating fields', function() {
         attributes.forEach(function(attr) {
-          playersPage.changeTableStatField(attr.type, 2, attr.col, attr.updatedValue );
+          playersPage.changePlayersTableStatField(attr.type, 2, attr.col, attr.updatedValue );
         });
         browser.refresh();
         playersPage.waitForPageToLoad();
@@ -115,7 +115,7 @@ test.describe('#Page: Players', function() {
 
       attributes.forEach(function(attr) {
         test.it('updating ' + attr.field + ' should persist on reload', function() {
-          playersPage.getTableStat(2, attr.col, attr.placeholder).then(function(value) {
+          playersPage.getPlayersTableStat(2, attr.col, attr.placeholder).then(function(value) {
             assert.equal(value, attr.updatedValue, attr.field);
           });
         });
@@ -123,34 +123,34 @@ test.describe('#Page: Players', function() {
 
       test.it('reverting fields', function() {
         attributes.forEach(function(attr) {
-          playersPage.changeTableStatField(attr.type, 2, attr.col, attr.originalValue );
+          playersPage.changePlayersTableStatField(attr.type, 2, attr.col, attr.originalValue );
         });
       });
     });
 
     test.describe('#controls', function() {
       test.it('changing # rows to 25 updates the table accordingly', function() {
-        playersPage.changeNumberOfRows(25);
-        playersPage.getTableRowCount().then(function(stat) {
+        playersPage.changePlayersNumberOfRows(25);
+        playersPage.getPlayersTableRowCount().then(function(stat) {
           assert.equal(stat, 25);
         });
       });
 
       test.it('pressing next button updates the table accordingly', function() {
-        playersPage.getTableStat(25,3).then(function(stat) {
+        playersPage.getPlayersTableStat(25,3).then(function(stat) {
           lastPlayerFirstPage = stat;
         });
 
-        playersPage.clickNextButton();
-        playersPage.getTableStat(1,3).then(function(stat) {
+        playersPage.clickPlayersNextButton();
+        playersPage.getPlayersTableStat(1,3).then(function(stat) {
           firstPlayerSecondPage = stat;
           assert.isAtLeast(firstPlayerSecondPage.toLowerCase(), lastPlayerFirstPage.toLowerCase(), 'last name of 1st row player on 2nd page > last name of 25th row player on 1st page');
         });
       });
 
       test.it('pressing previous button updates the table accordingly', function() {
-        playersPage.clickPreviousButton();
-        playersPage.getTableStat(25,3).then(function(stat) {
+        playersPage.clickPlayersPreviousButton();
+        playersPage.getPlayersTableStat(25,3).then(function(stat) {
           assert.equal(stat, lastPlayerFirstPage, 'last name of bottom row player');
         });
       });
@@ -194,12 +194,12 @@ test.describe('#Page: Players', function() {
     dropdownFilters.forEach(function(filter) {
       test.it(`adding filter: ${filter.name} (${filter.values}) updates the table accordingly`, function() {
         browser.refresh();
-        playersPage.toggleColumn(filter.columnName, true);
+        playersPage.togglePlayersColumn(filter.columnName, true);
 
-        playersPage.addFilter(filter.name);
+        playersPage.addPlayersFilter(filter.name);
         filters.setDropdownFilter(filter.name, filter.values);
         playersPage.waitForPageToLoad();
-        playersPage.getTableStatsFor(filter.columnName).then(function(stats) {
+        playersPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           var values = filter.parsedValues || filter.values;
           assert.sameMembers(values, uniqueStats);
@@ -210,13 +210,13 @@ test.describe('#Page: Players', function() {
     checkboxFilters.forEach(function(filter) {
       test.it(`adding filter: ${filter.name} (${filter.value}) updates the table accordingly`, function() {
         browser.refresh();
-        playersPage.toggleColumn(filter.columnName, true);
+        playersPage.togglePlayersColumn(filter.columnName, true);
 
-        playersPage.addFilter(filter.name);
+        playersPage.addPlayersFilter(filter.name);
         filters.changeCheckboxFilter(filter.name, filter.value);
         playersPage.waitForPageToLoad();
 
-        playersPage.getTableStatsFor(filter.columnName).then(function(stats) {
+        playersPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           var value = filter.displayValue === undefined ? filter.value.toString() : filter.displayValue;
           assert.sameMembers([value], uniqueStats);
@@ -227,13 +227,13 @@ test.describe('#Page: Players', function() {
     rangeFilters.forEach(function(filter) {
       test.it(`adding filter: ${filter.name} (${filter.minValue} - ${filter.maxValue}) updates the table accordingly`, function() {
         browser.refresh();
-        playersPage.toggleColumn(filter.columnName, true);
+        playersPage.togglePlayersColumn(filter.columnName, true);
 
-        playersPage.addFilter(filter.name);
+        playersPage.addPlayersFilter(filter.name);
         filters.changeRangeFilter(filter.name, filter.minValue, filter.maxValue);
         playersPage.waitForPageToLoad();
 
-        playersPage.getTableStatsFor(filter.columnName).then(function(stats) {
+        playersPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
 
           uniqueStats.forEach(function(stat) {
@@ -247,13 +247,13 @@ test.describe('#Page: Players', function() {
     resourceSetFilters.forEach(function(filter) {
       test.it(`adding filter: ${filter.name} (${filter.values}) updates the table accordingly`, function() {
         browser.refresh();
-        playersPage.toggleColumn(filter.columnName, true);
+        playersPage.togglePlayersColumn(filter.columnName, true);
 
-        playersPage.addFilter(filter.name);
+        playersPage.addPlayersFilter(filter.name);
         filters.setResourceSetFilter(filter.name, filter.values);
         playersPage.waitForPageToLoad();
 
-        playersPage.getTableStatsFor(filter.columnName).then(function(stats) {
+        playersPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           assert.sameMembers(filter.values, uniqueStats);
         });
@@ -262,24 +262,24 @@ test.describe('#Page: Players', function() {
 
     test.it('adding filter: On Player Lists (TEST)', function() {
       browser.refresh();
-      playersPage.addFilter('On Player Lists');
+      playersPage.addPlayersFilter('On Player Lists');
       filters.setResourceSetFilter('On Player Lists', ['TEST']);
 
       playersPage.waitForPageToLoad();
 
-      playersPage.getTableStatsFor('Last Name').then(function(stats) {
+      playersPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
         assert.sameMembers(['VICKERS', 'VULCANO'], stats);
       });
     });
 
     test.it('adding filter: Alerts (a)', function() {
       browser.refresh();
-      playersPage.addFilter('Alerts');
+      playersPage.addPlayersFilter('Alerts');
       filters.setDropdownFilter('Alerts', ['u']);
 
       playersPage.waitForPageToLoad();
 
-      playersPage.getTableStatsFor('Last Name').then(function(stats) {
+      playersPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
         assert.sameMembers(['EVANS', 'VICKERS'], stats);
       });
     });
@@ -287,23 +287,23 @@ test.describe('#Page: Players', function() {
 
     test.it('adding filter: Is Deleted', function() {
       browser.refresh();
-      playersPage.addFilter('Is Deleted');
+      playersPage.addPlayersFilter('Is Deleted');
       filters.changeCheckboxFilter('Is Deleted', true);
 
       playersPage.waitForPageToLoad();
 
-      playersPage.getTableStatsFor('Last Name').then(function(stats) {
+      playersPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
         assert.includeMembers(stats, ['Young']);
       });
     });
 
     test.it('adding filter: Jersey', function() {
-      ;    browser.refresh();
-      playersPage.addFilter('Jersey');
+      browser.refresh();
+      playersPage.addPlayersFilter('Jersey');
       // TODO - no way to set jersey == 33
 
       playersPage.waitForPageToLoad();
-      playersPage.getTableStatsFor('Jersey').then(function(stats) {
+      playersPage.getPlayersTableStatsFor('Jersey').then(function(stats) {
         var uniqueStats = Array.from(new Set(stats));
         assert.sameMembers(['33'], uniqueStats);
       });
@@ -313,45 +313,45 @@ test.describe('#Page: Players', function() {
       test.it('filters: Is Starter: true (AND),  For Class Years: FR (AND), At Positions: K  (AND)', function() {
         this.timeout(120000);
         browser.refresh();
-        playersPage.toggleColumn('Starter', true);
-        playersPage.addFilter('Is Starter');
+        playersPage.togglePlayersColumn('Starter', true);
+        playersPage.addPlayersFilter('Is Starter');
         filters.changeCheckboxFilter('Is Starter', true);
 
-        playersPage.addFilter('For Class Years');
+        playersPage.addPlayersFilter('For Class Years');
         filters.setDropdownFilter('For Class Years', ['FR']);
 
-        playersPage.addFilter('At Positions');
+        playersPage.addPlayersFilter('At Positions');
         filters.setDropdownFilter('At Positions', ['PK']);
 
         playersPage.waitForPageToLoad();
 
-        playersPage.getTableStatsFor('Starter').then(function(stats) {
+        playersPage.getPlayersTableStatsFor('Starter').then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           assert.sameMembers(['check_box'], uniqueStats);
         });
 
-        playersPage.getTableStatsFor('Last Name').then(function(stats) {
+        playersPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
           assert.includeMembers(stats, ['Aguayo', 'Blankenship']);
         });
       });
       
       test.it('filters: Is Starter (OR), For Tier (OR)', function() {
         filters.removeFilter('For Class Years');
-        playersPage.toggleColumn('Tier', true);
+        playersPage.togglePlayersColumn('Tier', true);
 
         filters.changeFilterLogic('Is Starter', 'or');
-        playersPage.addFilter('For Tier');
+        playersPage.addPlayersFilter('For Tier');
         filters.setDropdownFilter('For Tier', ['D']);
         filters.changeFilterLogic('For Tier', 'or');
         
         playersPage.waitForPageToLoad();
 
-        playersPage.getTableStatsFor('Starter').then(function(stats) {
+        playersPage.getPlayersTableStatsFor('Starter').then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           assert.sameMembers(['check_box', 'check_box_outline_blank'], uniqueStats);
         });
 
-        playersPage.getTableStatsFor('Tier').then(function(stats) {
+        playersPage.getPlayersTableStatsFor('Tier').then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           assert.sameMembers(['A', 'B', 'C', 'D', '?'], uniqueStats);
         });
@@ -362,10 +362,10 @@ test.describe('#Page: Players', function() {
   // test.describe('#exportCsv', function() {
   //   test.it('clicking export csv exports csv file', function() {
   //     browser.refresh();
-  //     playersPage.addFilter('On Player Lists');
+  //     playersPage.addPlayersFilter('On Player Lists');
   //     filters.setResourceSetFilter('On Player Lists', ['GI']);
       
-  //     playersPage.addFilter('At Positions');
+  //     playersPage.addPlayersFilter('At Positions');
   //     filters.setDropdownFilter('At Positions', ['QB']);
 
   //     playersPage.waitForPageToLoad();

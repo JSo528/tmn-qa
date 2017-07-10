@@ -32,46 +32,6 @@ test.describe('#Page: List', function() {
     });
   });
 
- test.describe('#sorting', function() {
-    var columns = [
-      { colNum: 2, colName: 'Draft Year', sortType: 'number' },
-      { colNum: 3, colName: 'First Name', sortType: 'stringInsensitive' },
-      { colNum: 4, colName: 'Last Name', sortType: 'stringInsensitive' },
-      { colNum: 5, colName: 'Jersey', sortType: 'number' },
-      { colNum: 6, colName: 'Pos' },
-      { colNum: 7, colName: 'Height', sortType: 'number' },
-      { colNum: 8, colName: 'Weight', sortType: 'number' },
-      { colNum: 9, colName: 'Speed', sortType: 'number' },
-      { colNum: 10, colName: 'Class', sortType: 'enumerated', sortEnumeration: ['FR', 'SO', 'JR', 'SR'] },    
-      { colNum: 11, colName: 'Unenrolled', sortType: 'boolean' },
-    ];
-
-    var lastColNum;
-    columns.forEach(function(column) {
-      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
-        if (lastColNum) listPage.clickRemoveSortIcon(lastColNum);
-        lastColNum = column.colNum;
-        listPage.clickTableHeader(column.colNum);
-
-        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
-          stats = extensions.normalizeArray(stats, column.sortType);
-          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-
-      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
-        listPage.clickSortIcon(column.colNum);
-
-        listPage.getTableStatsForCol(column.colNum).then(function(stats) {
-          stats = extensions.normalizeArray(stats, column.sortType);
-          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
-          assert.deepEqual(stats, sortedArray);
-        });
-      });
-    });
-  });
-
   test.describe('#addingPlayer', function() {
     test.it('adding list to player', function() {
       browser.visit(url + 'player/31683');
@@ -160,6 +120,59 @@ test.describe('#Page: List', function() {
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
         listPage.changeTableStatField(attr.type, newRowNum, attr.col, attr.originalValue );
+      });
+    });
+  });
+
+  test.describe('#rankings', function() {
+    test.it('players should be sorted by ranking', function() {
+      listPage.getTableStatRankings().then(function(stats) {
+        stats = extensions.normalizeArray(stats, 'number');
+        var sortedArray = extensions.customSortNumber(stats, 'asc');
+        assert.deepEqual(stats, sortedArray);
+      });
+    });
+
+    test.it('adding ranking of 5 to SAM WILLIAMS, should resort list', function() {
+      return listPage.getRowNumForPlayer('SAM','WILLIAMS').then(function(stat) {
+        return stat;
+      }).then(function(rowNum) {
+        return listPage.changeTableStatRanking(rowNum,5);
+      }).then(function() {
+        return listPage.getTableStatRankings().then(function(stats) {
+          stats = extensions.normalizeArray(stats, 'number');
+          var sortedArray = extensions.customSortNumber(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      })
+    });
+
+    test.it('changing ranking of SAM WILLIAMS to 1, should resort list', function() {
+      return listPage.getRowNumForPlayer('SAM','WILLIAMS').then(function(stat) {
+        return stat;
+      }).then(function(rowNum) {
+        return listPage.changeTableStatRanking(rowNum,1);
+      }).then(function() {
+        return listPage.getTableStatRankings().then(function(stats) {
+          stats = extensions.normalizeArray(stats, 'number');
+          var sortedArray = extensions.customSortNumber(stats, 'asc');
+          assert.deepEqual(stats, sortedArray);
+        });
+      })
+    });
+
+    test.it('removing ranking for SAM WILLIAMS should persist', function() {
+      return listPage.getRowNumForPlayer('SAM','WILLIAMS').then(function(stat) {
+        return stat;
+      }).then(function(rowNum) {
+        listPage.changeTableStatRanking(rowNum,'');
+        return listPage.getRowNumForPlayer('SAM','WILLIAMS').then(function(stat) {
+          return stat;
+        })
+      }).then(function(rowNum) {
+        return listPage.getTableStatRanking(rowNum).then(function(stat) {
+          assert.equal(stat, '');
+        })
       });
     });
   });

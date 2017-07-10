@@ -7,6 +7,7 @@ var BasePage = require('../../../pages/base/base_page.js')
 var By = require('selenium-webdriver').By;
 var Until = require('selenium-webdriver').until;
 var Promise = require('selenium-webdriver').promise;
+var Key = require('selenium-webdriver').Key;
 
 // Mixins
 var _ = require('underscore');
@@ -69,6 +70,26 @@ ListPage.prototype.playerExistsInTable = function(firstName, lastName) {
 /****************************************************************************
 ** Table Stats
 *****************************************************************************/
+ListPage.prototype.getTableStatRankings = function() {
+  var inputLocator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr/td[1]/div/div/input`);
+  return this.getInputValueArray(inputLocator);
+};
+
+ListPage.prototype.getTableStatRanking = function(row) {
+  var inputLocator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr[${row}]/td[1]/div/div/input`);
+  return this.driver.findElement(inputLocator).getAttribute('value'));
+};
+
+
+ListPage.prototype.changeTableStatRanking = function(row, value) {
+  var inputLocator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr[${row}]/td[1]/div/div/input`);  
+  this.sendKeys(inputLocator, Key.BACK_SPACE);
+  this.sendKeys(inputLocator, Key.BACK_SPACE);
+  this.sendKeys(inputLocator, Key.BACK_SPACE);
+  this.sendKeys(inputLocator, value);
+  return this.sendKeys(inputLocator, Key.TAB);
+};
+
 ListPage.prototype.getTableStatsForCol = function(col) {
   var d = Promise.defer();
   var thiz = this;
@@ -156,7 +177,7 @@ ListPage.prototype.getRowNumForPlayer = function(firstName, lastName) {
 
     numArray.map(function(i) {
       var locator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr[${i}][td[3]/div/a[text()='${firstName}']][td[4]/div/a[text()='${lastName}']]`);
-      this.isDisplayed(locator, 100).then(function(displayed) {
+      this.isDisplayed(locator, 1).then(function(displayed) {
         if (displayed) {
           d.fulfill(i);
         }

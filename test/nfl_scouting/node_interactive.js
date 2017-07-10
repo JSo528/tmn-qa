@@ -46,19 +46,28 @@ measurablesPage = new MeasurablesPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-var url = "http://localhost:3000/player/31690/hrtTestingReport?tenant=jaguars"
+var url = "http://localhost:3000/tag/PA?tenant=jaguars"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-hrtTestingReportPage.changeSigmaMotivationField('dedication', 5)
-
-var field = 'dedication'
-var locator = By.css(`div[inject='${field}']`);
-
-var grade = 10
-filters.getCssValue(locator, 'width').then(function(val) {
-  var xVal = parseFloat(val) / 10 * grade - 10;
-  filters.clickOffset(locator, xVal, 10);
-}.bind(this)) 
+var timeNow = Date.now()
+listPage.getRowNumForPlayer('Tyler','Catalina').then(function(stat) {
+  var diff = (Date.now() - timeNow) / 1000;
+  console.log("** 1: " + diff)
+  console.log(stat)
+  return stat;
+}).then(function(rowNum) {
+  var diff = (Date.now() - timeNow) / 1000;
+  console.log("** 2: " + diff)
+  return listPage.changeTableStatRanking(rowNum,5);
+}).then(function() {
+  var diff = (Date.now() - timeNow) / 1000;
+  console.log("** 3: " + diff)
+  return listPage.getTableStatRankings().then(function(stats) {
+    var diff = (Date.now() - timeNow) / 1000;
+    console.log("** 4: " + diff)
+    var sortedArray = extensions.customSort(stats, 'asc');
+  })
+})
