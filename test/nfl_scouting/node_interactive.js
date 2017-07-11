@@ -46,28 +46,17 @@ measurablesPage = new MeasurablesPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-var url = "http://localhost:3000/tag/PA?tenant=jaguars"
+var url = "http://localhost:3000/search?tenant=jaguars"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-var timeNow = Date.now()
-listPage.getRowNumForPlayer('Tyler','Catalina').then(function(stat) {
-  var diff = (Date.now() - timeNow) / 1000;
-  console.log("** 1: " + diff)
-  console.log(stat)
-  return stat;
-}).then(function(rowNum) {
-  var diff = (Date.now() - timeNow) / 1000;
-  console.log("** 2: " + diff)
-  return listPage.changeTableStatRanking(rowNum,5);
-}).then(function() {
-  var diff = (Date.now() - timeNow) / 1000;
-  console.log("** 3: " + diff)
-  return listPage.getTableStatRankings().then(function(stats) {
-    var diff = (Date.now() - timeNow) / 1000;
-    console.log("** 4: " + diff)
-    var sortedArray = extensions.customSort(stats, 'asc');
-  })
-})
+playersPage.addListToPlayer(1, 'TEST')
+
+
+row = 1
+listName = "TEST"
+var rowNum = (row*3)-1;
+var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/.//input[2]`);
+playersPage.changeInput(locator, listName);

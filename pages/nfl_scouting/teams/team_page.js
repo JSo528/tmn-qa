@@ -118,6 +118,16 @@ TeamPage.prototype.changeTableStatCheckbox = function(row, col, selected) {
   return this.changeCheckbox(locator, selected);
 };
 
+TeamPage.prototype.getTableStatColorCheckbox = function(row, col, selectedColor) {
+  var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
+  return this.getColorCheckbox(locator, selectedColor);
+};
+
+TeamPage.prototype.changeTableStatColorCheckbox = function(row, col, selected, selectedColor) {
+  var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
+  return this.changeColorCheckbox(locator, selected, selectedColor);
+};
+
 TeamPage.prototype.changeTableStatYear = function(row, col, year) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div`);
   return this.changeDatePicker(locator, year);
@@ -143,10 +153,22 @@ TeamPage.prototype.getTableCheckboxStats = function(col) {
   return this.getCheckboxArray(locator);
 };
 
+TeamPage.prototype.clickCreateScoutingReport = function(row) {
+  var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[2]/div/div`);
+  var optionLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[2]/div/ul/li[1]`);
+  this.click(locator);
+  return this.click(optionLocator);
+};
+
+TeamPage.prototype.clickCreateNewPlayer = function() {
+  var locator = By.xpath(".//div[@class='roster']/.//table/thead/tr/td/button[contains(@class,'-create')]");
+  return this.click(locator);
+};
+
 /****************************************************************************
 ** Aggregate Helpers
 *****************************************************************************/
-TeamPage.prototype.getTableStatField = function(type, row, col) {
+TeamPage.prototype.getTableStatField = function(type, row, col, options) {
   switch (type) {
     case 'input':
     case 'dropdown':
@@ -154,19 +176,23 @@ TeamPage.prototype.getTableStatField = function(type, row, col) {
       return this.getTableStat(row, col);
     case 'checkbox':
       return this.getTableStatCheckbox(row, col);
+    case 'colorCheckbox':
+      return this.getTableStatColorCheckbox(row, col, options.selectedColor);
   }
 };
 
-TeamPage.prototype.changeTableStatField = function(type, row, col, value, placeholder) {
+TeamPage.prototype.changeTableStatField = function(type, row, col, value, options) {
   switch (type) {
     case 'input':
-      return this.changeTableStatInput(row, col, value, placeholder);
+      return this.changeTableStatInput(row, col, value, options.placeholder);
     case 'dropdown':
-      return this.changeTableStatDropdown(row, col, value, placeholder);
+      return this.changeTableStatDropdown(row, col, value, options.placeholder);
     case 'checkbox':
-      return this.changeTableStatCheckbox(row, col, value, placeholder);
+      return this.changeTableStatCheckbox(row, col, value, options.placeholder);
     case 'date':
-      return this.changeTableStatYear(row, col, value, placeholder);
+      return this.changeTableStatYear(row, col, value, options.placeholder);
+    case 'colorCheckbox':
+      return this.changeTableStatColorCheckbox(row, col, value, options.selectedColor);
   }
 };
 
