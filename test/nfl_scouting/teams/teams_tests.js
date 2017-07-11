@@ -30,36 +30,42 @@ test.describe('#Page: Teams', function() {
   });
 
   test.describe('#sorting', function() {
-    test.it('Teams List should be sorted alphabetically by code initially', function() {
-      teamsPage.getTableStatsForCol(2).then(function(stats) {
-        var sortedArray = extensions.customSort(stats, 'asc');
-        assert.deepEqual(stats, sortedArray);
+    var columns = [
+      { colNum: 2, colName: 'Team Code', sortType: 'string', initialCol: true },
+      { colNum: 4, colName: 'Name', sortType: '' },
+      { colNum: 5, colName: 'Overall Record', sortType: 'number' },
+      { colNum: 6, colName: 'Conference Record', sortType: 'number' },
+      { colNum: 7, colName: 'PS', sortType: 'number' },
+      { colNum: 8, colName: 'PA', sortType: 'number' },
+      { colNum: 9, colName: 'Streak', sortType: 'string' },
+    ];
+
+    columns.forEach(function(column) {
+      test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
+        this.timeout(120000);
+        if (!column.initialCol) {
+          teamsPage.clickRemoveSortIcon(lastColNum);
+          teamsPage.clickTableHeader(column.colNum);
+        }
+        
+        lastColNum = column.colNum;
+
+        teamsPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
       });
-    });
 
-    test.it('clicking arrow next to code header should reverse the sort', function() {
-      teamsPage.clickSortIcon(2);
-      teamsPage.getTableStatsForCol(2).then(function(stats) {
-        var sortedArray = extensions.customSort(stats, 'desc');
-        assert.deepEqual(stats, sortedArray);
-      });
-    });
+      test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
+        this.timeout(120000);
+        teamsPage.clickSortIcon(column.colNum);
 
-    test.it('removing the code sorter and selecting the name sorter should sort the list by school name', function() {
-      teamsPage.clickRemoveSortIcon(2);
-      teamsPage.clickTableHeader(3);
-
-      teamsPage.getTableStatsForCol(3).then(function(stats) {
-        var sortedArray = extensions.customSort(stats, 'asc');
-        assert.deepEqual(stats, sortedArray);
-      });
-    });
-
-    test.it('clicking arrow next to name header should reverse the sort', function() {
-      teamsPage.clickSortIcon(3);
-      teamsPage.getTableStatsForCol(3).then(function(stats) {
-        var sortedArray = extensions.customSort(stats, 'desc');
-        assert.deepEqual(stats, sortedArray);
+        teamsPage.getTableStatsForCol(column.colNum).then(function(stats) {
+          stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+          assert.deepEqual(stats, sortedArray);
+        });
       });
     });
   });

@@ -46,17 +46,16 @@ measurablesPage = new MeasurablesPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-var url = "http://localhost:3000/search?tenant=jaguars"
+var url = "http://localhost:3000/team/1132?tenant=jaguars"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-playersPage.addListToPlayer(1, 'TEST')
 
-
-row = 1
-listName = "TEST"
-var rowNum = (row*3)-1;
-var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/.//input[2]`);
-playersPage.changeInput(locator, listName);
+{ field: 'Tier', col: 3, type: 'dropdown', originalValue: '?', updatedValue: 'C', placeholder: '?' },
+{ field: 'Durability', col: 17, type: 'dropdown', originalValue: 'Select value', updatedValue: '8', placeholder: 'Select value' },
+{ field: 'X Alert', col: 18, type: 'checkbox', originalValue: false, updatedValue: true },
+{ field: 'C Alert', col: 19, type: 'checkbox', originalValue: false, updatedValue: true },
+teamPage.changeTableStatField('dropdown', 1, 17, '8', {placeholder: 'Select value'});
+teamPage.changeTableStatField('colorCheckbox', 1, 18, true, {selectedColor: 'rgba(217, 83, 79, 1)'});
