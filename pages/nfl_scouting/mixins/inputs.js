@@ -162,10 +162,6 @@ Inputs = {
     var d = Promise.defer();
 
     this.getCssValue(locator, 'backgroundColor').then(function(color) {
-      
-      console.log("** color " + color)
-      console.log(selectedColor)
-
       if (color == selectedColor) {
         d.fulfill(true);
       } else {
@@ -180,9 +176,6 @@ Inputs = {
     var thiz = this;
 
     this.getColorCheckbox(locator, selectedColor).then(function(wasSelected) {
-      console.log("** wasSelected " + wasSelected)
-      console.log(selected)
-      
       if (wasSelected && !selected || !wasSelected && selected) {
         thiz.click(locator);
         d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));

@@ -147,18 +147,7 @@ ScoutingReportPage.prototype.changeProfileCheckbox = function(field, selected) {
 /****************************************************************************
 ** Notes
 *****************************************************************************/
-ScoutingReportPage.prototype.clickGameReportsSpacer = function() {
-  var d = Promise.defer();
-  var thiz = this;
 
-  this.click(GAME_REPORTS_SPACER, 1000).then(function() {
-    d.fulfill(true);
-  }, function(err) {
-    d.fulfill(thiz.click(GAME_REPORTS_SPACER, 1000));
-  });
-
-  return d.promise;
-};
 
 ScoutingReportPage.prototype.getNotesGrade = function(section) {
   var locator = By.xpath(`.//div[@class='well']/.//div[div/div[text()=' ${section} ']]/.//input`);
@@ -233,6 +222,65 @@ ScoutingReportPage.prototype.getGradeGroupSkills = function(group) {
   var locator = By.xpath(`.//div[@inject='${group}']/div[@class='row'][2]/div`);
   return this.getTextArray(locator);
 };
+
+/****************************************************************************
+** Game Reports
+*****************************************************************************/
+ScoutingReportPage.prototype.clickGameReportsSpacer = function() {
+  var d = Promise.defer();
+  var thiz = this;
+
+  this.click(GAME_REPORTS_SPACER, 1000).then(function() {
+    d.fulfill(true);
+  }, function(err) {
+    d.fulfill(thiz.click(GAME_REPORTS_SPACER, 1000));
+  });
+
+  return d.promise;
+};
+
+ScoutingReportPage.prototype.createNewGame = function(row, week, date, opponent) {
+  var newGameLocator = By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//div[@class='new-game']`);
+
+  var weekLocator = By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//div[@inject='proGame.week']/div`);
+  var weekOptionLocator = By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//div[@inject='proGame.week']/ul/li[text()='${week}']`);
+
+  var dateLocator = By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//div[@inject='proGame.date']/input`);
+
+  var opponentLocator = By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//div[@inject='proGame.opponent']/div`);
+
+  var createLocator = By.xpath(".//div[@class='grade-grid']/div[1]/.//button[contains(@class, '-create-game')]");
+
+  this.click(newGameLocator);
+  this.changeDropdown(weekLocator, weekOptionLocator);
+  this.changeDatePicker(dateLocator, date.year, date.month, date.day);
+  this.changeTextField(opponentLocator, opponent);
+  return this.click(createLocator);
+};
+
+ScoutingReportPage.prototype.getGameInfo = function(row, gameNum) {
+  var locator = By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//li[@class='player-game'][${gameNum}]/div/div/div`);
+  return this.getText(locator);
+};
+
+ScoutingReportPage.prototype.setGameGrade = function(row, gameNum, grade) {
+  var dropdownLocator =  By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//li[@class='player-game'][${gameNum}]/div/div/div`);
+  var optionLocator =  By.xpath(`.//div[@class='grade-grid']/div[${row}]/.//li[@class='player-game'][${gameNum}]/div/div/ul/li[text()='${grade}']`);
+
+  return this.changeDropdown(dropdownLocator, optionLocator, grade);
+};
+
+ScoutingReportPage.prototype.getGameNotesText = function() {
+  var locator = By.xpath(`.//div[@inject='gameNotes']/div[contains(@class, '-editor')]`);
+  return this.getTextField(locator);
+};
+
+ScoutingReportPage.prototype.changeGameNotesText = function(text) {
+  var locator = By.xpath(`.//div[@inject='gameNotes']/div[contains(@class, '-editor')]`);
+  return this.changeTextField(locator, text);
+};
+
+
 
 /****************************************************************************
 ** Aggregate Helpers

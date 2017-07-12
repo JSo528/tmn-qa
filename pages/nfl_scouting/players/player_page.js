@@ -99,6 +99,11 @@ PlayerPage.prototype.getProfileInput = function(field) {
   return this.getInput(locator);
 };
 
+PlayerPage.prototype.getProfileTeamInput = function(field) {
+  var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div/span/input[2]`)
+  return this.getInput(locator);
+};
+
 PlayerPage.prototype.changeProfileCheckbox = function(field, selected) {
   var locator = By.xpath(`.//div[@class='player-profile']/.//div[div/label[text()='${field}']]/div/div`)
   return this.changeCheckbox(locator, selected);
