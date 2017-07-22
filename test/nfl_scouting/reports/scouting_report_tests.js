@@ -15,16 +15,14 @@ test.describe('#Page: ScoutingReports', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
     reportPage = new ScoutingReportPage(driver);
-    browser.visit(url + 'player/31682');
-    playerPage.waitForPageToLoad();
+    browser.visit(url + 'player/4487');
     playerPage.clickCreateScoutingReportBtn();
-    reportPage.waitForPageToLoad();
   });
 
   test.describe("#observations", function() {
     var observationAttributes = [
-      { field: 'Jags. Pos.', type: 'dropdown', originalValue: 'QB', value: 'FB' },
-      { field: 'Height', type: 'input', value: '5900i' },
+      { field: 'Jags. Pos.', type: 'dropdown', originalValue: 'MB', value: 'FB' },
+      { field: 'Height', type: 'input', value: '6010e' },
       { field: 'Flex', type: 'dropdown', value: 'WR' },
       { field: 'ST Pos. 1', type: 'dropdown', value: 'KR' },
       { field: 'ST Pos. 2', type: 'dropdown', value: 'LS' },
@@ -63,21 +61,21 @@ test.describe('#Page: ScoutingReports', function() {
 
   test.describe("#profile", function() {
     var attributes = [
-      { field: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test2' },
-      { field: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test2' },
-      { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
-      { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Mobile, AL' },
-      { field: 'player.number', title: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },
+      { field: 'First Name', type: 'input', originalValue: 'Montavious', updatedValue: 'Montavious-Test' },
+      { field: 'Last Name', type: 'input', originalValue: 'Atkinson', updatedValue: 'Cornwell-Test' },
+      { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SO', updatedValue: 'JR' },
+      { field: 'Hometown', type: 'input', originalValue: 'Fairburn, GA', updatedValue: 'Mobile, AL' },
+      { field: 'player.number', title: 'Jersey', type: 'input', originalValue: 48, updatedValue: 16 },
       // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018, originalValueInput: { year: 2017 }, updatedValueInput: { year: 2018 } },
       { field: 'Starter', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'JUCO', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'RS', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'T', title: 'T Flag', type: 'checkbox', updatedValue: true },
       { field: 'Transfer', type: 'checkbox', originalValue: false, updatedValue: true },
-      { field: 'position', title: 'Position', type: 'dropdown', originalValue: 'QB', updatedValue: 'RB' },
+      { field: 'position', title: 'Position', type: 'dropdown', originalValue: 'MB', updatedValue: 'RB' },
       { field: 'Speed', type: 'input', updatedValue: '5.40i' },
-      { field: 'Height', type: 'input', updatedValue: '6010v' },
-      { field: 'Weight', type: 'input', updatedValue: '240i' },
+      { field: 'Height', type: 'input', updatedValue: '6010v', originalValue: '6010e' },
+      { field: 'Weight', type: 'input', updatedValue: '240i', originalValue: '211e' },
       { field: 'flags', title: 'Flags', type: 'input', updatedValue: 'ac' },
       { field: 'display.type', title: 'Report Type', type: 'dropdown', updatedValue: 'Fall' },
       { field: 'overallGrade', title: 'Grade', type: 'dropdown', updatedValue: '9.0 1ˢᵗ Year Starter' },
@@ -154,6 +152,7 @@ test.describe('#Page: ScoutingReports', function() {
       notesAttributes.forEach(function(attr) {
         reportPage.changeNotesField(attr.type, attr.field, attr.value );
       });
+      reportPage.waitForPageToLoad();
       browser.refresh();
       reportPage.waitForPageToLoad();
       reportPage.clickGameReportsSpacer();

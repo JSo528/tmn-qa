@@ -158,6 +158,12 @@ MeasurablesPage.prototype.getLiveRowInputField = function(field) {
   return this.getText(locator);
 }
 
+MeasurablesPage.prototype.changeLiveRowInputField = function(field, value) {
+  var colNum = LIVE_ROW_COLUMN_NUMS[field] || COLUMN_NUMS[field];
+  var locator = By.xpath(`.//tbody[@id='liveRow']/tr/td[${colNum}]/div/div[contains(@class, 'control')]`);
+  return this.changeTextField(locator, value);
+}
+
 /****************************************************************************
 ** Aggregate Helpers
 *****************************************************************************/

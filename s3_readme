@@ -1,0 +1,23 @@
+
+ssh -i jason.pem ec2-user@ec2-54-237-158-152.compute-1.amazonaws.com
+
+PERSONAL
+
+ssh -i tmn-qa-test.pem ec2-user@ec2-54-175-38-153.compute-1.amazonaws.com
+
+
+Xvfb :99 -screen 0 1920x3000x8 -ac 2>&1 >/dev/null & export DISPLAY=:99;
+
+NODE_ENV=production pm2 start app.js --log-date-format "YYYY-MM-DD HH:mm Z"
+
+
+TEST_RUN_ID=5819327884a97672eb41ac16 PORT_NUMBER=3001 mocha -gc test/scripts/mlb_staging.js
+
+
+
+** inside tmp **
+
+du -sch .[!.]* * |sort -h
+
+find . -name '*Chromium*' -exec rm -rf {} \;
+find . -name '*Chrome*' -exec rm -rf {} \;

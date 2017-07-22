@@ -244,14 +244,18 @@ BasePage.prototype.waitUntilStaleness = function(locator, timeout) {
   this.driver.wait(Until.elementLocated(locator),timeout).then(function () {
     thiz.driver.findElement(locator).then(function(element) {
       thiz.driver.wait(Until.stalenessOf(element), timeout).then(function() {
+        console.log("** 1")
         d.fulfill(true)
       }, function(err) {
+        console.log("** 2")
         d.fulfill(true)
       })
     }, function(err) {
+      console.log("** 3")
       d.fulfill(true)
     }); 
   }, function(err) {
+    console.log("** 4")
     d.fulfill(false)
   })
 

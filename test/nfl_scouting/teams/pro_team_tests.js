@@ -22,27 +22,27 @@ test.describe('#Page: ProTeam', function() {
     scoutingReportPage = new ScoutingReportPage(driver);
     playerPage = new PlayerPage(driver);
     filters = new Filters(driver);
-    browser.visit(url+'team/1132'); // TODO - Change this to a real pro team 
+    browser.visit(url+'team/1147');
   });
 
   test.describe('#sorting', function() {
     var columns = [
-      { colNum: 3, colName: 'Tier', sortType: 'enumerated', sortEnumeration: ['A', 'B', 'C', 'D', '?'] },
-      { colNum: 4, colName: 'Jersey', sortType: 'number' },
-      { colNum: 5, colName: 'First Name', sortType: 'string' },
-      { colNum: 7, colName: 'Jags. Pos.', placeholder: 'Jags. Pos.'  },
-      { colNum: 8, colName: 'Height', sortType: 'number' },
-      { colNum: 9, colName: 'Weight', sortType: 'number' },
-      { colNum: 10, colName: 'Speed', sortType: 'number' },
-      { colNum: 11, colName: 'Age', sortType: 'number' },
-      { colNum: 12, colName: 'NFL XP', sortType: 'number' },
-      { colNum: 13, colName: 'Entry Year', sortType: 'number' },
-      { colNum: 14, colName: 'College', sortType: 'string' },
-      { colNum: 17, colName: 'Durability', sortType: 'number' },
+      { colName: 'Tier', sortType: 'enumerated', sortEnumeration: ['A', 'B', 'C', 'D', '?'] },
+      { colName: 'Jersey', sortType: 'number' },
+      { colName: 'First Name', sortType: 'string' },
+      { colName: 'Jags. Pos.', placeholder: 'Jags. Pos.'  },
+      { colName: 'Height', sortType: 'number' },
+      { colName: 'Weight', sortType: 'number' },
+      { colName: 'Speed', sortType: 'number' },
+      { colName: 'Age', sortType: 'number' },
+      { colName: 'NFL XP', sortType: 'number' },
+      { colName: 'Entry Year', sortType: 'number' },
+      { colName: 'College', sortType: 'string' },
+      { colName: 'Durability', sortType: 'number' },
     ];
 
     test.it('team list should be sorted alphabetically by last name asc initially', function() {
-      teamPage.getTableStatsForCol(6).then(function(stats) {
+      teamPage.getTableStatsForCol("Last Name").then(function(stats) {
         stats = extensions.normalizeArray(stats, 'string');
         var sortedArray = extensions.customSort(stats, 'asc');
         assert.deepEqual(stats, sortedArray);
@@ -50,23 +50,23 @@ test.describe('#Page: ProTeam', function() {
     });
 
     test.it('clicking arrow next to last name header should reverse the sort', function() {
-      teamPage.clickSortIcon(6);
+      teamPage.clickSortIcon("Last Name");
 
-      teamPage.getTableStatsForCol(6).then(function(stats) {
+      teamPage.getTableStatsForCol("Last Name").then(function(stats) {
         stats = extensions.normalizeArray(stats, 'string');
         var sortedArray = extensions.customSort(stats, 'desc');
         assert.deepEqual(stats, sortedArray);
       });
     });
 
-    var lastColNum = 6;
+    var lastColName = "Last Name";
     columns.forEach(function(column) {
       test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
-        teamPage.clickRemoveSortIcon(lastColNum);
-        lastColNum = column.colNum;
-        teamPage.clickTableHeader(column.colNum);
+        teamPage.clickRemoveSortIcon(lastColName);
+        lastColName = column.colName;
+        teamPage.clickTableHeader(column.colName);
 
-        teamPage.getTableStatsForCol(column.colNum).then(function(stats) {
+        teamPage.getTableStatsForCol(column.colName).then(function(stats) {
           stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
           var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
           assert.deepEqual(stats, sortedArray);
@@ -74,9 +74,9 @@ test.describe('#Page: ProTeam', function() {
       });
 
       test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
-        teamPage.clickSortIcon(column.colNum);
+        teamPage.clickSortIcon(column.colName);
 
-        teamPage.getTableStatsForCol(column.colNum).then(function(stats) {
+        teamPage.getTableStatsForCol(column.colName).then(function(stats) {
           stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
           var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
           assert.deepEqual(stats, sortedArray);

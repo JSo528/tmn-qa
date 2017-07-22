@@ -17,13 +17,13 @@ test.describe('#Page: Player', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
     scoutingReportPage = new ScoutingReportPage(driver);
-    browser.visit(url + 'player/4893');
+    browser.visit(url + 'player/60193');
   })
 
   test.describe('#profile', function() {
     test.it('should have nfl team listed', function() {
       playerPage.getProfileTeamInput('NFL Team').then(function(stat) {
-        assert.equal(stat, 'OAK');
+        assert.equal(stat, 'DEN');
       });
     });
   });

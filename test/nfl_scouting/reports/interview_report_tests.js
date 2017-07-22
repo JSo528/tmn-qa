@@ -51,8 +51,8 @@ test.describe('#Page: InterviewReports', function() {
         var input = attr.updatedValueInput || attr.updatedValue
         reportPage.changeProfileField(attr.type, attr.field, input );
       });
-      browser.refresh();
       reportPage.waitForPageToLoad();
+      browser.refresh();
     });
 
     profileAttributes.forEach(function(attr) {
@@ -177,8 +177,8 @@ test.describe('#Page: InterviewReports', function() {
       sectionAttributes.forEach(function(attr) {
         reportPage.changeSectionField(attr.type, attr.field, attr.value );
       });
-      browser.refresh();
       reportPage.waitForPageToLoad();
+      browser.refresh();
     });
 
     sectionAttributes.forEach(function(attr) {

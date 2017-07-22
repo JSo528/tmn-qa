@@ -14,7 +14,7 @@ var navbar, playerPage, incidentReportdivNum;
 test.describe('#Page: Player', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
-    browser.visit(url + 'player/31685');
+    browser.visit(url + 'player/3690');
   })
 
   test.describe('#sorting', function() {
@@ -239,7 +239,7 @@ test.describe('#Page: Player', function() {
       { field: 'First Name', type: 'input', originalValue: 'DAKOTA', updatedValue: 'Dakota-Test' },
       { field: 'Last Name', type: 'input', originalValue: 'CORNWELL', updatedValue: 'Cornwell-Test' },
       { field: 'Class', type: 'dropdown', originalValue: 'SR', updatedValue: 'JR' },
-      { field: 'Hometown', type: 'input', originalValue: '', updatedValue: 'Montgomery, AL' },
+      { field: 'Hometown', type: 'input', originalValue: ',', updatedValue: 'Montgomery, AL' },
       { field: 'Jersey', type: 'input', originalValue: 11, updatedValue: 16 },
       // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Starter', type: 'checkbox', originalValue: false, updatedValue: true },

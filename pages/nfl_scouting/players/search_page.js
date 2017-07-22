@@ -18,9 +18,9 @@ var inputs = require('../mixins/inputs.js');
 *****************************************************************************/
 var LAST_LOCATOR = By.xpath(".//div[@inject='content']/.//div[contains(@class,'scroll-wrap-x')]/table");
 
+// Players
 var PLAYERS_TABLE_ROW_COUNT_INPUT = By.xpath(".//div[@inject='players']/.//div[@inject='page.count']/input");
 var PLAYERS_TABLE_ROWS = By.xpath(".//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody/tr[not(contains(@class, 'hidden'))]");
-
 var PLAYERS_ADD_FILTER_INPUT = By.xpath(".//div[@inject='players']/.//div[@inject='availableFilters']/.//input[@class='typeahead tt-input']");
 var SEARCH_PLAYERS_TITLE = By.xpath(".//div[text()=' Search Players ']");
 var PLAYERS_TOGGLE_COLUMNS_INPUT = By.xpath(".//div[@inject='players']/.//div[@inject='availableColumns']/span/input[contains(@class, 'tt-input')]");
@@ -58,39 +58,39 @@ var TABLE_LOCATOR_SUFFIX = {
 /****************************************************************************
 ** Constructor
 *****************************************************************************/
-function PlayersPage(driver) {
+function SearchPage(driver) {
   BasePage.call(this, driver);
 };
 
-PlayersPage.prototype = Object.create(BasePage.prototype);
-PlayersPage.prototype.constructor = PlayersPage;
+SearchPage.prototype = Object.create(BasePage.prototype);
+SearchPage.prototype.constructor = SearchPage;
 
 // Mixins
-_.extend(PlayersPage.prototype, inputs);
+_.extend(SearchPage.prototype, inputs);
 
 /****************************************************************************
 ** Functions
 *****************************************************************************/
-PlayersPage.prototype.waitForPageToLoad = function() {
+SearchPage.prototype.waitForPageToLoad = function() {
   return this.waitUntilStaleness(LAST_LOCATOR, 20000);
 };
 
 /****************************************************************************
 ** Sorting
 *****************************************************************************/
-PlayersPage.prototype.clickPlayersTableHeader = function(col) {
+SearchPage.prototype.clickPlayersTableHeader = function(col) {
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[${col}]`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
 
-PlayersPage.prototype.clickPlayersSortIcon = function(col) {
+SearchPage.prototype.clickPlayersSortIcon = function(col) {
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[${col}]/i[@class='material-icons']`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
 
-PlayersPage.prototype.clickPlayersRemoveSortIcon = function(col) {
+SearchPage.prototype.clickPlayersRemoveSortIcon = function(col) {
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
   this.click(locator);
   return this.waitForPageToLoad();
@@ -99,7 +99,7 @@ PlayersPage.prototype.clickPlayersRemoveSortIcon = function(col) {
 /****************************************************************************
 ** Table Stats
 *****************************************************************************/
-PlayersPage.prototype.getPlayersTableStats = function(col) {
+SearchPage.prototype.getPlayersTableStats = function(col) {
   var d = Promise.defer();
   var thiz = this;
   var inputLocator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/input`);
@@ -114,7 +114,7 @@ PlayersPage.prototype.getPlayersTableStats = function(col) {
   return d.promise;
 };
 
-PlayersPage.prototype.getPlayersTableStatsForCol = function(col) {
+SearchPage.prototype.getPlayersTableStatsForCol = function(col) {
   var d = Promise.defer();
   var thiz = this;
   var inputLocator = By.xpath(`.//div[@inject='players']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/input`);
@@ -129,7 +129,7 @@ PlayersPage.prototype.getPlayersTableStatsForCol = function(col) {
   return d.promise;
 };
 
-PlayersPage.prototype.getPlayersTableStatsFor = function(name) {
+SearchPage.prototype.getPlayersTableStatsFor = function(name) {
   var d = Promise.defer();
   var thiz = this;
   var inputLocator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody/tr[not(contains(@class,'hidden'))]/td[count(//div[@inject='players']/.//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/div/input`);
@@ -145,7 +145,7 @@ PlayersPage.prototype.getPlayersTableStatsFor = function(name) {
 };
 
 // table stats
-PlayersPage.prototype.getPlayersTableStat = function(row, col, placeholder) {
+SearchPage.prototype.getPlayersTableStat = function(row, col, placeholder) {
   var d = Promise.defer();
   var thiz = this;
   var inputLocator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
@@ -174,17 +174,17 @@ PlayersPage.prototype.getPlayersTableStat = function(row, col, placeholder) {
   return d.promise;
 };
 
-PlayersPage.prototype.clickPlayersTableStat = function(row, col) {
+SearchPage.prototype.clickPlayersTableStat = function(row, col) {
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${row}]/td[${col}]/div/*[self::div or self::a or self::input]`);
   return this.click(locator);
 };
 
-PlayersPage.prototype.changePlayersTableStatInput = function(row, col, value) {
+SearchPage.prototype.changePlayersTableStatInput = function(row, col, value) {
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
   return this.changeInput(locator, value)
 };
 
-PlayersPage.prototype.changePlayersTableStatDropdown = function(row, col, value, placeholder) {
+SearchPage.prototype.changePlayersTableStatDropdown = function(row, col, value, placeholder) {
   var d = Promise.defer();
   var currentValue;
   var thiz = this
@@ -212,13 +212,13 @@ PlayersPage.prototype.changePlayersTableStatDropdown = function(row, col, value,
   return d.promise;
 };
 
-PlayersPage.prototype.togglePlayerRow = function(row) {
+SearchPage.prototype.togglePlayerRow = function(row) {
   var rowNum = row * 3 - 2;
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td[1]/div/i`);
   return this.click(locator);
 };
 
-PlayersPage.prototype.addListToPlayer = function(row, listName) {
+SearchPage.prototype.addListToPlayer = function(row, listName) {
   var rowNum = (row*3)-1;
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/.//input[2]`);
   var selectionLocator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/.//div[contains(@class,'tt-menu')]/div/div[1]`)
@@ -226,19 +226,19 @@ PlayersPage.prototype.addListToPlayer = function(row, listName) {
   return this.click(selectionLocator)
 };
 
-PlayersPage.prototype.getPlayerLists = function(row) {
+SearchPage.prototype.getPlayerLists = function(row) {
   var rowNum = (row*3)-1;
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/div[contains(@class, 'entities')]/span/span`);
   return this.getTextArray(locator);
 };
 
-PlayersPage.prototype.removeListFromPlayer = function(row, listName) {
+SearchPage.prototype.removeListFromPlayer = function(row, listName) {
   var rowNum = (row*3)-1;
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td/div[@inject='tags']/div[contains(@class, 'entities')]/span[span[text()='${listName}']]/i`)
   return this.click(locator);
 };
 
-PlayersPage.prototype.createBatchMeasurables = function(event) {
+SearchPage.prototype.createBatchMeasurables = function(event) {
   var expanderLocator = By.xpath(".//div[contains(@class, 'batch-measurables')]/div/div/div/div/i");
   var eventLocator = By.xpath(`.//div[contains(@class, 'batch-measurables')]/.//div[@inject="batchCreate.event"]/div`);
   var optionLocator = By.xpath(`.//div[contains(@class, 'batch-measurables')]/.//div[@inject="batchCreate.event"]/ul/li[text()='${event}']`);
@@ -250,17 +250,17 @@ PlayersPage.prototype.createBatchMeasurables = function(event) {
 };
 
 
-PlayersPage.prototype.changeMeasurableInputField = function(playerNum, row, col, value) {
+SearchPage.prototype.changeMeasurableInputField = function(playerNum, row, col, value) {
   var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
   return this.changeInput(locator, value);
 };
 
-PlayersPage.prototype.getMeasurableInputField = function(playerNum, row, col) {
+SearchPage.prototype.getMeasurableInputField = function(playerNum, row, col) {
   var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
   return this.getText(locator);
 };
 
-PlayersPage.prototype.getMeasurablesCount = function(playerNum) {
+SearchPage.prototype.getMeasurablesCount = function(playerNum) {
   var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]`);
   return this.getElementCount(locator);
 };
@@ -269,8 +269,9 @@ PlayersPage.prototype.getMeasurablesCount = function(playerNum) {
 /****************************************************************************
 ** Filters
 *****************************************************************************/
-PlayersPage.prototype.addPlayersFilter = function(name) {
-  var optionLocator = By.xpath(`.//div[@inject='players']/.//div[@class='tt-dataset tt-dataset-availableFilters']/div[@class='tt-suggestion tt-selectable'][text()='${name}']`)
+SearchPage.prototype.addPlayersFilter = function(name, filterNum) {
+  filterNum = filterNum || 1;
+  var optionLocator = By.xpath(`.//div[@inject='players']/.//div[@class='tt-dataset tt-dataset-availableFilters']/div[@class='tt-suggestion tt-selectable'][text()='${name}'][${filterNum}]`)
   this.click(PLAYERS_ADD_FILTER_INPUT);
   return this.click(optionLocator);
 };
@@ -278,29 +279,28 @@ PlayersPage.prototype.addPlayersFilter = function(name) {
 /****************************************************************************
 ** Table Controls
 *****************************************************************************/
-PlayersPage.prototype.changePlayersNumberOfRows = function(numRows) {
+SearchPage.prototype.changeReportsNumberOfRows = function(numRows) {
   var thiz = this;
   var d = Promise.defer();
 
-  this.getPlayersTableRowCount().then(function(stat) {
+  this.getInput(PLAYERS_TABLE_ROW_COUNT_INPUT).then(function(stat) {
     var digits = stat.toString().length;
     for (var i=0; i<digits; i++) {
       thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, Key.BACK_SPACE);    
     }
 
     thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, numRows);
-    thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, Key.ENTER);
-    d.fulfill(thiz.waitUntilStaleness(By.xpath(".//div[@inject='players']"), 5000));
+    d.fulfill(thiz.sendKeys(PLAYERS_TABLE_ROW_COUNT_INPUT, Key.ENTER));
   })
 
   return d.promise;
 };
 
-PlayersPage.prototype.getPlayersTableRowCount = function() {
+SearchPage.prototype.getPlayersTableRowCount = function() {
   return this.getElementCount(PLAYERS_TABLE_ROWS);
 };
 
-PlayersPage.prototype.togglePlayersColumn = function(colName, selected) {
+SearchPage.prototype.togglePlayersColumn = function(colName, selected) {
   var d = Promise.defer();
   var thiz = this;
  
@@ -321,12 +321,12 @@ PlayersPage.prototype.togglePlayersColumn = function(colName, selected) {
   return d.promise;
 };
 
-PlayersPage.prototype.clickPlayersNextButton = function() {
+SearchPage.prototype.clickPlayersNextButton = function() {
   this.click(PLAYERS_NEXT_BUTTON);
   return this.waitForPageToLoad();
 };
 
-PlayersPage.prototype.clickPlayersPreviousButton = function() {
+SearchPage.prototype.clickPlayersPreviousButton = function() {
   this.click(PLAYERS_PREVIOUS_BUTTON);
   return this.waitForPageToLoad();
 };
@@ -334,19 +334,19 @@ PlayersPage.prototype.clickPlayersPreviousButton = function() {
 /****************************************************************************
 ** Exports
 *****************************************************************************/
-PlayersPage.prototype.clickPlayersExportButton = function() {
+SearchPage.prototype.clickPlayersExportButton = function() {
   this.click(PLAYERS_EXPORT_BUTTON);
   return this.driver.sleep(5000);
 };
 
-PlayersPage.prototype.readAndDeletePlayersExportCSV = function() {
+SearchPage.prototype.readAndDeletePlayersExportCSV = function() {
   return this.readAndDeleteCSV('../Downloads/export.csv');
 };
 
 /****************************************************************************
 ** Aggregate Helpers
 *****************************************************************************/
-PlayersPage.prototype.changePlayersTableStatField = function(type, row, col, value, placeholder) {
+SearchPage.prototype.changePlayersTableStatField = function(type, row, col, value, placeholder) {
   switch (type) {
     case 'input':
       return this.changePlayersTableStatInput(row, col, value, placeholder);
@@ -355,5 +355,4 @@ PlayersPage.prototype.changePlayersTableStatField = function(type, row, col, val
   }
 };
 
-
-module.exports = PlayersPage;
+module.exports = SearchPage;

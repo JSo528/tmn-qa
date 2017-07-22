@@ -139,6 +139,7 @@ test.describe('#Page: List', function() {
       }).then(function(rowNum) {
         return listPage.changeTableStatRanking(rowNum,5);
       }).then(function() {
+        listPage.waitForPageToLoad();
         return listPage.getTableStatRankings().then(function(stats) {
           stats = extensions.normalizeArray(stats, 'number');
           var sortedArray = extensions.customSortNumber(stats, 'asc');

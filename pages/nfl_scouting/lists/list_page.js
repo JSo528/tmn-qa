@@ -77,7 +77,7 @@ ListPage.prototype.getTableStatRankings = function() {
 
 ListPage.prototype.getTableStatRanking = function(row) {
   var inputLocator = By.xpath(`.//div[@class='tag-profile']/.//table/tbody[@inject='rows']/tr[${row}]/td[1]/div/div/input`);
-  return this.driver.findElement(inputLocator).getAttribute('value'));
+  return this.driver.findElement(inputLocator).getAttribute('value');
 };
 
 

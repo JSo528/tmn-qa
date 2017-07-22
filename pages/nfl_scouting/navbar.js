@@ -14,12 +14,14 @@ var SCOUT_LINK = By.xpath(".//header/nav/.//li/a[text()='Scout']");
 var TEAMS_LINK = By.xpath(".//header/nav/.//li/a[text()='Teams']");
 var LISTS_LINK = By.xpath(".//header/nav/.//li/a[text()='Lists']");
 var DRAFT_LINK = By.xpath(".//header/nav/.//li/a[text()='Draft']")
-var PLAYERS_LINK = By.xpath(".//header/nav/.//li/a[text()='Players']")
+var PLAYERS_SEARCH_LINK = By.xpath(".//header/nav/.//li/a[text()='Players']")
+var REPORTS_SEARCH_LINK = By.xpath(".//header/nav/.//li/a[text()='Reports']")
 
 var SCOUT_TABLE = By.xpath(".//div[@class='reports']/.//table");
 var TEAMS_TABLE = By.xpath(".//div[@class='teams']/.//table");
 var LISTS_TABLE = By.xpath(".//div[@class='tags']/.//table");
-var PLAYERS_TABLE = By.xpath(".//div[@class='search']/.//div[@class='scroll-wrap-x']/table");
+var PLAYERS_SEARCH_TABLE = By.xpath(".//div[@class='search']/.//div[@class='scroll-wrap-x']/table");
+var REPORTS_SEARCH_TABLE = By.xpath(".//div[@class='search']/.//div[@class='scroll-wrap-x']/table");
 var DRAFT_CARDS_CONTAINER = By.xpath(".//div[@class='draft']/.//div[@inject='draftCards']");
 
 var LOGOUT_LINK = By.xpath(".//header/nav/.//div[@class='navbar-right'][1]/ul/li/a");
@@ -57,9 +59,14 @@ Navbar.prototype.goToDraftPage = function() {
   return this.waitUntilStaleness(DRAFT_CARDS_CONTAINER, 10000);
 };
 
-Navbar.prototype.goToPlayersPage = function() {
-  this.click(PLAYERS_LINK);
-  return this.waitUntilStaleness(PLAYERS_TABLE, 10000);
+Navbar.prototype.goToPlayersSearchPage = function() {
+  this.click(PLAYERS_SEARCH_LINK);
+  return this.waitUntilStaleness(PLAYERS_SEARCH_TABLE, 10000);
+};
+
+Navbar.prototype.goToReportsSearchPage = function() {
+  this.click(REPORTS_SEARCH_LINK);
+  return this.waitUntilStaleness(REPORTS_SEARCH_TABLE, 10000);
 };
 
 Navbar.prototype.clickLogoutLink = function() {

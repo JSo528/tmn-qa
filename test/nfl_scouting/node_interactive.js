@@ -13,7 +13,8 @@ var Navbar = require('./pages/nfl_scouting/navbar.js');
 var TeamsPage = require('./pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('./pages/nfl_scouting/teams/team_page.js');
 var PlayerPage = require('./pages/nfl_scouting/players/player_page.js');
-var PlayersPage = require('./pages/nfl_scouting/players/players_page.js');
+var PlayerSearchPage = require('./pages/nfl_scouting/players/search_page.js');
+var ReportSearchPage = require('./pages/nfl_scouting/reports/search_page.js');
 var ScoutPage = require('./pages/nfl_scouting/scout/scout_page.js');
 var EvaluationReportPage = require('./pages/nfl_scouting/reports/evaluation_report_page.js');
 var ScoutingReportPage = require('./pages/nfl_scouting/reports/scouting_report_page.js');
@@ -40,22 +41,37 @@ hrtTestingReportPage = new HrtTestingReportPage(driver);
 scoutPage = new ScoutPage(driver);
 listPage = new ListPage(driver);
 manageDraftPage = new ManageDraftPage(driver);
-playersPage = new PlayersPage(driver);
+searchPage = new SearchPage(driver);
 filters = new Filters(driver);
 measurablesPage = new MeasurablesPage(driver)
+reportSearchPage = new ReportSearchPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-var url = "http://localhost:3000/team/1132?tenant=jaguars"
+var url = "http://localhost:3000/"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
 
-{ field: 'Tier', col: 3, type: 'dropdown', originalValue: '?', updatedValue: 'C', placeholder: '?' },
-{ field: 'Durability', col: 17, type: 'dropdown', originalValue: 'Select value', updatedValue: '8', placeholder: 'Select value' },
-{ field: 'X Alert', col: 18, type: 'checkbox', originalValue: false, updatedValue: true },
-{ field: 'C Alert', col: 19, type: 'checkbox', originalValue: false, updatedValue: true },
-teamPage.changeTableStatField('dropdown', 1, 17, '8', {placeholder: 'Select value'});
-teamPage.changeTableStatField('colorCheckbox', 1, 18, true, {selectedColor: 'rgba(217, 83, 79, 1)'});
+
+browser.visit(url + 'player/31682');
+
+    playerPage.clickMeasurablesLink();
+    
+    measurablesPage.changeStatField('dropdown', 1, 'event', 'NIC');
+    measurablesPage.changeStatField('date', 1, 'date', '02/15/2017');
+    measurablesPage.changeStatField('', 1, 'fieldCondition', 'FO2 V');
+    measurablesPage.changeStatField('', 1, 'height', '6040');
+    measurablesPage.changeStatField('', 1, 'weight', '320');
+    measurablesPage.changeStatField('', 1, 'arm', '12 1/2');
+    measurablesPage.changeStatField('', 1, 'wing', '20 1/2');
+    measurablesPage.changeStatField('', 1, 'm40_1', '4.3');
+    measurablesPage.changeStatField('', 1, 'm10_1', '1.2');
+    measurablesPage.changeStatField('', 1, 'm20_1', '2.4');
+    measurablesPage.changeStatField('', 1, 'verticalJump', '4030');
+    measurablesPage.changeStatField('', 1, 'broadJump', "7'09");
+    measurablesPage.changeStatField('', 1, 'benchPress', '32');
+    measurablesPage.changeStatField('', 1, 'shuttles60', '19.5');
+    measurablesPage.changeStatField('', 1, 'shuttles3', '5.0');
