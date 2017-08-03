@@ -263,6 +263,7 @@ test.describe('#Page: ScoutingReports', function() {
     test.describe("#position: QB", function() {
       test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
         this.timeout(120000);
+        reportPage.changeProfileDropdown('position', 'QB');
         metricInputs.forEach(function(attribute) {
           reportPage.changeMetricsInput(attribute.title, attribute.value);
         });

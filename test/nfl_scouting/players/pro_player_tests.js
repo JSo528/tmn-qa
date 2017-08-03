@@ -13,7 +13,7 @@ var ScoutingReportPage = require('../../../pages/nfl_scouting/reports/scouting_r
 var navbar, playerPage, incidentReportdivNum, scoutingReportPage;
 
 // Tests
-test.describe('#Page: Player', function() {
+test.describe('#Page: ProPlayer', function() {
   test.before(function() {
     playerPage = new PlayerPage(driver);
     scoutingReportPage = new ScoutingReportPage(driver);

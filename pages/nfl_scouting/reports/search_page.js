@@ -21,7 +21,7 @@ var LAST_LOCATOR = By.xpath(".//div[@inject='content']/.//div[contains(@class,'s
 // Reports
 var REPORTS_TABLE_LOCATOR = By.xpath(".//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table");
 var REPORTS_TABLE_ROW_COUNT_INPUT = By.xpath(".//div[@inject='reports']/.//div[@inject='page.count']/input");
-var REPORTS_TABLE_ROWS = By.xpath(".//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody/tr[not(contains(@class, 'hidden'))]");
+var REPORTS_TABLE_ROWS = By.xpath(".//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody/tr[not(contains(@class, 'hidden'))][td/div/div[@inject='_m._selected']]");
 var REPORTS_ADD_FILTER_INPUT = By.xpath(".//div[@inject='reports']/.//div[@inject='availableFilters']/.//input[@class='typeahead tt-input']");
 var SEARCH_REPORTS_TITLE = By.xpath(".//div[text()=' Search Players ']");
 var REPORTS_TOGGLE_COLUMNS_INPUT = By.xpath(".//div[@inject='reports']/.//div[@inject='availableColumns']/span/input[contains(@class, 'tt-input')]");
@@ -79,20 +79,20 @@ SearchPage.prototype.waitForPageToLoad = function() {
 /****************************************************************************
 ** Sorting
 *****************************************************************************/
-SearchPage.prototype.clickReportsTableHeader = function(col) {
-  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[${col}]`);
+SearchPage.prototype.clickReportsTableHeader = function(colName) {
+  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
 
-SearchPage.prototype.clickReportsSortIcon = function(col) {
-  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[${col}]/i[@class='material-icons']`);
+SearchPage.prototype.clickReportsSortIcon = function(colName) {
+  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/i[@class='material-icons']`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
 
-SearchPage.prototype.clickReportsRemoveSortIcon = function(col) {
-  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[${col}]/i[contains(@class, '-cancel')]`);
+SearchPage.prototype.clickReportsRemoveSortIcon = function(colName) {
+  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/thead/tr/th[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/i[contains(@class, '-cancel')]`);
   this.click(locator);
   return this.waitForPageToLoad();
 };
@@ -101,41 +101,11 @@ SearchPage.prototype.clickReportsRemoveSortIcon = function(col) {
 /****************************************************************************
 ** Table Stats
 *****************************************************************************/
-SearchPage.prototype.getReportsTableStats = function(col) {
+SearchPage.prototype.getReportsTableStats = function(colName) {
   var d = Promise.defer();
   var thiz = this;
-  var inputLocator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/input`);
-  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[${col}]/div/*[self::div or self::a or self::input]`);
-  
-  this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
-    d.fulfill(thiz.getInputValueArray(inputLocator));
-  }, function(err) {
-    d.fulfill(thiz.getTextArray(locator));
-  })
-
-  return d.promise;
-};
-
-SearchPage.prototype.getReportsTableStatsForCol = function(col) {
-  var d = Promise.defer();
-  var thiz = this;
-  var inputLocator = By.xpath(`.//div[@inject='reports']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/input`);
-  var locator = By.xpath(`.//div[@inject='reports']/.//table/tbody[@inject='rows']/tr/td[${col}]/div/*[self::div or self::a or self::input]`);
-  
-  this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
-    d.fulfill(thiz.getInputValueArray(inputLocator));
-  }, function(err) {
-    d.fulfill(thiz.getTextArray(locator));
-  })
-
-  return d.promise;
-};
-
-SearchPage.prototype.getReportsTableStatsFor = function(name) {
-  var d = Promise.defer();
-  var thiz = this;
-  var inputLocator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody/tr[not(contains(@class,'hidden'))]/td[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/div/input`);
-  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody/tr[not(contains(@class,'hidden'))]/td[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${name}"]/preceding-sibling::th)+1]/${TABLE_LOCATOR_SUFFIX[name]}`);
+  var inputLocator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/div/input`);
+  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]/td[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/${TABLE_LOCATOR_SUFFIX[colName]}`);
   
   this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
     d.fulfill(thiz.getInputValueArray(inputLocator));
@@ -147,11 +117,11 @@ SearchPage.prototype.getReportsTableStatsFor = function(name) {
 };
 
 // table stats
-SearchPage.prototype.getReportsTableStat = function(row, col, placeholder) {
+SearchPage.prototype.getReportsTableStat = function(row, colName, placeholder) {
   var d = Promise.defer();
   var thiz = this;
-  var inputLocator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/input`);
-  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/*[self::div or self::a or self::input]`);
+  var inputLocator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/div/input`);
+  var locator = By.xpath(`.//div[@inject='reports']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[count(//div[@inject='reports']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/div/*[self::div or self::a or self::input]`);
   
   this.driver.wait(Until.elementLocated(inputLocator),100).then(function() {
     thiz.driver.findElement(inputLocator).getAttribute('value').then(function(stat) {
@@ -211,6 +181,9 @@ SearchPage.prototype.changeReportsNumberOfRows = function(numRows) {
 };
 
 SearchPage.prototype.getReportsTableRowCount = function() {
+  this.getElementCount(REPORTS_TABLE_ROWS).then(function(stat) {
+    console.log("*** " + stat)
+  })
   return this.getElementCount(REPORTS_TABLE_ROWS);
 };
 

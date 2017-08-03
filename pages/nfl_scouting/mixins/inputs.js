@@ -28,6 +28,8 @@ var CHECKBOX_CONVERSION = {
   'Select value': 'both'
 }
 
+var SAVE_WAIT_TIME = 1000;
+
 // DatePicker
 var DATEPICKER = By.css(".datepicker");
 var DAYS_PICKER_SWITCH = By.css('.datepicker-days .picker-switch');
@@ -86,7 +88,7 @@ Inputs = {
       thiz.sendKeys(foundLocator, value);
       thiz.sendKeys(foundLocator, Key.TAB);
       thiz.sendKeys(foundLocator, Key.ESCAPE);
-      return thiz.waitUntilStaleness(SAVE_ICON, 500);
+      return thiz.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME);
     });
 
     return d.promise;
@@ -127,7 +129,7 @@ Inputs = {
         thiz.click(foundLocator);
       });
 
-      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));
+      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME));
     });
 
     return d.promise;
@@ -152,7 +154,7 @@ Inputs = {
     this.getText(locator).then(function(text) {
       if (text == CHECKBOX_TRUE && !selected || text == CHECKBOX_FALSE && selected) {
         thiz.click(locator);
-        d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));
+        d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME));
       }
     });
     
@@ -178,7 +180,7 @@ Inputs = {
     this.getColorCheckbox(locator, selectedColor).then(function(wasSelected) {
       if (wasSelected && !selected || !wasSelected && selected) {
         thiz.click(locator);
-        d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));
+        d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME));
       }
     });
     
@@ -212,7 +214,7 @@ Inputs = {
       for(i=0; i<numClicks; i++) {
         thiz.click(locator);
       }
-      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 5000));
+      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME));
     });
     return d.promise;
   },
@@ -224,7 +226,7 @@ Inputs = {
     this.clear(locator);
     this.sendKeys(locator, text);
     this.sendKeys(locator, Key.TAB);
-    return this.waitUntilStaleness(SAVE_ICON, 500);
+    return this.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME);
   },
   changeDatePickerFromString: function(locator, dateString) {
     var day = parseInt(dateString.split("/")[1]).toString();
@@ -244,13 +246,13 @@ Inputs = {
         thiz.click(locator);
       }
     }).then(function() {
-      thiz.isDisplayed(DATEPICKER_DAYS_TABLE, 500).then(function(displayed) {
+      thiz.isDisplayed(DATEPICKER_DAYS_TABLE, 1000).then(function(displayed) {
         if (displayed) { 
           thiz.click(DAYS_PICKER_SWITCH); 
         };
       });
     }).then(function() {
-      thiz.isDisplayed(DATEPICKER_MONTHS_TABLE, 500).then(function(displayed) {
+      thiz.isDisplayed(DATEPICKER_MONTHS_TABLE, 1000).then(function(displayed) {
         if (displayed) { 
           thiz.click(MONTHS_PICKER_SWITCH); 
         };
@@ -291,14 +293,14 @@ Inputs = {
         thiz.sendKeys(locator, Key.ENTER);
       }
     }).then(function() {
-      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, 500));
+      d.fulfill(thiz.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME));
     })
     
     return d.promise;
   },
   clickAndSave: function(locator) {
     this.click(locator)
-    return this.waitUntilStaleness(SAVE_ICON, 5000);
+    return this.waitUntilStaleness(SAVE_ICON, SAVE_WAIT_TIME);
   },
   getCheckboxArray: function(locator) {
     var d = Promise.defer();

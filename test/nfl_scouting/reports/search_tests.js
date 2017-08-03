@@ -12,7 +12,7 @@ var SearchPage = require('../../../pages/nfl_scouting/reports/search_page.js');
 var navbar, searchPage, filters;
 
 // Tests
-test.describe('#Page: Reports Search', function() {
+test.describe('#Page: ReportsSearch', function() {
   test.before(function() {
     searchPage = new SearchPage(driver);
     navbar = new Navbar(driver);
@@ -28,22 +28,22 @@ test.describe('#Page: Reports Search', function() {
     test.describe('#table', function() {
       test.describe('#sorting', function() {
         var columns = [
-          { colNum: 2, colName: 'Code', sortType: 'string' },
-          { colNum: 3, colName: 'Pos', sortType: 'string' },
-          { colNum: 4, colName: 'First Name', sortType: 'stringInsensitive' },
-          { colNum: 5, colName: 'Last Name', placeholder: 'Select value' },
-          { colNum: 6, colName: 'Final Grade', sortType: 'string' },
-          { colNum: 7, colName: 'Author', sortType: 'string' },
+          { colName: 'Code', sortType: 'string' },
+          { colName: 'Pos', sortType: 'string' },
+          { colName: 'First Name', sortType: 'stringInsensitive' },
+          { colName: 'Last Name', placeholder: 'Select value' },
+          { colName: 'Final Grade', sortType: 'string' },
+          { colName: 'Author', sortType: 'string' },
         ];
 
-        var lastColNum;
+        var lastColName;
         columns.forEach(function(column) {
           test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
-            if (lastColNum) searchPage.clickReportsRemoveSortIcon(lastColNum);
-            lastColNum = column.colNum;
+            if (lastColName) searchPage.clickReportsRemoveSortIcon(lastColName);
+            lastColName = column.colName;
             searchPage.clickReportsTableHeader(column.colNum);
 
-            searchPage.getReportsTableStatsForCol(column.colNum).then(function(stats) {
+            searchPage.getReportsTableStats(column.colName).then(function(stats) {
               stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
               var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
               assert.deepEqual(stats, sortedArray);
@@ -51,9 +51,9 @@ test.describe('#Page: Reports Search', function() {
           });
 
           test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
-            searchPage.clickReportsSortIcon(column.colNum);
+            searchPage.clickReportsSortIcon(column.colName);
 
-            searchPage.getReportsTableStatsForCol(column.colNum).then(function(stats) {
+            searchPage.getReportsTableStats(column.colName).then(function(stats) {
               stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
               var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
               assert.deepEqual(stats, sortedArray);
@@ -64,20 +64,22 @@ test.describe('#Page: Reports Search', function() {
 
       test.describe('#controls', function() {
         test.it('changing # rows to 25 updates the table accordingly', function() {
+          browser.refresh();
+          searchPage.clickReportsTableHeader('Last Name');
           searchPage.changeReportsNumberOfRows(25);
-          searchPage.waitForReportsTableToLoad();
+          searchPage.waitForPageToLoad();
           searchPage.getReportsTableRowCount().then(function(stat) {
             assert.equal(stat, 25);
           });
         });
 
         test.it('pressing next button updates the table accordingly', function() {
-          searchPage.getReportsTableStat(25,3).then(function(stat) {
+          searchPage.getReportsTableStat("'last()'",'Last Name').then(function(stat) {
             lastPlayerFirstPage = stat;
           });
 
-          searchPage.clickReportsNextButton();0
-          searchPage.getReportsTableStat(1,3).then(function(stat) {
+          searchPage.clickReportsNextButton();
+          searchPage.getReportsTableStat("'first()'",'Last Name').then(function(stat) {
             firstPlayerSecondPage = stat;
             assert.isAtLeast(firstPlayerSecondPage.toLowerCase(), lastPlayerFirstPage.toLowerCase(), 'last name of 1st row player on 2nd page > last name of 25th row player on 1st page');
           });
@@ -85,7 +87,7 @@ test.describe('#Page: Reports Search', function() {
 
         test.it('pressing previous button updates the table accordingly', function() {
           searchPage.clickReportsPreviousButton();
-          searchPage.getReportsTableStat(25,3).then(function(stat) {
+          searchPage.getReportsTableStat("'last()'",'Last Name').then(function(stat) {
             assert.equal(stat, lastPlayerFirstPage, 'last name of bottom row player');
           });
         });
@@ -234,7 +236,7 @@ test.describe('#Page: Reports Search', function() {
           searchPage.addReportsFilter(filter.name);
           filters.setDropdownFilter(filter.name, filter.values, 'reports');
           
-          searchPage.getReportsTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getReportsTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -244,7 +246,7 @@ test.describe('#Page: Reports Search', function() {
         test.it(`adding filter: ${filter.name} (${filter.minValue} - ${filter.maxValue}) updates the table accordingly`, function() {
           searchPage.addReportsFilter(filter.name);
           filters.changeRangeFilter(filter.name, filter.minValue, filter.maxValue);
-          searchPage.getReportsTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getReportsTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -254,7 +256,7 @@ test.describe('#Page: Reports Search', function() {
         test.it(`adding filter: ${filter.name} - (${filter.value}) updates the table accordingly`, function() {
           searchPage.addReportsFilter(filter.name);
           filters.changeTextFilter(filter.name, filter.value);
-          searchPage.getReportsTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getReportsTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });

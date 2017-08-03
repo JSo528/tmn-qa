@@ -42,9 +42,9 @@ var CREATE_SCOUTING_REPORT_BTN = By.xpath(".//div[@inject='scoutingReports']/.//
 var CREATE_INTERVIEW_REPORT_BTN = By.xpath(".//div[@inject='interviewReports']/.//button[text()=' Create ']");
 var CREATE_MEDICAL_REPORT_BTN = By.xpath(".//div[@inject='medicalReports']/.//button[text()=' Create ']");
 
-var EVALUATION_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='evaluationReports']/.//table/tbody/tr/td[3]/div/input");
-var SCOUTING_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='scoutingReports']/.//table/tbody/tr/td[4]/div/input");
-var INTERVIEW_REPORT_AUTHORS_INPUTS = By.xpath(".//div[@inject='interviewReports']/.//table/tbody/tr/td[3]/div/input");
+var EVALUATION_REPORT_AUTHORS = By.xpath(".//div[@inject='evaluationReports']/.//table/tbody/tr/td[3]/div/input");
+var SCOUTING_REPORT_AUTHORS = By.xpath(".//div[@inject='scoutingReports']/.//table/tbody/tr[not(@class='hidden')]/td[4]/div");
+var INTERVIEW_REPORT_AUTHORS = By.xpath(".//div[@inject='interviewReports']/.//table/tbody/tr/td[3]/div/input");
 var REPORT_INJECT_VALUES = {
   'scouting': 'scoutingReports',
   'evaluation': 'evaluationReports',
@@ -183,7 +183,7 @@ PlayerPage.prototype.goToEvaluationReport = function(reportNum) {
 };
 
 PlayerPage.prototype.getEvaluationReportAuthors = function() {
-  return this.getInputValueArray(EVALUATION_REPORT_AUTHORS_INPUTS);
+  return this.getInputValueArray(EVALUATION_REPORT_AUTHORS);
 };
 
 PlayerPage.prototype.clickCreateScoutingReportBtn = function() {
@@ -191,11 +191,11 @@ PlayerPage.prototype.clickCreateScoutingReportBtn = function() {
 };
 
 PlayerPage.prototype.goToScoutingReport = function(reportNum) {
-  return this.click(By.xpath(`.//div[@inject='scoutingReports']/.//div[contains(@class, 'table-wrap')]/table/tbody/tr[${reportNum}]`));
+  return this.click(By.xpath(`.//div[@inject='scoutingReports']/.//div[contains(@class, 'table-wrap')]/table/tbody/tr[not(@class='hidden')][${reportNum}]`));
 };
 
 PlayerPage.prototype.getScoutingReportAuthors = function() {
-  return this.getInputValueArray(SCOUTING_REPORT_AUTHORS_INPUTS);
+  return this.getTextArray(SCOUTING_REPORT_AUTHORS);
 };
 
 PlayerPage.prototype.clickCreateInterviewReportBtn = function() {
@@ -207,7 +207,7 @@ PlayerPage.prototype.goToInterviewReport = function(reportNum) {
 };
 
 PlayerPage.prototype.getInterviewReportAuthors = function() {
-  return this.getInputValueArray(INTERVIEW_REPORT_AUTHORS_INPUTS);
+  return this.getInputValueArray(INTERVIEW_REPORT_AUTHORS);
 };
 
 PlayerPage.prototype.clickCreateMedicalReportBtn = function() {
@@ -252,7 +252,7 @@ PlayerPage.prototype.clickReportTableHeader = function(reportName, col) {
 };
 
 PlayerPage.prototype.getStatsForReportAndCol = function(reportName, col) {
-  var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/tbody/tr/td[${col}]/div/input`);
+  var locator = By.xpath(`.//div[@inject='${REPORT_INJECT_VALUES[reportName]}']/.//table/tbody/tr[not(@class='hidden')]/td[${col}]/div/input`);
   return this.getInputValueArray(locator);
 };
 

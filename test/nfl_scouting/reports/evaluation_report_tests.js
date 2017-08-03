@@ -35,7 +35,7 @@ test.describe('#Page: EvaulationReports', function() {
       { field: 'Summary', type: 'text', initialValue: 'summary test', updatedValue: 'summary test update' }
     ];
 
-    test.it("setting fields (if this test fails, itll cause a cascading effect for the other tests in this section)", function() {
+    test.it("setting fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
       reportPage.clickGameReportsSpacer();
       sections.forEach(function(sect) {
         reportPage.changeSectionField(sect.type, sect.field, sect.initialValue );

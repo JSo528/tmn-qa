@@ -41,37 +41,30 @@ hrtTestingReportPage = new HrtTestingReportPage(driver);
 scoutPage = new ScoutPage(driver);
 listPage = new ListPage(driver);
 manageDraftPage = new ManageDraftPage(driver);
-searchPage = new SearchPage(driver);
+searchPage = new PlayerSearchPage(driver);
 filters = new Filters(driver);
 measurablesPage = new MeasurablesPage(driver)
 reportSearchPage = new ReportSearchPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-var url = "http://localhost:3000/"
+// var url = "http://localhost:3000/"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
+navbar.goToReportsSearchPage();
+
+reportSearchPage.changeReportsNumberOfRows(20).then(function() {
+	return reportSearchPage.waitForPageToLoad()
+}).then(function() {
+	reportSearchPage.getReportsTableRowCount().then(function(stat) {
+		console.log(stat)
+	});	
+})
 
 
-browser.visit(url + 'player/31682');
-
-    playerPage.clickMeasurablesLink();
-    
-    measurablesPage.changeStatField('dropdown', 1, 'event', 'NIC');
-    measurablesPage.changeStatField('date', 1, 'date', '02/15/2017');
-    measurablesPage.changeStatField('', 1, 'fieldCondition', 'FO2 V');
-    measurablesPage.changeStatField('', 1, 'height', '6040');
-    measurablesPage.changeStatField('', 1, 'weight', '320');
-    measurablesPage.changeStatField('', 1, 'arm', '12 1/2');
-    measurablesPage.changeStatField('', 1, 'wing', '20 1/2');
-    measurablesPage.changeStatField('', 1, 'm40_1', '4.3');
-    measurablesPage.changeStatField('', 1, 'm10_1', '1.2');
-    measurablesPage.changeStatField('', 1, 'm20_1', '2.4');
-    measurablesPage.changeStatField('', 1, 'verticalJump', '4030');
-    measurablesPage.changeStatField('', 1, 'broadJump', "7'09");
-    measurablesPage.changeStatField('', 1, 'benchPress', '32');
-    measurablesPage.changeStatField('', 1, 'shuttles60', '19.5');
-    measurablesPage.changeStatField('', 1, 'shuttles3', '5.0');
+reportSearchPage.getReportsTableRowCount().then(function(stat) {
+		console.log(stat)
+	});	

@@ -158,7 +158,7 @@ test.describe('#Seed', function() {
     measurablesPage.changeStatField('', 1, 'weight', '320');
     measurablesPage.changeStatField('', 1, 'arm', '12 1/2');
     measurablesPage.changeStatField('', 1, 'wing', '20 1/2');
-    measurablesPage.changeStatField('', 1, 'wing', '8 1/2');
+    measurablesPage.changeStatField('', 1, 'hand', '8 1/2');
     measurablesPage.changeStatField('', 1, 'm40_1', '4.3');
     measurablesPage.changeStatField('', 1, 'm10_1', '1.2');
     measurablesPage.changeStatField('', 1, 'm20_1', '2.4');

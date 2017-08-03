@@ -80,11 +80,11 @@ test.describe('#Page: Team', function() {
   });
 
   test.describe('#filters', function() {
-    test.it('adding draft year: 2018, should update player list', function() {
-      filters.changeDropdownFilter('For Draft Years', 2018);
+    test.it('adding draft year: 2017, should update player list', function() {
+      filters.changeDropdownFilter('For Draft Years', 2017);
       teamPage.getTableStatsForCol('Draft Year').then(function(years) {
         var uniqYears = Array.from(new Set(years));
-        assert.sameMembers(uniqYears, ['2017', '2018']);
+        assert.sameMembers(['2017', '2019', '2018'], uniqYears);
       });
     });
 
@@ -125,7 +125,7 @@ test.describe('#Page: Team', function() {
   test.describe('#updatingPlayerInfo - Gage Batten (4508)', function() {
     test.before(function() {
       browser.refresh();
-      filters.changeDropdownFilter('For Draft Years', 2018);
+      filters.changeDropdownFilter('For Draft Years', 2017);
     });
 
     var attributes = [

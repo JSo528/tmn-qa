@@ -12,7 +12,7 @@ var SearchPage = require('../../../pages/nfl_scouting/players/search_page.js');
 var navbar, searchPage, filters;
 
 // Tests
-test.describe('#Page: Search', function() {
+test.describe('#Page: PlayersSearch', function() {
   test.before(function() {
     searchPage = new SearchPage(driver);
     navbar = new Navbar(driver);
@@ -27,14 +27,12 @@ test.describe('#Page: Search', function() {
     test.describe('#table', function() {
       test.describe('#sorting', function() {
         var columns = [
-          { colNum: 2, colName: 'Jersey', sortType: 'number' },
-          { colNum: 4, colName: 'First Name', sortType: 'stringInsensitive' },
-          { colNum: 5, colName: 'Pos', placeholder: 'Select value' },
-          { colNum: 6, colName: 'Team Code' },
-          { colNum: 7, colName: 'Height', sortType: 'number' },
-          { colNum: 8, colName: 'Weight', sortType: 'number' },
-          { colNum: 9, colName: 'Speed', sortType: 'number' },
-          { colNum: 10, colName: 'Agent', sortType: 'string' }
+          { colName: 'Jersey', sortType: 'number' },
+          { colName: 'First Name', sortType: 'stringInsensitive' },
+          { colName: 'Pos', placeholder: 'Select value' },
+          { colName: 'Height', sortType: 'number' },
+          { colName: 'Weight', sortType: 'number' },
+          { colName: 'Speed', sortType: 'number' },
         ];
 
         test.it('adding filter for tier A', function() {
@@ -43,7 +41,7 @@ test.describe('#Page: Search', function() {
         });
 
         test.it('players list should be sorted alphabetically by last name asc initially', function() {
-          searchPage.getPlayersTableStatsForCol(3).then(function(stats) {
+          searchPage.getPlayersTableStats('Last Name').then(function(stats) {
             stats = extensions.normalizeArray(stats, 'stringInsensitive');
             var sortedArray = extensions.customSortByType('stringInsensitive', stats, 'asc');
             assert.deepEqual(stats, sortedArray);
@@ -51,23 +49,23 @@ test.describe('#Page: Search', function() {
         });
 
         test.it('clicking arrow next to last name header should reverse the sort', function() {
-          searchPage.clickPlayersSortIcon(3);
+          searchPage.clickPlayersSortIcon('Last Name');
 
-          searchPage.getPlayersTableStatsForCol(3).then(function(stats) {
+          searchPage.getPlayersTableStats('Last Name').then(function(stats) {
             stats = extensions.normalizeArray(stats, 'stringInsensitive');
             var sortedArray = extensions.customSortByType('stringInsensitive', stats, 'desc');
             assert.deepEqual(stats, sortedArray);
           });
         });
 
-        var lastColNum = 3;
+        var lastColName = 'Last Name';
         columns.forEach(function(column) {
           test.it('sorting by ' + column.colName + ' should sort table accordingly', function() {
-            searchPage.clickPlayersRemoveSortIcon(lastColNum);
-            lastColNum = column.colNum;
-            searchPage.clickPlayersTableHeader(column.colNum);
+            searchPage.clickPlayersRemoveSortIcon(lastColName);
+            lastColName = column.colName;
+            searchPage.clickPlayersTableHeader(column.colName);
 
-            searchPage.getPlayersTableStatsForCol(column.colNum).then(function(stats) {
+            searchPage.getPlayersTableStats(column.colName).then(function(stats) {
               stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
               var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
               assert.deepEqual(stats, sortedArray);
@@ -75,9 +73,9 @@ test.describe('#Page: Search', function() {
           });
 
           test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
-            searchPage.clickPlayersSortIcon(column.colNum);
+            searchPage.clickPlayersSortIcon(column.colName);
 
-            searchPage.getPlayersTableStatsForCol(column.colNum).then(function(stats) {
+            searchPage.getPlayersTableStats(column.colNum).then(function(stats) {
               stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
               var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
               assert.deepEqual(stats, sortedArray);
@@ -88,18 +86,18 @@ test.describe('#Page: Search', function() {
      
       test.describe('#updatingFields', function() {
         var attributes = [
-          { field: 'Jersey', col: 2, type: 'input', updatedValue: 10 },
-          { field: 'Pos', col: 5, type: 'dropdown', updatedValue: 'RB', placeholder: 'Select value' },
-          { field: 'Height', col: 7, type: 'input', updatedValue: '6020i' },
-          { field: 'Weight', col: 8, type: 'input', updatedValue: '220e' },
-          { field: 'Speed', col: 9, type: 'input', updatedValue: '5.20e' }
+          { field: 'Jersey', type: 'input', updatedValue: 10 },
+          { field: 'Pos', type: 'dropdown', updatedValue: 'RB', placeholder: 'Select value' },
+          { field: 'Height', type: 'input', updatedValue: '6020i' },
+          { field: 'Weight', type: 'input', updatedValue: '220e' },
+          { field: 'Speed', type: 'input', updatedValue: '5.20e' }
         ];
 
         test.it('get original values', function() {
           browser.refresh();
           searchPage.waitForPageToLoad();
           attributes.forEach(function(attr, idx) {
-            searchPage.getPlayersTableStat(2,attr.col, attr.placeholder).then(function(stat) {
+            searchPage.getPlayersTableStat(2,attr.field, attr.placeholder).then(function(stat) {
               attributes[idx].originalValue = stat;
             });
           });
@@ -107,7 +105,7 @@ test.describe('#Page: Search', function() {
 
         test.it('updating fields', function() {
           attributes.forEach(function(attr) {
-            searchPage.changePlayersTableStatField(attr.type, 2, attr.col, attr.updatedValue );
+            searchPage.changePlayersTableStatField(attr.type, 2, attr.field, attr.updatedValue );
           });
           browser.refresh();
           searchPage.waitForPageToLoad();
@@ -115,7 +113,7 @@ test.describe('#Page: Search', function() {
 
         attributes.forEach(function(attr) {
           test.it('updating ' + attr.field + ' should persist on reload', function() {
-            searchPage.getPlayersTableStat(2, attr.col, attr.placeholder).then(function(value) {
+            searchPage.getPlayersTableStat(2, attr.field, attr.placeholder).then(function(value) {
               assert.equal(value, attr.updatedValue, attr.field);
             });
           });
@@ -123,7 +121,7 @@ test.describe('#Page: Search', function() {
 
         test.it('reverting fields', function() {
           attributes.forEach(function(attr) {
-            searchPage.changePlayersTableStatField(attr.type, 2, attr.col, attr.originalValue );
+            searchPage.changePlayersTableStatField(attr.type, 2, attr.field, attr.originalValue );
           });
         });
 
@@ -151,19 +149,21 @@ test.describe('#Page: Search', function() {
 
       test.describe('#controls', function() {
         test.it('changing # rows to 25 updates the table accordingly', function() {
+          browser.refresh();
           searchPage.changePlayersNumberOfRows(25);
+          searchPage.waitForPageToLoad();
           searchPage.getPlayersTableRowCount().then(function(stat) {
             assert.equal(stat, 25);
           });
         });
 
         test.it('pressing next button updates the table accordingly', function() {
-          searchPage.getPlayersTableStat(25,3).then(function(stat) {
+          searchPage.getPlayersTableStat("'last()'",'Last Name').then(function(stat) {
             lastPlayerFirstPage = stat;
           });
 
           searchPage.clickPlayersNextButton();
-          searchPage.getPlayersTableStat(1,3).then(function(stat) {
+          searchPage.getPlayersTableStat("'first()'",'Last Name').then(function(stat) {
             firstPlayerSecondPage = stat;
             assert.isAtLeast(firstPlayerSecondPage.toLowerCase(), lastPlayerFirstPage.toLowerCase(), 'last name of 1st row player on 2nd page > last name of 25th row player on 1st page');
           });
@@ -171,7 +171,7 @@ test.describe('#Page: Search', function() {
 
         test.it('pressing previous button updates the table accordingly', function() {
           searchPage.clickPlayersPreviousButton();
-          searchPage.getPlayersTableStat(25,3).then(function(stat) {
+          searchPage.getPlayersTableStat("'last()'",'Last Name').then(function(stat) {
             assert.equal(stat, lastPlayerFirstPage, 'last name of bottom row player');
           });
         });
@@ -181,7 +181,7 @@ test.describe('#Page: Search', function() {
     test.describe('#filters', function() {
       var dropdownFilters = [
         { name: 'At Positions', values: ['QB'], columnName: 'Pos', result: 'ADAMSON' },
-        { name: 'For Draft Years', values: ['2018', '2019'], columnName: 'Draft Year', result: "'Unga" },
+        { name: 'For Draft Years', values: ['2018', '2019'], columnName: 'Draft Year', result: "AANSTOOS" },
         { name: 'For Tier', values: ['A'], columnName: 'Tier', result: "Askew-Henry" },
         { name: 'Draft Position', values: ['TEY'], columnName: 'Draft Position', result: 'AUCLAIR' },
         { name: 'Bowl Game', values: ['SR'], columnName: 'Bowl Game', result: 'Kupp' },
@@ -197,7 +197,7 @@ test.describe('#Page: Search', function() {
       ];
 
       var checkboxFilters = [
-        { name: 'Underclassman', value: true, columnName: 'Underclassman', displayValue: '', result: 'Anzalone' },
+        { name: 'Underclassman', value: true, columnName: 'Underclassman', displayValue: '', result: 'Akins' },
         { name: 'Jag Head', value: true, columnName: 'Jag Head', result: 'BEATHARD' },
         { name: 'Skull/Crossbones', value: true, columnName: 'Skull/Crossbones', displayValue: '', result: 'BACCHUS' },
         { name: 'T', value: true, columnName: 'T', result: 'BOLDEN'},
@@ -249,7 +249,7 @@ test.describe('#Page: Search', function() {
         { name: 'Measured Shuttles 20', minValue: '500', maxValue: '500', result: 'Bothwell' },
         { name: 'Measured Shuttles 60', minValue: '750', maxValue: '800', result: 'Colucci' },
         { name: 'Measured Three Cone', minValue: '850', maxValue: '860', result: 'ASH' },
-        { name: 'Run Game', minValue: '8', maxValue: '9', result: 'Barkley' },
+        { name: 'Run Game', minValue: '8', maxValue: '9', result: 'BARKLEY' },
         { name: 'Pass Game', minValue: '8', maxValue: '9', result: 'Garrett' },
         { name: 'Football Character', minValue: '1', maxValue: '1', result: 'DERRICOTT' },
         { name: 'Personal Character', minValue: '2', maxValue: '2', result: 'Mauk' },
@@ -267,7 +267,7 @@ test.describe('#Page: Search', function() {
         { name: 'Hands', minValue: '8', maxValue: '8', result: 'ROGERS' },
         { name: 'ACC Short', minValue: '7', maxValue: '7', result: 'Rosen' },
         { name: 'ACC Long', minValue: '6', maxValue: '6', result: 'FALK' },
-        { name: 'Arm Strength', minValue: '8', maxValue: '9', result: 'Allen' },
+        { name: 'Arm Strength', minValue: '8', maxValue: '9', result: 'ALLEN' },
         { name: 'Leadership', minValue: '8', maxValue: '8', result: 'Trubisky' },
         { name: 'Dependability', minValue: '3', maxValue: '3', result: 'TOWLES' },
         { name: 'Awareness', minValue: '3', maxValue: '3', result: 'CONQUE' },
@@ -282,7 +282,7 @@ test.describe('#Page: Search', function() {
         { name: 'Vision', minValue: '8', maxValue: '9', result: 'Perine' },
         { name: 'Start', minValue: '3', maxValue: '3', result: 'JUDD' },
         { name: 'Inside Run', minValue: '8', maxValue: '9', result: 'Scott' },
-        { name: 'Elude', minValue: '8', maxValue: '9', result: 'Barkley' },
+        { name: 'Elude', minValue: '8', maxValue: '9', result: 'BARKLEY' },
         { name: 'YAC', minValue: '8', maxValue: '9', result: 'HUNT' },
         { name: 'Balance', minValue: '8', maxValue: '9', result: 'Fournette' },
         { name: 'Pad Level', minValue: '7', maxValue: '7', result: 'Perine' },
@@ -396,7 +396,7 @@ test.describe('#Page: Search', function() {
           searchPage.addPlayersFilter(filter.name, filter.filterNum);
           filters.setDropdownFilter(filter.name, filter.values, 'players');
           
-          searchPage.getPlayersTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getPlayersTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -407,7 +407,7 @@ test.describe('#Page: Search', function() {
           searchPage.addPlayersFilter(filter.name, filter.filterNum);
           filters.changeCheckboxFilter(filter.name, filter.value);
 
-          searchPage.getPlayersTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getPlayersTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -417,7 +417,7 @@ test.describe('#Page: Search', function() {
         test.it(`adding filter: ${filter.name} (${filter.minValue} - ${filter.maxValue}) updates the table accordingly`, function() {
           searchPage.addPlayersFilter(filter.name, filter.filterNum);
           filters.changeRangeFilter(filter.name, filter.minValue, filter.maxValue);
-          searchPage.getPlayersTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getPlayersTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -427,7 +427,7 @@ test.describe('#Page: Search', function() {
         test.it(`adding filter: ${filter.name} - (${filter.value}) updates the table accordingly`, function() {
           searchPage.addPlayersFilter(filter.name, filter.filterNum);
           filters.changeTextFilter(filter.name, filter.value);
-          searchPage.getPlayersTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getPlayersTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -437,7 +437,7 @@ test.describe('#Page: Search', function() {
         test.it(`adding filter: ${filter.name} (${filter.values}) updates the table accordingly`, function() {
           searchPage.addPlayersFilter(filter.name, filter.filterNum);
           filters.setResourceSetFilter(filter.name, filter.values);
-          searchPage.getPlayersTableStatsFor("Last Name").then(function(stats) {
+          searchPage.getPlayersTableStats("Last Name").then(function(stats) {
             assert.include(stats, filter.result);
           });
         });
@@ -451,7 +451,7 @@ test.describe('#Page: Search', function() {
       //     searchPage.addPlayersFilter(filter.name);
       //     filters.setDropdownFilter(filter.name, filter.values);
       //     searchPage.waitForPageToLoad();
-      //     searchPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
+      //     searchPage.getPlayersTableStats(filter.columnName).then(function(stats) {
       //       var uniqueStats = Array.from(new Set(stats));
       //       var values = filter.parsedValues || filter.values;
       //       assert.sameMembers(values, uniqueStats);
@@ -468,7 +468,7 @@ test.describe('#Page: Search', function() {
       //     filters.changeCheckboxFilter(filter.name, filter.value);
       //     searchPage.waitForPageToLoad();
 
-      //     searchPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
+      //     searchPage.getPlayersTableStats(filter.columnName).then(function(stats) {
       //       var uniqueStats = Array.from(new Set(stats));
       //       var value = filter.displayValue === undefined ? filter.value.toString() : filter.displayValue;
       //       assert.sameMembers([value], uniqueStats);
@@ -485,7 +485,7 @@ test.describe('#Page: Search', function() {
       //     filters.changeRangeFilter(filter.name, filter.minValue, filter.maxValue);
       //     searchPage.waitForPageToLoad();
 
-      //     searchPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
+      //     searchPage.getPlayersTableStats(filter.columnName).then(function(stats) {
       //       var uniqueStats = Array.from(new Set(stats));
 
       //       uniqueStats.forEach(function(stat) {
@@ -505,7 +505,7 @@ test.describe('#Page: Search', function() {
       //     filters.setResourceSetFilter(filter.name, filter.values);
       //     searchPage.waitForPageToLoad();
 
-      //     searchPage.getPlayersTableStatsFor(filter.columnName).then(function(stats) {
+      //     searchPage.getPlayersTableStats(filter.columnName).then(function(stats) {
       //       var uniqueStats = Array.from(new Set(stats));
       //       assert.sameMembers(filter.values, uniqueStats);
       //     });
@@ -519,7 +519,7 @@ test.describe('#Page: Search', function() {
 
         searchPage.waitForPageToLoad();
 
-        searchPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
+        searchPage.getPlayersTableStats('Last Name').then(function(stats) {
           assert.sameMembers(['VICKERS', 'VULCANO'], stats);
         });
       });
@@ -531,7 +531,7 @@ test.describe('#Page: Search', function() {
 
         searchPage.waitForPageToLoad();
 
-        searchPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
+        searchPage.getPlayersTableStats('Last Name').then(function(stats) {
           assert.sameMembers(['EVANS', 'VICKERS'], stats);
         });
       });
@@ -544,7 +544,7 @@ test.describe('#Page: Search', function() {
 
         searchPage.waitForPageToLoad();
 
-        searchPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
+        searchPage.getPlayersTableStats('Last Name').then(function(stats) {
           assert.includeMembers(stats, ['Young']);
         });
       });
@@ -555,7 +555,7 @@ test.describe('#Page: Search', function() {
         // TODO - no way to set jersey == 33
 
         searchPage.waitForPageToLoad();
-        searchPage.getPlayersTableStatsFor('Jersey').then(function(stats) {
+        searchPage.getPlayersTableStats('Jersey').then(function(stats) {
           var uniqueStats = Array.from(new Set(stats));
           assert.sameMembers(['33'], uniqueStats);
         });
@@ -577,12 +577,12 @@ test.describe('#Page: Search', function() {
 
           searchPage.waitForPageToLoad();
 
-          searchPage.getPlayersTableStatsFor('Starter').then(function(stats) {
+          searchPage.getPlayersTableStats('Starter').then(function(stats) {
             var uniqueStats = Array.from(new Set(stats));
             assert.sameMembers(['check_box'], uniqueStats);
           });
 
-          searchPage.getPlayersTableStatsFor('Last Name').then(function(stats) {
+          searchPage.getPlayersTableStats('Last Name').then(function(stats) {
             assert.includeMembers(stats, ['Aguayo', 'Blankenship']);
           });
         });
@@ -598,12 +598,12 @@ test.describe('#Page: Search', function() {
           
           searchPage.waitForPageToLoad();
 
-          searchPage.getPlayersTableStatsFor('Starter').then(function(stats) {
+          searchPage.getPlayersTableStats('Starter').then(function(stats) {
             var uniqueStats = Array.from(new Set(stats));
             assert.sameMembers(['check_box', 'check_box_outline_blank'], uniqueStats);
           });
 
-          searchPage.getPlayersTableStatsFor('Tier').then(function(stats) {
+          searchPage.getPlayersTableStats('Tier').then(function(stats) {
             var uniqueStats = Array.from(new Set(stats));
             assert.sameMembers(['A', 'B', 'C', 'D', '?'], uniqueStats);
           });
@@ -614,23 +614,23 @@ test.describe('#Page: Search', function() {
     test.describe('#measurables', function() {
       test.it('editing measurable persists', function() {
         browser.refresh();
-        searchPage.togglePlayerRow(1);
-        searchPage.changeMeasurableInputField(1, 1, 9, 9.5);
+        searchPage.togglePlayerRow(2);
+        searchPage.changeMeasurableInputField(2, 1, 9, 9.5);
         browser.refresh();
-        searchPage.togglePlayerRow(1);
-        searchPage.getMeasurableInputField(1, 1, 9).then(function(stat) {
-          assert.equal(stat, 9.5, '1st player hand field')
+        searchPage.togglePlayerRow(2);
+        searchPage.getMeasurableInputField(2, 1, 9).then(function(stat) {
+          assert.equal(stat, 9.5, '2nd player hand field')
         })
       });
 
       test.it('editing measurable persists', function() {
         browser.refresh();
-        searchPage.togglePlayerRow(1);
-        searchPage.changeMeasurableInputField(1, 1, 9, 3.5);
+        searchPage.togglePlayerRow(2);
+        searchPage.changeMeasurableInputField(2, 1, 9, 3.5);
         browser.refresh();
-        searchPage.togglePlayerRow(1);
-        searchPage.getMeasurableInputField(1, 1, 9).then(function(stat) {
-          assert.equal(stat, 3.5, '1st player hand field')
+        searchPage.togglePlayerRow(2);
+        searchPage.getMeasurableInputField(2, 1, 9).then(function(stat) {
+          assert.equal(stat, 3.5, '2nd player hand field')
         })
       });
 
