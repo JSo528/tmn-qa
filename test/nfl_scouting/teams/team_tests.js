@@ -11,7 +11,7 @@ var TeamsPage = require('../../../pages/nfl_scouting/teams/teams_page.js');
 var TeamPage = require('../../../pages/nfl_scouting/teams/team_page.js');
 var Filters = require('../../../pages/nfl_scouting/filters.js');
 var navbar, teamsPage, teamPage, filters;
-var playerRowNum = 3;
+var playerRowNum = 5;
 
 test.describe('#Page: Team', function() {
   test.before(function() {
@@ -80,20 +80,20 @@ test.describe('#Page: Team', function() {
   });
 
   test.describe('#filters', function() {
-    test.it('adding draft year: 2017, should update player list', function() {
-      filters.changeDropdownFilter('For Draft Years', 2017);
+    test.it('adding draft year: 2020, class year: SO, and removing draftYear: 2018, class year: SR should update player list', function() {
+      filters.changeDropdownFilter('For Draft Years', 2020);
+      filters.changeDropdownFilter('For Draft Years', 2018);
+      filters.changeDropdownFilter('For Class Years', 'SO');
+      filters.changeDropdownFilter('For Class Years', 'SR');
+
       teamPage.getTableStatsForCol('Draft Year').then(function(years) {
         var uniqYears = Array.from(new Set(years));
-        assert.sameMembers(['2017', '2019', '2018'], uniqYears);
+        assert.sameMembers(['2020', '2019'], uniqYears);
       });
-    });
-
-    test.it('adding class year: SO and removing class year: JR should update player list', function() {
-      filters.changeDropdownFilter('For Class Years', 'SO');
-      filters.changeDropdownFilter('For Class Years', 'JR');
+      
       teamPage.getTableStatsForCol('Class').then(function(years) {
         var uniqYears = Array.from(new Set(years));
-        assert.sameMembers(uniqYears, ['SO', 'SR']);
+        assert.sameMembers(uniqYears, ['SO', 'JR']);
       });
     });
 
@@ -105,19 +105,19 @@ test.describe('#Page: Team', function() {
       });
     });
 
-    test.it('adding tier C, should update player list', function() {
-      filters.changeDropdownFilter('For Tier', 'C');
-      teamPage.getTableStatsForCol('Tier').then(function(tiers) {
-        var uniqueTiers = Array.from(new Set(tiers));
-        assert.sameMembers(['C'], uniqueTiers);
+    test.it('selecting positions = DT should update player list', function() {
+      filters.changeDropdownFilter('At Positions', 'DT');
+      teamPage.getTableStatsForCol('Pos').then(function(positions) {
+        var uniquePositions = Array.from(new Set(positions));
+        assert.sameMembers(['DT'], uniquePositions);
       });
     });
 
-    test.it('selecting positions = SS should update player list', function() {
-      filters.changeDropdownFilter('At Positions', 'SS');
-      teamPage.getTableStatsForCol('Pos').then(function(positions) {
-        var uniquePositions = Array.from(new Set(positions));
-        assert.sameMembers(['SS'], uniquePositions);
+    test.it('adding tier B, should update player list', function() {
+      filters.changeDropdownFilter('For Tier', 'B');
+      teamPage.getTableStatsForCol('Tier').then(function(tiers) {
+        var uniqueTiers = Array.from(new Set(tiers));
+        assert.sameMembers(['B'], uniqueTiers);
       });
     });
   });
@@ -130,7 +130,7 @@ test.describe('#Page: Team', function() {
 
     var attributes = [
       { field: 'Tier', type: 'dropdown', originalValue: '?', updatedValue: 'C', placeholder: '?' },
-      { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
+      // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
       { field: 'Jersey', type: 'input', originalValue: 40, updatedValue: 32 },
       { field: 'Starter', type: 'checkbox', originalValue: false, updatedValue: true },
       { field: 'Pos', type: 'dropdown', originalValue: 'FB', updatedValue: 'RB' },
@@ -152,7 +152,7 @@ test.describe('#Page: Team', function() {
         teamPage.changeTableStatField(attr.type, playerRowNum, attr.field, attr.updatedValue, {placeholder: attr.placeholder} );
       });
       browser.refresh();
-      filters.changeDropdownFilter('For Draft Years', 2018);
+      filters.changeDropdownFilter('For Draft Years', 2017);
     });
 
     attributes.forEach(function(attr) {

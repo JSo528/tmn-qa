@@ -62,7 +62,7 @@ test.describe('#Page: ScoutingReports', function() {
   test.describe("#profile", function() {
     var attributes = [
       { field: 'First Name', type: 'input', originalValue: 'Montavious', updatedValue: 'Montavious-Test' },
-      { field: 'Last Name', type: 'input', originalValue: 'Atkinson', updatedValue: 'Cornwell-Test' },
+      { field: 'Last Name', type: 'input', originalValue: 'Atkinson', updatedValue: 'Atkinson-Test' },
       { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SO', updatedValue: 'JR' },
       { field: 'Hometown', type: 'input', originalValue: 'Fairburn, GA', updatedValue: 'Mobile, AL' },
       { field: 'player.number', title: 'Jersey', type: 'input', originalValue: 48, updatedValue: 16 },

@@ -48,23 +48,21 @@ reportSearchPage = new ReportSearchPage(driver)
 
 // Constants
 var url = "https://staging.jags.scouting.trumedianetworks.com/"
-// var url = "http://localhost:3000/"
+var url = "http://localhost:3000/"
 
 // Script
 loginPage.visit(url);
 loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
-navbar.goToReportsSearchPage();
-
-reportSearchPage.changeReportsNumberOfRows(20).then(function() {
-	return reportSearchPage.waitForPageToLoad()
-}).then(function() {
-	reportSearchPage.getReportsTableRowCount().then(function(stat) {
-		console.log(stat)
-	});	
-})
+navbar.goToPlayersSearchPage();
 
 
-reportSearchPage.getReportsTableRowCount().then(function(stat) {
-		console.log(stat)
-	});	
+filter = { name: 'Speed', minValue: '4.22', maxValue: '4.22', result: 'ROSS' }
+
+searchPage.addPlayersFilter(filter.name, filter.filterNum);
+filters.changeRangeFilter(filter.name, filter.minValue, filter.maxValue);
+PlayerSearchPage.getPlayersTableStats("Last Name").then(function(stats) {
+	console.log(stats)
+});
+
+var locator = By.xpath(".//div[not(contains(@class, 'hidden'))]/div[@class='filter'][div[text()=' Speed ']]/.//div[@inject='min']/input")

@@ -144,7 +144,7 @@ test.describe('#Page: ProTeam', function() {
       });
     });
 
-    test.it('adding tier C, should update player list', function() {
+    test.it('adding tier A, should update player list', function() {
       filters.changeDropdownFilter('Durability', '8');
       filters.changeDropdownFilter('For Tier', 'A');
       teamPage.getTableStatsForCol(3).then(function(tiers) {

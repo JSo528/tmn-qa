@@ -84,7 +84,10 @@ Inputs = {
       foundLocator = secondaryLocator ? secondaryLocator : locator;
     }).then(function() {
       thiz.clear(foundLocator); // 1st clear changes it to 0
-      thiz.clear(foundLocator);
+      thiz.sendKeys(foundLocator, Key.BACK_SPACE);
+      thiz.sendKeys(foundLocator, Key.BACK_SPACE);
+      thiz.sendKeys(foundLocator, Key.BACK_SPACE);
+      thiz.sendKeys(foundLocator, Key.BACK_SPACE);
       thiz.sendKeys(foundLocator, value);
       thiz.sendKeys(foundLocator, Key.TAB);
       thiz.sendKeys(foundLocator, Key.ESCAPE);

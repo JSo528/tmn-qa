@@ -181,9 +181,6 @@ SearchPage.prototype.changeReportsNumberOfRows = function(numRows) {
 };
 
 SearchPage.prototype.getReportsTableRowCount = function() {
-  this.getElementCount(REPORTS_TABLE_ROWS).then(function(stat) {
-    console.log("*** " + stat)
-  })
   return this.getElementCount(REPORTS_TABLE_ROWS);
 };
 

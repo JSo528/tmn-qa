@@ -235,6 +235,13 @@ SearchPage.prototype.getMeasurablesCount = function(playerNum) {
   return this.getElementCount(locator);
 };
 
+SearchPage.prototype.clickCreateScoutingReport = function(playerNum) {
+  var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${playerNum}]/td[count(//div[@inject='players']/.//table/thead/tr/th[text()=" Reports"]/preceding-sibling::th)+1]/div/div`);
+  var optionLocator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${playerNum}]/td[count(//div[@inject='players']/.//table/thead/tr/th[text()=" Reports"]/preceding-sibling::th)+1]/div/ul/li[1]`);
+  this.click(locator);
+  return this.click(optionLocator);
+};
+
 
 /****************************************************************************
 ** Filters

@@ -99,7 +99,7 @@ test.describe('#Page: ReportsSearch', function() {
         { name: 'Reported ST Grade', values: ['2 Poor'], result: "D'Antuono" },
         { name: 'Reported Overall Grade', values: ['8.0'], result: 'Darnold' },
         { name: 'Report Type', values: ['All Star (Locked)'], result: 'MELIFONWU' },
-        { name: 'Jags. Pos.', values: ['P'], result: 'Gleeson' },
+        { name: 'Jags. Pos.', values: ['P'], result: 'GLEESON' },
         { name: 'Acquire', values: ['Y'], result: 'Sinclair' },
         { name: 'Trend', values: ['↑'], result: 'Sinclair' }
       ];
@@ -127,7 +127,7 @@ test.describe('#Page: ReportsSearch', function() {
         { name: 'Hands', minValue: '8', maxValue: '8', result: 'ROGERS' },
         { name: 'ACC Short', minValue: '7', maxValue: '7', result: 'Rosen' },
         { name: 'ACC Long', minValue: '6', maxValue: '6', result: 'FALK' },
-        { name: 'Arm Strength', minValue: '8', maxValue: '9', result: 'Allen' },
+        { name: 'Arm Strength', minValue: '8', maxValue: '9', result: 'ALLEN' },
         { name: 'Leadership', minValue: '8', maxValue: '8', result: 'Trubisky' },
         { name: 'Dependability', minValue: '3', maxValue: '3', result: 'TOWLES' },
         { name: 'Awareness', minValue: '3', maxValue: '3', result: 'CONQUE' },
@@ -142,7 +142,7 @@ test.describe('#Page: ReportsSearch', function() {
         { name: 'Vision', minValue: '8', maxValue: '9', result: 'Perine' },
         { name: 'Start', minValue: '3', maxValue: '3', result: 'JUDD' },
         { name: 'Inside Run', minValue: '8', maxValue: '9', result: 'Scott' },
-        { name: 'Elude', minValue: '8', maxValue: '9', result: 'Barkley' },
+        { name: 'Elude', minValue: '8', maxValue: '9', result: 'BARKLEY' },
         { name: 'YAC', minValue: '8', maxValue: '9', result: 'HUNT' },
         { name: 'Balance', minValue: '8', maxValue: '9', result: 'Fournette' },
         { name: 'Pad Level', minValue: '7', maxValue: '7', result: 'Perine' },
@@ -183,7 +183,7 @@ test.describe('#Page: ReportsSearch', function() {
         { name: 'Coverage Man', minValue: '7', maxValue: '9', result: 'Anzalone' },
         { name: 'Coverage Zone', minValue: '8', maxValue: '9', result: 'Reynolds' },
         { name: 'Ball Skills', minValue: '8', maxValue: '9', result: 'Jackson' },
-        { name: 'Blitz', minValue: '1', maxValue: '3', result: 'Whitener' },
+        { name: 'Blitz', minValue: '1', maxValue: '3', result: 'WHITENER' },
         { name: 'Concentration', minValue: '1', maxValue: '2', result: 'LESTON' },
         { name: 'Coverage Press Man', minValue: '1', maxValue: '2', result: 'TEXADA' },
         { name: 'Coverage Off Man', minValue: '1', maxValue: '2', result: 'Bailey-Smith' },
@@ -214,16 +214,16 @@ test.describe('#Page: ReportsSearch', function() {
 
       var textFilters = [
         { name: 'Run Comments', value: 'strength to hold the edge', result: 'CASHER' },
-        { name: 'Pass Comments', value: 'good burst', result:  'Farris' },
-        { name: 'Summary Comments', value: 'deep threat', result: 'Staggers' },
-        { name: 'One Liner Comments', value: 'closing burst', result: 'Abraham' },
-        { name: 'Help Team Comments', value: 'blockers', result: 'Nnadi' },
+        { name: 'Pass Comments', value: 'good burst', result:  'FARRIS' },
+        { name: 'Summary Comments', value: 'deep threat', result: 'STAGGERS' },
+        { name: 'One Liner Comments', value: 'closing burst', result: 'ABRAHAM' },
+        { name: 'Help Team Comments', value: 'blockers', result: 'NNADI' },
         { name: 'Production Comments', value: 'highlight reel catch', result: 'Kings Jr.' },
         { name: 'Football Character Comments', value: 'Alpha male', result: 'Tagaloa' },
-        { name: 'Personal Character Comments', value: 'academic scholarship', result: 'Obasih' },
-        { name: 'Durability Comments', value: 'different injuries', result: 'Friend' },
-        { name: 'Teachability Comments', value: 'Academic All Big Ten', result: 'Bazata' },
-        { name: 'Notes', value: 'Three-star recruit by Scout', result: 'Villamin' },
+        { name: 'Personal Character Comments', value: 'academic scholarship', result: 'OBASIH' },
+        { name: 'Durability Comments', value: 'different injuries', result: 'FRIEND' },
+        { name: 'Teachability Comments', value: 'Academic All Big Ten', result: 'BAZATA' },
+        { name: 'Notes', value: 'Three-star recruit by Scout', result: 'VILLAMIN' },
       ];
       
       test.beforeEach(function() {
@@ -267,27 +267,4 @@ test.describe('#Page: ReportsSearch', function() {
 
     });
   });
-
-  // test.describe('#exportCsv', function() {
-  //   test.it('clicking export csv exports csv file', function() {
-  //     browser.refresh();
-  //     searchPage.addPlayersFilter('On Player Lists');
-  //     filters.setResourceSetFilter('On Player Lists', ['GI']);
-      
-  //     searchPage.addPlayersFilter('At Positions');
-  //     filters.setDropdownFilter('At Positions', ['QB']);
-
-  //     searchPage.waitForPageToLoad();
-  //     searchPage.clickExportButton();
-  //   });
-
-  //   test.it('csv file should have the correct data', function() {
-  //     var exportFileContents = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone/n10,APODACA,AUSTIN,QB,NMUN,6030,212,5.10e,,/n15,BAILEY,AARON,QB,IANO,6005v,230v,4.55e,,/n2,CONQUE,ZACHARY,QB,TXSF,6050v,235v,4.90e,,/n,EASTON,DALTON,QB,RIBT,6000,192,5.00e,,/n9,EVANS,DANE,QB,OKTU,6010,210,5.00e,,/n,FERGUSON,TYLER,QB,KYWE,6040,225,4.95e,,/n13,HOUSTON,BARTLETT,QB,WIUN,6031v,234v,4.95e,,/n7,JENKINS,ELIJAH,QB,ALJA,6007v,206v,4.85e,,/n19,NELSON,JACK,QB,MNWI,6036v,236v,4.87v,,/n14,NORVELL,TRENTON,QB,ILWE,6050,225,4.95e,,/n7,O\'CONNOR,TYLER,QB,MIST,6010e,220e,4.95e,,/n,SPOONER,QADR,QB,CNMG,6000,192,5.00e,,/n18,SWOOPES,TYRONE,QB,TXUN,6034e,230e,4.80e,,/n,WINDHAM,GREG,QB,OHUN,6010,215,5.00e,,/n';
-  //     return searchPage.readAndDeleteExportCSV().then(function(data) {
-  //       assert.equal(data, exportFileContents);
-  //     });
-  //   });
-  // });
-
-  
 });

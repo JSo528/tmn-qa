@@ -165,7 +165,7 @@ test.describe('#Seed', function() {
     measurablesPage.changeStatField('', 1, 'verticalJump', '4030');
     measurablesPage.changeStatField('', 1, 'broadJump', "7'09");
     measurablesPage.changeStatField('', 1, 'benchPress', '32');
-    measurablesPage.changeStatField('', 1, 'shuttles60', '8.5');
+    measurablesPage.changeStatField('', 1, 'shuttles20', '8.5');
     measurablesPage.changeStatField('', 1, 'shuttles60', '19.5');
     measurablesPage.changeStatField('', 1, 'shuttles3', '5.0');
   });

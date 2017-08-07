@@ -53,6 +53,10 @@ ScoutingReportPage.prototype.clickPlayerLink = function() {
   return this.click(PLAYER_LINK);
 };
 
+ScoutingReportPage.prototype.getPlayerName = function() {
+  return this.getText(PLAYER_LINK);
+};
+
 /****************************************************************************
 ** Observations
 *****************************************************************************/
