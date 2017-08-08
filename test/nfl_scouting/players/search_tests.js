@@ -355,9 +355,9 @@ test.describe('#Page: PlayersSearch', function() {
     ];
 
     var resourceSetFilters = [
-      { name: 'On Teams', values: ['CALA', 'MSSO'], columnName: 'Team Code', value: 'AWEDISEAN' },
+      { name: 'On Teams', values: ['CALA', 'MSSO'], columnName: 'Team Code', result: 'AWEDISEAN' },
       { name: 'On NFL Teams', values: ['DEN'], result: 'Atwater'},
-      { name: 'Start Club', values: ['DEN'], result: 'Lowry'},
+      { name: 'Start Club', values: ['DEN'], result: 'Ferrell'},
     ];
 
     var textFilters = [
@@ -375,16 +375,16 @@ test.describe('#Page: PlayersSearch', function() {
       { name: 'Agent City', value: 'Los Angeles', result: 'NO DATA'},
       { name: 'Agent State', value: 'Los Angeles', result: 'NO DATA'},
       { name: 'Run Comments', value: 'strength to hold the edge', result: 'CASHER' },
-      { name: 'Pass Comments', value: 'good burst', result:  'Farris' },
-      { name: 'Summary Comments', value: 'deep threat', result: 'Staggers' },
-      { name: 'One Liner Comments', value: 'closing burst', result: 'Abraham' },
-      { name: 'Help Team Comments', value: 'blockers', result: 'Nnadi' },
+      { name: 'Pass Comments', value: 'good burst', result:  'FARRIS' },
+      { name: 'Summary Comments', value: 'deep threat', result: 'STAGGERS' },
+      { name: 'One Liner Comments', value: 'closing burst', result: 'ABRAHAM' },
+      { name: 'Help Team Comments', value: 'blockers', result: 'NNADI' },
       { name: 'Production Comments', value: 'highlight reel catch', result: 'Kings Jr.' },
       { name: 'Football Character Comments', value: 'Alpha male', result: 'Tagaloa' },
-      { name: 'Personal Character Comments', value: 'academic scholarship', result: 'Obasih' },
-      { name: 'Durability Comments', value: 'different injuries', result: 'Friend' },
-      { name: 'Teachability Comments', value: 'Academic All Big Ten', result: 'Bazata' },
-      { name: 'Notes', value: 'Three-star recruit by Scout', result: 'Villamin' },
+      { name: 'Personal Character Comments', value: 'academic scholarship', result: 'OBASIH' },
+      { name: 'Durability Comments', value: 'different injuries', result: 'FRIEND' },
+      { name: 'Teachability Comments', value: 'Academic All Big Ten', result: 'BAZATA' },
+      { name: 'Notes', value: 'Three-star recruit by Scout', result: 'VILLAMIN' },
     ];
 
     test.beforeEach(function() {
