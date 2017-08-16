@@ -123,11 +123,6 @@ test.describe('#Page: Team', function() {
   });
 
   test.describe('#updatingPlayerInfo - Gage Batten (4508)', function() {
-    test.before(function() {
-      browser.refresh();
-      filters.changeDropdownFilter('For Draft Years', 2017);
-    });
-
     var attributes = [
       { field: 'Tier', type: 'dropdown', originalValue: '?', updatedValue: 'C', placeholder: '?' },
       // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018 },
@@ -139,6 +134,11 @@ test.describe('#Page: Team', function() {
       { field: 'Speed', type: 'input', originalValue: '', updatedValue: '4.60e' }
     ];    
 
+    test.it('refreshing page', function() {
+      browser.refresh();
+      filters.changeDropdownFilter('For Draft Years', 2017);
+    });
+    
     attributes.forEach(function(attr) {
       test.it(attr.field + ' should have correct initial value', function() {
         teamPage.getTableStatField(attr.type, playerRowNum, attr.field).then(function(value) {
@@ -151,9 +151,12 @@ test.describe('#Page: Team', function() {
       attributes.forEach(function(attr) {
         teamPage.changeTableStatField(attr.type, playerRowNum, attr.field, attr.updatedValue, {placeholder: attr.placeholder} );
       });
+    });
+
+    test.it('refreshing page', function() {
       browser.refresh();
       filters.changeDropdownFilter('For Draft Years', 2017);
-    });
+    })
 
     attributes.forEach(function(attr) {
       test.it('updating ' + attr.field + ' should persist on reload', function() {

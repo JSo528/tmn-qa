@@ -231,6 +231,7 @@ test.describe('#Page: PlayersSearch', function() {
       { name: 'Measured Weight', minValue: '375', maxValue: '400', result: 'DELGADO' },
       { name: 'Measured Hand', minValue: '980', maxValue: '1000', result: 'ATKINSON' },
       { name: 'Measured Wing', minValue: '850', maxValue: '1000', result: 'Agudosi' },
+      { name: 'Measured Arm', minValue: '310', maxValue: '320', result: 'ABAD' },
       { name: 'Measured 40 J1', minValue: '525', maxValue: '550', result: 'Averill' },
       { name: 'Measured 40 J2', minValue: '525', maxValue: '550', result: 'NO DATA' },
       { name: 'Measured 40 1', minValue: '440', maxValue: '445', result: 'AWUZIE' }, // TODO - 4.4 or 440? It seems like there's players that have it in each format
@@ -358,14 +359,13 @@ test.describe('#Page: PlayersSearch', function() {
       { name: 'On Teams', values: ['CALA', 'MSSO'], columnName: 'Team Code', result: 'AWEDISEAN' },
       { name: 'On NFL Teams', values: ['DEN'], result: 'Atwater'},
       { name: 'Start Club', values: ['DEN'], result: 'Ferrell'},
+      { name: 'End Club', values: ['DEN'], result: 'BROKEN' },
+      { name: 'Potential Club', values: ['DEN'], result: 'BROKEN' },
+      { name: 'Drafted By', value: ['DEN'], result: 'BROKEN' },
     ];
 
     var textFilters = [
-      { name: 'Measured Arm', value: '10', result: 'BROKEN' }, // should be range filter?
       { name: 'League', value: 'NFL', result: 'BACH' },
-      { name: 'Drafted By', value: 'DEN', result: 'BROKEN' },
-      { name: 'End Club', value: 'DEN', result: 'BROKEN' },
-      { name: 'Potential Club', value: 'DEN', result: 'BROKEN' },
       { name: 'Agent First Name', value: 'John', result: 'ALFORD' },
       { name: 'Agent Last Name', value: 'Oluyole', result: 'AWINI' },
       { name: 'Agent Company', value: 'CAA', result: 'NO DATA' },
@@ -563,7 +563,7 @@ test.describe('#Page: PlayersSearch', function() {
     })
 
     test.describe('#compoundFilterTest', function() {
-      test.it('filters: Is Starter: true (AND),  For Class Years: FR (AND), At Positions: K  (AND)', function() {
+      test.it('filters: Is Starter: true (AND),  For Class Years: SO (AND), At Positions: K  (AND)', function() {
         this.timeout(120000);
         browser.refresh();
         searchPage.togglePlayersColumn('Starter', true);
@@ -571,7 +571,7 @@ test.describe('#Page: PlayersSearch', function() {
         filters.changeCheckboxFilter('Is Starter', true);
 
         searchPage.addPlayersFilter('For Class Years');
-        filters.setDropdownFilter('For Class Years', ['FR']);
+        filters.setDropdownFilter('For Class Years', ['SO']);
 
         searchPage.addPlayersFilter('At Positions');
         filters.setDropdownFilter('At Positions', ['PK']);

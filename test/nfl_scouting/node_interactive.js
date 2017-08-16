@@ -56,13 +56,11 @@ loginPage.login(credentials.testUser.email, credentials.testUser.password);
 
 navbar.goToPlayersSearchPage();
 
+element3 = By.xpath(".//div[contains(@class,  '-content-container')]/.//table/thead/tr/th[4]")
+element4 = By.xpath(".//div[contains(@class,  '-content-container')]/.//table/thead/tr/th[7]")
+var el3 = driver.findElement(element3)
+var el4 = driver.findElement(element4)
 
-filter = { name: 'Speed', minValue: '4.22', maxValue: '4.22', result: 'ROSS' }
+driver.actions().dragAndDrop(el3, {x:1000, y:100}).perform();
 
-searchPage.addPlayersFilter(filter.name, filter.filterNum);
-filters.changeRangeFilter(filter.name, filter.minValue, filter.maxValue);
-PlayerSearchPage.getPlayersTableStats("Last Name").then(function(stats) {
-	console.log(stats)
-});
-
-var locator = By.xpath(".//div[not(contains(@class, 'hidden'))]/div[@class='filter'][div[text()=' Speed ']]/.//div[@inject='min']/input")
+driver.actions().mouseMove(el3).mouseDown().mouseMove({x: 1000, y: 100}).mouseUp().perform()

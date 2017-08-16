@@ -63,7 +63,7 @@ test.describe('#Page: ScoutingReports', function() {
     var attributes = [
       { field: 'First Name', type: 'input', originalValue: 'Montavious', updatedValue: 'Montavious-Test' },
       { field: 'Last Name', type: 'input', originalValue: 'Atkinson', updatedValue: 'Atkinson-Test' },
-      { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SO', updatedValue: 'JR' },
+      // { field: 'player.class', title: 'Class', type: 'dropdown', originalValue: 'SO', updatedValue: 'JR' },
       { field: 'Hometown', type: 'input', originalValue: 'Fairburn, GA', updatedValue: 'Mobile, AL' },
       { field: 'player.number', title: 'Jersey', type: 'input', originalValue: 48, updatedValue: 16 },
       // { field: 'Draft Year', type: 'date', originalValue: 2017, updatedValue: 2018, originalValueInput: { year: 2017 }, updatedValueInput: { year: 2018 } },
@@ -262,7 +262,7 @@ test.describe('#Page: ScoutingReports', function() {
 
     test.describe("#position: QB", function() {
       test.it("updating fields (if this test fails, it'll cause a cascading effect for the other tests in this section)", function() {
-        this.timeout(120000);
+        this.timeout(180000);
         reportPage.changeProfileDropdown('position', 'QB');
         metricInputs.forEach(function(attribute) {
           reportPage.changeMetricsInput(attribute.title, attribute.value);
