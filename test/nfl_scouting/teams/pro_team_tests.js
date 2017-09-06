@@ -39,6 +39,8 @@ test.describe('#Page: ProTeam', function() {
       { colName: 'Entry Year', sortType: 'number' },
       { colName: 'College', sortType: 'string' },
       { colName: 'Durability', sortType: 'number' },
+      { colName: 'X Alert', sortType: 'colorBoolean', sortEnumeration: ['rgba(0, 0, 0, 0)', 'rgba(217, 83, 79, 1)'] },
+      { colName: 'C Alert', sortType: 'colorBoolean', sortEnumeration: ['rgba(0, 0, 0, 0)'] },
     ];
 
     test.it('team list should be sorted alphabetically by last name asc initially', function() {
@@ -65,22 +67,36 @@ test.describe('#Page: ProTeam', function() {
         teamPage.clickRemoveSortIcon(lastColName);
         lastColName = column.colName;
         teamPage.clickTableHeader(column.colName);
-
-        teamPage.getTableStatsForCol(column.colName).then(function(stats) {
-          stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
-          var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
-          assert.deepEqual(stats, sortedArray);
-        });
+        
+        if (column.sortType == 'colorBoolean') {
+          teamPage.getTableColorStatsForCol(column.colName, column.sortEnumeration).then(function(stats) {
+            var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc');
+            assert.deepEqual(stats, sortedArray);
+          });
+        } else {
+          teamPage.getTableStatsForCol(column.colName).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, 'asc', column.sortEnumeration);
+            assert.deepEqual(stats, sortedArray);
+          });
+        }
       });
 
       test.it('clicking arrow next to ' + column.colName + ' should reverse the sort', function() {
         teamPage.clickSortIcon(column.colName);
-
-        teamPage.getTableStatsForCol(column.colName).then(function(stats) {
-          stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
-          var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
-          assert.deepEqual(stats, sortedArray);
-        });
+        
+        if (column.sortType == 'colorBoolean') {
+          teamPage.getTableColorStatsForCol(column.colName, column.sortEnumeration).then(function(stats) {
+            var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc');
+            assert.deepEqual(stats, sortedArray);
+          });
+        } else {
+          teamPage.getTableStatsForCol(column.colName).then(function(stats) {
+            stats = extensions.normalizeArray(stats, column.sortType, column.placeholder);
+            var sortedArray = extensions.customSortByType(column.sortType, stats, 'desc', column.sortEnumeration);
+            assert.deepEqual(stats, sortedArray);
+          });
+        }
       });
     });
   });
@@ -162,6 +178,17 @@ test.describe('#Page: ProTeam', function() {
         assert.sameMembers(['WR'], uniquePositions);
       });
     });
+
+    test.it('selecting X Alert = true should update player list', function() {
+      filters.changeDropdownFilter('Jags. Pos.', 'WR');
+      filters.changeCheckboxFilter('X Alert', true);
+      
+      driver.sleep(2000);
+      teamPage.getTableStatsForCol(17).then(function(positions) {
+        var uniquePositions = Array.from(new Set(positions));
+        assert.sameMembers([true], uniquePositions);
+      });
+    });
   });
 
   test.describe('#updatingPlayerInfo', function() {
@@ -176,10 +203,14 @@ test.describe('#Page: ProTeam', function() {
       { field: 'X Alert', col: 18, type: 'colorCheckbox', originalValue: false, updatedValue: true, selectedColor: 'rgba(217, 83, 79, 1)' },
       { field: 'C Alert', col: 19, type: 'colorCheckbox', originalValue: false, updatedValue: true, selectedColor: 'rgba(0, 0, 0, 1)' },
     ];      
+    
+    test.it('sort by last name and first name', function() {
+      teamPage.clickSortIcon("First Name");
+    });
 
     attributes.forEach(function(attr) {
       test.it(attr.field + ' should have correct initial value', function() {
-        teamPage.getTableStatField(attr.type, playerRowNum, attr.col, {selectedColor: attr.selectedColor}).then(function(value) {
+        teamPage.getTableStatField(attr.type, playerRowNum, attr.field, {selectedColor: attr.selectedColor}).then(function(value) {
           assert.equal(value, attr.originalValue, attr.field);
         });
       });
@@ -187,15 +218,16 @@ test.describe('#Page: ProTeam', function() {
 
     test.it('updating fields', function() {
       attributes.forEach(function(attr) {
-        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.updatedValue, {selectedColor: attr.selectedColor, placeholder: attr.placeholder});
+        teamPage.changeTableStatField(attr.type, playerRowNum, attr.field, attr.updatedValue, {selectedColor: attr.selectedColor, placeholder: attr.placeholder});
       });
       browser.refresh();
       teamPage.waitForPageToLoad();
+      teamPage.clickSortIcon("First Name");
     });
 
     attributes.forEach(function(attr) {
       test.it('updating ' + attr.field + ' should persist on reload', function() {
-        teamPage.getTableStatField(attr.type, playerRowNum, attr.col, {selectedColor: attr.selectedColor}).then(function(value) {
+        teamPage.getTableStatField(attr.type, playerRowNum, attr.field, {selectedColor: attr.selectedColor}).then(function(value) {
           assert.equal(value, attr.updatedValue, attr.field);
         });
       });
@@ -203,7 +235,7 @@ test.describe('#Page: ProTeam', function() {
 
     test.it('reverting fields', function() {
       attributes.forEach(function(attr) {
-        teamPage.changeTableStatField(attr.type, playerRowNum, attr.col, attr.originalValue, {selectedColor: attr.selectedColor, placeholder: attr.placeholder});
+        teamPage.changeTableStatField(attr.type, playerRowNum, attr.field, attr.originalValue, {selectedColor: attr.selectedColor, placeholder: attr.placeholder});
       });
     });
   });

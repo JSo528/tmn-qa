@@ -50,4 +50,52 @@ test.describe('#Feature: CSV Exports', function() {
       });
     });
   });
+
+  test.describe('#Section: Teams', function() {
+    test.it('clicking export csv exports csv file', function() {
+      navbar.goToTeamsPage();
+      teamsPage.clickExportButton();
+    });
+
+    test.it('csv file should have the correct headers', function() {
+      var exportFileHeaders = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone';
+      
+      return reportSearchPage.readAndDeleteReportsExportCSV().then(function(data) {
+        var dataHeaders = data.split(/\/n/)[0]
+        assert.equal(dataHeaders, exportFileContents, 'headers are the same');
+      });
+    });
+  });
+
+  test.describe('#Section: Pro Teams', function() {
+    test.it('clicking export csv exports csv file', function() {
+      browser.visit(url+'team/1147');
+      teamPage.clickExportButton();
+    });
+
+    test.it('csv file should have the correct headers', function() {
+      var exportFileHeaders = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone';
+      
+      return reportSearchPage.readAndDeleteReportsExportCSV().then(function(data) {
+        var dataHeaders = data.split(/\/n/)[0]
+        assert.equal(dataHeaders, exportFileContents, 'headers are the same');
+      });
+    });
+  });
+
+  test.describe('#Section: College Teams', function() {
+    test.it('clicking export csv exports csv file', function() {
+      browser.visit(url+'team/41');
+      teamPage.clickExportButton();
+    });
+
+    test.it('csv file should have the correct headers', function() {
+      var exportFileHeaders = 'Jersey,Last Name,First Name,Pos,Team Code,Height,Weight,Speed,Agent,Day Phone';
+      
+      return reportSearchPage.readAndDeleteReportsExportCSV().then(function(data) {
+        var dataHeaders = data.split(/\/n/)[0]
+        assert.equal(dataHeaders, exportFileContents, 'headers are the same');
+      });
+    });
+  });
 });

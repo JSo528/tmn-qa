@@ -320,6 +320,23 @@ Inputs = {
     })
 
     return d.promise;
+  },
+  getColorCheckboxArray: function(locator, colorEnumeration) {
+    var d = Promise.defer();
+    var colorCheckboxArray = []
+    
+    this.driver.findElements(locator).then(function(elements) {
+      elements.forEach(function(el) {
+        el.getCssValue('background-color').then(function(color) {
+          var idx = colorEnumeration.indexOf(color);
+          colorCheckboxArray.push(idx)
+        })
+      })
+
+      d.fulfill(colorCheckboxArray);
+    })
+
+    return d.promise;
   }
 }
 

@@ -60,4 +60,9 @@ TeamsPage.prototype.clickRemoveSortIcon = function(col) {
   return this.click(locator);
 };
 
+TeamsPage.prototype.tableHeaderExists = function(colName) {
+  var locator = By.xpath(`.//div[@class='teams']/.//table/thead/tr/th[text()=' ${colName}']`);
+  return this.isDisplayed(locator, 500);
+};
+
 module.exports = TeamsPage;

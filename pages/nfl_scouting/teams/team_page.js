@@ -153,6 +153,12 @@ TeamPage.prototype.getTableCheckboxStats = function(colName) {
   return this.getCheckboxArray(locator);
 };
 
+TeamPage.prototype.getTableColorStatsForCol = function(colName, enumeration) {
+  var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr/td[count(//div[@inject='players']/.//table/thead/tr/th[text()=" ${colName}"]/preceding-sibling::th)+1]/div`);
+  return this.getColorCheckboxArray(locator, enumeration);
+};
+
+
 TeamPage.prototype.clickCreateScoutingReport = function(row) {
   var locator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[2]/div/div`);
   var optionLocator = By.xpath(`.//div[@class='roster']/.//table/tbody[@inject='rows']/tr[${row}]/td[2]/div/ul/li[1]`);
