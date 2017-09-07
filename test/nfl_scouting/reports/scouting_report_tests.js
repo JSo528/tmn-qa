@@ -469,6 +469,7 @@ test.describe('#Page: ScoutingReports', function() {
     positionMetrics.forEach(function(positionAttributes) {
       test.describe("#position: "+ positionAttributes.position, function() {
         test.it('should be able to input values into position skills', function() {
+          this.timeout(120000);
           reportPage.changeProfileDropdown('position', positionAttributes.position);
           positionAttributes.inputs.forEach(function(attribute) {
             reportPage.changeMetricsInput(attribute.title, attribute.value);

@@ -185,7 +185,10 @@ SearchPage.prototype.changePlayersTableStatDropdown = function(row, colName, val
 SearchPage.prototype.togglePlayerRow = function(row) {
   var rowNum = row * 3 - 2;
   var locator = By.xpath(`.//div[@inject='players']/.//div[contains(@class,'scroll-wrap-x')]/table/tbody[@inject='rows']/tr[${rowNum}]/td[1]/div/i`);
-  return this.click(locator);
+  this.click(locator);
+
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, '-details')][${row}]`);
+  return this.waitUntilStaleness(locator, 2000);
 };
 
 SearchPage.prototype.addListToPlayer = function(row, listName) {
@@ -221,17 +224,17 @@ SearchPage.prototype.createBatchMeasurables = function(event) {
 
 
 SearchPage.prototype.changeMeasurableInputField = function(playerNum, row, col, value) {
-  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, '-details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
   return this.changeInput(locator, value);
 };
 
 SearchPage.prototype.getMeasurableInputField = function(playerNum, row, col) {
-  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, '-details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))][${row}]/td[${col}]/div/div`)
   return this.getText(locator);
 };
 
 SearchPage.prototype.getMeasurablesCount = function(playerNum) {
-  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, 'details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]`);
+  var locator = By.xpath(`.//div[contains(@class, 'scroll-wrap-x')]/table/tbody/tr[contains(@class, '-details')][${playerNum}]/.//div[@inject="measurables"]/.//tbody[@inject='rows']/tr[not(contains(@class,'hidden'))]`);
   return this.getElementCount(locator);
 };
 

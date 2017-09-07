@@ -361,7 +361,7 @@ test.describe('#Page: PlayersSearch', function() {
       { name: 'Start Club', values: ['DEN'], result: 'Ferrell'},
       { name: 'End Club', values: ['DEN'], result: 'BROKEN' },
       { name: 'Potential Club', values: ['DEN'], result: 'BROKEN' },
-      { name: 'Drafted By', value: ['DEN'], result: 'BROKEN' },
+      { name: 'Drafted By', values: ['DEN'], result: 'BROKEN' },
     ];
 
     var textFilters = [
@@ -553,7 +553,7 @@ test.describe('#Page: PlayersSearch', function() {
     test.it('adding filter: Jersey', function() {
       browser.refresh();
       searchPage.addPlayersFilter('Jersey');
-      // TODO - no way to set jersey == 33
+      filters.changeTextFilter('Jersey', '33');
 
       searchPage.waitForPageToLoad();
       searchPage.getPlayersTableStats('Jersey').then(function(stats) {
@@ -637,13 +637,13 @@ test.describe('#Page: PlayersSearch', function() {
 
     test.it('creating batch measurable persists for all players with open measurables', function() {
       var pOneCount, pTwoCount;
-      driver.sleep(2000);
+      // driver.sleep(2000);
+      searchPage.togglePlayerRow(1)
       searchPage.getMeasurablesCount(1).then(function(count) {
         pOneCount = count;
       })
 
-      searchPage.togglePlayerRow(2);
-      driver.sleep(2000);
+      // driver.sleep(2000);
       searchPage.getMeasurablesCount(2).then(function(count) {
         pTwoCount = count;
       })
@@ -655,7 +655,6 @@ test.describe('#Page: PlayersSearch', function() {
         assert.equal(count, pOneCount+1, 'player 1 measurable count')
       });
 
-      searchPage.togglePlayerRow(1);
       searchPage.togglePlayerRow(2);
       searchPage.getMeasurablesCount(2).then(function(count) {
         assert.equal(count, pTwoCount, 'player 2 measurable count')
@@ -669,7 +668,7 @@ test.describe('#Page: PlayersSearch', function() {
       scoutingReportPage.waitForPageToLoad();
 
       scoutingReportPage.getPlayerName().then(function(name) {
-        assert.equal(name, "'UNGA, CHRISTOPHER");
+        assert.equal(name, "AANSTOOS, MARK");
       });
     });
   });
